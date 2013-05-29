@@ -1,0 +1,21 @@
+%h1 Listing roster_cell_carriers
+
+%table
+  %tr
+    %th Name
+    %th Sms gateway
+    %th
+    %th
+    %th
+
+  - @roster_cell_carriers.each do |roster_cell_carrier|
+    %tr
+      %td= roster_cell_carrier.name
+      %td= roster_cell_carrier.sms_gateway
+      %td= link_to 'Show', roster_cell_carrier
+      %td= link_to 'Edit', edit_roster_cell_carrier_path(roster_cell_carrier)
+      %td= link_to 'Destroy', roster_cell_carrier, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Cell carrier', new_roster_cell_carrier_path

@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @roster_cell_carrier.name
+%p
+  %b Sms gateway:
+  = @roster_cell_carrier.sms_gateway
+
+= link_to 'Edit', edit_roster_cell_carrier_path(@roster_cell_carrier)
+\|
+= link_to 'Back', roster_cell_carriers_path

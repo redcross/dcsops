@@ -1,0 +1,24 @@
+- model_class = Scheduler::DispatchConfig
+.page-header
+  %h1=t '.title', :default => model_class.model_name.human.pluralize
+%table.table.table-striped
+  %thead
+    %tr
+      %th= model_class.human_attribute_name(:county)
+      %th= model_class.human_attribute_name(:backup_first)
+      %th= model_class.human_attribute_name(:backup_second)
+      %th= model_class.human_attribute_name(:backup_third)
+      %th= model_class.human_attribute_name(:backup_fourth)
+      %th= model_class.human_attribute_name(:is_active)
+      %th=t '.actions', :default => t("helpers.actions")
+  %tbody
+    - collection.each do |dispatch_config|
+      %tr
+        %td= link_to dispatch_config.county.name, edit_resource_path(dispatch_config)
+        %td= dispatch_config.backup_first.try(:full_name)
+        %td= dispatch_config.backup_second.try(:full_name)
+        %td= dispatch_config.backup_third.try(:full_name)
+        %td= dispatch_config.backup_fourth.try(:full_name)
+        %td= dispatch_config.is_active ? 'Yes' : 'No'
+        %td
+          = link_to t('.edit', :default => t("helpers.links.edit")), edit_scheduler_dispatch_config_path(dispatch_config), :class => 'btn btn-mini'

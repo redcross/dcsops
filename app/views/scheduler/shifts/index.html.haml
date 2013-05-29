@@ -1,0 +1,31 @@
+- model_class = Scheduler::Shift
+.page-header
+  %h1=t '.title', :default => model_class.model_name.human.pluralize
+%table.table.table-striped
+  %thead
+    %tr
+      %th= model_class.human_attribute_name(:id)
+      %th= model_class.human_attribute_name(:name)
+      %th= model_class.human_attribute_name(:abbrev)
+      %th= model_class.human_attribute_name(:shift_group_id)
+      %th= model_class.human_attribute_name(:max_signups)
+      %th= model_class.human_attribute_name(:county_id)
+      %th= model_class.human_attribute_name(:ordinal)
+      %th= model_class.human_attribute_name(:created_at)
+      %th=t '.actions', :default => t("helpers.actions")
+  %tbody
+    - collection.each do |shift|
+      %tr
+        %td= link_to shift.id, scheduler_shift_path(shift)
+        %td= shift.name
+        %td= shift.abbrev
+        %td= shift.shift_group.name
+        %td= shift.max_signups
+        %td= shift.county.name
+        %td= shift.ordinal
+        %td=l shift.created_at
+        %td
+          = link_to t('.edit', :default => t("helpers.links.edit")), edit_scheduler_shift_path(shift), :class => 'btn btn-mini'
+          = link_to t('.destroy', :default => t("helpers.links.destroy")), scheduler_shift_path(shift), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-mini btn-danger'
+
+= link_to t('.new', :default => t("helpers.links.new")), new_scheduler_shift_path, :class => 'btn btn-primary'

@@ -1,0 +1,24 @@
+Hello, <%= @recipient.first_name %>
+
+<% if @person == @recipient %>
+<%= @shift.person.full_name %> has asked you to take over their shift:
+<% else %>
+<%= @shift.person.full_name %> has made a shift available for swap and is looking for someone to fill it.
+<% end %>
+
+Date: <%= @shift.date.to_s :dow_long %>
+Shift: <%= @shift.shift.shift_group.name %> <%= @shift.shift.name %>
+
+<% if @person == @recipient %>
+Click the link below to confirm that you want to take over this shift.  If you don't want to accept the shift, you do not need to do anything, although you should send an email to <%= @shift.person.first_name %> at <%= @shift.person.email %> to let them know.
+<% else %>
+If you are available to take this shift, please click the link below to be taken to the scheduling system.  Otherwise, you can ignore this email.
+<% end %>
+
+<%= swap_scheduler_shift_assignment_url(@shift) %>
+
+If you have any questions, please contact your DAT Chair.
+
+-- 
+This message sent by the DAT Scheduling system.  To edit your email preferences:
+<%= scheduler_notification_setting_url(@recipient) %>

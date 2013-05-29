@@ -1,0 +1,17 @@
+%h1 Listing scheduler_notification_settings
+
+%table
+  %tr
+    %th
+    %th
+    %th
+
+  - @scheduler_notification_settings.each do |scheduler_notification_setting|
+    %tr
+      %td= link_to 'Show', scheduler_notification_setting
+      %td= link_to 'Edit', edit_scheduler_notification_setting_path(scheduler_notification_setting)
+      %td= link_to 'Destroy', scheduler_notification_setting, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Notification setting', new_scheduler_notification_setting_path

@@ -1,0 +1,18 @@
+.row
+  .span6.offset3
+    =form_for resource, url: roster_session_path, html: {class: 'login-form'} do |f|
+      %h3 
+        %i.icon-lock
+        Please Sign In
+      %p
+        ARCData uses the same username and password you use to log into Volunteer Connection.
+      = f.text_field :username, class: 'text_field span5', placeholder: 'Email Address'
+      = f.password_field :password, class: 'text_field span5', placeholder: 'Password'
+      /.control-group
+      /  = f.label :remember_me, :class => 'control-label'
+      /  .controls
+      /    = f.check_box :remember_me, :class => 'text_field'
+      .submit
+        = f.submit 'Sign In', :class => 'btn btn-primary btn-large btn-block'
+      /.lost-password
+      /  %h6 I don't remember my password.

@@ -1,0 +1,14 @@
+Hello,
+
+This is to confirm that a DAT shift has been swapped.
+
+Date: <%= @from.date.to_s :dow_long %>
+Shift: <%= @from.shift.shift_group.name %> <%= @from.shift.name %>
+From: <%= @from.person.full_name %>
+To: <%= @to.person.full_name %>
+
+The contact information on file for <%= @to.person.first_name %> is:
+<% @to.person.phone_order.each_with_index do |ph, i| %><%= i %>: <%= ph[:number] %>
+<% end %>
+
+If you believe this is in error or have any questions, please contact your DAT Chair.

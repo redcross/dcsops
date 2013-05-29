@@ -1,0 +1,38 @@
+/%span{style: "float: left"}=date.day
+%table.shifts
+  - first_group = false
+  - daily_groups.each_with_index do |(group, shifts), group_idx|
+    - my_shift = nil
+    -if person
+      - my_shift = Scheduler::ShiftAssignment.includes(:shift => :shift_group).where(:scheduler_shifts => {shift_group_id: group.id}, person_id: person).where(date: date).first
+    - group_class = my_shift ? 'my-shift' : ''
+    - shifts = shifts.select{|sh|sh.active_on_day?(date)}
+    -shifts.each_with_index do |shift, idx| 
+      - assignments=assignments_for_shift_on_day(shift, date).to_a
+      - is_last = (idx == shifts.count-1) && (group_idx != daily_groups.keys.count-1)
+      %tr{class: [group_class, is_last ? 'end-group' : '']}
+        -if idx==0
+          -if group_idx == 0
+            %th=date.day
+          -else
+            %th
+        -elsif idx==1
+          %th{class: [group_class, 'shift-header'], rowspan: shifts.count-1}=group.name
+        - style=""; if assignments.blank? and date >= Date.today; style="open"; end
+        %td{class: style}
+          /=shift.county.abbrev
+          -if show_county_name
+            =shift.county.abbrev
+          ="#{shift.name}:"
+          /-signed_up = Scheduler::ShiftAssignment.where(person: @person, shift: shift, date: date).first
+          -if editable and person and (my_shift.nil? or my_shift.shift == shift) and (can_take_shift?(shift) and shift.can_sign_up_on_day(date) or my_shift.try(:shift) == shift) and date >= Date.today
+            - cbid = "#{date.to_s}-#{shift.id}"
+            =check_box_tag shift.id.to_s, date.to_s, my_shift.try(:shift) == shift, class: 'shift-checkbox', :"data-assignment" => my_shift.try(:id), id: cbid
+
+          -if assignments.blank?
+            %label{for: cbid} OPEN
+          -elsif assignments.count == 1
+            -ass = assignments.first
+            %label{for: cbid}= "#{ass.person.first_initial} #{ass.person.last_name}"
+          -else
+            ="#{assignments.count} registered"

@@ -1,0 +1,62 @@
+- model_class = Roster::Person
+.page-header
+  %h1=t '.title', :default => model_class.model_name.human.pluralize
+=form_tag '', method: :get do
+  %table.table.table-condensed.noprint
+    %tr
+      %th County
+      %td=select_tag "county", options_from_collection_for_select(Roster::County.all, :id, :name, current_scopes[:county]), multiple: false, id: 'choose-county', include_blank: true
+    %tr
+      %th Position
+      %td=select_tag "with_position", options_from_collection_for_select(Roster::Position.all, :id, :name, current_scopes[:with_position]), multiple: true, include_blank: true
+    %tr
+      %th Last Shift Taken
+      %td=select_tag "last_shift", options_for_select(date_ranges, current_scopes[:last_shift].try(:to_i)), include_blank: true
+    %tr
+      %th Name
+      %td=text_field_tag :search_name, current_scopes[:search_name], placeholder: "Search Name"
+    %tr
+      %th
+      %td=submit_tag 'Show', class: 'btn'
+%table.table.table-striped.table-condensed
+  %thead
+    %tr
+      %th Name
+      %th Num Shifts
+      %th Prev Shift
+      %th Next Shift
+      %th Last Login
+      %th Flex Schedule
+      %th=t '.actions', :default => t("helpers.actions")
+  %tbody
+    - collection.each do |person|
+      %tr
+        %td
+          = link_to person.full_name, roster_person_path(person)
+        %td
+          = Scheduler::ShiftAssignment.where(person_id: person).where('date <= ?', Date.current).count
+          shifts
+        %td
+          - d = Scheduler::ShiftAssignment.where(person_id: person).where('date <= ?', Date.current).first.try(:date)
+          -if d
+            =d.to_s :dow_short
+            %br
+            ="(#{(Date.current-d).to_i} days ago)"
+        %td
+          - d = Scheduler::ShiftAssignment.where(person_id: person).where('date >= ?', Date.current).first.try(:date)
+          -if d
+            =d.to_s :dow_short
+        %td
+          - d = person.last_login
+          -if d
+            =d.to_s :dow_short
+            %br
+            ="(#{(Date.current-d.to_date).to_i} days ago)"
+        %td
+          = Scheduler::FlexSchedule.where(id: person.id).first.try(:num_shifts)
+        %td
+          = link_to "Flex Schedule", scheduler_flex_schedule_path(person), :class => 'btn btn-mini'
+          = link_to "Shifts", scheduler_person_shift_assignments_path(person), :class => 'btn btn-mini'
+          = link_to "Email", person.vc_email_url, :class => 'btn btn-mini'
+
+

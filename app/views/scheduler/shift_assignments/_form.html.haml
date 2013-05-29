@@ -1,0 +1,19 @@
+= form_for @scheduler_shift_assignment do |f|
+  - if @scheduler_shift_assignment.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@scheduler_shift_assignment.errors.count, "error")} prohibited this scheduler_shift_assignment from being saved:"
+      %ul
+        - @scheduler_shift_assignment.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :person
+    = f.text_field :person
+  .field
+    = f.label :shift
+    = f.text_field :shift
+  .field
+    = f.label :date
+    = f.date_select :date
+  .actions
+    = f.submit 'Save'

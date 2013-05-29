@@ -1,0 +1,14 @@
+- daily_groups.each do |group, shifts|
+  %h4=group.name
+  - shifts.each do |shift|
+    %div
+      / Get a hash of date->number of registrations in one query
+      - counts = shift.shift_available_by_day(month)
+      %strong
+        -if show_county_name
+          =shift.county.name
+          ==-
+        =shift.name
+      - counts.each do |date, avail|
+        -if avail and date >= Date.today
+          = date.day

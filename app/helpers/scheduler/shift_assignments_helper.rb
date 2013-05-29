@@ -1,0 +1,2 @@
+module Scheduler::ShiftAssignmentsHelper
+end

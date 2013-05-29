@@ -1,0 +1,142 @@
+%h3 DAT Scheduling
+.row
+  .span4
+    %h5 
+      %i.icon-user
+      Personal Details
+    %p
+      = "Welcome, #{current_person.first_name}."
+      You have completed 
+      = pluralize(Scheduler::ShiftAssignment.where(person_id: current_person).where('date < ?', Date.today).count, 'shift')
+      since the new scheduling system was launched.
+
+    %p
+      -unless upcoming_shifts.blank?
+        %strong Upcoming shifts:
+        %br
+        - upcoming_shifts.each do |shift|
+          = shift.shift.name
+          on
+          = shift.date.to_s :dow_long
+          = shift.shift.shift_group.name
+          %br
+        %small=link_to "All Upcoming Shifts", scheduler_shift_assignments_path(my_shifts: true)
+      - else
+        You have no upcoming shifts scheduled.
+
+    %p
+      /=link_to "See your upcoming shifts"
+      /%br
+      %a{href: scheduler_notification_setting_path(current_person)}
+        %i.icon-bell
+        Update notification preferences
+      %br
+      %a{href: roster_person_path(current_person)}
+        %i.icon-phone
+        Edit contact details
+    %h5 
+      %i.icon-time
+      Your flex availability schedule:
+      %small=link_to "(Edit)", scheduler_flex_schedule_path(current_person)
+    - sched = Scheduler::FlexSchedule.where(id: current_person.id).first_or_initialize
+    %table.table.table-condensed.flex-small
+      %tr
+        %th
+        - days_of_week.each do |dow|
+          %th=dow[0..2].titleize
+      - shift_times.each do |time|
+        %tr
+          %th
+            %span{"data-toggle" => 'tooltip', title: time=='day' ? '7am to 7pm' : '7pm to 7am'}
+              =time.titleize
+          - days_of_week.each do |dow|
+            -avail = sched.send("available_#{dow}_#{time}")
+            %td{class: avail && "avail"}
+              =avail ? 'Y' : 'N'
+              /=editable_select resource, "available_#{dow}_#{time}", [{value: 0, text: "No"},{value: 1, text: "Yes"}], is_boolean: true
+  .span4
+    %h5 
+      %i.icon-calendar
+      Calendar Details
+    - month = Date.today.beginning_of_month
+    - 3.times do
+      %div
+        /%strong= link_to month.strftime("%B"), calendar_month(month)
+        %strong=month.strftime("%B")
+        ==-
+        %small
+          = shifts_available_for_month(month)
+          Shifts Available
+        .links
+          %small=link_to "My Shifts", calendar_month(month, show_shifts: :mine)
+          |
+          %small=link_to "County Schedule", calendar_month(month, show_shifts: :county)
+          |
+          %small=link_to "Spreadsheet", calendar_month(month, display: :spreadsheet)
+        - month = month.next_month
+    %br
+    -if can? :manage, Scheduler::Shift
+      %div
+        %a{href: "#"}
+          %i.icon-cog
+          Manage Calendars
+    %div
+      %a{href: scheduler_flex_schedules_path}
+        %i.icon-time
+        Show Flex Schedule Calendar
+    %div
+      %a{href: scheduler_people_path}
+        %i.icon-user
+        Show Roster
+  .span4
+    %h5 
+      %i.icon-group
+      Current On-Call Team:
+    - groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_person.chapter)
+    %p
+      = groups.map{|grp| grp.start_date.to_s(:dow_long) + " - " + grp.name}.join " "
+    - counties = current_person.counties
+    - counties.each do |county|
+      - shifts = Scheduler::Shift.where(county_id: county, shift_group_id: groups).order(:ordinal)
+      -if counties.length > 1
+        %strong=county.name
+        %br
+      - shifts.each do |shift|
+        -assignments = shift.shift_assignments.for_day(Date.today)
+        .shift
+          %small
+            = shift.name
+            -if assignments.blank?
+              ==- OPEN
+            -else
+              -assignments.each do |ass|
+                ==-
+                = ass.person.full_name
+                ="(#{ass.person.primary_phone})"
+.row
+  .span6
+    %h5 
+      %i.icon-random
+      Available Shift Swaps
+    - if available_swaps.blank?
+      There are no shift swaps currently available to you.
+    - else
+      %table.table.table-condensed
+        %tr
+          %th Date
+          %th Shift
+          %th From
+          %th 
+        - available_swaps.each do |shift|
+          %tr
+            %td=shift.date.to_s :dow_short
+            %td
+              =shift.shift.shift_group.name
+              =shift.shift.name
+            %td=shift.person.full_name
+            %td
+              =link_to "Claim", swap_scheduler_shift_assignment_path(shift), class: "btn btn-small"
+
+- content_for :footer_js do
+  :javascript
+    $("[data-toggle=tooltip]").tooltip()

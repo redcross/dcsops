@@ -1,0 +1,109 @@
+- model_class = Roster::Person
+.page-headera
+  %h1
+    /%i.icon-user
+    = resource.first_name
+    = resource.last_name
+  /= link_to 'Change Password', '#', class: 'btn btn-small'
+  /= link_to 'Send Password Reset', '#', class: 'btn btn-small'
+
+.row
+  .span6
+    %h3 
+      Details
+    %p
+      %strong Positions:
+      - resource.positions.each do |pos|
+        %br
+        = pos.name
+    %p
+      %strong Counties:
+      - resource.counties.each do |pos|
+        %br
+        = pos.name
+    %small
+      %i
+        %strong Note:
+        Details and contact information are synchronized from Volunteer Connection.  
+        To change your information,
+        %a{href: "https://volunteerconnection.redcross.org/?nd=profile_edit"} edit your profile in Volunteer Connection
+        or contact your county staffing or CDV team.  Changes may take 48 hours to take effect.
+
+  .span6
+    %h3 Contact Info
+    %p
+      %strong= model_class.human_attribute_name(:email) + ':'
+      = resource.email
+    %p
+      %strong Address:
+      %br
+      = resource.address1
+      %br
+      = resource.address2
+      %br
+      = "#{resource.city},"
+      = resource.state
+      = resource.zip
+    %p
+      %strong Preferred Contact Order:
+      %br
+      When Disaster Services is trying to reach you, we will call phones in this order:
+      %ol
+        - resource.phone_order.each do |val|
+          %li
+            %strong=val[:label].to_s.titleize
+            = val[:number]
+
+.row
+  .span12
+    %h3 Contact Settings
+    %p
+      %small
+        These settings affect how various Disaster systems will contact you.  If you have chosen to receive shift notifications by text, those messages will be sent to any phones that you have selected a carrier for below.  For dispatch, calldown, and watchfire, calls will be made in the order you see under "Preferred Contact Order" above.  To remove a number, for instance a work phone that is not useful for reaching you in a disaster, change "Call Settings" below to read "Don't call this number."
+      %br
+    %p
+      Click on the blue underlined text to change a value.
+    %table.table.table-condensed
+      %tr
+        %th
+        %th Phone Number
+        %th SMS/Carrier Settings
+        %th Call Settings
+      - [:home_phone, :cell_phone, :work_phone, :alternate_phone, :sms_phone].each do |phone|
+        - carrier = resource.send "#{phone}_carrier".to_sym
+        - if resource.send phone
+          %tr
+            %td=phone.to_s.titleize
+            %td=resource.send phone
+            %td 
+              %a{:class=>"carrier-editable", :"data-type" => 'select', :"data-value" => carrier.try(:id) || "nil", :"data-name" => "#{phone}_carrier_id", href: "#"}
+            %td.form-inline
+              -key="#{phone}_disable"
+              %a{:class=>"call-editable", :"data-type" => 'select', :"data-name" => key, :"data-value" => resource.send(key) ? 1 : 0}
+            
+
+
+/.form-actions
+/  = link_to t('.back', :default => t("helpers.links.back")), roster_people_path, :class => 'btn'
+/  = link_to t('.edit', :default => t("helpers.links.edit")), edit_roster_person_path(resource), :class => 'btn'
+/  = link_to t('.destroy', :default => t("helpers.links.destroy")), roster_person_path(resource), :method => "delete", :data => { :confirm => t/('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'
+
+- content_for :footer_js do
+  - carriers = [{value: "nil", text: "Don't send SMS to this number"}] + Roster::CellCarrier.all.map{|c| {text: c.name, value: c.id}}
+  - call_opts = [{value: 0, text: "Call this number for disasters"},{value: 1, text: "Don't call this number for disasters"}]
+  :javascript
+    $(".carrier-editable").editable({
+      source: #{carriers.to_json},
+      url: "#{resource_path}",
+      resource: "#{resource.class.model_name.param_key}",
+    });
+    $(".call-editable").editable({
+      source: #{call_opts.to_json},
+      url: "#{resource_path}",
+      resource: "#{resource.class.model_name.param_key}",
+      params:  function(params) {
+      console.log("params", params);
+        params.value = params.value=="1";
+        return params;
+      }
+    });

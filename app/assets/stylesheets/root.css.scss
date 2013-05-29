@@ -1,0 +1,30 @@
+// Place all the styles related to the root controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.root.index {
+  .app {
+    border: 1px solid #555;
+    border-radius: 5px;
+    margin: .5em 0;
+    padding: 0 .5em;
+    //text-align: right;
+    i {
+      padding-right: .5em;
+      float: left;
+      margin-top: 7px;
+      margin-left: 4px;
+    }
+
+    h4 {
+      //display: inline-block;
+      color: black;
+    }
+
+    a:hover {
+      //color: #666;
+      background-color: inherit;
+      text-decoration: inherit;
+    }
+  }
+}

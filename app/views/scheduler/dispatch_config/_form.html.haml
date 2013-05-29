@@ -1,0 +1,24 @@
+= form_for resource, :html => { :class => 'form-horizontal' } do |f|
+  .control-group
+    = f.label :backup_first_id, :class => 'control-label'
+    .controls
+      = f.select :backup_first_id, options_from_collection_for_select(all_people, :id, :name_last_first, resource.backup_first_id), {include_blank: true}
+  .control-group
+    = f.label :backup_second_id, :class => 'control-label'
+    .controls
+      = f.select :backup_second_id, options_from_collection_for_select(all_people, :id, :name_last_first, resource.backup_second_id), {include_blank: true}
+  .control-group
+    = f.label :backup_third_id, :class => 'control-label'
+    .controls
+      = f.select :backup_third_id, options_from_collection_for_select(all_people, :id, :name_last_first, resource.backup_third_id), {include_blank: true}
+  .control-group
+    = f.label :backup_fourth_id, :class => 'control-label'
+    .controls
+      = f.select :backup_fourth_id, options_from_collection_for_select(all_people, :id, :name_last_first, resource.backup_fourth_id), {include_blank: true}
+  .control-group
+    = f.label :is_active, :class => 'control-label'
+    .controls
+      = f.check_box :is_active, :class => 'text_field'
+  .form-actions
+    = f.submit nil, :class => 'btn btn-primary'
+    = link_to t('.cancel', :default => t("helpers.links.cancel")), resource_path, :class => 'btn'

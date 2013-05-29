@@ -1,0 +1,17 @@
+.row
+  .span12
+    %h1 Flex Schedule
+
+.row
+  .span12
+    %table.table.table-condensed
+      %tr
+        %th
+        - days_of_week.each do |dow|
+          %th=dow.titleize
+      - shift_times.each do |time|
+        %tr
+          %th=time.titleize
+          - days_of_week.each do |dow|
+            %th
+              =editable_select resource, "available_#{dow}_#{time}", [{value: 0, text: "No"},{value: 1, text: "Yes"}], is_boolean: true

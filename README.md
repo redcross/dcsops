@@ -1,0 +1,1 @@
+ARCData is a tool for managing some Red Cross Disaster Services processes, such as managing DAT shifts.

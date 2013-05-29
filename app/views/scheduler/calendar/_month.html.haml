@@ -1,0 +1,39 @@
+%table.calendar
+  %thead
+    %tr
+      /%th BOW
+      %th Sunday
+      %th Monday
+      %th Tuesday
+      %th Wednesday
+      %th Thursday
+      %th Friday
+      %th Saturday
+  %tbody
+    - date = month
+    - while date < month.next_month do
+      %tr
+        /%td BOW
+        - while date < month.next_month do
+          -if date == month
+            - date.wday.times do
+              %td
+          %td.day{:"data-date" => date.to_s}
+            =render partial: 'day', locals: {date: date, editable: editable}
+          - date = date.tomorrow
+          -if date.wday == 0
+            - break
+#new-title{style: 'display: none'}
+  /-past = month.last_month; future = month.next_month
+  /=link_to '<', scheduler_calendar_path(past.year, past.strftime("%B").downcase)
+  =month.strftime "%B %Y"
+  -if show_shifts == :county
+    ==-
+    = Roster::County.find(show_counties.first).name
+  -elsif show_shifts == :mine
+    ==-
+    = person.first_name
+    = person.last_name
+  /=link_to '>', scheduler_calendar_path(future.year, future.strftime("%B").downcase)
+:javascript
+  $('#calendar-title').html($('#new-title').html())

@@ -1,0 +1,24 @@
+= form_for resource, :html => { :class => 'form-horizontal' } do |f|
+  .control-group
+    = f.label :name, :class => 'control-label'
+    .controls
+      = f.text_field :name, :class => 'text_field'
+  .control-group
+    = f.label :period, :class => 'control-label'
+    .controls
+      = f.text_field :period, :class => 'text_field'
+  .control-group
+    = f.label :start_offset, :class => 'control-label'
+    .controls
+      = f.text_field :start_offset, :class => 'text_field'
+  .control-group
+    = f.label :end_offset, :class => 'control-label'
+    .controls
+      = f.text_field :end_offset, :class => 'text_field'
+  .control-group
+    = f.label :chapter_id, :class => 'control-label'
+    .controls
+      = f.text_field :chapter_id, :class => 'text_field'
+  .form-actions
+    = f.submit nil, :class => 'btn btn-primary'
+    = link_to t('.cancel', :default => t("helpers.links.cancel")), scheduler_shift_groups_path, :class => 'btn'

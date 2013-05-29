@@ -1,0 +1,25 @@
+- model_class = Roster::Chapter
+.page-header
+  %h1=t '.title', :default => model_class.model_name.human.pluralize
+%table.table.table-striped
+  %thead
+    %tr
+      %th= model_class.human_attribute_name(:id)
+      %th= model_class.human_attribute_name(:name)
+      %th= model_class.human_attribute_name(:code)
+      %th= model_class.human_attribute_name(:short_name)
+      %th= model_class.human_attribute_name(:created_at)
+      %th=t '.actions', :default => t("helpers.actions")
+  %tbody
+    - collection.each do |chapter|
+      %tr
+        %td= link_to chapter.id, roster_chapter_path(chapter)
+        %td= chapter.name
+        %td= chapter.code
+        %td= chapter.short_name
+        %td=l chapter.created_at
+        %td
+          = link_to t('.edit', :default => t("helpers.links.edit")), edit_roster_chapter_path(chapter), :class => 'btn btn-mini'
+          = link_to t('.destroy', :default => t("helpers.links.destroy")), roster_chapter_path(chapter), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-mini btn-danger'
+
+= link_to t('.new', :default => t("helpers.links.new")), new_roster_chapter_path, :class => 'btn btn-primary'

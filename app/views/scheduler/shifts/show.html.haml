@@ -1,0 +1,33 @@
+- model_class = Scheduler::Shift
+.page-header
+  %h1=t '.title', :default => model_class.model_name.human
+
+%p
+  %strong= model_class.human_attribute_name(:name) + ':'
+  %br
+  = resource.name
+%p
+  %strong= model_class.human_attribute_name(:abbrev) + ':'
+  %br
+  = resource.abbrev
+%p
+  %strong= model_class.human_attribute_name(:shift_group_id) + ':'
+  %br
+  = resource.shift_group.name
+%p
+  %strong= model_class.human_attribute_name(:max_signups) + ':'
+  %br
+  = resource.max_signups
+%p
+  %strong= model_class.human_attribute_name(:county_id) + ':'
+  %br
+  = resource.county.name
+%p
+  %strong= model_class.human_attribute_name(:ordinal) + ':'
+  %br
+  = resource.ordinal
+
+.form-actions
+  = link_to t('.back', :default => t("helpers.links.back")), scheduler_shifts_path, :class => 'btn'
+  = link_to t('.edit', :default => t("helpers.links.edit")), edit_scheduler_shift_path(resource), :class => 'btn'
+  = link_to t('.destroy', :default => t("helpers.links.destroy")), scheduler_shift_path(resource), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'

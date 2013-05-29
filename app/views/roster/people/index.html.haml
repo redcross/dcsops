@@ -1,0 +1,37 @@
+- model_class = Roster::Person
+.page-header
+  %h1=t '.title', :default => model_class.model_name.human.pluralize
+%table.table.table-striped
+  %thead
+    %tr
+      %th= model_class.human_attribute_name(:id)
+      %th Name
+      %th= model_class.human_attribute_name(:email)
+      %th= model_class.human_attribute_name(:home_phone)
+      %th= model_class.human_attribute_name(:cell_phone)
+      %th= model_class.human_attribute_name(:work_phone)
+      %th= model_class.human_attribute_name(:address1)
+      %th= model_class.human_attribute_name(:city)
+      %th= model_class.human_attribute_name(:state)
+      %th= model_class.human_attribute_name(:zip)
+      %th=t '.actions', :default => t("helpers.actions")
+  %tbody
+    - collection.each do |person|
+      %tr
+        %td= link_to person.id, roster_person_path(person)
+        %td
+          = person.first_name
+          = person.last_name
+        %td= person.email
+        %td= person.home_phone
+        %td= person.cell_phone
+        %td= person.work_phone
+        %td= person.address1
+        %td= person.city
+        %td= person.state
+        %td= person.zip
+        %td
+          = link_to t('.edit', :default => t("helpers.links.edit")), edit_roster_person_path(person), :class => 'btn btn-mini'
+          = link_to t('.destroy', :default => t("helpers.links.destroy")), roster_person_path(person), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-mini btn-danger'
+
+= link_to t('.new', :default => t("helpers.links.new")), new_roster_person_path, :class => 'btn btn-primary'

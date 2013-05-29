@@ -1,0 +1,2 @@
+module Roster::PeopleHelper
+end

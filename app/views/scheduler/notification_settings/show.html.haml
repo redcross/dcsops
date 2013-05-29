@@ -1,0 +1,84 @@
+.row
+  .span12
+    %h1 Notification Settings
+
+.row
+  .span10.offset1
+    %h3 Shifts
+    %p
+      =editable_select resource, :send_email_invites, [{value: 0, text: "Do not"},{value: 1, text: "Do"}], is_boolean: true
+      send calendar invites when I sign up for a shift.
+    %p
+      =editable_select resource, :email_swap_requested, [{value: 0, text: "Do not"},{value: 1, text: "Do"}], is_boolean: true
+      send me a notification when a shift that I can take is available for swap.
+    -if can_see_admin_notifications
+      %p
+        =editable_select resource, :email_calendar_signups, [{value: 0, text: "Do not"},{value: 1, text: "Do"}], is_boolean: true
+        send me notifications when people sign up for shifts in my county.
+      %p
+        =editable_select resource, :email_all_swaps, [{value: 0, text: "Do not"},{value: 1, text: "Do"}], is_boolean: true
+        send me notifications for all shift swaps.
+    %p
+      %small
+        Email invites will be sent to
+        =resource.person.email
+    %h5 Google Calendar/iCal
+    %p
+      Subscribe to this URL to show your shifts in your calendaring program:
+      %small
+        %pre
+          -url = scheduler_shift_assignments_url(format: 'ics', api_token: resource.calendar_api_token)
+          %a{href: url}=url
+    %h3 Email
+    %p
+      Send me an email reminder for my shifts
+      =editable_select resource, :email_advance_hours, time_periods_for_select
+      ==.
+    -if can_see_admin_notifications
+      %p
+        Send me an email reminder for
+        %strong all
+        shifts each day at
+        =editable_select resource, :email_all_shifts_at, hour_select_options(blank: true)
+        ==.
+    %p
+      %small
+        Email reminders will be sent to
+        =resource.person.email
+    %h3 Text message
+    %p
+      - phones = all_sms_phones
+      - if phones.blank?
+        You have no phone numbers set to receive SMS messages.
+        = link_to "Edit your contact settings here.", roster_person_path(resource.person)
+      - else
+        For each of my shifts, send me a text reminder
+        /%a#choose-phones{href: "#", :"data-type" => 'checklist', :"data-name" => 'shift_notification_phones', :"data-emptytext" => "No Phones Selected"}
+        =editable_select resource, :sms_advance_hours, time_periods_for_select
+        ==.
+        -if can_see_admin_notifications
+          %p
+            Send me an sms reminder for
+            %strong all
+            shifts each day at
+            =editable_select resource, :sms_all_shifts_at, hour_select_options(blank: true)
+            ==.
+        %p
+          Only send messages between
+          =editable_select resource, :sms_only_after, hour_select_options
+          and
+          =editable_select resource, :sms_only_before, hour_select_options(midnight: true)
+          ==.
+        %p
+          %small
+            Text messages will be sent to:
+            %ul
+              - resource.person.phone_order(sms_only: true).map{|ph| ph[:number]}.each do |ph|
+                %li=ph
+
+            = link_to "Change contact settings", roster_person_path(resource.person)
+
+
+= link_to 'Edit', edit_scheduler_notification_setting_path(@scheduler_notification_setting)
+\|
+= link_to 'Back', scheduler_root_path

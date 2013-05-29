@@ -1,0 +1,16 @@
+= form_for @roster_cell_carrier do |f|
+  - if @roster_cell_carrier.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@roster_cell_carrier.errors.count, "error")} prohibited this roster_cell_carrier from being saved:"
+      %ul
+        - @roster_cell_carrier.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :name
+    = f.text_field :name
+  .field
+    = f.label :sms_gateway
+    = f.text_field :sms_gateway
+  .actions
+    = f.submit 'Save'

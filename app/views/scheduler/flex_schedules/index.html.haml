@@ -1,0 +1,39 @@
+%h3 Flex Schedule Roster
+
+=form_tag scheduler_flex_schedules_path, method: :get do
+  =select_tag "county", options_from_collection_for_select(Roster::County.all, :id, :name, params[:county] || current_user.counties.first), multiple: false, id: 'choose-county'
+  %table
+    %tr
+      %th
+      - days_of_week.each do |d|
+        %th=d[0..2].titleize
+    - shift_times.each do |t|
+      %tr
+        %th=t.titleize
+        - days_of_week.each do |d|
+          - name = "#{d}_#{t}"
+          %td=check_box_tag "available[]", name, params[:available] && params[:available].include?(name)
+  =submit_tag 'Show', class: 'btn'
+
+%table.table.table-condensed
+  %thead
+    %tr
+      %th Person
+      %th Phone 1
+      %th Phone 2
+      - days_of_week.each do |d|
+        %th{colspan: 2}=d[0..2].titleize
+      %th
+  - collection.each do |sched|
+    %tr
+      %td= sched.person.full_name
+      - phones = sched.person.phone_order
+      %td
+        = phones[0] && phones[0][:number]
+      %td
+        = phones[1] && phones[1][:number]
+      - days_of_week.each do |d|
+        %td= sched.available(d, 'day') ? 'D' : ''
+        %td= sched.available(d, 'night') ? 'N' : ''
+      - if can? :update, sched
+        %td= link_to 'Edit', resource_path(sched)

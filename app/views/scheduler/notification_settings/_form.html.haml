@@ -1,0 +1,10 @@
+= form_for @scheduler_notification_setting do |f|
+  - if @scheduler_notification_setting.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@scheduler_notification_setting.errors.count, "error")} prohibited this scheduler_notification_setting from being saved:"
+      %ul
+        - @scheduler_notification_setting.errors.full_messages.each do |msg|
+          %li= msg
+
+  .actions
+    = f.submit 'Save'

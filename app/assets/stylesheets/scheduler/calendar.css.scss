@@ -1,0 +1,118 @@
+// Place all the styles related to the Scheduler::Calendar controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.calendar {
+  width: 100%;
+  td.day {
+    font-size: 7pt;
+    line-height: 1.2;
+    border: 1px solid black;
+    vertical-align: top;
+    height: 6em;
+    width: 14.2%;
+  }
+}
+
+  .highlight-open-shifts {
+    td.open {
+      background-color: red;
+    }
+  }
+  .highlight-my-shifts {
+    .my-shift td {
+      background-color: yellow;
+    }
+  }
+
+@media print {
+  input[type=checkbox] {
+    display: none;
+  }
+  .calendar-config, .open-shifts-container, .navbar {
+    display: none;
+  }
+  .span12 {
+    margin: 0;
+    width: 100%;
+  }
+  .container {
+    width: 100% !important;
+  }
+  .row {
+    margin: 0;
+  }
+  body {
+    width: 100%;
+    //padding-right: .5in;
+  }
+  table.calendar {
+    width: 10in;
+  }
+  .calendar-spreadsheet table {
+    width: 10in !important;
+  }
+}
+
+@mixin rotate($rot) {
+  -webkit-transform: rotate($rot);
+  -o-transform: rotate($rot);
+  -moz-transform: rotate($rot);
+  transform: rotate($rot);
+}
+
+.shifts {
+  width: 100%;
+
+  th.shift-header {
+    max-width: 1em;
+    @include rotate(90deg);
+    padding: 0;
+    font-weight: normal;
+  }
+  th.date-header {
+    max-width: 1em;
+    padding: 0;
+  }
+  tr.end-group {
+    border-bottom: 1px dashed black;
+  }
+}
+
+.shifts td {
+  font-size: 100%;
+  line-height: 1.2;
+
+  label {
+    font-size: inherit;
+    display: inline;
+    margin: 0;
+    line-height: inherit;
+  }
+}
+
+.calendar-spreadsheet {
+
+  .page {
+    page-break-inside: avoid;
+    page-break-after: always;
+
+    &:last-child {
+      page-break-after: avoid;
+    }
+  }
+
+  table {
+    width: 100%;
+    height: 100%;
+  }
+
+  td {
+    font-size: 8pt;
+    line-height: 1.2;
+    border: 1px solid black;
+    vertical-align: top;
+    //height: 2.4em;
+    padding: 2px;
+  }
+}

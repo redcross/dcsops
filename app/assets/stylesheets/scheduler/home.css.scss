@@ -1,0 +1,18 @@
+// Place all the styles related to the Scheduler::Home controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.scheduler.home.root {
+  .flex-small {
+    font-size: 80%;
+    th {
+      padding: 2px;
+    }
+    td {
+      text-align: center;
+    }
+    td.avail {
+      background-color: rgba(0, 255, 0, .1);
+    }
+  }
+}

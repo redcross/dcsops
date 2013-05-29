@@ -1,0 +1,20 @@
+%h1 Listing Assignments
+
+%table.table
+  %tr
+    %th Person
+    %th Shift
+    %th County
+    %th Date
+    %th Actions
+
+  - collection.each do |scheduler_shift_assignment|
+    %tr
+      %td= scheduler_shift_assignment.person.full_name
+      %td
+        = scheduler_shift_assignment.shift.shift_group.name
+        = scheduler_shift_assignment.shift.name
+      %td= scheduler_shift_assignment.shift.county.name
+      %td= scheduler_shift_assignment.date.to_s :dow_short
+      -if can? :swap, scheduler_shift_assignment
+        %td= link_to "Swap", swap_scheduler_shift_assignment_path(scheduler_shift_assignment), class: "btn btn-small"
