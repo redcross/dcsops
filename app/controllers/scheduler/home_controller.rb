@@ -8,12 +8,13 @@ class Scheduler::HomeController < Scheduler::BaseController
   helper_method :shifts_available_for_month
   def shifts_available_for_month(month, scope={:mine => current_user})
     groups = Scheduler::ShiftGroup.where(chapter_id: current_user.chapter_id)
-    shifts = groups.map{|group| group.shifts}.flatten.select{|shift|
+    @shifts ||= groups.map{|group| group.shifts.includes{positions}}.flatten.select{|shift|
       if scope[:mine]
         shift.can_be_taken_by? scope[:mine]
       end
     }
-    shifts.map{|shift| shift.count_shifts_available_for_month(month)}.sum
+
+    Scheduler::Shift.count_shifts_available_for_month(@shifts, month)
   end
 
   helper_method :upcoming_shifts

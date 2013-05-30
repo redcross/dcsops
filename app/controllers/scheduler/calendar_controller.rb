@@ -5,6 +5,9 @@ class Scheduler::CalendarController < Scheduler::BaseController
     @month = month_param
     @editable = can? :create, Scheduler::ShiftAssignment.new( person: person)
 
+    load_shifts(daily_groups.values.flatten, @month, @month.next_month)
+    load_my_shifts(daily_groups.keys, @month, @month.next_month)
+
     case params[:display]
     when 'spreadsheet'
       render action: 'spreadsheet'
@@ -20,8 +23,12 @@ class Scheduler::CalendarController < Scheduler::BaseController
     #@daily_groups = Scheduler::ShiftGroup.where(period: 'daily')
 
     if params[:date] and date = Date.strptime(params[:date], "%Y-%m-%d")
+      load_shifts(daily_groups.values.flatten, date, date)
+      load_my_shifts(daily_groups.keys, date, date)
       render partial: 'day', locals: {date: date, editable: @editable}
     elsif params[:month] and date = Date.strptime(params[:month], "%Y-%m")
+      load_shifts(daily_groups.values.flatten, date, date.next_month)
+      load_my_shifts(daily_groups.keys, date, date.next_month)
       render partial: 'month', locals: {month: date, editable: @editable}
     end
   end
@@ -29,24 +36,61 @@ class Scheduler::CalendarController < Scheduler::BaseController
   def open_shifts
     @month = month_param
     @daily_groups = Scheduler::ShiftGroup.where(period: 'daily')
-
-    
   end
 
   private
+
+  def load_shifts(shifts, date_start, date_end)
+    @all_shifts = Scheduler::ShiftAssignment.includes{person.counties}.includes{shift.county}.includes{shift.positions}.where{shift_id.in(shifts) & date.in(date_start..date_end)}.reduce({}) do |hash, assignment|
+      hash[assignment.shift_id] ||= {}
+      hash[assignment.shift_id][assignment.date] ||= []
+      hash[assignment.shift_id][assignment.date] << assignment
+      hash
+    end
+  end
+
+  def load_my_shifts(group_ids, date_start, date_end)
+    pid = person.id
+    @my_shifts = Scheduler::ShiftAssignment.includes{shift}.where{(shift.shift_group_id.in(group_ids)) & (person_id == pid) & date.in(date_start..date_end)}.reduce({}) do |hash, assignment|
+      hash[assignment.shift.shift_group_id] ||= {}
+      hash[assignment.shift.shift_group_id][assignment.date] = assignment
+      hash
+    end
+  end
+
 
   def authorize_resource
     authorize! :read, person
   end
 
-  helper_method :person, :show_counties, :show_shifts, :daily_groups, :can_take_shift?, :show_county_name, :ajax_params, :spreadsheet_groups, :spreadsheet_county
+  helper_method :person, :assignments_for_shift_on_day, :show_counties, :show_shifts, :daily_groups, :can_take_shift?, :show_county_name, :ajax_params, :spreadsheet_groups, :spreadsheet_county, :my_shift_for_group_on_day
   def person
-    @_person ||= if params[:person_id].nil?
+    return @_person if @_person
+
+    @_person = if params[:person_id].nil?
       current_user
     elsif params[:person_id].blank?
       nil
     else
-      Roster::Person.find params[:person_id]
+      Roster::Person.includes(:counties).where(id: params[:person_id]).first!
+    end
+
+    return @_person
+  end
+
+  def assignments_for_shift_on_day(shift, date)
+    if @all_shifts
+      @all_shifts[shift.id].try(:[], date) || []
+    else
+      Scheduler::ShiftAssignment.where(shift_id: shift, date: date).includes(:person)
+    end
+  end
+
+  def my_shift_for_group_on_day(group_id, date)
+    if @my_shifts
+      @my_shifts[group_id].try(:[], date)
+    else
+      Scheduler::ShiftAssignment.includes(:shift => :shift_group).where(:scheduler_shifts => {shift_group_id: group_id}, person_id: person).where(date: date).first
     end
   end
 
@@ -59,15 +103,15 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def daily_groups
-    @_daily_groups ||= filter_shifts Scheduler::ShiftGroup.where(period: 'daily')
+    @_daily_groups ||= filter_shifts(Scheduler::ShiftGroup.where(chapter_id: current_user.chapter, period: 'daily').to_a)
   end
 
   def spreadsheet_county
-    Roster::County.find show_counties.first
+    @_spreadsheet_county ||= Roster::County.find show_counties.first
   end
 
   def spreadsheet_groups
-    Scheduler::ShiftGroup.where(period: 'daily').reduce({}) do |hash, group|
+    @_spreadsheet_groups ||= Scheduler::ShiftGroup.where(period: 'daily').reduce({}) do |hash, group|
       hash[group] = group.shifts.where(county_id: spreadsheet_county).where('spreadsheet_ordinal is not null').order(:spreadsheet_ordinal)
       hash
     end
@@ -78,11 +122,12 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def can_take_shift?(shift)
-    if person and person.counties.include? shift.county
+    @_person_county_ids ||= person.county_ids.to_a
+    @_take_shift_cache ||= {}
+    @_take_shift_cache[shift.id] ||= if person and @_person_county_ids.include? shift.county_id
       pos = shift.positions & person.positions
-      return !pos.blank?
+      !pos.blank?
     end
-    false
   end
 
   def ajax_params

@@ -11,5 +11,5 @@
   %b Date:
   = resource.date.to_s :dow_long
 
-= link_to 'Swap', swap_resource_path, class: 'btn'
+= link_to 'Swap', resource_path(action: :swap), class: 'btn'
 = link_to 'Back', scheduler_root_path, class: 'btn'

@@ -1,9 +1,10 @@
 - daily_groups.each do |group, shifts|
   %h4=group.name
+  - shifts_available = Scheduler::Shift.shifts_available_by_day(shifts, month)
   - shifts.each do |shift|
     %div
       / Get a hash of date->number of registrations in one query
-      - counts = shift.shift_available_by_day(month)
+      - counts = shifts_available[shift]
       %strong
         -if show_county_name
           =shift.county.name

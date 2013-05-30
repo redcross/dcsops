@@ -3,7 +3,7 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
   respond_to :html, :json
   load_and_authorize_resource
 
-  has_scope :for_county, as: :county
+  has_scope :for_county, as: :county, default: Proc.new {|controller| controller.current_user.counties.first.id}
   has_scope :available, type: :array do |controller, scope, val|
     if val
       val.each do |period|

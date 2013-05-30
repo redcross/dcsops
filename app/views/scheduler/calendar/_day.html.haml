@@ -4,7 +4,7 @@
   - daily_groups.each_with_index do |(group, shifts), group_idx|
     - my_shift = nil
     -if person
-      - my_shift = Scheduler::ShiftAssignment.includes(:shift => :shift_group).where(:scheduler_shifts => {shift_group_id: group.id}, person_id: person).where(date: date).first
+      - my_shift = my_shift_for_group_on_day(group.id, date)
     - group_class = my_shift ? 'my-shift' : ''
     - shifts = shifts.select{|sh|sh.active_on_day?(date)}
     -shifts.each_with_index do |shift, idx| 
@@ -25,7 +25,7 @@
             =shift.county.abbrev
           ="#{shift.name}:"
           /-signed_up = Scheduler::ShiftAssignment.where(person: @person, shift: shift, date: date).first
-          -if editable and person and (my_shift.nil? or my_shift.shift == shift) and (can_take_shift?(shift) and shift.can_sign_up_on_day(date) or my_shift.try(:shift) == shift) and date >= Date.today
+          -if editable and person and (my_shift.nil? or my_shift.shift == shift) and (can_take_shift?(shift) and shift.can_sign_up_on_day(date, assignments.count) or my_shift.try(:shift) == shift) and date >= Date.today
             - cbid = "#{date.to_s}-#{shift.id}"
             =check_box_tag shift.id.to_s, date.to_s, my_shift.try(:shift) == shift, class: 'shift-checkbox', :"data-assignment" => my_shift.try(:id), id: cbid
 

@@ -3,15 +3,17 @@ class Scheduler::Ability
 
   def initialize(person)
 
+    county_ids = person.county_ids.to_a
+
     can :read, Roster::Person, id: person.id
-    can :read, Scheduler::ShiftAssignment, {counties: { id: person.county_ids}}    
+    can :read, Scheduler::ShiftAssignment, {counties: { id: county_ids}}    
     can [:manage], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], {id: person.id}
     can [:manage], Scheduler::ShiftAssignment, {person_id: person.id}
 
     if true # is dat county admin
-        can(:read, Roster::Person ){|subject| (person.county_ids & subject.county_ids).present? } 
+        can(:read, Roster::Person ){|subject| (county_ids & subject.county_ids).present? } 
         can :manage, Scheduler::ShiftAssignment
-        can :manage, Scheduler::DispatchConfig, id: person.county_ids
+        can :manage, Scheduler::DispatchConfig, id: county_ids
         can :manage, [Scheduler::NotificationSetting, Scheduler::FlexSchedule]
     end
 

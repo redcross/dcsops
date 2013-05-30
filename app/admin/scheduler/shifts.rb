@@ -1,6 +1,11 @@
 ActiveAdmin.register Scheduler::Shift, namespace: 'scheduler_admin', as: 'Shift' do
+
+  scope :all, default: true do |shifts|
+    shifts.includes([:shift_group, :county]).order(:county_id, :shift_group_id, :ordinal)
+  end
+
   index do
-    column :shift_group
+    column :shift_group, sortable: "scheduler_shift_groups.start_offset"
     column :county
     column :name
     column :abbrev

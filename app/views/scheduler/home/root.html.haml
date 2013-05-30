@@ -53,7 +53,6 @@
             -avail = sched.send("available_#{dow}_#{time}")
             %td{class: avail && "avail"}
               =avail ? 'Y' : 'N'
-              /=editable_select resource, "available_#{dow}_#{time}", [{value: 0, text: "No"},{value: 1, text: "Yes"}], is_boolean: true
   .span4
     %h5 
       %i.icon-calendar
