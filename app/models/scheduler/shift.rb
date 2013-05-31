@@ -31,7 +31,7 @@ class Scheduler::Shift < ActiveRecord::Base
   end
 
   def can_be_taken_by?(person)
-    if person.counties.include? county
+    if person.counties.to_a.include? county
       pos = positions & person.positions
       !pos.blank?
     else
@@ -52,7 +52,7 @@ class Scheduler::Shift < ActiveRecord::Base
       hash
     end
 
-    groups_by_id = Scheduler::ShiftGroup.where{id.in(shifts_by_id.keys)}.reduce({}){|hash, group| hash[group.id] = group; hash }
+    groups_by_id = Scheduler::ShiftGroup.where{id.in(shifts_by_id.values.map(&:shift_group_id))}.reduce({}){|hash, group| hash[group.id] = group; hash }
     groups_by_shift_id = shifts_by_id.values.reduce({}) {|hash, shift| hash[shift.id] = groups_by_id[shift.shift_group_id]; hash}
 
     starter_hash = shifts_by_id.values.reduce({}) do |hash, shift|

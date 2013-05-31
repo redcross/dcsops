@@ -6,9 +6,8 @@ class Scheduler::HomeController < Scheduler::BaseController
 
   private
   helper_method :shifts_available_for_month
-  def shifts_available_for_month(month, scope={:mine => current_user})
-    groups = Scheduler::ShiftGroup.where(chapter_id: current_user.chapter_id)
-    @shifts ||= groups.map{|group| group.shifts.includes{positions}}.flatten.select{|shift|
+  def shifts_available_for_month(month, scope={:mine => current_person})
+    @shifts = Scheduler::Shift.includes{[positions, shift_group, county]}.where{shift_group.chapter_id == my{current_person.chapter_id}}.select{|shift|
       if scope[:mine]
         shift.can_be_taken_by? scope[:mine]
       end
