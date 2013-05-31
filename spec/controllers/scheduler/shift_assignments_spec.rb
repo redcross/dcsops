@@ -55,6 +55,10 @@ describe Scheduler::ShiftAssignmentsController do
       ActionMailer::Base.deliveries.clear
     end
 
+    it "should show the assignment page" do
+      get :show, id: @assignment.id
+    end
+
     it "should show the swap page" do
       get :swap, id: @assignment.id
     end

@@ -11,21 +11,43 @@
       %th Saturday
   %tbody
     - date = month
+    - if date.wday == 0
+      %tr
+        %td.month{colspan: 7}
+          =render partial: 'monthly', locals: {date: date, editable: editable}
     - while date < month.next_month do
       %tr
         /%td BOW
         - while date < month.next_month do
           -if date == month
-            - date.wday.times do
-              %td
-          %td.day{:"data-date" => date.to_s}
+            - if date.wday > 0
+              %td.month{colspan: date.wday}
+                =render partial: 'monthly', locals: {date: date, editable: editable}
+          %td.day{:"data-day" => date.to_s}
             =render partial: 'day', locals: {date: date, editable: editable}
           - date = date.tomorrow
           -if date.wday == 0
             - break
+      - weekly_groups.each do |group, shifts|
+        / If we get here, we are at the sunday of the week following the one we want to display,
+        / or the month has ended.
+        -if date == month.next_month
+          - wdate = date.at_beginning_of_week
+          - if wdate == month.next_month
+            - next
+        -else 
+          - wdate = date.advance( days: -6)
+        -if wdate < month
+          - wdate = month
+        - shifts.each do |shift|
+          %tbody{:"data-week" => wdate.at_beginning_of_week.to_s}
+            =render partial: 'week', locals: {date: wdate, editable: editable}
+
+              
+
 #new-title{style: 'display: none'}
-  /-past = month.last_month; future = month.next_month
-  /=link_to '<', scheduler_calendar_path(past.year, past.strftime("%B").downcase)
+  -past = month.last_month; future = month.next_month
+  =link_to '<', scheduler_calendar_path(past.year, past.strftime("%B").downcase)
   =month.strftime "%B %Y"
   -if show_shifts == :county
     ==-
@@ -34,6 +56,6 @@
     ==-
     = person.first_name
     = person.last_name
-  /=link_to '>', scheduler_calendar_path(future.year, future.strftime("%B").downcase)
+  =link_to '>', scheduler_calendar_path(future.year, future.strftime("%B").downcase)
 :javascript
   $('#calendar-title').html($('#new-title').html())

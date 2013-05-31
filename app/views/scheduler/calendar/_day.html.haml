@@ -18,21 +18,6 @@
             %th
         -elsif idx==1
           %th{class: [group_class, 'shift-header'], rowspan: shifts.count-1}=group.name
-        - style=""; if assignments.blank? and date >= Date.today; style="open"; end
+        - style=""; if assignments.blank? and date >= Date.current; style="open"; end
         %td{class: style}
-          /=shift.county.abbrev
-          -if show_county_name
-            =shift.county.abbrev
-          ="#{shift.name}:"
-          /-signed_up = Scheduler::ShiftAssignment.where(person: @person, shift: shift, date: date).first
-          -if editable and person and (my_shift.nil? or my_shift.shift == shift) and (can_take_shift?(shift) and shift.can_sign_up_on_day(date, assignments.count) or my_shift.try(:shift) == shift) and date >= Date.today
-            - cbid = "#{date.to_s}-#{shift.id}"
-            =check_box_tag shift.id.to_s, date.to_s, my_shift.try(:shift) == shift, class: 'shift-checkbox', :"data-assignment" => my_shift.try(:id), id: cbid
-
-          -if assignments.blank?
-            %label{for: cbid} OPEN
-          -elsif assignments.count == 1
-            -ass = assignments.first
-            %label{for: cbid}= "#{ass.person.first_initial} #{ass.person.last_name}"
-          -else
-            ="#{assignments.count} registered"
+          = render_shift_assignment_info(editable && (date >= Date.current), person, shift, my_shift, date, assignments, 'day')

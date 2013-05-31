@@ -4,23 +4,34 @@
 
 .calendar {
   width: 100%;
-  td.day {
+  td.day, td.week, td.month[colspan="1"] {
     font-size: 7pt;
     line-height: 1.2;
     border: 1px solid black;
     vertical-align: top;
+  }
+  td.day {
     height: 6em;
     width: 14.2%;
+  }
+  td.week {
+    
+  }
+  td label {
+    font-size: inherit;
+    display: inline;
+    margin: 0;
+    line-height: inherit;
   }
 }
 
   .highlight-open-shifts {
-    td.open {
+    td.open, div.open {
       background-color: red;
     }
   }
   .highlight-my-shifts {
-    .my-shift td {
+    .my-shift td, div.my-shift {
       background-color: yellow;
     }
   }
@@ -83,12 +94,7 @@
   font-size: 100%;
   line-height: 1.2;
 
-  label {
-    font-size: inherit;
-    display: inline;
-    margin: 0;
-    line-height: inherit;
-  }
+
 }
 
 .calendar-spreadsheet {

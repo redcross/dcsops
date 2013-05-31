@@ -1,7 +1,7 @@
 class Roster::Person < ActiveRecord::Base
-  belongs_to :chapter
-  has_and_belongs_to_many :counties
-  has_and_belongs_to_many :positions
+  belongs_to :chapter, class_name: 'Roster::Chapter'
+  has_and_belongs_to_many :counties, class_name: 'Roster::County'
+  has_and_belongs_to_many :positions, class_name: 'Roster::Position'
 
   belongs_to :home_phone_carrier, class_name: 'Roster::CellCarrier'
   belongs_to :cell_phone_carrier, class_name: 'Roster::CellCarrier'

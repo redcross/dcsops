@@ -5,8 +5,8 @@ class Scheduler::CalendarController < Scheduler::BaseController
     @month = month_param
     @editable = can? :create, Scheduler::ShiftAssignment.new( person: person)
 
-    load_shifts(daily_groups.values.flatten, @month, @month.next_month)
-    load_my_shifts(daily_groups.keys, @month, @month.next_month)
+    load_shifts(@month, @month.next_month)
+    load_my_shifts(@month, @month.next_month)
 
     case params[:display]
     when 'spreadsheet'
@@ -23,12 +23,16 @@ class Scheduler::CalendarController < Scheduler::BaseController
     #@daily_groups = Scheduler::ShiftGroup.where(period: 'daily')
 
     if params[:date] and date = Date.strptime(params[:date], "%Y-%m-%d")
-      load_shifts(daily_groups.values.flatten, date, date)
-      load_my_shifts(daily_groups.keys, date, date)
-      render partial: 'day', locals: {date: date, editable: @editable}
+      load_shifts(date, date)
+      load_my_shifts(date, date)
+
+      partial_name = params[:period] || 'day'
+      raise "Invalid period" unless %w(day week monthly).include? partial_name
+
+      render partial: partial_name, locals: {date: date, editable: @editable}
     elsif params[:month] and date = Date.strptime(params[:month], "%Y-%m")
-      load_shifts(daily_groups.values.flatten, date, date.next_month)
-      load_my_shifts(daily_groups.keys, date, date.next_month)
+      load_shifts(date, date.next_month)
+      load_my_shifts(date, date.next_month)
       render partial: 'month', locals: {month: date, editable: @editable}
     end
   end
@@ -40,8 +44,9 @@ class Scheduler::CalendarController < Scheduler::BaseController
 
   private
 
-  def load_shifts(shifts, date_start, date_end)
-    @all_shifts = Scheduler::ShiftAssignment.includes{person.counties}.includes{shift.county}.includes{shift.positions}.where{shift_id.in(shifts) & date.in(date_start..date_end)}.reduce({}) do |hash, assignment|
+  def load_shifts(date_start, date_end)
+    shifts = daily_groups.values.flatten + weekly_groups.values.flatten + monthly_groups.values.flatten
+    @all_shifts = Scheduler::ShiftAssignment.includes{person.counties}.includes{shift.county}.includes{shift.positions}.where{shift_id.in(shifts) & date.in(date_start.at_beginning_of_week.advance(weeks: -1)..date_end)}.reduce({}) do |hash, assignment|
       hash[assignment.shift_id] ||= {}
       hash[assignment.shift_id][assignment.date] ||= []
       hash[assignment.shift_id][assignment.date] << assignment
@@ -49,9 +54,10 @@ class Scheduler::CalendarController < Scheduler::BaseController
     end
   end
 
-  def load_my_shifts(group_ids, date_start, date_end)
+  def load_my_shifts(date_start, date_end)
+    group_ids = daily_groups.keys + weekly_groups.keys + monthly_groups.keys
     pid = person.id
-    @my_shifts = Scheduler::ShiftAssignment.includes{shift}.where{(shift.shift_group_id.in(group_ids)) & (person_id == pid) & date.in(date_start..date_end)}.reduce({}) do |hash, assignment|
+    @my_shifts = Scheduler::ShiftAssignment.includes{shift}.where{(shift.shift_group_id.in(group_ids)) & (person_id == pid) & date.in(date_start.at_beginning_of_week.advance(weeks: -1)..date_end)}.reduce({}) do |hash, assignment|
       hash[assignment.shift.shift_group_id] ||= {}
       hash[assignment.shift.shift_group_id][assignment.date] = assignment
       hash
@@ -63,7 +69,8 @@ class Scheduler::CalendarController < Scheduler::BaseController
     authorize! :read, person
   end
 
-  helper_method :person, :assignments_for_shift_on_day, :show_counties, :show_shifts, :daily_groups, :can_take_shift?, :show_county_name, :ajax_params, :spreadsheet_groups, :spreadsheet_county, :my_shift_for_group_on_day
+  helper_method :person, :assignments_for_shift_on_day, :show_counties, :show_shifts, :daily_groups, :weekly_groups, :monthly_groups, :all_groups,
+        :can_take_shift?, :show_county_name, :ajax_params, :spreadsheet_groups, :spreadsheet_county, :my_shift_for_group_on_day
   def person
     return @_person if @_person
 
@@ -102,8 +109,26 @@ class Scheduler::CalendarController < Scheduler::BaseController
     params[:show_shifts] && params[:show_shifts].to_sym || :mine
   end
 
+  def shifts_by_period(period)
+    @_unfiltered_shifts ||= Scheduler::ShiftGroup.includes{[shifts.positions, shifts.county]}.where(chapter_id: current_user.chapter_id).order(:start_offset).to_a
+
+    @_unfiltered_shifts.select{|sh| sh.period == period}
+  end
+
   def daily_groups
-    @_daily_groups ||= filter_shifts(Scheduler::ShiftGroup.where(chapter_id: current_user.chapter, period: 'daily').to_a)
+    @_daily_groups ||= filter_shifts(shifts_by_period 'daily')
+  end
+
+  def weekly_groups
+    @_weekly_groups ||= filter_shifts(shifts_by_period 'weekly')
+  end
+
+  def monthly_groups
+    @_monthly_groups ||= filter_shifts(shifts_by_period 'monthly')
+  end
+
+  def all_groups
+    daily_groups.merge(weekly_groups).merge(monthly_groups)
   end
 
   def spreadsheet_county

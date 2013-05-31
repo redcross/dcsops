@@ -11,7 +11,7 @@
     .span3
       %h5 Select Highlighting
       .btn-group.btn-group-vertical.span2#highlighting-group
-        %button.btn.btn-block{:"data-style" => "highlight-my-shifts"} My Shifts
+        %button.btn.btn-block.active{:"data-style" => "highlight-my-shifts"} My Shifts
         %button.btn.btn-block{:"data-style" => "highlight-open-shifts"} Open Shifts
     .span2
       %h5 Show Shifts For
@@ -22,7 +22,7 @@
         =select_tag "counties[]", options_from_collection_for_select(Roster::County.all, :id, :name, show_counties.first), multiple: true, id: 'choose-county'
   .row
     %hr
-.calendar-container
+.calendar-container.highlight-my-shifts
   =render partial: 'month', locals: {month: @month, editable: @editable}
 
 .open-shifts-container

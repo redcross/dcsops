@@ -2,7 +2,8 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
   belongs_to :chapter, class_name: 'Roster::Chapter'
   has_many :shifts, -> {order(:ordinal)}
 
-  validates_inclusion_of :period, in: %w(daily weekly)
+  validates_inclusion_of :period, in: %w(daily weekly monthly)
+  validates :start_offset, :end_offset, presence: true, numericality: true
 
   attr_accessor :start_date
 
@@ -46,20 +47,31 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
   def self.current_groups_for_chapter(chapter, current_time=DateTime.now)
     now = current_time.in_time_zone
 
-    day_offset = now.seconds_since_midnight
-    day_plus_offset = day_offset + 1.day.to_i
 
-    week_offset = (now.wday * 1.day.to_i) + day_offset
-    week_plus_offset = week_offset + 7.days.to_i
+
+
 
     self.where(chapter_id: chapter).select{|group|
       if group.period == 'daily'
+        day_offset = now.seconds_since_midnight
+        day_plus_offset = day_offset + 1.day.to_i
+
         check_offset(group.start_offset, group.end_offset, day_offset, day_plus_offset) do |is_plus|
           group.start_date = is_plus ? now.to_date.yesterday : now.to_date
         end
       elsif group.period == 'weekly'
+        week_offset = (now.wday * 1.day.to_i) + now.seconds_since_midnight
+        week_plus_offset = week_offset + 7.days.to_i
+
         check_offset(group.start_offset, group.end_offset, week_offset, week_plus_offset) do |is_plus|
           group.start_date = is_plus ? now.to_date.at_beginning_of_week.advance(weeks: -1) : now.to_date.at_beginning_of_week
+        end
+      elsif group.period == 'monthly'
+        month_offset = now.day
+        month_plus_offset = now.day + now.months_since(1).at_end_of_month.day
+
+        check_offset(group.start_offset, group.end_offset, month_offset, month_plus_offset) do |is_plus|
+          group.start_date = is_plus ? now.months_since(1).at_beginning_of_month : now.at_beginning_of_month
         end
       end
     }

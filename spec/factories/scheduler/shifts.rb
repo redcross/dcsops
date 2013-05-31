@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :shift, :class => 'Scheduler::Shift' do
-    name 'Some Shift'
+    name {"Some Shift #{Faker::Name.first_name}"}
     association :shift_group
     max_signups 1
     abbrev 'SH'

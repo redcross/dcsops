@@ -1,0 +1,45 @@
+- weekly_groups.each do |group, shifts|
+  %tr
+    - wday_offset = group.start_offset / 1.day + 1
+    - wday_length = (group.end_offset / 1.day).to_i - wday_offset 
+    - wday_length = [(date.at_end_of_month - (date-1))+1-wday_offset, wday_length].min
+
+    - if date == date.at_beginning_of_month
+      - skip = date.wday
+      - if wday_offset >= skip
+        - wday_offset -= skip
+      - else
+        - skip -= wday_offset; wday_offset = 0
+        - wday_length -= skip
+      %td{colspan: date.wday}
+      - date = date.at_beginning_of_week
+
+
+    - my_shift = my_shift_for_group_on_day(group.id, date)
+    - week_group_key = "#{date.to_s}-#{group.id}"
+    - if wday_offset > 0
+      - this_date = date.advance(weeks: -1)
+      %td.week{colspan: wday_offset, :"data-prev-week" => "#{this_date.to_s}-#{group.id}"}
+        - this_my_shift = my_shift_for_group_on_day(group.id, this_date)
+        %div{class: this_my_shift && 'my-shift'}
+          - shifts.select{|sh|sh.active_on_day?(this_date)}.each do |shift|
+            - this_assignments = assignments_for_shift_on_day(shift, this_date)
+            %div{class: this_assignments.blank? && 'open'}
+              = render_shift_assignment_info(false, person, shift, nil, this_date, this_assignments, 'week')
+    
+
+
+    %td.week{colspan: wday_length, :"data-this-week" => week_group_key}
+      %div{class: my_shift && 'my-shift'}
+        - shifts = shifts.select{|sh|sh.active_on_day?(date)}
+        - shifts.each do |shift|
+          - assignments=assignments_for_shift_on_day(shift, date).to_a
+          %div{class: assignments.blank? && 'open'}
+            = render_shift_assignment_info(editable && date >= Date.current.at_beginning_of_week, person, shift, my_shift, date, assignments, 'week')
+    -if request.xhr?
+      :javascript
+        setTimeout(function() {
+          var el = $('.week[data-prev-week="#{week_group_key}"]');
+          el.html($('.week[data-this-week="#{week_group_key}"]').html());
+          el.find('input').remove();
+        }, 100)

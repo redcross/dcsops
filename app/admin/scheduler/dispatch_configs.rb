@@ -8,6 +8,7 @@ ActiveAdmin.register Scheduler::DispatchConfig, namespace: 'scheduler_admin', as
     column :backup_second
     column :backup_third
     column :backup_fourth
+    default_actions
   end
 
   controller do

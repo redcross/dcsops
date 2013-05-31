@@ -1,6 +1,7 @@
-- daily_groups.each do |group, shifts|
+- all_shifts = all_groups.values.flatten
+- shifts_available = Scheduler::Shift.shifts_available_by_day(all_shifts, month)
+- all_groups.each do |group, shifts|
   %h4=group.name
-  - shifts_available = Scheduler::Shift.shifts_available_by_day(shifts, month)
   - shifts.each do |shift|
     %div
       / Get a hash of date->number of registrations in one query

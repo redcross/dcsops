@@ -51,6 +51,22 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     end
   end
 
+  class ShiftDateIsValid < ActiveModel::Validator
+    def validate(record)
+      return unless record.shift and record.shift.shift_group
+
+      valid = case record.shift.shift_group.period
+      when 'daily' then true
+      when 'weekly' then record.date == record.date.at_beginning_of_week
+      when 'monthly' then record.date.day == 1
+      else true
+      end
+      if !valid 
+        record.errors[:date] = "That is not a valid date for a #{record.shift.period} shift"
+      end
+    end
+  end
+
   before_destroy :check_frozen_shift
 
   belongs_to :person, class_name: 'Roster::Person'
@@ -58,7 +74,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   belongs_to :notification_setting, foreign_key: 'person_id'
 
   validates :person, :shift, :date, presence: true
-  validates_with PersonAllowedToTakeShift, ShiftIsAvailable, PersonIsAvailable
+  validates_with PersonAllowedToTakeShift, ShiftIsAvailable, PersonIsAvailable, ShiftDateIsValid
 
   attr_accessor :swapping_from_id, :is_swapping_to
 

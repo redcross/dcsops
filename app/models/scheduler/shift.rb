@@ -22,6 +22,10 @@ class Scheduler::Shift < ActiveRecord::Base
     return assignments < max_signups
   end
 
+  def can_remove_on_day(date)
+    signups_frozen_before.nil? || (date >= signups_frozen_before)
+  end
+
   def active_on_day?(date)
     return (shift_begins.nil? || shift_begins <= date) && (shift_ends.nil? || shift_ends > date)
   end
@@ -36,8 +40,11 @@ class Scheduler::Shift < ActiveRecord::Base
   end
 
   def self.shifts_taken_by_day(shifts, month)
-    include_zeroes = true
-    days = include_zeroes ? (month..(month.end_of_month)).inject({}){|hash, date| hash[date]=0; hash} : {}
+    days = (month..(month.end_of_month)).inject({}){|hash, date| hash[date]=0; hash}
+    weeks = (month..(month.end_of_month)).select{|d| d.at_beginning_of_week == d }.inject({}){|hash, date| hash[date]=0; hash}
+    months = {month => 0}
+
+    empties = {'daily' => days, 'weekly' => weeks, 'monthly' => months}
 
     # This gets us the count signed up on each day
     shifts_by_id = shifts.reduce({}) do |hash, shift|
@@ -45,17 +52,23 @@ class Scheduler::Shift < ActiveRecord::Base
       hash
     end
 
+    groups_by_id = Scheduler::ShiftGroup.where{id.in(shifts_by_id.keys)}.reduce({}){|hash, group| hash[group.id] = group; hash }
+    groups_by_shift_id = shifts_by_id.values.reduce({}) {|hash, shift| hash[shift.id] = groups_by_id[shift.shift_group_id]; hash}
+
+    starter_hash = shifts_by_id.values.reduce({}) do |hash, shift|
+      hash[shift] = empties[groups_by_shift_id[shift.id].period].dup
+      hash
+    end
+
     arr = Scheduler::ShiftAssignment.where{shift_id.in(shifts.to_a) & date.in(month..(month.at_end_of_month))}
-                              .select{[count(id).as(:count), shift_id, date]}.group{shift_id}.group{date}.reduce({}) do |hash, ass|
+                              .select{[count(id).as(:count), shift_id, date]}.group{shift_id}.group{date}.reduce(starter_hash) do |hash, ass|
       shift = shifts_by_id[ass.shift_id]
       if shift.nil?
         raise "Got unknown shift back from query #{ass.shift_id} #{shifts_by_id.inspect}"
       end
 
-      hash[shift] ||= days.dup
-
       if hash[shift][ass.date].nil?
-        raise "Got unknown date back from query #{ass.date} #{hash.inspect}"
+        raise "Got unknown date back from query #{ass.date} #{shift.shift_group.period} #{hash.inspect}"
       end
 
       hash[shift][ass.date] += 1

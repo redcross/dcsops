@@ -46,6 +46,13 @@ ActiveAdmin.setup do |config|
   #
   # This will ONLY change the title for the admin section. Other
   # namespaces will continue to use the main "site_title" configuration.
+  config.namespace 'scheduler_admin' do |admin|
+    admin.authorization_adapter = ActiveAdmin::CanCanAdapter
+    admin.cancan_ability_class = "Scheduler::Ability"
+  end
+
+  #config.authorization_adapter = ActiveAdmin::CanCanAdapter
+  #config.cancan_ability_class = "Scheduler::Ability"
 
   # == User Authentication
   #

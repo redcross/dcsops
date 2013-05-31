@@ -11,6 +11,7 @@ class window.CalendarController
     @avail_url = avail_url
     $(document).on 'click', 'input.shift-checkbox', (evt) =>
       date = $(evt.target).val()
+      period = $(evt.target).data('period')
       shift = $(evt.target).attr('name')
       register = $(evt.target).is(':checked')
       assignment = $(evt.target).data('assignment')
@@ -25,7 +26,7 @@ class window.CalendarController
         contentType: 'application/json'
         type: if register then 'POST' else 'DELETE'
         complete: (xhr, status) =>
-          this.reloadDate(date)
+          this.reloadDate(date, period)
 
     $('#select-person').typeahead
       source: (query, process) =>
@@ -92,11 +93,17 @@ class window.CalendarController
       success: (data) =>
         $('.calendar-container').html(data)
 
-  reloadDate: (date) ->
+  reloadDate: (date, period) ->
     this.reloadShifts()
     $.ajax
       url: '/scheduler/calendar/' + date
       type: 'GET'
-      data: this.renderArgs()
+      data: $.extend(this.renderArgs(), {period: period})
       success: (data) =>
-        $('.day[data-date=' + date + ']').html(data)
+        switch period
+          when 'week'
+            $('tbody[data-week=' + date + ']').html(data)
+          when 'monthly'
+            $('.month').html(data)
+          else 
+            $('.day[data-day=' + date + ']').html(data)

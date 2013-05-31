@@ -17,4 +17,4 @@
 
 .DS_Store
 .idea
-
+*.sublime-workspace
