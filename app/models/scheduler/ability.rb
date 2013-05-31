@@ -11,7 +11,7 @@ class Scheduler::Ability
     can [:manage], Scheduler::ShiftAssignment, {person_id: person.id}
 
     if true # is dat county admin
-        can(:read, Roster::Person){|subject| subject == person || (county_ids & subject.county_ids).present? } 
+        #can(:read, Roster::Person){|subject| subject == person || (county_ids & subject.county_ids).present? } 
         can :manage, Scheduler::ShiftAssignment
         can :manage, Scheduler::DispatchConfig, id: county_ids
         can :manage, [Scheduler::NotificationSetting, Scheduler::FlexSchedule]
@@ -19,6 +19,7 @@ class Scheduler::Ability
 
     if true # is site manager
         can :manage, Scheduler::DispatchConfig
+        can :manage, Roster::Person
         can :manage, Scheduler::Shift
         can :manage, Scheduler::ShiftGroup
     end

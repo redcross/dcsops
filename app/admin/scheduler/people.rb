@@ -46,6 +46,12 @@ ActiveAdmin.register Roster::Person, namespace: 'scheduler_admin', as: 'Person' 
     scope.uniq
   end
 
+  member_action :possess, action: :get do
+    p = resource
+    Roster::Session.create! p
+    redirect_to resource_path
+  end
+
 
   filter :first_name
   filter :last_name
