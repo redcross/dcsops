@@ -1,6 +1,6 @@
 .row
   .span12
-    %h1 Notification Settings
+    %h1 Reminder Settings
 
 .row
   .span10.offset1
@@ -10,14 +10,14 @@
       send calendar invites when I sign up for a shift.
     %p
       =editable_select resource, :email_swap_requested, [{value: 0, text: "Do not"},{value: 1, text: "Do"}], is_boolean: true
-      send me a notification when a shift that I can take is available for swap.
+      send me a reminder when a shift that I can take is available for swap.
     -if can_see_admin_notifications
       %p
         =editable_select resource, :email_calendar_signups, [{value: 0, text: "Do not"},{value: 1, text: "Do"}], is_boolean: true
-        send me notifications when people sign up for shifts in my county.
+        send me reminders when people sign up for shifts in my county.
       %p
         =editable_select resource, :email_all_swaps, [{value: 0, text: "Do not"},{value: 1, text: "Do"}], is_boolean: true
-        send me notifications for all shift swaps.
+        send me reminders for all shift swaps.
     %p
       %small
         Email invites will be sent to
@@ -53,7 +53,6 @@
         = link_to "Edit your contact settings here.", roster_person_path(resource.person)
       - else
         For each of my shifts, send me a text reminder
-        /%a#choose-phones{href: "#", :"data-type" => 'checklist', :"data-name" => 'shift_notification_phones', :"data-emptytext" => "No Phones Selected"}
         =editable_select resource, :sms_advance_hours, time_periods_for_select
         ==.
         -if can_see_admin_notifications
@@ -78,7 +77,4 @@
 
             = link_to "Change contact settings", roster_person_path(resource.person)
 
-
-= link_to 'Edit', edit_scheduler_notification_setting_path(@scheduler_notification_setting)
-\|
 = link_to 'Back', scheduler_root_path
