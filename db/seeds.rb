@@ -8,7 +8,7 @@
 
 Roster::CellCarrier.create name: 'Verizon', sms_gateway: '@vtext.com'
 
-arcba = Roster::Chapter.create name:'American Red Cross Bay Area', short_name:'ARCBA', code: '05503'
+arcba = Roster::Chapter.create name:'American Red Cross Bay Area', short_name:'ARCBA', code: '05503', time_zone_raw: 'America/Los_Angeles'
 
 all = arcba.counties.create name: 'Chapter', abbrev: 'CH'
 sf = arcba.counties.create name: 'San Francisco', vc_regex_raw: 'San Francisco', abbrev: 'SF'

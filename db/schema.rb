@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20130524175030) do
     t.string   "name"
     t.string   "code"
     t.string   "short_name"
+    t.string   "time_zone_raw"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -111,6 +112,7 @@ ActiveRecord::Schema.define(version: 20130524175030) do
     t.integer  "chapter_id"
     t.string   "name"
     t.string   "vc_regex_raw"
+    t.boolean  "is_county_admin"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

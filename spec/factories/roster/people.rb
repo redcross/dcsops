@@ -9,5 +9,6 @@ FactoryGirl.define do
     positions { |f| [f.association( :position)] }
 
     work_phone {Faker::PhoneNumber.phone_number}
+    association :chapter
   end
 end

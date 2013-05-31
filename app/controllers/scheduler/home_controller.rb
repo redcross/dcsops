@@ -18,8 +18,12 @@ class Scheduler::HomeController < Scheduler::BaseController
   end
 
   helper_method :upcoming_shifts
+  def current_time
+    current_person.chapter.time_zone.now
+  end
+
   def upcoming_shifts
-    @upcoming_shifts ||= Scheduler::ShiftAssignment.where(person_id: current_person).references(:shift => :shift_group).starts_after(DateTime.now).includes(:shift => :shift_group).order('scheduler_shift_assignments.date asc, scheduler_shift_groups.start_offset asc').first(3)
+    @upcoming_shifts ||= Scheduler::ShiftAssignment.where(person_id: current_person).references(:shift => :shift_group).starts_after(current_time).includes(:shift => :shift_group).order('scheduler_shift_assignments.date asc, scheduler_shift_groups.start_offset asc').first(3)
   end
 
   def current_person
@@ -28,7 +32,7 @@ class Scheduler::HomeController < Scheduler::BaseController
 
   helper_method :available_swaps
   def available_swaps
-    @available_swaps ||= Scheduler::ShiftAssignment.references(:shift => :shift_group).starts_after(DateTime.now).includes(:shift => :shift_group).order('scheduler_shift_assignments.date asc, scheduler_shift_groups.start_offset asc').where(available_for_swap: true).select{|shift| shift.shift.can_be_taken_by? current_person}
+    @available_swaps ||= Scheduler::ShiftAssignment.references(:shift => :shift_group).starts_after(current_time).includes(:shift => :shift_group).order('scheduler_shift_assignments.date asc, scheduler_shift_groups.start_offset asc').where(available_for_swap: true).select{|shift| shift.shift.can_be_taken_by? current_person}
   end
 
   helper_method :days_of_week, :shift_times, :current_person

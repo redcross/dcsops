@@ -12,6 +12,8 @@ describe Scheduler::ShiftAssignment do
     @person= FactoryGirl.create :person, positions: [@positions.first], counties: [@counties.first]
   end
 
+  let(:zone) {@chapter.time_zone}
+
   it "should be createable and destroyable" do
     item = Scheduler::ShiftAssignment.create! person: @person, shift: @shifts.first, date: Date.today
 
@@ -128,7 +130,7 @@ describe Scheduler::ShiftAssignment do
 
     shift.signups_frozen_before = Date.tomorrow; shift.save
 
-    item = Scheduler::ShiftAssignment.create person: @person, shift: shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: @person, shift: shift, date: zone.today
     item.should_not be_valid
   end
 
@@ -137,7 +139,7 @@ describe Scheduler::ShiftAssignment do
     it "should be swappable" do
       @person2 = FactoryGirl.create :person, positions: [@positions.first], counties: [@counties.first]
 
-      shift = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: Date.tomorrow
+      shift = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: zone.today.tomorrow
       new_record = shift.swap_to(@person2)
 
       new_record.should be_valid
@@ -148,7 +150,7 @@ describe Scheduler::ShiftAssignment do
     it "should not be swappable to someone who can't take the shift" do
       @person2 = FactoryGirl.create :person, positions: [], counties: []
 
-      shift = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: Date.tomorrow
+      shift = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: zone.today.tomorrow
       new_record = shift.swap_to(@person2)
 
       new_record.should_not be_valid
@@ -160,7 +162,7 @@ describe Scheduler::ShiftAssignment do
       @person2 = FactoryGirl.create :person, positions: [@positions.first], counties: [@counties.first]
       shift = @shifts.first
 
-      ass = Scheduler::ShiftAssignment.create person: @person, shift: shift, date: Date.tomorrow
+      ass = Scheduler::ShiftAssignment.create person: @person, shift: shift, date: zone.today.tomorrow
       shift.signups_frozen_before = Date.today + 4; shift.save
 
       new_record = ass.swap_to(@person2)
@@ -203,27 +205,27 @@ describe Scheduler::ShiftAssignment do
     describe "needs_email_reminder" do
       before(:each) do
         @prefs.update_attribute :email_advance_hours, 7200 # 2 hours ahead of time
-        @item = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: Date.tomorrow
+        @item = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: zone.today.tomorrow
       end
 
       it "should not want to send the reminder ahead of time" do
-        Scheduler::ShiftAssignment.needs_email_reminder.should =~ []
+        Scheduler::ShiftAssignment.needs_email_reminder(@chapter).should =~ []
       end
 
       it "should want to send the reminder during the window" do
-        Delorean.time_travel_to Date.tomorrow.in_time_zone.advance seconds: 9.hours
-        Scheduler::ShiftAssignment.needs_email_reminder.should =~ [@item]
+        Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 9.hours
+        Scheduler::ShiftAssignment.needs_email_reminder(@chapter).should =~ [@item]
       end
 
       it "should not want to send an invite if the invite has been sent" do
-        Delorean.time_travel_to Date.tomorrow.in_time_zone.advance seconds: 9.hours
+        Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 9.hours
         @item.update_attribute :email_reminder_sent, true
-        Scheduler::ShiftAssignment.needs_email_reminder.should =~ []
+        Scheduler::ShiftAssignment.needs_email_reminder(@chapter).should =~ []
       end
 
       it "should not send the invite if the shift has already passed" do
-        Delorean.time_travel_to Date.tomorrow.in_time_zone.advance seconds: 23.hours
-        Scheduler::ShiftAssignment.needs_email_reminder.should =~ []
+        Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 23.hours
+        Scheduler::ShiftAssignment.needs_email_reminder(@chapter).should =~ []
       end
 
     end
@@ -231,47 +233,47 @@ describe Scheduler::ShiftAssignment do
     describe "needs_sms_reminder" do
       before(:each) do
         @prefs.update_attribute :sms_advance_hours, 2.hours # 2 hours ahead of time
-        @item = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: Date.tomorrow
+        @item = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: zone.today.tomorrow
       end
 
       it "should not want to send the reminder ahead of time" do
-        Scheduler::ShiftAssignment.needs_sms_reminder.should =~ []
+        Scheduler::ShiftAssignment.needs_sms_reminder(@chapter).should =~ []
       end
 
       it "should want to send the reminder during the window" do
-        Delorean.time_travel_to Date.tomorrow.in_time_zone.advance seconds: 9.hours
-        Scheduler::ShiftAssignment.needs_sms_reminder.should =~ [@item]
+        Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 9.hours
+        Scheduler::ShiftAssignment.needs_sms_reminder(@chapter).should =~ [@item]
       end
 
       it "should not want to send an invite if the invite has been sent" do
-        Delorean.time_travel_to Date.tomorrow.in_time_zone.advance seconds: 9.hours
+        Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 9.hours
         @item.update_attribute :sms_reminder_sent, true
-        Scheduler::ShiftAssignment.needs_sms_reminder.should =~ []
+        Scheduler::ShiftAssignment.needs_sms_reminder(@chapter).should =~ []
       end
 
       it "should not send the invite if the shift has already passed" do
-        Delorean.time_travel_to Date.tomorrow.in_time_zone.advance seconds: 23.hours
-        Scheduler::ShiftAssignment.needs_sms_reminder.should =~ []
+        Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 23.hours
+        Scheduler::ShiftAssignment.needs_sms_reminder(@chapter).should =~ []
       end
 
       it "should not send the invite if we are outside the sms window" do
         @prefs.update_attribute :sms_only_after, 8.hours # send texts only after noon
 
-        Delorean.time_travel_to Date.tomorrow.in_time_zone.advance seconds: 7.hours
-        Scheduler::ShiftAssignment.needs_sms_reminder.should =~ []
+        Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 7.hours
+        Scheduler::ShiftAssignment.needs_sms_reminder(@chapter).should =~ []
 
-        Delorean.time_travel_to DateTime.now.in_time_zone.change hour: 9
-        Scheduler::ShiftAssignment.needs_sms_reminder.should =~ [@item]
+        Delorean.time_travel_to @chapter.time_zone.now.change hour: 9
+        Scheduler::ShiftAssignment.needs_sms_reminder(@chapter).should =~ [@item]
       end
 
       it "should send the invite once we are in the window" do
         @prefs.update_attribute :sms_only_after, 12.hours # send texts only after noon
 
-        Delorean.time_travel_to Date.tomorrow.in_time_zone.advance seconds: 9.hours
-        Scheduler::ShiftAssignment.needs_sms_reminder.should =~ []
+        Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 9.hours
+        Scheduler::ShiftAssignment.needs_sms_reminder(@chapter).should =~ []
 
-        Delorean.time_travel_to DateTime.now.change hour: 13
-        Scheduler::ShiftAssignment.needs_sms_reminder.should =~ [@item]
+        Delorean.time_travel_to zone.now.change hour: 13
+        Scheduler::ShiftAssignment.needs_sms_reminder(@chapter).should =~ [@item]
       end
 
     end

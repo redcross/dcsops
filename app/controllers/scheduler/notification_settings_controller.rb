@@ -19,7 +19,7 @@ class Scheduler::NotificationSettingsController < Scheduler::BaseController
   end
 
   def hour_select_options(midnight: false, blank: false)
-    periods = (0..(midnight ? 24 : 23)).map{ |idx| fmt = (idx==24 ? '11:59 PM' : DateTime.now.change(hour: idx).strftime("%l:%M %p")); {text: fmt, value: idx*3600}  }.tap{|arr|
+    periods = (0..(midnight ? 24 : 23)).map{ |idx| fmt = (idx==24 ? '11:59 PM' : current_user.chapter.time_zone.now.change(hour: idx).strftime("%l:%M %p")); {text: fmt, value: idx*3600}  }.tap{|arr|
       arr.unshift( {value: "", text: "never"}) if blank
     }
   end

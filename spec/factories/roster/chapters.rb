@@ -5,5 +5,7 @@ FactoryGirl.define do
     name 'Some Chapter'
     short_name 'ARCBA'
     code '12345'
+
+    time_zone_raw 'America/Los_Angeles'
   end
 end

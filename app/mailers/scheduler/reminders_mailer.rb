@@ -38,14 +38,14 @@ class Scheduler::RemindersMailer < ActionMailer::Base
   end
 
   def daily_email_reminder(setting)
-    now = DateTime.now.in_time_zone
+    now = setting.person.chapter.time_zone.now
     prepare_reminders(setting)
 
     mail to: setting.person.email, subject: "DAT Shifts for #{now.strftime("%b %d")}"
   end
 
   def daily_sms_reminder(setting)
-    now = DateTime.now.in_time_zone
+    now = setting.person.chapter.time_zone.now
     prepare_reminders(setting)
 
     mail to: setting.person.sms_addresses, subject: ""

@@ -79,25 +79,28 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   attr_accessor :swapping_from_id, :is_swapping_to
 
   scope :for_day, lambda {|day| where(date: day)}
-  scope :needs_email_invite, ->{includes(:notification_setting).where(:email_invite_sent => false, :scheduler_notification_settings => {send_email_invites: true}).where('date > ?', Date.today)}
-  scope :needs_email_reminder, ->{
+  scope :needs_email_invite, ->{includes(:notification_setting).where(:email_invite_sent => false, :scheduler_notification_settings => {send_email_invites: true}).where('date > ?', Date.current)}
+  scope :needs_email_reminder, ->(chapter){
     includes(:notification_setting).where(:email_reminder_sent => false)
     .where("scheduler_notification_settings.email_advance_hours is not null").references(:scheduler_notification_settings)
     .select{|ass|
-      now = DateTime.now.in_time_zone
+      now = chapter.time_zone.now
       start = ass.local_start_time
       etime = ass.local_end_time
       ass.notification_setting.email_advance_hours and etime > now and (start - ass.notification_setting.email_advance_hours) < now
     }
   }
-  scope :needs_sms_reminder, -> {
-    now = DateTime.now.in_time_zone
+  scope :needs_sms_reminder, -> (chapter) {
+    zone = chapter.time_zone
+    now = chapter.time_zone.now
     includes(:notification_setting).where(:sms_reminder_sent => false)
     .where("scheduler_notification_settings.sms_advance_hours is not null").references(:scheduler_notification_settings)
     .select{|ass|
       start = ass.local_start_time
       etime = ass.local_end_time
-      ass.notification_setting.sms_advance_hours and etime > now and (start - ass.notification_setting.sms_advance_hours) < now
+      notifications_begin = (start - ass.notification_setting.sms_advance_hours)
+
+      ass.notification_setting.sms_advance_hours and etime > now and notifications_begin < now
     }.select{|ass|
       seconds = now.seconds_since_midnight
       seconds >= ass.notification_setting.sms_only_after and seconds <= ass.notification_setting.sms_only_before
@@ -137,7 +140,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   def local_offset(date, offset)
     #date.in_time_zone.at_beginning_of_day.advance( seconds: offset).iso8601
 
-    beginning_of_day = date.in_time_zone.at_beginning_of_day
+    beginning_of_day = date.in_time_zone(person.chapter.time_zone).at_beginning_of_day
     offset_time = beginning_of_day.advance seconds: offset
 
     # advance counts every instant that elapses, not just calendar seconds.  so

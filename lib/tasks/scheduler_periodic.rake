@@ -23,7 +23,7 @@ namespace :scheduler do
   end
 
   task :send_daily_email => [:environment] do
-    now = DateTime.now.in_time_zone
+    now = Time.zone.now
     Scheduler::NotificationSetting.needs_daily_email.find_each do |setting|
       Scheduler::RemindersMailer.daily_email_reminder(setting).deliver
       setting.update_attribute(:last_all_shifts_email, now) # don't fail!
@@ -31,7 +31,7 @@ namespace :scheduler do
   end
 
   task :send_daily_sms => [:environment] do
-    now = DateTime.now.in_time_zone
+    now = Time.zone.now
     Scheduler::NotificationSetting.needs_daily_sms.find_each do |setting|
       Scheduler::RemindersMailer.daily_sms_reminder(setting).deliver
       setting.update_attribute(:last_all_shifts_sms, now) # don't fail!

@@ -20,6 +20,7 @@ class Roster::Person < ActiveRecord::Base
   has_one :notification_setting, class_name: 'Scheduler::NotificationSetting', foreign_key: 'id'
 
   validates *((1..4).map{|n| "phone_#{n}_preference".to_sym}), inclusion: {in: %w(home cell work alternate sms), allow_blank: true}
+  validates_presence_of :chapter
 
   default_scope {order(:last_name, :first_name)}
 

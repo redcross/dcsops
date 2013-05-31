@@ -48,13 +48,13 @@ describe Scheduler::DirectlineMailer do
 
     it "Should have the on call person plus backups" do
       row = csv[1]
-      row[1].should eq (DateTime.now.in_time_zone.at_beginning_of_day.advance(seconds: @day.start_offset).iso8601)
+      row[1].should eq (@chapter.time_zone.now.at_beginning_of_day.advance(seconds: @day.start_offset).iso8601)
       row[3..row.count].should =~ [@people1.first.id.to_s, @config.backup_first.id.to_s]
     end
 
     it "Should have the backups when no on call person" do
       row = csv[3]
-      row[1].should eq (DateTime.now.in_time_zone.at_beginning_of_day.advance(days: 1, seconds: @day.start_offset).iso8601)
+      row[1].should eq (@chapter.time_zone.now.at_beginning_of_day.advance(days: 1, seconds: @day.start_offset).iso8601)
       row[3..row.count].should =~ [@config.backup_first.id.to_s]
     end
   end

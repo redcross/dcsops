@@ -4,6 +4,7 @@ class CreateRosterChapters < ActiveRecord::Migration
       t.string :name
       t.string :code
       t.string :short_name
+      t.string :time_zone_raw
 
       t.timestamps
     end

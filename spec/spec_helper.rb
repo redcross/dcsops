@@ -8,6 +8,7 @@ require 'shoulda-matchers'
 require 'factory_girl_rails'
 require 'delorean'
 require 'faker'
+require 'zonebie'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -48,3 +49,5 @@ RSpec.configure do |config|
   config.include Delorean
   config.include Authlogic::TestCase
 end
+
+Zonebie.set_random_timezone(ascii_map: ENV['MAP'])

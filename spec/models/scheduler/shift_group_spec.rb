@@ -13,22 +13,22 @@ describe Scheduler::ShiftGroup do
       @shift1 = FactoryGirl.create(:shift_group, chapter: @chapter, period: 'daily', start_offset: 6.hours, end_offset: 12.hours)
       @shift2 = FactoryGirl.create(:shift_group, chapter: @chapter, period: 'daily', start_offset: 12.hours, end_offset: 28.hours)
 
-      Delorean.time_travel_to DateTime.now.in_time_zone.change hour: 6
+      Delorean.time_travel_to @chapter.time_zone.now.change hour: 6
 
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift1]
       arr.first.start_date.should == Date.today
 
-      Delorean.time_travel_to DateTime.now.in_time_zone.change hour: 12
+      Delorean.time_travel_to@chapter.time_zone.now.change hour: 12
 
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift2]
       arr.first.start_date.should be_a(Date)
       arr.first.start_date.should == Date.today
 
-      Delorean.time_travel_to DateTime.now.in_time_zone.change hour: 5
+      Delorean.time_travel_to@chapter.time_zone.now.change hour: 5
 
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ []
 
-      Delorean.time_travel_to DateTime.now.in_time_zone.change hour: 3
+      Delorean.time_travel_to @chapter.time_zone.now.change hour: 3
 
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift2]
       arr.first.start_date.should == Date.yesterday
@@ -43,12 +43,12 @@ describe Scheduler::ShiftGroup do
 
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift1]
       arr.first.start_date.should be_a(Date)
-      arr.first.start_date.should eq DateTime.current.at_beginning_of_week
+      arr.first.start_date.should eq Date.current.at_beginning_of_week
 
       Delorean.time_travel_to 'thursday 8am'
 
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift2]
-      arr.first.start_date.should eq DateTime.current.at_beginning_of_week
+      arr.first.start_date.should eq Date.current.at_beginning_of_week
 
       Delorean.time_travel_to 'friday 8am'
 
@@ -57,7 +57,7 @@ describe Scheduler::ShiftGroup do
       Delorean.time_travel_to 'saturday 8am'
 
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift3]
-      arr.first.start_date.should eq DateTime.current.at_beginning_of_week
+      arr.first.start_date.should eq Date.current.at_beginning_of_week
     end
   end
 
@@ -66,7 +66,7 @@ describe Scheduler::ShiftGroup do
       @shift1 = FactoryGirl.create(:shift_group, chapter: @chapter, period: 'daily', start_offset: 6.hours, end_offset: 12.hours)
       @shift2 = FactoryGirl.create(:shift_group, chapter: @chapter, period: 'daily', start_offset: 12.hours, end_offset: 28.hours)
 
-      Delorean.time_travel_to DateTime.now.in_time_zone.change hour: 6
+      Delorean.time_travel_to @chapter.time_zone.now.change hour: 6
       @shift1.start_date = Date.current
       group = @shift1.next_group
       group.should eq @shift2

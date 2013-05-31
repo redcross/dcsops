@@ -3,14 +3,14 @@ class Scheduler::NotificationSetting < ActiveRecord::Base
 
   serialize :shift_notification_phones
 
-  scope :needs_daily_email, ->{
-    now = DateTime.now.in_time_zone
+  scope :needs_daily_email, ->chapter{
+    now = chapter.time_zone.now
     midnight = now.at_beginning_of_day
     offset = now.seconds_since_midnight
     where{(email_all_shifts_at != nil) & (email_all_shifts_at <= offset) & ((last_all_shifts_email == nil) | (last_all_shifts_email < midnight))}
   }
-  scope :needs_daily_sms, ->{
-    now = DateTime.now.in_time_zone
+  scope :needs_daily_sms, ->chapter{
+    now = chapter.time_zone.now
     midnight = now.at_beginning_of_day
     offset = now.seconds_since_midnight
     where{(sms_all_shifts_at != nil) & (sms_all_shifts_at <= offset) & ((last_all_shifts_sms == nil) | (last_all_shifts_sms < midnight))}

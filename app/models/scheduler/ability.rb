@@ -17,7 +17,7 @@ class Scheduler::Ability
         can :manage, [Scheduler::NotificationSetting, Scheduler::FlexSchedule]
     end
 
-    if false # is site manager
+    if true # is site manager
         can :manage, Scheduler::DispatchConfig
         can :manage, Scheduler::Shift
         can :manage, Scheduler::ShiftGroup

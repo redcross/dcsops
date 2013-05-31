@@ -9,6 +9,7 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   #   en.scheduler.reminders_mailer.email_invite.subject
   #
   def export(chapter, start_date, end_date)
+    @chapter = chapter
     people = []
 
     shift_data = CSV.generate do |csv|
@@ -39,7 +40,7 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
     attachments["shift_data.csv"] = shift_data
     attachments["roster.csv"] = person_data
 
-    mail to: "jlaxson@mac.com", subject: "Red Cross Export - Chapter #{chapter.code}", body: "Export processed at #{DateTime.current}"
+    mail to: "jlaxson@mac.com", subject: "Red Cross Export - Chapter #{chapter.code}", body: "Export processed at #{Time.zone.now}"
   end
 
   private
@@ -49,7 +50,7 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   def local_offset(date, offset)
     #date.in_time_zone.at_beginning_of_day.advance( seconds: offset).iso8601
 
-    beginning_of_day = date.in_time_zone.at_beginning_of_day
+    beginning_of_day = date.in_time_zone(@chapter.time_zone).at_beginning_of_day
     offset_time = beginning_of_day.advance seconds: offset
 
     # advance counts every instant that elapses, not just calendar seconds.  so

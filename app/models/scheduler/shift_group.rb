@@ -32,7 +32,9 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
   end
 
   # Returns a date, group pairing of the count upcoming groups
-  def self.next_groups(chapter, count=2, current_time=DateTime.now)
+  def self.next_groups(chapter, count=2, current_time=Time.zone.now)
+    current_time = current_time.in_time_zone(chapter.time_zone)
+
     current_group = self.current_groups_for_chapter(chapter, current_time).select{|grp| grp.period == 'daily'}.first
 
     ret = [{date: current_group.start_date, group: current_group}]
@@ -44,12 +46,8 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
   end
 
 
-  def self.current_groups_for_chapter(chapter, current_time=DateTime.now)
-    now = current_time.in_time_zone
-
-
-
-
+  def self.current_groups_for_chapter(chapter, current_time=Time.zone.now)
+    now = current_time.in_time_zone(chapter.time_zone)
 
     self.where(chapter_id: chapter).select{|group|
       if group.period == 'daily'

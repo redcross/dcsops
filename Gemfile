@@ -54,6 +54,7 @@ group :development do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'faker'
+  gem 'zonebie'
 
   gem 'autotest'
   #gem 'autotest-fsevent'
