@@ -6,7 +6,7 @@ class Scheduler::PeopleController < Scheduler::BaseController
   load_and_authorize_resource class: Roster::Person
 
   has_scope :search_name
-  has_scope :in_county, as: :county, default: Proc.new {|controller| controller.current_user.counties.first.id}
+  has_scope :in_county, as: :county, default: Proc.new {|controller| controller.current_user.primary_county_id}
   #has_scope :in_county, as: :county do |controller, scope, val|
   #  positions = Scheduler::Shift.where(county_id: val).map{|sh| sh.positions}.flatten
   #  scope.in_county(val)
