@@ -6,10 +6,10 @@ describe Scheduler::ShiftAssignment do
     @chapter = FactoryGirl.create :chapter
     @group = FactoryGirl.create :shift_group, chapter: @chapter, start_offset: 10.hours, end_offset: 22.hours
     @counties = @positions = (1..2).map{|i| FactoryGirl.create :county, name: "County #{i}", chapter: @chapter}
-    @positions = (1..2).map{|i| FactoryGirl.create :position, name: "Position #{i}"}
+    @positions = (1..2).map{|i| FactoryGirl.create :position, name: "Position #{i}", chapter: @chapter}
     @shifts = (1..2).map{|i| FactoryGirl.create :shift, shift_group: @group, name: "Shift #{i}", positions: [@positions[i-1]], county: @counties[i-1]}
 
-    @person= FactoryGirl.create :person, positions: [@positions.first], counties: [@counties.first]
+    @person= FactoryGirl.create :person, chapter: @chapter, positions: [@positions.first], counties: [@counties.first]
   end
 
   let(:zone) {@chapter.time_zone}
@@ -55,7 +55,7 @@ describe Scheduler::ShiftAssignment do
   end
 
   it "should validate that the shift is not full with max_signups=1" do
-    @person2 = FactoryGirl.create :person, positions: [@positions.first], counties: [@counties.first]
+    @person2 = FactoryGirl.create :person, chapter: @chapter,  positions: [@positions.first], counties: [@counties.first]
 
     item = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: Date.today
     item.should be_valid
@@ -65,8 +65,8 @@ describe Scheduler::ShiftAssignment do
   end
 
   it "should validate that the shift is not full with max_signups=2" do
-    @person2 = FactoryGirl.create :person, positions: [@positions.first], counties: [@counties.first]
-    @person3 = FactoryGirl.create :person, positions: [@positions.first], counties: [@counties.first]
+    @person2 = FactoryGirl.create :person, chapter: @chapter,  positions: [@positions.first], counties: [@counties.first]
+    @person3 = FactoryGirl.create :person, chapter: @chapter,  positions: [@positions.first], counties: [@counties.first]
 
     @shifts.first.tap{|s| s.max_signups = 2; s.save}
 
@@ -81,8 +81,8 @@ describe Scheduler::ShiftAssignment do
   end
 
   it "should validate that the shift is not full with max_signups=0" do
-    @person2 = FactoryGirl.create :person, positions: [@positions.first], counties: [@counties.first]
-    @person3 = FactoryGirl.create :person, positions: [@positions.first], counties: [@counties.first]
+    @person2 = FactoryGirl.create :person, chapter: @chapter,  positions: [@positions.first], counties: [@counties.first]
+    @person3 = FactoryGirl.create :person, chapter: @chapter,  positions: [@positions.first], counties: [@counties.first]
 
     @shifts.first.tap{|s| s.max_signups = 0; s.save}
 
@@ -137,7 +137,7 @@ describe Scheduler::ShiftAssignment do
 
   describe "#swap" do
     it "should be swappable" do
-      @person2 = FactoryGirl.create :person, positions: [@positions.first], counties: [@counties.first]
+      @person2 = FactoryGirl.create :person, chapter: @chapter,  positions: [@positions.first], counties: [@counties.first]
 
       shift = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: zone.today.tomorrow
       new_record = shift.swap_to(@person2)
@@ -148,7 +148,7 @@ describe Scheduler::ShiftAssignment do
     end
 
     it "should not be swappable to someone who can't take the shift" do
-      @person2 = FactoryGirl.create :person, positions: [], counties: []
+      @person2 = FactoryGirl.create :person, chapter: @chapter,  positions: [], counties: []
 
       shift = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: zone.today.tomorrow
       new_record = shift.swap_to(@person2)
@@ -159,7 +159,7 @@ describe Scheduler::ShiftAssignment do
     end
 
     it "should allow swaps before the frozen date" do
-      @person2 = FactoryGirl.create :person, positions: [@positions.first], counties: [@counties.first]
+      @person2 = FactoryGirl.create :person, chapter: @chapter,  positions: [@positions.first], counties: [@counties.first]
       shift = @shifts.first
 
       ass = Scheduler::ShiftAssignment.create person: @person, shift: shift, date: zone.today.tomorrow

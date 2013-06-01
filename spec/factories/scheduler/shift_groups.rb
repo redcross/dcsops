@@ -6,5 +6,7 @@ FactoryGirl.define do
     period "daily"
     start_offset 3600
     end_offset 7200
+
+    association :chapter
   end
 end

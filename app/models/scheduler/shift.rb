@@ -12,6 +12,10 @@ class Scheduler::Shift < ActiveRecord::Base
   def can_sign_up_on_day(date, num_assignments_on_day=nil)
     return false if date < Date.current
     return false if signups_frozen_before and date < signups_frozen_before
+    return false if signups_available_before and date > signups_available_before
+    num_days = (date - shift_group.chapter.time_zone.today).to_i
+    return false if max_advance_signup and num_days > max_advance_signup
+
     return true if max_signups == 0
 
     if num_assignments_on_day

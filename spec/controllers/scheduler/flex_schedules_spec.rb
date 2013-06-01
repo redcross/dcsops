@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Scheduler::FlexSchedulesController do
   include LoggedIn
+  render_views
+
   before(:each) do
     @sched = Scheduler::FlexSchedule.create id: @person.id
   end
@@ -15,6 +17,12 @@ describe Scheduler::FlexSchedulesController do
 
     it "should filter by county" do
       get :index, county: @person.county_ids.first
+      response.should be_success
+    end
+
+    it "should render when the person has no county" do
+      @person.counties = []; @person.save
+      get :index
       response.should be_success
     end
   end

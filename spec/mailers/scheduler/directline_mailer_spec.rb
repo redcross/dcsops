@@ -7,7 +7,7 @@ describe Scheduler::DirectlineMailer do
     @county1 = FactoryGirl.create :county, chapter: @chapter
     @county2 = FactoryGirl.create :county, chapter: @chapter
     @position = FactoryGirl.create :position, chapter: @chapter
-    @people1 = (0..5).map{|i| FactoryGirl.create :person, counties:[@county1], positions: [@position]}
+    @people1 = (0..5).map{|i| FactoryGirl.create :person, chapter: @chapter, counties:[@county1], positions: [@position]}
     #@people2 = (0..5).map{|i| FactoryGirl.create :person, counties:[@county2], positions: [@position]}
 
     @day = FactoryGirl.create :shift_group, chapter: @chapter, start_offset: 7.hours, end_offset: 19.hours
@@ -16,8 +16,8 @@ describe Scheduler::DirectlineMailer do
     @leadshift = FactoryGirl.create :shift, shift_group: @day, dispatch_role: 1, positions: [@position], county: @county1
     @othershift = FactoryGirl.create :shift, shift_group: @day, positions: [@position], county: @county1
 
-    FactoryGirl.create :shift_assignment, person: @people1.first, date: Date.today, shift: @leadshift
-    FactoryGirl.create :shift_assignment, person: @people1[1], date: Date.today, shift: @othershift
+    FactoryGirl.create :shift_assignment, person: @people1.first, date: @chapter.time_zone.today, shift: @leadshift
+    FactoryGirl.create :shift_assignment, person: @people1[1], date: @chapter.time_zone.today, shift: @othershift
 
     @config = Scheduler::DispatchConfig.for_county @county1
     @config.is_active = true
@@ -25,7 +25,7 @@ describe Scheduler::DirectlineMailer do
     @config.save!
   end
 
-  let(:mail) { Scheduler::DirectlineMailer.export(@chapter, Date.today, Date.tomorrow)}
+  let(:mail) { Scheduler::DirectlineMailer.export(@chapter, @chapter.time_zone.today, @chapter.time_zone.today.tomorrow)}
   let(:shift_filename) { "shift_data.csv"}
   let(:roster_filename) { "roster.csv"}
 

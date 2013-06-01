@@ -14,6 +14,8 @@ class CreateSchedulerShifts < ActiveRecord::Migration
       t.date :shift_begins
       t.date :shift_ends
       t.date :signups_frozen_before
+      t.integer :max_advance_signup
+      t.date :signups_available_before
 
       t.timestamps
     end

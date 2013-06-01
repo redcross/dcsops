@@ -3,7 +3,8 @@ require 'spec_helper'
 describe Scheduler::ShiftAssignmentsController do
   before(:each) do
     @person = FactoryGirl.create :person
-    @person2 = FactoryGirl.create :person, counties: @person.counties, positions: @person.positions
+    @chapter = @person.chapter
+    @person2 = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties, positions: @person.positions
     @shift = FactoryGirl.create :shift, county: @person.counties.first, positions: @person.positions
 
     @assignments = (1..5).map{|i| Scheduler::ShiftAssignment.create! person:@person, date:Date.today+i, shift:@shift}
@@ -70,7 +71,7 @@ describe Scheduler::ShiftAssignmentsController do
     end
 
     it "should send admin emails when marking a shift swappable" do
-      @admin = FactoryGirl.create :person, counties: [@assignment.shift.county]
+      @admin = FactoryGirl.create :person, chapter: @chapter,  counties: [@assignment.shift.county]
       @adminsettings = Scheduler::NotificationSetting.create id: @admin.id
       @adminsettings.update_attribute :email_all_swaps, true
 
@@ -80,7 +81,7 @@ describe Scheduler::ShiftAssignmentsController do
     end
 
     it "should send user emails when marking a shift swappable" do
-      @admin = FactoryGirl.create :person, counties: [@assignment.shift.county], positions: @person.positions
+      @admin = FactoryGirl.create :person, chapter: @chapter,  counties: [@assignment.shift.county], positions: @person.positions
       @adminsettings = Scheduler::NotificationSetting.create id: @admin.id
       @adminsettings.update_attribute :email_swap_requested, true
 
@@ -90,7 +91,7 @@ describe Scheduler::ShiftAssignmentsController do
     end
 
     it "should allow marking a shift as swappable with a recipient" do
-      @admin = FactoryGirl.create :person, counties: [@assignment.shift.county], positions: @person.positions
+      @admin = FactoryGirl.create :person, chapter: @chapter,  counties: [@assignment.shift.county], positions: @person.positions
       @adminsettings = Scheduler::NotificationSetting.create id: @admin.id
       @adminsettings.update_attribute :email_all_swaps, true
 

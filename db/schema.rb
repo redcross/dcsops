@@ -227,6 +227,8 @@ ActiveRecord::Schema.define(version: 20130524175030) do
     t.date     "shift_begins"
     t.date     "shift_ends"
     t.date     "signups_frozen_before"
+    t.integer  "max_advance_signup"
+    t.date     "signups_available_before"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
