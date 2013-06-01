@@ -12,6 +12,7 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
     end
     scope
   end
+  has_scope :with_availability, type: :boolean, default: true
 
   private
   helper_method :days_of_week, :shift_times
@@ -36,6 +37,6 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
     end
 
     def collection
-      apply_scopes(super)
+      apply_scopes(super).with_availability
     end
 end

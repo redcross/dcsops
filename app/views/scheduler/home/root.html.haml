@@ -52,7 +52,7 @@
           - days_of_week.each do |dow|
             -avail = sched.send("available_#{dow}_#{time}")
             %td{class: avail && "avail"}
-              =avail ? 'Y' : 'N'
+              =avail ? 'Yes' : 'No'
   .span4
     %h5 
       %i.icon-calendar

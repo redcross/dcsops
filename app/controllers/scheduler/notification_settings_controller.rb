@@ -3,6 +3,10 @@ class Scheduler::NotificationSettingsController < Scheduler::BaseController
   inherit_resources
   load_and_authorize_resource
 
+  def me
+    redirect_to url_for(action: :show, id: current_user.id)
+  end
+
   private
 
   helper_method :all_sms_phones, :time_periods, :time_periods_for_select, :hour_select_options, :can_see_admin_notifications

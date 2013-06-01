@@ -1,3 +1,26 @@
 // Place all the styles related to the Scheduler::FlexSchedules controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+$border-color: rgb(221, 221, 221);
+
+.flex-table {
+  th.day-label {
+    text-align: center;
+    border-left: 1px solid $border-color;
+    border-right: 1px solid $border-color;
+  }
+  .day,.night {
+    width: 1em;
+    text-align: center
+  }
+  .day {
+    border-left: 1px solid $border-color;
+  }
+  .night {
+    border-right: 1px solid $border-color;
+  }
+  tr {
+    border-bottom: 1px solid $border-color;
+  }
+}

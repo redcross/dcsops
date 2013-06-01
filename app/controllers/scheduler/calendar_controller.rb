@@ -69,7 +69,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
     authorize! :read, person
   end
 
-  helper_method :person, :assignments_for_shift_on_day, :show_counties, :show_shifts, :daily_groups, :weekly_groups, :monthly_groups, :all_groups,
+  helper_method :person, :assignments_for_shift_on_day, :show_counties, :show_shifts, :daily_groups, :weekly_groups, :monthly_groups, :all_groups, :show_only_available,
         :can_take_shift?, :show_county_name, :ajax_params, :spreadsheet_groups, :spreadsheet_county, :my_shift_for_group_on_day
   def person
     return @_person if @_person
@@ -102,7 +102,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def show_counties
-    @_show_counties ||= ((params[:counties].is_a?(Array) && params[:counties].map(&:to_i)) || (person ? person.county_ids : []))
+    @_show_counties ||= ((params[:counties].is_a?(Array) && params[:counties].map(&:to_i)) || (person ? [person.primary_county_id] : []))
   end
 
   def show_shifts
@@ -110,7 +110,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def shifts_by_period(period)
-    @_unfiltered_shifts ||= Scheduler::ShiftGroup.includes{[shifts.positions, shifts.county]}.where(chapter_id: current_user.chapter_id).order(:start_offset).to_a
+    @_unfiltered_shifts ||= Scheduler::ShiftGroup.includes{[shifts.positions, shifts.county, shifts.shift_group.chapter]}.where(chapter_id: current_user.chapter_id).order(:start_offset).to_a
 
     @_unfiltered_shifts.select{|sh| sh.period == period}
   end
@@ -132,7 +132,11 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def spreadsheet_county
-    @_spreadsheet_county ||= Roster::County.find show_counties.first
+    @_spreadsheet_county ||= show_counties.present? && Roster::County.find( show_counties.first)
+  end
+
+  def show_only_available
+    params[:only_available] == 'true'
   end
 
   def spreadsheet_groups

@@ -1,45 +1,52 @@
 .calendar-spreadsheet
-  - spreadsheet_groups.each do |(group, shifts)|
-    .page
-      %h3
-        = spreadsheet_county.name
-        DAT Schedule - 
-        = @month.strftime "%B %Y"
-        = group.name
-      %table
-        %thead
-          %tr
-            %th Date
-            %th Shift
-            - shifts.each do |shift|
-              %th=shift.name
-              %th{colspan: 2} Contact Details
-        %tbody
-          - date = @month; next_month = date.next_month
-          - while date < next_month
-            /- spreadsheet_groups.each do |(group, shifts)|
-            %tr{}
-              %td=date.strftime "%d-%a"
-              %td=group.name
+  =form_tag '', method: :get do
+    =select_tag "counties[]", options_from_collection_for_select(Roster::County.all, :id, :name, show_counties.first), id: 'choose-county'
+    =submit_tag 'Show'
+
+  - unless spreadsheet_county
+    No county to display
+  - else 
+    - spreadsheet_groups.each do |(group, shifts)|
+      .page
+        %h3
+          = spreadsheet_county.name
+          DAT Schedule - 
+          = @month.strftime "%B %Y"
+          = group.name
+        %table
+          %thead
+            %tr
+              %th Date
+              %th Shift
               - shifts.each do |shift|
-                - ass = assignments_for_shift_on_day(shift, date)
-                - if ass.count > 1
-                  %td="#{ass.count} Registered"
-                  %td
-                  %td
-                - elsif ass.count == 0
-                  %td Open
-                  %td
-                  %td
-                - else
-                  - ass = ass.first
-                  %td
-                    = ass.person.full_name
-                  - ass.person.phone_order.first(2).tap{|arr| arr << nil while arr.count < 2}.each do |ph|
+                %th=shift.name
+                %th{colspan: 2} Contact Details
+          %tbody
+            - date = @month; next_month = date.next_month
+            - while date < next_month
+              /- spreadsheet_groups.each do |(group, shifts)|
+              %tr{}
+                %td=date.strftime "%d-%a"
+                %td=group.name
+                - shifts.each do |shift|
+                  - ass = assignments_for_shift_on_day(shift, date)
+                  - if ass.count > 1
+                    %td="#{ass.count} Registered"
                     %td
-                      -if ph
-                        =ph[:number]
-                        ="(#{ph[:label][0]})"
-            - date = date.tomorrow
+                    %td
+                  - elsif ass.count == 0
+                    %td Open
+                    %td
+                    %td
+                  - else
+                    - ass = ass.first
+                    %td
+                      = ass.person.full_name
+                    - ass.person.phone_order.first(2).tap{|arr| arr << nil while arr.count < 2}.each do |ph|
+                      %td
+                        -if ph
+                          =ph[:number]
+                          ="(#{ph[:label][0]})"
+              - date = date.tomorrow
 
 

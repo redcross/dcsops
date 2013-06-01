@@ -108,7 +108,12 @@
   .calendar-spreadsheet table {
     width: 10in !important;
   }
+  table.calendar td {
+    font-size: 7pt !important;
+    line-height: 1.0 !important;
+  }
 }
+
 
 @mixin rotate($rot) {
   -webkit-transform: rotate($rot);

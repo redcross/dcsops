@@ -51,7 +51,7 @@
   =month.strftime "%B %Y"
   -if show_shifts == :county
     ==-
-    = Roster::County.find(show_counties.first).name
+    = (id = show_counties.first) ? Roster::County.find(id).name : ""
   -elsif show_shifts == :mine
     ==-
     = person.first_name
