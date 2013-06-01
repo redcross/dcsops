@@ -22,7 +22,7 @@ Scheduler::Application.routes.draw do
     resources :notification_settings do
       get :me, on: :collection
     end
-    resources :flex_schedules
+    resources :flex_schedules, only: [:index, :show, :update]
     resources :people do
       resources :shift_assignments
     end
