@@ -1,5 +1,6 @@
 ActiveAdmin.register Scheduler::Shift, namespace: 'scheduler_admin', as: 'Shift' do
-
+  menu parent: 'Scheduling'
+  
   scope :all, default: true do |shifts|
     shifts.includes([:shift_group, :county]).order(:county_id, :shift_group_id, :ordinal)
   end
@@ -17,10 +18,7 @@ ActiveAdmin.register Scheduler::Shift, namespace: 'scheduler_admin', as: 'Shift'
   form do |f|
     f.inputs 'Details'
     f.inputs 'Position and County' do
-
       f.input :positions, as: :check_boxes
-      f.input :county
-      f.input :shift_group
       f.actions
     end
   end

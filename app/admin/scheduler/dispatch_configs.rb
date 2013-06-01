@@ -1,4 +1,6 @@
 ActiveAdmin.register Scheduler::DispatchConfig, namespace: 'scheduler_admin', as: 'Dispatch Config' do
+  menu parent: 'Scheduling'
+
   filter :county
 
   index do

@@ -2,6 +2,8 @@ ActiveAdmin.register Roster::Person, namespace: 'scheduler_admin', as: 'Person' 
   batch_action :destroy, false
   batch_action :edit, false
 
+  menu parent: 'Scheduling'
+
   index do
     column :name_last_first, sortable: "last_name"
 
@@ -22,20 +24,37 @@ ActiveAdmin.register Roster::Person, namespace: 'scheduler_admin', as: 'Person' 
     default_actions
   end
 
+  form do |f|
+    f.inputs 'Details' do
+      f.input :first_name
+      f.input :last_name
+    end
+    #f.has_many :county_memberships do |county_form|
+    #  if county_form.object
+    #    county_form.input :_destroy, as: :boolean
+    #  end
+#
+    #  county_form.input :county
+    #  county_form.input :persistent
+    #end
+  end
+
   show do
     attributes_table
     columns do
       column do
         panel "Positions" do
-          table_for person.positions do
-            column :name
+          table_for person.position_memberships do
+            column( :name) { |rec| rec.position.name }
+            column :persistent
           end
         end
       end
       column do
         panel "Counties" do
-          table_for person.counties do
-            column :name
+          table_for person.county_memberships do
+            column( :name) { |rec| rec.county.name }
+            column :persistent
           end
         end
       end

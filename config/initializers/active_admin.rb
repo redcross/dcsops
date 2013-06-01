@@ -10,7 +10,7 @@ ActiveAdmin.setup do |config|
   # Set the link url for the title. For example, to take
   # users to your main site. Defaults to no link.
   #
-  # config.site_title_link = "/"
+  config.site_title_link = "/"
 
   # Set an optional image to be displayed for the header
   # instead of a string (overrides :site_title)
@@ -213,5 +213,13 @@ ActiveAdmin.setup do |config|
   #
   # config.filters = true
 
-
+  ['scheduler_admin', 'roster_admin'].each do |ns|
+    config.namespace ns do |ns_config|
+      ns_config.build_menu do |menu|
+        menu.add label: 'DAT Scheduling', url: '/scheduler'
+        menu.add label: 'Roster', url: '/roster_admin/chapters'
+        menu.add label: 'Scheduling', url: '/scheduler_admin/shifts'
+      end
+    end
+  end
 end
