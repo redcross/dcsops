@@ -19,7 +19,7 @@ Scheduler::Application.routes.draw do
     resources :shift_assignments do
       match :swap, on: :member, via: [:get, :post]
     end
-    resources :notification_settings do
+    resources :notification_settings, only: [:show, :update] do
       get :me, on: :collection
     end
     resources :flex_schedules, only: [:index, :show, :update]

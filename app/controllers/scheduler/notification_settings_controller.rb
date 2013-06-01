@@ -3,6 +3,8 @@ class Scheduler::NotificationSettingsController < Scheduler::BaseController
   inherit_resources
   load_and_authorize_resource
 
+  actions :show, :update
+
   def me
     redirect_to url_for(action: :show, id: current_user.id)
   end
