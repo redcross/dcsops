@@ -88,6 +88,8 @@
 /  = link_to t('.edit', :default => t("helpers.links.edit")), edit_roster_person_path(resource), :class => 'btn'
 /  = link_to t('.destroy', :default => t("helpers.links.destroy")), roster_person_path(resource), :method => "delete", :data => { :confirm => t/('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'
 
+
+
 - content_for :footer_js do
   - carriers = [{value: "nil", text: "Don't send SMS to this number"}] + Roster::CellCarrier.all.map{|c| {text: c.name, value: c.id}}
   - call_opts = [{value: 0, text: "Call this number for disasters"},{value: 1, text: "Don't call this number for disasters"}]

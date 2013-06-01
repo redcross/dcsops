@@ -23,18 +23,63 @@
     margin: 0;
     line-height: inherit;
   }
+  
 }
 
-  .highlight-open-shifts {
-    td.open, div.open {
-      background-color: red;
-    }
+ body.steven {
+
+  background-color: pink;
+
+  .polkadot {
+    background-color: yellow;
+    width: 100px; height: 100px;
+    border-radius: 50px;
+    position: fixed;
+    z-index: -1;
   }
+
+  .p1 {
+    top: 100px;
+    left: 200px;
+  }
+
+  .p2 {
+    top: 200px;
+    right: 300px;
+  }
+
+  .p3 {
+    top: 400px;
+    left: 500px;
+  }
+
+  .p4 {
+    top: 500px;
+    left: 100px;
+  }
+
+  .p5 {
+    top:600px;
+    right: 100px;
+  }
+
   .highlight-my-shifts {
     .my-shift td, div.my-shift {
-      background-color: yellow;
+      background-color: rgb(50, 255, 50);
     }
   }
+}
+
+.highlight-open-shifts {
+  td.open, div.open {
+    background-color: red;
+  }
+}
+.highlight-my-shifts {
+  .my-shift td, div.my-shift {
+    background-color: yellow;
+  }
+}
 
 @media print {
   input[type=checkbox] {

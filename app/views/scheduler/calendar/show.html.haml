@@ -23,13 +23,28 @@
   .row
     %hr
 .calendar-container.highlight-my-shifts
-  =render partial: 'month', locals: {month: @month, editable: @editable}
+  - if params[:view] == 'by_week'
+    =render partial: 'by_week', locals: {month: @month, editable: @editable}
+  - else
+    =render partial: 'month', locals: {month: @month, editable: @editable}
 
 .open-shifts-container
   %h3 Available Shifts
   %div.open-shifts
     =render partial: 'open_shifts', locals: {month: @month}
 
+.polkadot.p2
+.polkadot.p1
+.polkadot.p3
+.polkadot.p4
+.polkadot.p5
+.polkadot.p6
+
 - content_for :footer_js do
   :javascript
     window.calendarController = new window.CalendarController(#{ajax_params.to_json}, "#{scheduler_calendar_path(params[:year], params[:month], display: 'open_shifts')}", "#{@month.strftime "%Y-%m"}")
+  - if ['Terrell', 'Hancock'].include? person.last_name
+    :javascript
+      $(document).ready(function() {
+        $('body').addClass('steven')
+      })
