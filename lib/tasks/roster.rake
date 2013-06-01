@@ -4,7 +4,7 @@ namespace :roster do
 
     path = File.join(Rails.root, 'config', 'email.yml')
     if File.file? path
-      config = YAML.load(File.read(path))
+      config = YAML.load(File.read(path))['vc_import']
       username = config['username']
       debug = config['debug']
       password = config['password']
@@ -16,7 +16,6 @@ namespace :roster do
       host = ENV['VC_IMPORT_HOST']
       debug = (ENV['VC_IMPORT_DEBUG']=='true')
     end
-    
 
     Net::IMAP.debug = debug
 
@@ -30,6 +29,8 @@ namespace :roster do
       source   = imap.uid_fetch(uid, ['RFC822']).first.attr['RFC822']
 
       Roster::ImportMailer.receive(source)
+
+      break unless Rails.env.production?
 
       imap.uid_copy(uid, "[Gmail]/All Mail")
       imap.uid_store(uid, "+FLAGS", [:Deleted])
