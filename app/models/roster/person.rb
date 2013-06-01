@@ -1,7 +1,12 @@
 class Roster::Person < ActiveRecord::Base
   belongs_to :chapter, class_name: 'Roster::Chapter'
-  has_and_belongs_to_many :counties, class_name: 'Roster::County'
-  has_and_belongs_to_many :positions, class_name: 'Roster::Position'
+  belongs_to :primary_county, class_name: 'Roster::County'
+
+  has_many :county_memberships
+  has_many :counties, class_name: 'Roster::County', through: :county_memberships
+
+  has_many :position_memberships
+  has_many :positions, class_name: 'Roster::Position', through: :position_memberships
 
   belongs_to :home_phone_carrier, class_name: 'Roster::CellCarrier'
   belongs_to :cell_phone_carrier, class_name: 'Roster::CellCarrier'
@@ -22,7 +27,17 @@ class Roster::Person < ActiveRecord::Base
   validates *((1..4).map{|n| "phone_#{n}_preference".to_sym}), inclusion: {in: %w(home cell work alternate sms), allow_blank: true}
   validates_presence_of :chapter
 
+  validates_inclusion_of :primary_county_id, in: lambda{ |person| person.chapter.county_ids }, allow_nil: true
+
   default_scope {order(:last_name, :first_name)}
+
+  def primary_county
+    super || counties.first
+  end
+
+  def primary_county_id
+    read_attribute(:primary_county_id) || county_ids.first
+  end
 
   def first_initial
     first_name && first_name[0]

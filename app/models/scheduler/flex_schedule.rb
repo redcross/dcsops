@@ -1,7 +1,9 @@
 class Scheduler::FlexSchedule < ActiveRecord::Base
   belongs_to :person, foreign_key: 'id', class_name: 'Roster::Person'
 
-  scope :for_county, lambda {|county_ids| includes(:person=>:counties).references(:person=>:counties).where('roster_counties_people.county_id IN (?)', county_ids)}
+  scope :for_county, lambda {|county_ids| 
+    joins{person.county_memberships}.where{person.county_memberships.county_id.in my{county_ids}}
+  }
 
   def available(day, shift)
     self.send "available_#{day}_#{shift}".to_sym

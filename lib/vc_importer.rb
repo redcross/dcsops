@@ -4,12 +4,11 @@ class Roster::VCImporter
     workbook = Spreadsheet.open(file)
     Roster::Person.transaction do
       import_member_data workbook.worksheet("Contact")
-       # First Delete all the existing qualification data
-      @chapter.people.find_each do |person|
-        person.counties = []
-        person.positions = []
-        person.save!
-      end
+      # First Delete all the existing qualification data
+
+      Roster::PositionMembership.destroy_all_for_chapter(chapter)
+      Roster::CountyMembership.destroy_all_for_chapter(chapter)
+
       import_qualification_data workbook.worksheet("Positions"), 2, 3
       import_qualification_data workbook.worksheet("Qualifications"), 1, 3
     end
@@ -67,7 +66,7 @@ class Roster::VCImporter
         end
       end
 
-      puts "Warning, vc_id=#{vc_id} and person #{person.inspect} did not match qualification #{pos_name}" unless matched
+      #puts "Warning, vc_id=#{vc_id} and person #{person.inspect} did not match qualification #{pos_name}" unless matched
       person.save!
 
     end

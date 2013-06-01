@@ -2,6 +2,7 @@ class CreateRosterPeople < ActiveRecord::Migration
   def change
     create_table :roster_people do |t|
       t.references :chapter
+      t.references :primary_county
 
       # These are all VC fields
       t.string :first_name

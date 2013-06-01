@@ -56,13 +56,15 @@ ActiveRecord::Schema.define(version: 20130524175030) do
     t.datetime "updated_at"
   end
 
-  create_table "roster_counties_people", id: false, force: true do |t|
+  create_table "roster_county_memberships", force: true do |t|
     t.integer "county_id"
     t.integer "person_id"
+    t.boolean "persistent"
   end
 
   create_table "roster_people", force: true do |t|
     t.integer  "chapter_id"
+    t.integer  "primary_county_id"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "email"
@@ -103,9 +105,10 @@ ActiveRecord::Schema.define(version: 20130524175030) do
     t.datetime "updated_at"
   end
 
-  create_table "roster_people_positions", id: false, force: true do |t|
+  create_table "roster_position_memberships", force: true do |t|
     t.integer "position_id"
     t.integer "person_id"
+    t.boolean "persistent"
   end
 
   create_table "roster_positions", force: true do |t|
