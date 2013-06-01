@@ -1,7 +1,7 @@
 class Roster::PeopleController < InheritedResources::Base
   respond_to :html, :json
 
-  has_scope :search_name
+  has_scope :search_name, as: :name_query
   has_scope :in_county
   has_scope :with_position, type: :array
 
