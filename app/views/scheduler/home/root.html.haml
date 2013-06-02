@@ -74,7 +74,7 @@
           %small=link_to "Spreadsheet", calendar_month(month, display: :spreadsheet)
         - month = month.next_month
     %br
-    -if can? :manage, Scheduler::Shift
+    -if can? :read, Scheduler::Shift
       %div
         %a{href: scheduler_shifts_path}
           %i.icon-cog
