@@ -3,7 +3,7 @@ ActiveAdmin.register Roster::CellCarrier, namespace: 'roster_admin', as: 'Cell C
 
   controller do
     def resource_params
-      [params.require(:cell_carrier).permit(:name, :sms_gateway)]
+      request.get? ? [] : [params.require(:cell_carrier).permit(:name, :sms_gateway)]
     end
   end
 end
