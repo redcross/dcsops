@@ -6,7 +6,9 @@ Scheduler::Application.routes.draw do
 
   namespace :scheduler do
     root to: "home#root"
-    resources :shifts, except: [:destroy]
+    resources :shifts, only: [:index] do
+      match '', via: [:put], action: :update_shifts, on: :collection
+    end
     resources :shift_groups
 
     get 'calendar/:year/:month(/:display)',  year: /\d{4}/, 

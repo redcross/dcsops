@@ -1,3 +1,20 @@
 // Place all the styles related to the Scheduler::Shifts controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+body.shifts {
+  table {
+    width: 100%;
+  }
+  tr.end-group td, tr.end-group th, th.end-group {
+    border-bottom: 2px solid rgb(221, 221, 221);
+  }
+
+  input {
+    width: auto;
+    max-width: 75px !important;
+  }
+  .input-append {
+    margin-bottom: 0;
+  }
+}

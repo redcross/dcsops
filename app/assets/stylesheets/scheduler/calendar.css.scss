@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.calendar {
+body.calendar {
   width: 100%;
   td.day, td.week, td.month[colspan="1"] {
     font-size: 7pt;
@@ -22,6 +22,75 @@
     display: inline;
     margin: 0;
     line-height: inherit;
+  }
+
+  .highlight-open-shifts {
+    td.open, div.open {
+      background-color: red;
+    }
+  }
+  .highlight-my-shifts {
+    .my-shift td, div.my-shift {
+      background-color: yellow;
+    }
+  }
+
+  @mixin rotate($rot) {
+    -webkit-transform: rotate($rot);
+    -o-transform: rotate($rot);
+    -moz-transform: rotate($rot);
+    transform: rotate($rot);
+  }
+
+  .shifts {
+    width: 100%;
+
+    th.shift-header {
+      max-width: 1em;
+      @include rotate(90deg);
+      padding: 0;
+      font-weight: normal;
+    }
+    th.date-header {
+      max-width: 1em;
+      padding: 0;
+    }
+    tr.end-group {
+      border-bottom: 1px dashed black;
+    }
+  }
+
+  .shifts td {
+    font-size: 100%;
+    line-height: 1.2;
+
+
+  }
+
+  .calendar-spreadsheet {
+
+    .page {
+      page-break-inside: avoid;
+      page-break-after: always;
+
+      &:last-child {
+        page-break-after: avoid;
+      }
+    }
+
+    table {
+      width: 100%;
+      height: 100%;
+    }
+
+    td {
+      font-size: 8pt;
+      line-height: 1.2;
+      border: 1px solid black;
+      vertical-align: top;
+      //height: 2.4em;
+      padding: 2px;
+    }
   }
   
 }
@@ -70,17 +139,6 @@
   }
 }
 
-.highlight-open-shifts {
-  td.open, div.open {
-    background-color: red;
-  }
-}
-.highlight-my-shifts {
-  .my-shift td, div.my-shift {
-    background-color: yellow;
-  }
-}
-
 @media print {
   input[type=checkbox] {
     display: none;
@@ -115,60 +173,4 @@
 }
 
 
-@mixin rotate($rot) {
-  -webkit-transform: rotate($rot);
-  -o-transform: rotate($rot);
-  -moz-transform: rotate($rot);
-  transform: rotate($rot);
-}
-
-.shifts {
-  width: 100%;
-
-  th.shift-header {
-    max-width: 1em;
-    @include rotate(90deg);
-    padding: 0;
-    font-weight: normal;
-  }
-  th.date-header {
-    max-width: 1em;
-    padding: 0;
-  }
-  tr.end-group {
-    border-bottom: 1px dashed black;
-  }
-}
-
-.shifts td {
-  font-size: 100%;
-  line-height: 1.2;
-
-
-}
-
-.calendar-spreadsheet {
-
-  .page {
-    page-break-inside: avoid;
-    page-break-after: always;
-
-    &:last-child {
-      page-break-after: avoid;
-    }
-  }
-
-  table {
-    width: 100%;
-    height: 100%;
-  }
-
-  td {
-    font-size: 8pt;
-    line-height: 1.2;
-    border: 1px solid black;
-    vertical-align: top;
-    //height: 2.4em;
-    padding: 2px;
-  }
-}
+  

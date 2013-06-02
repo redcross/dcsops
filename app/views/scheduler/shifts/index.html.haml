@@ -1,31 +1,66 @@
-- model_class = Scheduler::Shift
-.page-header
-  %h1=t '.title', :default => model_class.model_name.human.pluralize
-%table.table.table-striped
-  %thead
-    %tr
-      %th= model_class.human_attribute_name(:id)
-      %th= model_class.human_attribute_name(:name)
-      %th= model_class.human_attribute_name(:abbrev)
-      %th= model_class.human_attribute_name(:shift_group_id)
-      %th= model_class.human_attribute_name(:max_signups)
-      %th= model_class.human_attribute_name(:county_id)
-      %th= model_class.human_attribute_name(:ordinal)
-      %th= model_class.human_attribute_name(:created_at)
-      %th=t '.actions', :default => t("helpers.actions")
-  %tbody
-    - collection.each do |shift|
-      %tr
-        %td= link_to shift.id, scheduler_shift_path(shift)
-        %td= shift.name
-        %td= shift.abbrev
-        %td= shift.shift_group.name
-        %td= shift.max_signups
-        %td= shift.county.name
-        %td= shift.ordinal
-        %td=l shift.created_at
-        %td
-          = link_to t('.edit', :default => t("helpers.links.edit")), edit_scheduler_shift_path(shift), :class => 'btn btn-mini'
-          = link_to t('.destroy', :default => t("helpers.links.destroy")), scheduler_shift_path(shift), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-mini btn-danger'
+%h1 Shifts
 
-= link_to t('.new', :default => t("helpers.links.new")), new_scheduler_shift_path, :class => 'btn btn-primary'
+- by_county_group_shift.each do |county, groups|
+  =form_tag '', method: :put do
+    %h3=county.name
+    %table.table-condensed.table-bordered.table-striped
+      %thead
+        %tr
+          %th{colspan:3}
+          %th{colspan:2} Open Shifts
+          %th{colspan:2} Signups Available
+        %tr
+          %th Period
+          %th Name
+          %th Abbrev
+          - dates_for_count.each do |date|
+            %th=date.strftime "%b"
+          %th From
+          %th To
+          %th Max Advance Signup 
+      - groups.each_with_index do |(group, shifts), group_idx|
+        -avail_data = dates_for_count.map{|d| Scheduler::Shift.shifts_available_by_day(shifts, d)}
+        - shifts.each_with_index do |shift, shift_idx|
+          = fields_for "shifts[#{shift.id}]", shift do |f|
+            %tr{class: (shift_idx == (shifts.count-1)) && 'end-group'}
+              -if shift_idx == 0
+                %th{rowspan: shifts.count, class: 'end-group'}=group.name
+              %th=shift.name
+              %td=shift.abbrev
+              - dates_for_count.each_with_index do |date, idx|
+                %td=avail_data[idx][shift].map{|date, avail| avail ? 1 : 0}.sum
+              %td
+                .input-append
+                  =f.date_field :signups_frozen_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', class: "frozen"
+                  %a.btn.add-on.clearbtn Clear
+              %td
+                .input-append
+                  =f.date_field :signups_available_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', class: "available"
+                  %a.btn.add-on.clearbtn Clear
+              %td
+                .input-append
+                  =f.text_field :max_advance_signup, type: :number, class: 'max-signup'
+                  %span.add-on days
+      %tfoot
+        %tr.all-shifts
+          = fields_for "county_shifts[#{county.id}]" do |f|
+            %th{colspan: 5}
+              All Shifts
+              %button.btn.btn-mini Cancel
+              %button.btn.btn-mini.btn-warning Save
+            %td
+              .input-append
+                =f.text_field :signups_frozen_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', "data-all-class" => 'frozen'
+                %a.btn.add-on.clearallbtn{"data-all-class" => 'frozen'} Clear
+            %td
+              .input-append
+                =f.text_field :signups_available_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', "data-all-class" => 'available'
+                %a.btn.add-on.clearallbtn{"data-all-class" => 'available'} Clear
+            %td
+              .input-append
+                =f.text_field :max_advance_signup, type: :number, "data-all-class" => 'max-signup'
+                %span.add-on days
+
+- content_for :footer_js do
+  :javascript
+    window.shiftsController = new window.ShiftsController()
