@@ -2,6 +2,7 @@ class Scheduler::NotificationSettingsController < Scheduler::BaseController
   respond_to :html, :json
   inherit_resources
   load_and_authorize_resource
+  skip_authorize_resource only: :me
 
   actions :show, :update
 
