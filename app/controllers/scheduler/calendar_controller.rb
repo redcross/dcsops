@@ -1,5 +1,6 @@
 class Scheduler::CalendarController < Scheduler::BaseController
   before_filter :authorize_resource
+  skip_authorization_check
 
   def show
     @month = month_param
@@ -66,7 +67,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
 
 
   def authorize_resource
-    authorize! :read, person
+    #authorize! :read, Scheduler::ShiftAssignment.new(person: person)
   end
 
   helper_method :person, :assignments_for_shift_on_day, :show_counties, :show_shifts, :daily_groups, :weekly_groups, :monthly_groups, :all_groups, :show_only_available,

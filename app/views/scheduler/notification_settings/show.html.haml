@@ -27,8 +27,17 @@
       Subscribe to this URL to show your shifts in your calendaring program:
       %small
         %pre
-          -url = scheduler_shift_assignments_url(format: 'ics', api_token: resource.calendar_api_token)
+          -url = scheduler_shift_assignments_url(format: 'ics', api_token: resource.calendar_api_token, protocol: 'ical')
           %a{href: url}=url
+    -if can_see_admin_notifications
+      %p
+        Subscribe to this URL to show
+        %strong all
+        shifts in your calendaring program:
+        %small
+          %pre
+            -url = scheduler_shift_assignments_url(format: 'ics', api_token: resource.calendar_api_token, show_shifts: 'all', protocol: 'ical')
+            %a{href: url}=url
     %h3 Email
     %p
       Send me an email reminder for my shifts
@@ -63,11 +72,14 @@
             =editable_select resource, :sms_all_shifts_at, hour_select_options(blank: true)
             ==.
         %p
-          Only send messages between
+          Only send reminder messages between
           =editable_select resource, :sms_only_after, hour_select_options
           and
           =editable_select resource, :sms_only_before, hour_select_options(midnight: true)
           ==.
+          %br
+          %small
+            This does not affect other messages, such as dispatch and calldown.
         %p
           %small
             Text messages will be sent to:

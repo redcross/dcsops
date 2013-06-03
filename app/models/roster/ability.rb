@@ -3,7 +3,8 @@ class Roster::Ability
 
   def initialize(person)
 
-    can [:read, :update], Roster::Person, {id: person.id}
+    can [:read], Roster::Person
+    can [:update], Roster::Person, id: person.id
 
     # Define abilities for the passed in user here. For example:
     #

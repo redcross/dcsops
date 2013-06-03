@@ -31,7 +31,7 @@ class Scheduler::NotificationSettingsController < Scheduler::BaseController
   end
 
   def can_see_admin_notifications
-    true
+    can? :receive_admin_notifications, resource
   end
  
   def resource

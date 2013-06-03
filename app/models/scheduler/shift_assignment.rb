@@ -70,7 +70,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   before_destroy :check_frozen_shift
 
   belongs_to :person, class_name: 'Roster::Person'
-  belongs_to :shift
+  belongs_to :shift, class_name: 'Scheduler::Shift'
   belongs_to :notification_setting, foreign_key: 'person_id'
 
   validates :person, :shift, :date, presence: true
