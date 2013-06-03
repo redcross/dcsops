@@ -183,7 +183,7 @@ describe Scheduler::ShiftAssignment do
     describe "needs_email_invite" do
       before(:each) do
         @prefs.update_attribute :send_email_invites, true
-        @item = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: Date.tomorrow
+        @item = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: zone.today.tomorrow
       end
 
       it "should want to send an invite" do
@@ -196,7 +196,7 @@ describe Scheduler::ShiftAssignment do
       end
 
       it "should not send the invite if the shift has already passed" do
-        Delorean.time_travel_to "1 day from now"
+        Delorean.time_travel_to "2 days from now"
         Scheduler::ShiftAssignment.needs_email_invite(@chapter).should =~ []
       end
 
