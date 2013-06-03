@@ -35,7 +35,7 @@ class Roster::VCImporter
   def import_qualification_data(sheet, data_col, pos_col)
 
     counties = @chapter.counties.to_a.select{|c| c.vc_regex}
-    positions = @chapter.positions.to_a
+    positions = @chapter.positions.to_a.select{|c| c.vc_regex}
 
     person = nil
 

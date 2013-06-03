@@ -5,6 +5,6 @@ class Roster::Position < ActiveRecord::Base
   serialize :role_scope
 
   def vc_regex
-    @compiled_regex ||= Regexp.new(vc_regex_raw)
+    @compiled_regex ||= (vc_regex_raw && Regexp.new(vc_regex_raw))
   end
 end
