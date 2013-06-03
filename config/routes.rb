@@ -1,8 +1,26 @@
+require 'authlogic/controller_adapters/rack_adapter'
+
 Scheduler::Application.routes.draw do
   break if ARGV.join.include? 'assets:precompile' # this prevents triggering ActiveAdmin during precompile
 
   ActiveAdmin.routes(self)
-  root to: "root#index"
+
+  filter = lambda{|req| 
+    rack_req = Rack::Request.new req.env
+    rack_req.instance_eval do
+      def request; self; end
+      def remote_ip; self.ip; end
+    end
+    Authlogic::Session::Base.controller = Authlogic::ControllerAdapters::AbstractAdapter.new(rack_req)
+    ret = Roster::Session.find.nil?
+    Authlogic::Session::Base.controller = nil
+    if ret
+      req.env['SET_RETURN_TO'] = '/'
+    end
+    ret
+  }
+  root to: "roster/sessions#new", constraints: filter
+  root to: "root#index", constraints: lambda{|req| !filter.call(req)}, as: nil
 
   namespace :scheduler do
     root to: "home#root"

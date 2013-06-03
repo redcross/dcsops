@@ -10,6 +10,10 @@ class Roster::SessionsController < ApplicationController
   end
 
   def new
+    if path = request.env['SET_RETURN_TO']
+      session[:redirect_after_login] = path
+    end
+
     respond_with resource
   end
 
