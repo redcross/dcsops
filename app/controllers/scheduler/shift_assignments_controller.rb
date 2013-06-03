@@ -9,7 +9,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
     new_scope = case arg
     when 'mine'
       if controller.params[:person_id]
-        authorize! :read, Scheduler::ShiftAssignment.new(person_id: controller.params[:person_id])
+        controller.authorize! :read, Scheduler::ShiftAssignment.new(person_id: controller.params[:person_id])
         scope.where{person_id == my{controller.params[:person_id]}}
       else
         scope.where{person_id == my{controller.current_user.id}}

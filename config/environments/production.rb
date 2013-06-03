@@ -90,5 +90,5 @@ Scheduler::Application.configure do
     domain: ENV['SMTP_DOMAIN'],
     enable_starttls_auto: true
   }
-  config.action_mailer.default_url_options = { host: 'www.arcbadat.com' }
+  config.action_mailer.default_url_options = { host: 'www.arcbadat.org' }
 end
