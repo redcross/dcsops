@@ -31,7 +31,10 @@ class Scheduler::HomeController < Scheduler::BaseController
 
   helper_method :available_swaps
   def available_swaps
-    @available_swaps ||= Scheduler::ShiftAssignment.references(:shift => :shift_group).starts_after(current_time).includes(:shift => :shift_group).order('scheduler_shift_assignments.date asc, scheduler_shift_groups.start_offset asc').where(available_for_swap: true).select{|shift| shift.shift.can_be_taken_by? current_person}
+    @available_swaps ||= Scheduler::ShiftAssignment.references(:shift => :shift_group)
+      .starts_after(current_time).includes(:shift => [:shift_group, :county])
+      .order('scheduler_shift_assignments.date asc, scheduler_shift_groups.start_offset asc')
+      .where(available_for_swap: true).select{|shift| shift.shift.can_be_taken_by? current_person}
   end
 
   helper_method :days_of_week, :shift_times, :current_person

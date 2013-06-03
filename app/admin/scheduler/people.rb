@@ -75,9 +75,7 @@ ActiveAdmin.register Roster::Person, namespace: 'scheduler_admin', as: 'Person' 
   member_action :possess, action: :get do
     p = resource
     p.reset_persistence_token! if p.persistence_token.blank?
-    pp resource
     sess = Roster::Session.create!(p, true)
-    pp sess
     redirect_to '/'
   end
   action_item only: :show, if: proc{ authorized? :possess, resource} do

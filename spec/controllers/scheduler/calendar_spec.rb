@@ -57,6 +57,44 @@ describe Scheduler::CalendarController do
       response.body.should match(@ds.name)
     end
 
+    args = {
+      "default" => {},
+      "showing my shifts" => {show_shifts: :mine},
+      "showing my with blank person" => {show_shifts: :mine, person_id: ""},
+      "showing county shifts" => {show_shifts: :county},
+      "showing county with no person" => {show_shifts: :county, person_id: ""},
+      "showing county shifts with blank counties" => {show_shifts: :county, :counties => []},
+      "showing county shifts with lots of counties" => {show_shifts: :county, :counties => Roster::County.all.map(&:id)},
+      "showing all shifts" => {show_shifts: :all},
+      "showing all shifts with no person" => {show_shifts: :all, person_id: ""},
+    }
+
+    args.each do |name, extra_params|
+        context name do
+
+        it "should render the whole calendar" do
+          get :show, extra_params.merge({month: 'august', year: '2013'})
+          response.should be_success
+        end
+
+
+        it "should render the month" do
+          get :day, extra_params.merge({month: "2013-08"})
+          response.should be_success
+        end
+
+        it "should render open shifts" do
+          get :show, extra_params.merge({month: 'august', year: '2013', display: 'open_shifts'})
+          response.should be_success
+        end
+
+        it "should render the spreadsheet" do
+          get :show, extra_params.merge({month: 'august', year: '2013', display: 'spreadsheet'})
+          response.should be_success
+        end
+      end
+    end
+
     context "user without counties" do
       before(:each) do
         @person.counties = [];

@@ -127,6 +127,7 @@
         %tr
           %th Date
           %th Shift
+          %th County
           %th From
           %th 
         - available_swaps.each do |shift|
@@ -135,6 +136,7 @@
             %td
               =shift.shift.shift_group.name
               =shift.shift.name
+            %td=shift.shift.county.abbrev
             %td=shift.person.full_name
             %td
               =link_to "Claim", swap_scheduler_shift_assignment_path(shift), class: "btn btn-small"

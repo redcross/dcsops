@@ -56,12 +56,16 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def load_my_shifts(date_start, date_end)
-    group_ids = daily_groups.keys + weekly_groups.keys + monthly_groups.keys
-    pid = person.id
-    @my_shifts = Scheduler::ShiftAssignment.includes{shift}.where{(shift.shift_group_id.in(group_ids)) & (person_id == pid) & date.in(date_start.at_beginning_of_week.advance(weeks: -1)..date_end)}.reduce({}) do |hash, assignment|
-      hash[assignment.shift.shift_group_id] ||= {}
-      hash[assignment.shift.shift_group_id][assignment.date] = assignment
-      hash
+    if person
+      group_ids = daily_groups.keys + weekly_groups.keys + monthly_groups.keys
+      pid = person.id
+      @my_shifts = Scheduler::ShiftAssignment.includes{shift}.where{(shift.shift_group_id.in(group_ids)) & (person_id == pid) & date.in(date_start.at_beginning_of_week.advance(weeks: -1)..date_end)}.reduce({}) do |hash, assignment|
+        hash[assignment.shift.shift_group_id] ||= {}
+        hash[assignment.shift.shift_group_id][assignment.date] = assignment
+        hash
+      end
+    else
+      @my_shifts = {}
     end
   end
 
@@ -152,6 +156,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def can_take_shift?(shift)
+    return false unless person
     @_person_county_ids ||= person.county_ids.to_a
     @_take_shift_cache ||= {}
     @_take_shift_cache[shift.id] ||= if person and @_person_county_ids.include? shift.county_id

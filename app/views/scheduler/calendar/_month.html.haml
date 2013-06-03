@@ -52,7 +52,7 @@
   -if show_shifts == :county
     ==-
     = (id = show_counties.first) ? Roster::County.find(id).name : ""
-  -elsif show_shifts == :mine
+  -elsif show_shifts == :mine and person
     ==-
     = person.first_name
     = person.last_name
