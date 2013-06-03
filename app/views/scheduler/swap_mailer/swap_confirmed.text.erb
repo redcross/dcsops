@@ -11,4 +11,8 @@ The contact information on file for <%= @to.person.first_name %> is:
 <% @to.person.phone_order.each_with_index do |ph, i| %><%= i %>: <%= ph[:number] %>
 <% end %>
 
-If you believe this is in error or have any questions, please contact your DAT Chair.
+If you believe this is in error or have any questions, please contact your DAT Administrator.
+
+--
+
+This message is sent by the ARCBA DAT Scheduling System.  Edit your notification preferences here: <%= me_scheduler_notification_settings_url %>

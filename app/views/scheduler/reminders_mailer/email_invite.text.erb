@@ -5,4 +5,5 @@ This is a calendar invite for the DAT shift you recently signed up with.  Accept
 You are signed up as <%= item.shift.name %> for the <%= item.shift.shift_group.name %> shift<% if item.shift.shift_group.period == 'daily' %> on <%= item.date.strftime("%A, %B %d") %> from <%= item.local_start_time.strftime("%l:%M%p").strip %> to <%= item.local_end_time.strftime("%l:%M%p").strip %>.<% else %> from <%= item.local_start_time.strftime("%A, %B %D at %k:%M%p") %> to <%= item.local_end_time.strftime("%A, %B %D at %k:%M%p") %>.<% end %>
 
 --
-This message is sent by the ARCBA DAT Scheduling System.  Edit your notification preferences here: <%= scheduler_notification_setting_url(item.person) %>
+
+This message is sent by the ARCBA DAT Scheduling System.  Edit your notification preferences here: <%= me_scheduler_notification_settings_url %>
