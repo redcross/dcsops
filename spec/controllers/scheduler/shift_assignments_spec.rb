@@ -58,7 +58,7 @@ describe Scheduler::ShiftAssignmentsController do
       end
 
       it 'should show all shifts I am a county admin for' do
-        3.times { pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties; FactoryGirl.create :shift_assignment, person: pers }
+        (0..2).map { |i| pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties; FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+6+i) }
 
         pos = @person.positions.first
         pos.grants_role = 'county_dat_admin'
@@ -69,6 +69,20 @@ describe Scheduler::ShiftAssignmentsController do
 
         response.code.should eq "200"
         response.body.scan(/BEGIN:VEVENT/).count.should eq(8)
+      end
+
+      it "should merge other shifts into the same event" do
+        (1..3).map { |i| pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties; FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+i) }
+
+        pos = @person.positions.first
+        pos.grants_role = 'county_dat_admin'
+        pos.role_scope = @person.county_ids
+        pos.save
+
+        get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
+
+        response.code.should eq "200"
+        response.body.scan(/BEGIN:VEVENT/).count.should eq(5)
       end
     end
   end

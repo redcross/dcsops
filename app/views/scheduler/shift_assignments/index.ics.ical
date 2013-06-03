@@ -1,8 +1,13 @@
-collection.each do |item|
+collection_by_date.each do |item|
   cal.event do
     description item.shift.name
-    dtstart (item.local_start_time)
-    dtend (item.local_end_time)
+    if item.shift.shift_group.period == 'daily'
+      dtstart (item.local_start_time)
+      dtend (item.local_end_time)
+    else
+      dtstart (item.local_start_time.to_date)
+      dtend (item.local_end_time.to_date)
+    end
     location item.shift.county.name
     summary("#{item.shift.name}\n\n" + item.shift.shift_group.shifts.where(county_id: item.shift.county).map{|shift|
       assignments = shift.shift_assignments.for_day(item.date)
@@ -16,5 +21,6 @@ collection.each do |item|
       description "DAT Time!"
       trigger "-PT1H"
     end
+    transp "TRANSPARENT"
   end
 end

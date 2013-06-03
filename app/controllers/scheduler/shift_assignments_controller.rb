@@ -80,9 +80,17 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
 
   private
 
-  helper_method :can_swap_to_others?
+  helper_method :can_swap_to_others?, :collection_by_date
   def can_swap_to_others?
     true
+  end
+
+  def collection_by_date
+    @_by_date ||= collection.reduce({}) do |hash, ass|
+      fmt = "#{ass.date}-#{ass.shift.shift_group.period}"
+      hash[fmt] = ass;
+      hash
+    end.values
   end
 
   def require_valid_user!
@@ -113,7 +121,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   #end
 
   def collection
-    apply_scopes(super).uniq
+    apply_scopes(super).order(:date).uniq
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
