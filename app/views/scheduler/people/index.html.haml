@@ -55,9 +55,9 @@
         %td
           = Scheduler::FlexSchedule.where(id: person.id).first.try(:num_shifts)
         %td
-          -if can? :manage, Scheduler::FlexSchedule.new(person: person)
+          -if can? :update, Scheduler::FlexSchedule.new(person: person)
             = link_to "Flex Schedule", scheduler_flex_schedule_path(person), :class => 'btn btn-mini'
-          -if can? :manage, Scheduler::NotificationSetting.new(person: person)
+          -if can? :update, Scheduler::NotificationSetting.new(person: person)
             = link_to "Reminders", scheduler_notification_setting_path(person), :class => 'btn btn-mini'
           = link_to "Shifts", scheduler_person_shift_assignments_path(person), :class => 'btn btn-mini'
           = link_to "Email", person.vc_email_url, :class => 'btn btn-mini'
