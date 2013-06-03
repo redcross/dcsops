@@ -1,7 +1,7 @@
 class Scheduler::HomeController < Scheduler::BaseController
 
   def root
-    authorize! :read, current_person
+    authorize! :read, current_person if current_person != current_user
   end
 
   private

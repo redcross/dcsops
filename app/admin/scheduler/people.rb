@@ -2,6 +2,8 @@ ActiveAdmin.register Roster::Person, namespace: 'scheduler_admin', as: 'Person' 
   batch_action :destroy, false
   batch_action :edit, false
 
+  actions :all, except: [:destroy]
+
   menu parent: 'Scheduling'
 
   index do
@@ -29,14 +31,19 @@ ActiveAdmin.register Roster::Person, namespace: 'scheduler_admin', as: 'Person' 
       f.input :first_name
       f.input :last_name
     end
-    #f.has_many :county_memberships do |county_form|
-    #  if county_form.object
-    #    county_form.input :_destroy, as: :boolean
-    #  end
-#
-    #  county_form.input :county
-    #  county_form.input :persistent
-    #end
+    f.actions
+    f.has_many :county_memberships do |county_form|
+      county_form.input :county
+      county_form.input :persistent
+      county_form.input :_destroy, as: :boolean, label: "Remove"
+    end
+    f.actions
+    f.has_many :position_memberships do |form|
+      form.input :position
+      form.input :persistent
+      form.input :_destroy, as: :boolean, label: "Remove"
+    end
+    f.actions
   end
 
   show do
@@ -45,16 +52,16 @@ ActiveAdmin.register Roster::Person, namespace: 'scheduler_admin', as: 'Person' 
       column do
         panel "Positions" do
           table_for person.position_memberships do
-            column( :name) { |rec| rec.position.name }
-            column :persistent
+            column( :name) { |rec| rec.position && rec.position.name }
+            column(:persistent) { |rec| rec.persistent ? 'Yes' : ''}
           end
         end
       end
       column do
         panel "Counties" do
           table_for person.county_memberships do
-            column( :name) { |rec| rec.county.name }
-            column :persistent
+            column( :name) { |rec| rec.county && rec.county.name }
+            column(:persistent) { |rec| rec.persistent ? 'Yes' : ''}
           end
         end
       end
@@ -67,8 +74,14 @@ ActiveAdmin.register Roster::Person, namespace: 'scheduler_admin', as: 'Person' 
 
   member_action :possess, action: :get do
     p = resource
-    Roster::Session.create! p
-    redirect_to resource_path
+    p.reset_persistence_token! if p.persistence_token.blank?
+    pp resource
+    sess = Roster::Session.create!(p, true)
+    pp sess
+    redirect_to '/'
+  end
+  action_item only: :show, if: proc{ authorized? :possess, resource} do
+    link_to "Possess", url_for(action: :possess, only_path: true)
   end
 
 
@@ -94,8 +107,15 @@ ActiveAdmin.register Roster::Person, namespace: 'scheduler_admin', as: 'Person' 
       params['q'] ||= {counties_id_in: current_user.county_ids}
     end
 
+    def resource
+      val = super
+      @_resource ||= val.readonly? ? val.class.find(val.id) : val
+    end
+
     def resource_params
-      [params.require(:dispatch_config).permit(:is_active, :backup_first_id, :backup_second_id, :backup_third_id, :backup_fourth_id)]
+      request.get? ? [] : [params.require(:person).permit(:first_name, :last_name, 
+        county_memberships_attributes: [:id, :_destroy, :persistent, :county_id],
+        position_memberships_attributes: [:id, :_destroy, :persistent, :position_id])]
     end
   end
 end

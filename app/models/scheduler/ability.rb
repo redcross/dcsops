@@ -5,21 +5,24 @@ class Scheduler::Ability
 
     county_ids = person.county_ids.to_a
 
-    can :read, Roster::Person, id: person.id
+    #can :read, Roster::Person, id: person.id
     can :read, Scheduler::ShiftAssignment, {counties: {id: county_ids}}    
     can :manage, [Scheduler::NotificationSetting, Scheduler::FlexSchedule], {id: person.id}
     can [:manage], Scheduler::ShiftAssignment, {person_id: person.id}
 
-    if true # is dat county admin
-        county_ids = county_ids.first
-        can :read, Roster::Person, county_memberships: {county_id: county_ids}
-        can :manage, Scheduler::ShiftAssignment, shift: {county_id: county_ids}
-        can :manage, Scheduler::DispatchConfig, id: county_ids
-        can :manage, [Scheduler::NotificationSetting, Scheduler::FlexSchedule], person: {county_memberships: {county_id: county_ids}}
-        can [:read, :update], Scheduler::Shift, county_id: county_ids
+    # County Admin role
+    positions = person.positions
+    admin_county_ids = positions.select{|p| p.grants_role == 'county_admin'}.map(&:role_scope).flatten
+
+    if admin_county_ids.present? # is dat county admin
+        can :read, Roster::Person, county_memberships: {county_id: admin_county_ids}
+        can :manage, Scheduler::ShiftAssignment, shift: {county_id: admin_county_ids}
+        can :manage, Scheduler::DispatchConfig, id: admin_county_ids
+        can :manage, [Scheduler::NotificationSetting, Scheduler::FlexSchedule], person: {county_memberships: {county_id: admin_county_ids}}
+        can [:read, :update], Scheduler::Shift, county_id: admin_county_ids
     end
 
-    if true # is site manager
+    if false # is site manager
         can :manage, Scheduler::DispatchConfig
         can :manage, Roster::Person
         can :manage, Scheduler::Shift

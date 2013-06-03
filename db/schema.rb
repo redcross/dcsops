@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130524175030) do
+ActiveRecord::Schema.define(version: 20130603003926) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "resource_id",   null: false
@@ -118,6 +118,9 @@ ActiveRecord::Schema.define(version: 20130524175030) do
     t.boolean  "is_county_admin"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "grants_role"
+    t.text     "role_scope"
+    t.boolean  "hidden",          default: false
   end
 
   create_table "roster_positions_scheduler_shifts", id: false, force: true do |t|

@@ -31,6 +31,8 @@ class Roster::Person < ActiveRecord::Base
 
   default_scope {order(:last_name, :first_name)}
 
+  accepts_nested_attributes_for :county_memberships, :position_memberships, allow_destroy: true
+
   def primary_county
     super || counties.first
   end
