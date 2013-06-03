@@ -79,10 +79,18 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   attr_accessor :swapping_from_id, :is_swapping_to
 
   scope :for_day, lambda {|day| where(date: day)}
-  scope :needs_email_invite, ->{includes(:notification_setting).where(:email_invite_sent => false, :scheduler_notification_settings => {send_email_invites: true}).where('date > ?', Date.current)}
+  
+  scope :needs_email_invite, ->(chapter) {
+    joins(:notification_setting).readonly(false)
+    .joins{person}.where{person.chapter_id == chapter.id}
+    .where(:email_invite_sent => false, :scheduler_notification_settings => {send_email_invites: true})
+    .where('date > ?', chapter.time_zone.today)
+  }
+  
   scope :needs_email_reminder, ->(chapter){
-    includes(:notification_setting).where(:email_reminder_sent => false)
-    .where("scheduler_notification_settings.email_advance_hours is not null").references(:scheduler_notification_settings)
+    where(:email_reminder_sent => false)
+    .joins{notification_setting}.where{notification_setting.email_advance_hours != nil}
+    .joins{person}.where{person.chapter_id == chapter.id}.readonly(false)
     .select{|ass|
       now = chapter.time_zone.now
       start = ass.local_start_time
@@ -90,11 +98,14 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
       ass.notification_setting.email_advance_hours and etime > now and (start - ass.notification_setting.email_advance_hours) < now
     }
   }
+
   scope :needs_sms_reminder, -> (chapter) {
     zone = chapter.time_zone
     now = chapter.time_zone.now
-    includes(:notification_setting).where(:sms_reminder_sent => false)
-    .where("scheduler_notification_settings.sms_advance_hours is not null").references(:scheduler_notification_settings)
+
+    where(:sms_reminder_sent => false)
+    .joins{notification_setting}.where{notification_setting.sms_advance_hours != nil}
+    .joins{person}.where{person.chapter_id == chapter.id}.readonly(false)
     .select{|ass|
       start = ass.local_start_time
       etime = ass.local_end_time

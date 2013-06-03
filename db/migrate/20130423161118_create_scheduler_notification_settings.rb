@@ -16,8 +16,8 @@ class CreateSchedulerNotificationSettings < ActiveRecord::Migration
 
       t.boolean :email_calendar_signups
 
-      t.boolean :email_all_shifts_at
-      t.boolean :sms_all_shifts_at
+      t.integer :email_all_shifts_at
+      t.integer :sms_all_shifts_at
 
       t.date :last_all_shifts_email
       t.date :last_all_shifts_sms

@@ -7,13 +7,13 @@ class Scheduler::NotificationSetting < ActiveRecord::Base
     now = chapter.time_zone.now
     midnight = now.at_beginning_of_day
     offset = now.seconds_since_midnight
-    where{(email_all_shifts_at != nil) & (email_all_shifts_at <= offset) & ((last_all_shifts_email == nil) | (last_all_shifts_email < midnight))}
+    joins{person}.where{(person.chapter_id == chapter.id) & (email_all_shifts_at != nil) & (email_all_shifts_at <= offset) & ((last_all_shifts_email == nil) | (last_all_shifts_email < midnight))}.readonly(false)
   }
   scope :needs_daily_sms, ->chapter{
     now = chapter.time_zone.now
     midnight = now.at_beginning_of_day
     offset = now.seconds_since_midnight
-    where{(sms_all_shifts_at != nil) & (sms_all_shifts_at <= offset) & ((last_all_shifts_sms == nil) | (last_all_shifts_sms < midnight))}
+    joins{person}.where{(person.chapter_id == chapter.id) & (sms_all_shifts_at != nil) & (sms_all_shifts_at <= offset) & ((last_all_shifts_sms == nil) | (last_all_shifts_sms < midnight))}.readonly(false)
   }
 
   before_create :set_calendar_api_token

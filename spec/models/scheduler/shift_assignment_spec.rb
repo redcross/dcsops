@@ -187,17 +187,17 @@ describe Scheduler::ShiftAssignment do
       end
 
       it "should want to send an invite" do
-        Scheduler::ShiftAssignment.needs_email_invite.should =~ [@item]
+        Scheduler::ShiftAssignment.needs_email_invite(@chapter).should =~ [@item]
       end
 
       it "should not want to send an invite if the invite has been sent" do
         @item.update_attribute :email_invite_sent, true
-        Scheduler::ShiftAssignment.needs_email_invite.should =~ []
+        Scheduler::ShiftAssignment.needs_email_invite(@chapter).should =~ []
       end
 
       it "should not send the invite if the shift has already passed" do
         Delorean.time_travel_to "1 day from now"
-        Scheduler::ShiftAssignment.needs_email_invite.should =~ []
+        Scheduler::ShiftAssignment.needs_email_invite(@chapter).should =~ []
       end
 
     end
