@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby "2.0.0"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.0.0.rc1'
+gem 'rails', '~> 4.0.0.rc1', github: 'jlaxson/rails', branch: '4-0-0'
 gem 'squeel', github: 'ernie/squeel'
 gem 'puma'
 
@@ -21,7 +21,7 @@ gem 'bootstrap-x-editable-rails'
 gem "spreadsheet" # Import from excel
 gem "authlogic"
 gem "ri_cal" # Ical Rendering
-gem "cancan"
+gem "cancan", github: 'jlaxson/cancan'
 gem "ruby-openid", require: 'openid'
 
 gem 'formtastic', github: 'justinfrench/formtastic', branch: 'rails4beta'
