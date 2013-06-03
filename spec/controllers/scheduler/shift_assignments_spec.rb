@@ -25,7 +25,7 @@ describe Scheduler::ShiftAssignmentsController do
   end
 
 
-  context do
+  context "#index.ics" do
     render_views
 
     it "should allow exporting my shifts to calendar" do
@@ -42,6 +42,34 @@ describe Scheduler::ShiftAssignmentsController do
 
       response.code.should eq "200"
       response.body.scan(/BEGIN:VEVENT/).count.should eq(5)
+    end
+
+    pending "should include daily, weekly, monthly shifts"
+    pending "daily shifts should have a date and time"
+    pending "weekly/monthly shifts should have only a day"
+
+    context "?show_shifts=all" do
+      it "should access denied if a regular user" do
+        3.times { FactoryGirl.create :shift_assignment }
+
+        expect {
+          get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
+        }.to raise_error(CanCan::AccessDenied)
+      end
+
+      it 'should show all shifts I am a county admin for' do
+        3.times { pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties; FactoryGirl.create :shift_assignment, person: pers }
+
+        pos = @person.positions.first
+        pos.grants_role = 'county_dat_admin'
+        pos.role_scope = @person.county_ids
+        pos.save
+
+        get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
+
+        response.code.should eq "200"
+        response.body.scan(/BEGIN:VEVENT/).count.should eq(8)
+      end
     end
   end
 

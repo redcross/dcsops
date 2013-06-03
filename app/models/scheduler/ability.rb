@@ -8,13 +8,18 @@ class Scheduler::Ability
     #can :read, Roster::Person, id: person.id
     #can :read, Scheduler::ShiftAssignment, shift: {county_id: county_ids}
     can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], {id: person.id}
-    can [:read, :destroy, :create], Scheduler::ShiftAssignment, person_id: person.id
+    can [:read, :destroy, :create, :swap], Scheduler::ShiftAssignment, person_id: person.id
+    can :swap, Scheduler::ShiftAssignment, {available_for_swap: true}
 
     # County Admin role
     positions = person.positions
-    admin_county_ids = positions.select{|p| p.grants_role == 'county_admin'}.map(&:role_scope).flatten
+    admin_county_ids = positions.select{|p| p.grants_role == 'county_dat_admin'}.map(&:role_scope).flatten
+    if positions.any?{|p| p.grants_role == 'chapter_dat_admin' }
+        admin_county_ids = admin_county_ids + person.chapter.county_ids
+    end
+    admin_county_ids = admin_county_ids.uniq
 
-    if false and admin_county_ids.present? # is dat county admin
+    if true and admin_county_ids.present? # is dat county admin
         can :read, Roster::Person, county_memberships: {county_id: admin_county_ids}
         can :manage, Scheduler::ShiftAssignment, {person: {county_memberships: {county_id: admin_county_ids}}}
         can :manage, Scheduler::DispatchConfig, id: admin_county_ids
@@ -22,13 +27,6 @@ class Scheduler::Ability
         can [:read, :update, :update_shifts], Scheduler::Shift, county_id: admin_county_ids
 
         can :receive_admin_notifications, Scheduler::NotificationSetting, id: person.id
-    end
-
-    if false # is site manager
-        can :manage, Scheduler::DispatchConfig
-        can :manage, Roster::Person
-        can :manage, Scheduler::Shift
-        can :manage, Scheduler::ShiftGroup
     end
 
 

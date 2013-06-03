@@ -1,5 +1,7 @@
 ActiveAdmin.register Scheduler::Shift, namespace: 'scheduler_admin', as: 'Shift' do
   menu parent: 'Scheduling'
+
+  actions :all, except: [:destroy]
   
   scope :all, default: true do |shifts|
     shifts.includes([:shift_group, :county]).order(:county_id, :shift_group_id, :ordinal)

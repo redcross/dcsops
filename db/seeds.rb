@@ -19,9 +19,10 @@ mr = arcba.counties.create name: 'Marin', vc_regex_raw: 'Marin', abbrev: 'MR'
 cc = arcba.counties.create name: 'Contra Costa', vc_regex_raw: 'Contra Costa', abbrev: 'CC'
 
 arcba.positions.create name: 'Chapter Configuration', hidden: true, grants_role: 'chapter_config'
+arcba.positions.create name: 'Chapter DAT Admin', hidden: true, grants_role: 'chapter_dat_admin'
 [sf, al, sm, so, mr, cc].each do |county|
-  arcba.positions.create name: "DAT Administrator - #{county.name}", vc_regex_raw: "#{county.name}.*DAT Administrator$", grants_role: 'county_admin', role_scope: county.id
-  arcba.positions.create name: "Disaster Manager - #{county.name}", vc_regex_raw: "#{county.name}.*Disaster Manager$", grants_role: 'county_admin', role_scope: county.id
+  arcba.positions.create name: "DAT Administrator - #{county.name}", vc_regex_raw: "#{county.name}.*DAT Administrator$", grants_role: 'county_dat_admin', role_scope: county.id
+  arcba.positions.create name: "Disaster Manager - #{county.name}", vc_regex_raw: "#{county.name}.*Disaster Manager$", grants_role: 'county_dat_admin', role_scope: county.id
 end
 
 tl = arcba.positions.create name: 'DAT Team Lead', vc_regex_raw: 'Team Lead$'

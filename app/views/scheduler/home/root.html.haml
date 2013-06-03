@@ -83,10 +83,11 @@
       %a{href: scheduler_flex_schedules_path}
         %i.icon-time
         Show Flex Schedule Calendar
-    %div
-      %a{href: scheduler_people_path}
-        %i.icon-user
-        Show Roster
+    -if can? :read, Roster::Person
+      %div
+        %a{href: scheduler_people_path}
+          %i.icon-user
+          Show Roster
   .span4
     %h5 
       %i.icon-group

@@ -3,6 +3,8 @@ ActiveAdmin.register Scheduler::DispatchConfig, namespace: 'scheduler_admin', as
 
   filter :county
 
+  actions :all, except: [:destroy, :create, :new]
+
   index do
     column :county
     column :is_active
