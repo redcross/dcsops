@@ -46,10 +46,6 @@ class Scheduler::ShiftsController < Scheduler::BaseController
     [Date.current.at_beginning_of_month, Date.current.at_beginning_of_month.next_month]
   end
 
-  def collection
-    @_collection ||= super.accessible_by(current_ability).where(county_id: counties.to_a)
-  end
-
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params()
       [params.require(:scheduler_shift).permit(:name, :abbrev, :shift_group_id, :max_signups, :county_id, :ordinal)]

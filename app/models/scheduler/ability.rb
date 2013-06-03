@@ -6,15 +6,17 @@ class Scheduler::Ability
     county_ids = person.county_ids.to_a
 
     can :read, Roster::Person, id: person.id
-    can :read, Scheduler::ShiftAssignment, {counties: { id: county_ids}}    
-    can [:manage], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], {id: person.id}
+    can :read, Scheduler::ShiftAssignment, {counties: {id: county_ids}}    
+    can :manage, [Scheduler::NotificationSetting, Scheduler::FlexSchedule], {id: person.id}
     can [:manage], Scheduler::ShiftAssignment, {person_id: person.id}
 
     if true # is dat county admin
-        #can(:read, Roster::Person){|subject| subject == person || (county_ids & subject.county_ids).present? } 
-        can :manage, Scheduler::ShiftAssignment
+        county_ids = county_ids.first
+        can :read, Roster::Person, county_memberships: {county_id: county_ids}
+        can :manage, Scheduler::ShiftAssignment, shift: {county_id: county_ids}
         can :manage, Scheduler::DispatchConfig, id: county_ids
-        can :manage, [Scheduler::NotificationSetting, Scheduler::FlexSchedule]
+        can :manage, [Scheduler::NotificationSetting, Scheduler::FlexSchedule], person: {county_memberships: {county_id: county_ids}}
+        can [:read, :update], Scheduler::Shift, county_id: county_ids
     end
 
     if true # is site manager

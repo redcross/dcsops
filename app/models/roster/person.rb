@@ -2,10 +2,10 @@ class Roster::Person < ActiveRecord::Base
   belongs_to :chapter, class_name: 'Roster::Chapter'
   belongs_to :primary_county, class_name: 'Roster::County'
 
-  has_many :county_memberships
+  has_many :county_memberships, class_name: 'Roster::CountyMembership'
   has_many :counties, class_name: 'Roster::County', through: :county_memberships
 
-  has_many :position_memberships
+  has_many :position_memberships, class_name: 'Roster::PositionMembership'
   has_many :positions, class_name: 'Roster::Position', through: :position_memberships
 
   belongs_to :home_phone_carrier, class_name: 'Roster::CellCarrier'

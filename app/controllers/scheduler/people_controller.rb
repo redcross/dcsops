@@ -17,7 +17,7 @@ class Scheduler::PeopleController < Scheduler::BaseController
   end
 
   def collection
-    apply_scopes(super).uniq
+    apply_scopes(super).includes{county_memberships}.uniq
   end
 
   helper_method :date_ranges

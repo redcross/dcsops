@@ -18,6 +18,6 @@ class Roster::PeopleController < InheritedResources::Base
     end
 
     def collection
-      apply_scopes(super)
+      apply_scopes(super).accessible_by(current_ability)
     end
 end
