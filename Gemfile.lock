@@ -19,7 +19,7 @@ GIT
 
 GIT
   remote: git://github.com/jlaxson/active_admin.git
-  revision: bc5e1bd111be0b6c3aee028c330984c6e82a8111
+  revision: 7c9f172db4850cc43a55b68ff66fc413b21065fa
   branch: rails4
   specs:
     activeadmin (0.6.0)
