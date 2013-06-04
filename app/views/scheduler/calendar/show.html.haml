@@ -13,20 +13,23 @@
       .btn-group.btn-group-vertical.span2#highlighting-group
         %button.btn.btn-block.active{:"data-style" => "highlight-my-shifts"} My Shifts
         %button.btn.btn-block{:"data-style" => "highlight-open-shifts"} Open Shifts
-    .span2
+    .span3
       %h5 Show Shifts For
       .input-append
         =text_field_tag :person, (person and "#{person.first_name} #{person.last_name}"), id: "select-person", style: "width: 100px"
         %button.btn#clear-person Clear
       #choose-counties{style: show_shifts==:county || 'display: none'}
         =select_tag "counties[]", options_from_collection_for_select(Roster::County.all, :id, :name, show_counties.first), multiple: true, id: 'choose-county'
+    .span3
+      %h5 Other Views:
+      =view_as_links
   .row
     %hr
 .calendar-container.highlight-my-shifts
-  - if params[:view] == 'by_week'
-    =render partial: 'by_week', locals: {month: @month, editable: @editable}
-  - else
-    =render partial: 'month', locals: {month: @month, editable: @editable}
+  /- if params[:view] == 'grid'
+  /  =render partial: 'grid', locals: {month: @month, editable: @editable}
+  /- else
+  =render partial: 'month', locals: {month: @month, editable: @editable}
 
 .open-shifts-container
   %h3 Available Shifts

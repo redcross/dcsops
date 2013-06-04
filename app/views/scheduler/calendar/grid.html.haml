@@ -1,0 +1,61 @@
+=render partial: 'view_header'
+
+- shifts = @all_assignments.reduce({}) { |hash, shift| hash[shift.person] ||= {}; hash[shift.person][shift.date] ||= {}; hash[shift.person][shift.date][shift.shift.shift_group] = shift; hash}
+%h3
+  = spreadsheet_county.name
+  DAT Schedule - 
+  = @month.strftime "%B %Y"
+%table.calendar-grid.table-bordered
+  %thead
+    %tr
+      %th{colspan: 3}
+        =spreadsheet_county.name
+        ==-
+        =@month.strftime "%B, %Y"
+        /%span.noscreen
+        /  ==-
+        /  Page
+        /  %span.pageno
+        /  of
+        /  %span.pagect
+
+      - (@month..@month.end_of_month).each do |day|
+        %th{colspan: 2}=day.day
+    %tr
+      %th Person
+      %th Call First
+      %th Call Second
+      - (@month..@month.end_of_month).each do |day|
+        - daily_groups.each do |grp, _|
+          %th=grp.name[0].upcase
+  -shifts.each do |person, dates|
+    %tr.data-row
+      %td.header=person.full_name
+      - numbers = person.phone_order
+      %td.header
+        - if numbers.first
+          = numbers.first[:number]
+      %td.header
+        - if numbers[1]
+          = numbers[1][:number]
+      - (@month..@month.end_of_month).each do |day|
+        - daily_groups.each do |grp, shifts|
+          - ass = dates[day].try(:[], grp)
+          %td.period{class: ass ? "has-shift" : "no-shift"}
+            -if ass
+              = ass.shift.abbrev.split("").join(" ")
+  %tfoot
+    %tr
+      %th Person
+      %th Call First
+      %th Call Second
+      - (@month..@month.end_of_month).each do |day|
+        - daily_groups.each do |grp, _|
+          %th=grp.name[0].upcase
+    %tr
+      %th{colspan: 3}
+        =spreadsheet_county.name
+        =@month.strftime "%B, %Y"
+      - (@month..@month.end_of_month).each do |day|
+        %th{colspan: 2}=day.day
+      

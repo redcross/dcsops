@@ -24,6 +24,17 @@ module Scheduler::CalendarHelper
     s.html_safe
   end
 
+  def view_as_links
+    current = params[:display] || ""
+    {"Calendar" => "", "Spreadsheet" => 'spreadsheet', 'Grid' => 'grid'}.map do |name, val|
+      if val != current
+        link_to name, url_for(display: val, counties: show_counties)
+      else
+        name
+      end
+    end.join(" | ").html_safe
+  end
+
 end
 
 

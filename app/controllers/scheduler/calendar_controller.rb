@@ -6,12 +6,14 @@ class Scheduler::CalendarController < Scheduler::BaseController
     @month = month_param
     @editable = can? :create, Scheduler::ShiftAssignment.new( person: person)
 
+    params[:show_shifts] = :county if params[:display]
+
     load_shifts(@month, @month.next_month)
     load_my_shifts(@month, @month.next_month)
 
     case params[:display]
-    when 'spreadsheet'
-      render action: 'spreadsheet'
+    when 'spreadsheet', 'grid'
+      render action: params[:display]
     when 'open_shifts'
       render partial: 'open_shifts', locals: {month: @month, groups: daily_groups}
     else
@@ -51,7 +53,10 @@ class Scheduler::CalendarController < Scheduler::BaseController
 
   def load_shifts(date_start, date_end)
     shifts = daily_groups.values.flatten + weekly_groups.values.flatten + monthly_groups.values.flatten
-    @all_shifts = Scheduler::ShiftAssignment.includes{person.counties}.includes{shift.county}.includes{shift.positions}.where{shift_id.in(shifts) & date.in(date_start.at_beginning_of_week.advance(weeks: -1)..date_end)}.reduce({}) do |hash, assignment|
+    @all_assignments = Scheduler::ShiftAssignment.includes{person.counties}.includes{shift.county}.includes{shift.positions}
+        .where{shift_id.in(shifts) & date.in(date_start.at_beginning_of_week.advance(weeks: -1)..date_end)}
+        .order("roster_people.last_name")
+    @all_shifts = @all_assignments.reduce({}) do |hash, assignment|
       hash[assignment.shift_id] ||= {}
       hash[assignment.shift_id][assignment.date] ||= []
       hash[assignment.shift_id][assignment.date] << assignment
@@ -63,7 +68,9 @@ class Scheduler::CalendarController < Scheduler::BaseController
     if person
       group_ids = daily_groups.keys + weekly_groups.keys + monthly_groups.keys
       pid = person.id
-      @my_shifts = Scheduler::ShiftAssignment.includes{shift}.where{(shift.shift_group_id.in(group_ids)) & (person_id == pid) & date.in(date_start.at_beginning_of_week.advance(weeks: -1)..date_end)}.reduce({}) do |hash, assignment|
+      @my_shifts = Scheduler::ShiftAssignment.includes{shift}
+          .where{(shift.shift_group_id.in(group_ids)) & (person_id == pid) & date.in(date_start.at_beginning_of_week.advance(weeks: -1)..date_end)}
+          .reduce({}) do |hash, assignment|
         hash[assignment.shift.shift_group_id] ||= {}
         hash[assignment.shift.shift_group_id][assignment.date] = assignment
         hash
