@@ -14,6 +14,9 @@ ActiveAdmin.register Scheduler::Shift, namespace: 'scheduler_admin', as: 'Shift'
     column :abbrev
     column 'Spreadsheet', :spreadsheet_ordinal
     column :ordinal
+    column 'Positions' do |rec|
+      rec.positions.map(&:name).join ", "
+    end
     actions
   end
 
