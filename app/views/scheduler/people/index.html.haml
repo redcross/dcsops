@@ -8,7 +8,7 @@
       %td=select_tag "county", options_from_collection_for_select(Roster::County.all, :id, :name, current_scopes[:county]), multiple: false, id: 'choose-county', include_blank: true
     %tr
       %th Position
-      %td=select_tag "with_position", options_from_collection_for_select(Roster::Position.all, :id, :name, current_scopes[:with_position]), multiple: true, include_blank: true
+      %td=select_tag "with_position", options_from_collection_for_select(Roster::Position.visible, :id, :name, current_scopes[:with_position]), multiple: true, include_blank: true
     %tr
       %th Last Shift Taken
       %td=select_tag "last_shift", options_for_select(date_ranges, current_scopes[:last_shift].try(:to_i)), include_blank: true

@@ -1,6 +1,10 @@
 .row
   .span12
-    %h1 Flex Schedule
+    %h1 
+      Flex Schedule
+      -if resource.person != current_user
+        ==-
+        = resource.person.full_name
 
 .row
   .span12
