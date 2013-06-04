@@ -26,7 +26,7 @@ gem "ruby-openid", require: 'openid'
 
 gem 'formtastic', github: 'justinfrench/formtastic', branch: 'rails4beta'
 gem 'ransack',             github: 'ernie/ransack',            branch: 'rails-4'
-gem 'activeadmin',       github: 'akashkamboj/active_admin', branch: 'rails4'
+gem 'activeadmin',       github: 'jlaxson/active_admin', branch: 'rails4' # github: 'akashkamboj/active_admin', branch: 'rails4' # 
 
 # Monitoring/Alerting
 gem 'sentry-raven'
