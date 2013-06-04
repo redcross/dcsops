@@ -20,6 +20,15 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
     end
   end
 
+  has_scope :time_period, default: 'future', only: [:index] do |controller, scope, arg|
+    case arg
+    when 'future'
+      scope.where{date >= my{controller.current_user.chapter.time_zone.today.yesterday}}
+    else
+      scope
+    end
+  end
+
   has_scope :for_county do |controller, scope, arg|
     joins{shift}.where{shift.county_id.in(arg)}
   end
@@ -121,7 +130,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   #end
 
   def collection
-    apply_scopes(super).order(:date).uniq
+    apply_scopes(super).order(:date).includes{[person, shift.shift_group, shift.county]}.uniq
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
