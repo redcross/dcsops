@@ -24,6 +24,10 @@ class Scheduler::CalendarController < Scheduler::BaseController
     #@daily_groups = Scheduler::ShiftGroup.where(period: 'daily')
 
     if params[:date] and date = Date.strptime(params[:date], "%Y-%m-%d")
+      unless request.xhr? or params[:partial].present?
+        redirect_to scheduler_calendar_path(date.year, date.strftime("%B").downcase) and return
+      end
+
       load_shifts(date, date)
       load_my_shifts(date, date)
 
@@ -32,15 +36,15 @@ class Scheduler::CalendarController < Scheduler::BaseController
 
       render partial: partial_name, locals: {date: date, editable: @editable}
     elsif params[:month] and date = Date.strptime(params[:month], "%Y-%m")
+      unless request.xhr? or params[:partial].present?
+        redirect_to scheduler_calendar_path(date.year, date.strftime("%B").downcase) and return
+      end
+
       load_shifts(date, date.next_month)
       load_my_shifts(date, date.next_month)
+      
       render partial: 'month', locals: {month: date, editable: @editable}
     end
-  end
-
-  def open_shifts
-    @month = month_param
-    @daily_groups = Scheduler::ShiftGroup.where(period: 'daily')
   end
 
   private

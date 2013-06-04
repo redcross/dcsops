@@ -36,7 +36,7 @@ describe Scheduler::CalendarController do
 
 
     it "should render the month" do
-      get :day, month: "2013-08"
+      xhr :get, :day, month: "2013-08"
       response.should be_success
       response.body.should match(@ds.name)
       response.body.should match(@ws.name)
@@ -79,12 +79,12 @@ describe Scheduler::CalendarController do
 
 
         it "should render the month" do
-          get :day, extra_params.merge({month: "2013-08"})
+          xhr :get, :day, extra_params.merge({month: "2013-08"})
           response.should be_success
         end
 
         it "should render open shifts" do
-          get :show, extra_params.merge({month: 'august', year: '2013', display: 'open_shifts'})
+          xhr :get, :show, extra_params.merge({month: 'august', year: '2013', display: 'open_shifts'})
           response.should be_success
         end
 
@@ -107,12 +107,12 @@ describe Scheduler::CalendarController do
       end
 
       it "should render the month" do
-        get :day, month: "2013-08"
+        xhr :get, :day, month: "2013-08"
         response.should be_success
       end
 
       it "should render open shifts" do
-        get :show, month: 'august', year: '2013', display: 'open_shifts'
+        xhr :get, :show, month: 'august', year: '2013', display: 'open_shifts'
         response.should be_success
       end
 
@@ -179,61 +179,61 @@ describe Scheduler::CalendarController do
       end
 
       it "should render" do
-        get :day, date: values[:date].to_s, period: partial_name
+        xhr :get, :day, date: values[:date].to_s, period: partial_name
         response.should be_success
         response.body.should match(@shift.name)
       end
 
       it "should be possible to sign up" do
-        get :day, date: values[:next_date].to_s, period: partial_name
+        xhr :get, :day, date: values[:next_date].to_s, period: partial_name
         response.should be_success
         response.body.should match("checkbox")
       end
 
       it "should be possible to un-sign up" do
-        get :day, date: values[:date].to_s, period: partial_name
+        xhr :get, :day, date: values[:date].to_s, period: partial_name
         response.should be_success
         response.body.should match("checkbox")
       end
 
       it "should not show shift if the shift has ended" do
         @shift.update_attribute(:shift_ends, values[:prev_date])
-        get :day, date: values[:date].to_s, period: partial_name
+        xhr :get, :day, date: values[:date].to_s, period: partial_name
         response.should be_success
         response.body.should_not match(@shift.name)
       end
 
       it "should not show shift if the shift hasn't started" do
         @shift.update_attribute(:shift_begins, values[:next_date])
-        get :day, date: values[:prev_date].to_s, period: partial_name
+        xhr :get, :day, date: values[:prev_date].to_s, period: partial_name
         response.should be_success
         response.body.should_not match(@shift.name)
       end
 
       it "should not be possible to un-sign up if the shift is frozen" do
         @shift.update_attribute(:signups_frozen_before, values[:later_date])
-        get :day, date: values[:date].to_s, period: partial_name
+        xhr :get, :day, date: values[:date].to_s, period: partial_name
         response.should be_success
         response.body.should_not match("checkbox")
       end
 
       it "should be possible to un-sign up after the shift is frozen" do
         @shift.update_attribute(:signups_frozen_before, values[:next_date])
-        get :day, date: values[:later_date].to_s, period: partial_name
+        xhr :get, :day, date: values[:later_date].to_s, period: partial_name
         response.should be_success
         response.body.should match("checkbox")
       end
 
       it "should not be possible to sign up after the shift available day" do
         @shift.update_attribute(:signups_available_before, values[:next_date])
-        get :day, date: values[:later_date].to_s, period: partial_name
+        xhr :get, :day, date: values[:later_date].to_s, period: partial_name
         response.should be_success
         response.body.should_not match("checkbox")
       end
 
       it "should be possible to sign up before the shift available day" do
         @shift.update_attribute(:signups_available_before, values[:later_date])
-        get :day, date: values[:next_date].to_s, period: partial_name
+        xhr :get, :day, date: values[:next_date].to_s, period: partial_name
         response.should be_success
         response.body.should match("checkbox")
       end
@@ -242,7 +242,7 @@ describe Scheduler::CalendarController do
         days_to = (values[:next_date] - @ch.time_zone.today)
 
         @shift.update_attribute(:max_advance_signup, days_to + 5)
-        get :day, date: values[:next_date].to_s, period: partial_name
+        xhr :get, :day, date: values[:next_date].to_s, period: partial_name
         response.should be_success
         response.body.should match("checkbox")
       end
@@ -251,7 +251,7 @@ describe Scheduler::CalendarController do
         days_to = (values[:next_date] - @ch.time_zone.today)
 
         @shift.update_attribute(:max_advance_signup, days_to - 5)
-        get :day, date: values[:next_date].to_s, period: partial_name
+        xhr :get, :day, date: values[:next_date].to_s, period: partial_name
         response.should be_success
         response.body.should_not match("checkbox")
       end
