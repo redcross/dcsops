@@ -29,7 +29,7 @@ class Roster::SessionsController < ApplicationController
         person.password = params[:roster_session][:password]
         person.save
       else
-        flash.once[:error] = "Your username and/or password was not recognized by Volunteer Connection.  Please verify you have entered it correctly."
+        flash.now[:error] = "Your username and/or password was not recognized by Volunteer Connection.  Please verify you have entered it correctly."
       end
     end
 
