@@ -38,7 +38,7 @@ GIT
 
 GIT
   remote: git://github.com/jlaxson/acts_as_flying_saucer.git
-  revision: 0845114e914196a8e600ac446bb99b382daa406e
+  revision: e569a46de39ad777e5a078d8c4f2387d37847a6c
   branch: master
   specs:
     acts_as_flying_saucer (1.0.4)
