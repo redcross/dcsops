@@ -28,24 +28,9 @@ class window.CalendarController
         complete: (xhr, status) =>
           this.reloadDate(date, period)
 
-    $('#select-person').typeahead
-      source: (query, process) =>
-        $.ajax
-          dataType: 'json'
-          data:
-            name_query: query
-          url: '/roster/people'
-          success: (data) =>
-            @people = {}
-            processed = data.map (el) => 
-              key = el.first_name + " " + el.last_name
-              @people[key] = el
-              key
-            process(processed)
-      updater: (item) =>
-        @person = @people[item].id
-        this.reloadMonth()
-        item
+    new PersonTypeaheadController $('#select-person'), (id, record) =>
+      @person = id
+      this.reloadMonth()
 
     $('#clear-person').click (evt) =>
       $('#select-person').val('')

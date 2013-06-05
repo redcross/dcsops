@@ -14,7 +14,7 @@
       %td=select_tag "last_shift", options_for_select(date_ranges, current_scopes[:last_shift].try(:to_i)), include_blank: true
     %tr
       %th Name
-      %td=text_field_tag :search_name, current_scopes[:search_name], placeholder: "Search Name"
+      %td=text_field_tag :name_contains, current_scopes[:name_contains], placeholder: "Search Name"
     %tr
       %th
       %td=submit_tag 'Show', class: 'btn'
@@ -31,8 +31,11 @@
   %tbody
     - collection.each do |person|
       %tr
-        %td
+        %td{style: "max-width: 20em"}
           = link_to person.full_name, roster_person_path(person)
+          %br
+          %small
+            = person.positions.select{|p|!p.hidden}.map(&:name).join ", "
         %td
           = Scheduler::ShiftAssignment.where(person_id: person).where('date <= ?', Date.current).count
           shifts
@@ -55,10 +58,12 @@
         %td
           = Scheduler::FlexSchedule.where(id: person.id).first.try(:num_shifts)
         %td
-          -if can? :update, Scheduler::FlexSchedule.new(person: person)
+          -if flex = can?( :update, Scheduler::FlexSchedule.new(person: person))
             = link_to "Flex Schedule", scheduler_flex_schedule_path(person), :class => 'btn btn-mini'
-          -if can? :update, Scheduler::NotificationSetting.new(person: person)
+          -if reminders = can?( :update, Scheduler::NotificationSetting.new(person: person))
             = link_to "Reminders", scheduler_notification_setting_path(person), :class => 'btn btn-mini'
+          - if flex or reminders
+            %br
           = link_to "Shifts", scheduler_person_shift_assignments_path(person), :class => 'btn btn-mini'
           = link_to "Email", person.vc_email_url, :class => 'btn btn-mini'
 

@@ -5,7 +5,7 @@ class Scheduler::PeopleController < Scheduler::BaseController
 
   load_and_authorize_resource class: Roster::Person
 
-  has_scope :search_name
+  has_scope :name_contains
   has_scope :in_county, as: :county, default: Proc.new {|controller| controller.current_user.primary_county_id}
   #has_scope :in_county, as: :county do |controller, scope, val|
   #  positions = Scheduler::Shift.where(county_id: val).map{|sh| sh.positions}.flatten
@@ -17,7 +17,7 @@ class Scheduler::PeopleController < Scheduler::BaseController
   end
 
   def collection
-    apply_scopes(super).includes{county_memberships}.uniq
+    apply_scopes(super).includes{[county_memberships, positions]}.uniq
   end
 
   helper_method :date_ranges

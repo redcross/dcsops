@@ -4,23 +4,9 @@
 
 class window.SwapController
   constructor: (county_id, position_ids) ->
-    $('#select-person').typeahead
-      source: (query, process) =>
-        $.ajax
-          dataType: 'json'
-          data:
-            name_query: query
-            in_county: county_id
-            with_position: position_ids
-          url: '/roster/people'
-          success: (data) =>
-            @people = {}
-            processed = data.map (el) => 
-              key = el.first_name + " " + el.last_name
-              @people[key] = el
-              key
-            process(processed)
-      updater: (item) =>
-        @person = @people[item].id
-        $("#swap-to-id").val(@person)
-        item
+
+    filter = 
+      in_county: county_id
+      with_position: position_ids
+
+    new PersonTypeaheadController $('#select-person'), ((id, record) => $("#swap-to-id").val(id)), filter

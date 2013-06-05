@@ -2,7 +2,7 @@ class Roster::PeopleController < Roster::BaseController
   inherit_resources
   respond_to :html, :json
 
-  has_scope :search_name, as: :name_query
+  has_scope :name_contains
   has_scope :in_county
   has_scope :with_position, type: :array
 

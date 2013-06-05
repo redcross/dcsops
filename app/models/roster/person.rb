@@ -14,7 +14,9 @@ class Roster::Person < ActiveRecord::Base
   belongs_to :alternate_phone_carrier, class_name: 'Roster::CellCarrier'
   belongs_to :sms_phone_carrier, class_name: 'Roster::CellCarrier'
 
-  scope :search_name, lambda {|query| where("first_name || ' ' || last_name LIKE ?", "%#{query}%")}
+  scope :name_contains, lambda {|query| 
+    where{lower(first_name.op('||', ' ').op('||', last_name)).like("%#{query.downcase}%")}
+  }
   scope :for_vc_account, lambda {|account| where(vc_id: account).first}
 
   scope :in_county, lambda {|county| joins(:counties).where(:roster_counties => {id: county})}
