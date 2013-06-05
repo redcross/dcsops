@@ -1,6 +1,10 @@
 require 'authlogic/controller_adapters/rack_adapter'
 
 Scheduler::Application.routes.draw do
+  namespace :incidents do
+    resources :incidents
+  end
+
   break if ARGV.join.include? 'assets:precompile' # this prevents triggering ActiveAdmin during precompile
 
   ActiveAdmin.routes(self)

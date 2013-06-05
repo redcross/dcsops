@@ -1,0 +1,51 @@
+%p#notice= notice
+
+%p
+  %b Chapter:
+  = resource.chapter
+%p
+  %b County:
+  = resource.county
+%p
+  %b Incident number:
+  = resource.incident_number
+%p
+  %b Cas incident number:
+  = resource.cas_incident_number
+%p
+  %b Date:
+  = resource.date
+%p
+  %b City:
+  = resource.city
+%p
+  %b Units affected:
+  = resource.units_affected
+%p
+  %b Num adults:
+  = resource.num_adults
+%p
+  %b Num children:
+  = resource.num_children
+%p
+  %b Num families:
+  = resource.num_families
+%p
+  %b Num cases:
+  = resource.num_cases
+%p
+  %b Incident type:
+  = resource.incident_type
+%p
+  %b Incident description:
+  = resource.incident_description
+%p
+  %b Narrative brief:
+  = resource.narrative_brief
+%p
+  %b Narrative:
+  = resource.narrative
+
+= link_to 'Edit', edit_resource_path(resource)
+\|
+= link_to 'Back', collection_path

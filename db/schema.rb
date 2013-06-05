@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130603003926) do
+ActiveRecord::Schema.define(version: 20130605173717) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "resource_id",   null: false
@@ -27,6 +27,35 @@ ActiveRecord::Schema.define(version: 20130603003926) do
   add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
   add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace"
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
+
+  create_table "incidents_incidents", force: true do |t|
+    t.integer  "chapter_id"
+    t.integer  "county_id"
+    t.string   "incident_number"
+    t.string   "cas_incident_number"
+    t.date     "date"
+    t.integer  "units_affected"
+    t.integer  "num_adults"
+    t.integer  "num_children"
+    t.integer  "num_families"
+    t.integer  "num_cases"
+    t.string   "incident_type"
+    t.string   "incident_description"
+    t.text     "narrative_brief"
+    t.text     "narrative"
+    t.string   "address"
+    t.string   "cross_street"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.decimal  "lat"
+    t.decimal  "lng"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id"
+  add_index "incidents_incidents", ["county_id"], name: "index_incidents_incidents_on_county_id"
 
   create_table "roster_cell_carriers", force: true do |t|
     t.string   "name"
@@ -183,8 +212,8 @@ ActiveRecord::Schema.define(version: 20130603003926) do
     t.boolean  "email_swap_requested"
     t.boolean  "email_all_swaps"
     t.boolean  "email_calendar_signups"
-    t.integer  "email_all_shifts_at"
-    t.integer  "sms_all_shifts_at"
+    t.boolean  "email_all_shifts_at"
+    t.boolean  "sms_all_shifts_at"
     t.date     "last_all_shifts_email"
     t.date     "last_all_shifts_sms"
     t.datetime "created_at"

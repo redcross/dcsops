@@ -25,6 +25,7 @@ gem "cancan", github: 'jlaxson/cancan'
 gem "ruby-openid", require: 'openid'
 
 gem 'formtastic', github: 'justinfrench/formtastic', branch: 'rails4beta'
+gem 'formtastic-bootstrap'
 gem 'ransack',             github: 'ernie/ransack',            branch: 'rails-4'
 gem 'activeadmin',       github: 'jlaxson/active_admin', branch: 'rails4' # github: 'akashkamboj/active_admin', branch: 'rails4' # 
 

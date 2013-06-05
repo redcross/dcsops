@@ -164,6 +164,8 @@ GEM
       multipart-post (~> 1.1)
     fastercsv (1.5.5)
     ffi (1.2.1)
+    formtastic-bootstrap (2.1.1)
+      formtastic (~> 2.2)
     haml (4.0.2)
       tilt
     haml-rails (0.4)
@@ -315,6 +317,7 @@ DEPENDENCIES
   factory_girl_rails
   faker
   formtastic!
+  formtastic-bootstrap
   haml-rails
   has_scope
   inherited_resources

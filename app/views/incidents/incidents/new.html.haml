@@ -1,0 +1,43 @@
+%h1 Report New Incident
+= semantic_form_for resource, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'} do |f|
+  .row
+    .span12
+      =f.semantic_errors
+  .row
+    .span6
+      =f.inputs "Basic" do
+        =f.input :incident_number, placeholder: "#{Date.today.strftime "%Y"}-1234"
+        =f.input :county
+        =f.input :date, as: :date_picker
+        =f.input :incident_type, as: :select, collection: %w(fire flood police)
+    .span6
+      =f.inputs "Demographics" do
+        =f.input :num_adults
+        =f.input :num_children
+        =f.input :num_families
+        =f.input :num_cases
+        =f.input :units_affected
+  .row
+    =f.inputs "Location" do
+      .span6
+        =f.input :address
+        =f.input :cross_street
+        =f.input :city
+        =f.input :state, default: 'CA'
+        =f.input :zip
+        =f.input :lat, as: :hidden
+        =f.input :lng, as: :hidden
+      .span6
+        .incident-map{style: "height: 300px"}
+
+  .row
+    .span12
+      =f.inputs "Narrative" do
+        Brief description of event:
+        =f.input :narrative_brief, label: 'Narrative:', input_html: {rows: 6, style: "width: 400px"}
+  =f.actions
+
+- content_for :footer_js do
+  = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
+  :javascript
+    incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json})
