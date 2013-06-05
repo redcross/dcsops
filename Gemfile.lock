@@ -37,6 +37,15 @@ GIT
       sass (>= 3.1.0)
 
 GIT
+  remote: git://github.com/jlaxson/acts_as_flying_saucer.git
+  revision: 0845114e914196a8e600ac446bb99b382daa406e
+  branch: master
+  specs:
+    acts_as_flying_saucer (1.0.4)
+      nailgun
+      tidy_ffi
+
+GIT
   remote: git://github.com/jlaxson/cancan.git
   revision: 0ca3749869af1b5e154f81fca35d4199666ac2f8
   specs:
@@ -154,6 +163,7 @@ GEM
     faraday (0.8.7)
       multipart-post (~> 1.1)
     fastercsv (1.5.5)
+    ffi (1.2.1)
     haml (4.0.2)
       tilt
     haml-rails (0.4)
@@ -179,6 +189,7 @@ GEM
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
+    kgio (2.8.0)
     less (2.3.2)
       commonjs (~> 0.2.6)
     less-rails (2.3.3)
@@ -195,6 +206,7 @@ GEM
       metaclass (~> 0.0.1)
     multi_json (1.7.5)
     multipart-post (1.2.0)
+    nailgun (0.0.3)
     newrelic_rpm (3.6.2.96)
     orm_adapter (0.0.7)
     pg (0.15.1)
@@ -207,6 +219,7 @@ GEM
     rack-test (0.6.2)
       rack (>= 1.0)
     rainbow (1.1.4)
+    raindrops (0.11.0)
     rake (10.0.4)
     ref (1.0.4)
     responders (0.6.5)
@@ -260,6 +273,8 @@ GEM
     thor (0.18.1)
     thread_safe (0.1.0)
       atomic
+    tidy_ffi (0.1.5)
+      ffi (~> 1.2.0)
     tilt (1.4.1)
     treetop (1.4.12)
       polyglot
@@ -272,6 +287,10 @@ GEM
     uglifier (2.0.1)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
+    unicorn (4.6.2)
+      kgio (~> 2.6)
+      rack
+      raindrops (~> 0.7)
     uuidtools (2.1.4)
     warden (1.2.1)
       rack (>= 1.0)
@@ -285,6 +304,7 @@ PLATFORMS
 DEPENDENCIES
   activeadmin!
   activerecord-postgresql-adapter
+  acts_as_flying_saucer!
   authlogic
   autotest
   bootstrap-x-editable-rails
@@ -319,4 +339,5 @@ DEPENDENCIES
   therubyracer
   twitter-bootstrap-rails
   uglifier (>= 1.0.3)
+  unicorn
   zonebie

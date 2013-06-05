@@ -32,7 +32,7 @@ module Scheduler::CalendarHelper
       else
         name
       end
-    end.join(" | ").html_safe
+    end.join(" | ").html_safe + "<br />".html_safe + link_to( "Download PDF", url_for(format: :pdf, counties: show_counties, show_shifts: params[:show_shifts]))
   end
 
 end

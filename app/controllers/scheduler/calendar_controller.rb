@@ -1,6 +1,11 @@
 class Scheduler::CalendarController < Scheduler::BaseController
+
   before_filter :authorize_resource
   skip_authorization_check
+
+  acts_as_flying_saucer
+
+  respond_to :html, :pdf
 
   def show
     @month = month_param
@@ -13,11 +18,19 @@ class Scheduler::CalendarController < Scheduler::BaseController
 
     case params[:display]
     when 'spreadsheet', 'grid'
-      render action: params[:display]
+      respond_to do |fmt|
+        fmt.pdf { 
+          render_pdf template: "scheduler/calendar/#{params[:display]}.html.haml", send_file: {type: :pdf, filename: pdf_file_name, disposition: 'inline'}
+        }
+        fmt.html { render action: params[:display] }
+      end
     when 'open_shifts'
       render partial: 'open_shifts', locals: {month: @month, groups: daily_groups}
     else
-      render action: 'show'
+      respond_to do |fmt|
+        fmt.pdf { render_pdf template: "scheduler/calendar/show.html.haml", send_file: {type: :pdf, filename: pdf_file_name, disposition: 'inline'} }
+        fmt.html { render action: 'show' }
+      end
     end
   end
 
@@ -50,6 +63,10 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   private
+
+  def pdf_file_name
+    ["DAT", spreadsheet_county.try(:abbrev), @month.strftime( "%Y"), @month.strftime("%b")].compact.join "-"
+  end
 
   def load_shifts(date_start, date_end)
     shifts = daily_groups.values.flatten + weekly_groups.values.flatten + monthly_groups.values.flatten

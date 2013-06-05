@@ -12,12 +12,12 @@
         =spreadsheet_county.name
         ==-
         =@month.strftime "%B, %Y"
-        /%span.noscreen
-        /  ==-
-        /  Page
-        /  %span.pageno
-        /  of
-        /  %span.pagect
+        %span.noscreen
+          ==-
+          Page
+          %span.pageno
+          of
+          %span.pagect
 
       - (@month..@month.end_of_month).each do |day|
         %th{colspan: 2}=day.day

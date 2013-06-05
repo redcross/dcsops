@@ -58,6 +58,11 @@ body.calendar {
       padding: 0;
     }
     tr.end-group {
+      td,th {
+        border-bottom: 1px dashed black;
+      }
+    }
+    tr:nth-child(2) th.shift-header {
       border-bottom: 1px dashed black;
     }
   }
@@ -121,7 +126,15 @@ body.calendar {
   
 }
 
- body.steven {
+thead {
+  display: table-header-group;
+}
+
+tfoot {
+  display: table-footer-group;
+}
+
+body.steven {
 
   background-color: pink;
 
@@ -182,30 +195,30 @@ body.calendar {
   .row {
     margin: 0;
   }
-
   table {
-    // Chrome needs this for some bizarre reason
-    max-width: 10in !important;
+    width: 100%;
   }
 
   table.calendar td {
-    font-size: 7pt !important;
+    font-size: 6pt !important;
     line-height: 1.0 !important;
   }
 
-  .pageno {
+  .pageno:before {
     content: counter(page);
+  }
+  .pagect:before {
+    content: counter(pages);
+  }
+  table {
+    -fs-table-paginate: paginate;
   }
 }
 
 @page {
   size: landscape;
   counter-increment: page;
-
-  @bottom-right {
-    padding: 2em;
-    content: counter(page);
-  }
+  margin: .25in;
 }
 
 

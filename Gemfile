@@ -28,6 +28,8 @@ gem 'formtastic', github: 'justinfrench/formtastic', branch: 'rails4beta'
 gem 'ransack',             github: 'ernie/ransack',            branch: 'rails-4'
 gem 'activeadmin',       github: 'jlaxson/active_admin', branch: 'rails4' # github: 'akashkamboj/active_admin', branch: 'rails4' # 
 
+gem 'acts_as_flying_saucer', github: 'jlaxson/acts_as_flying_saucer', branch: 'master'
+
 # Monitoring/Alerting
 gem 'sentry-raven'
 gem 'newrelic_rpm'
@@ -65,6 +67,7 @@ group :development do
 
   gem 'sqlite3'
   gem 'debugger'
+  gem 'unicorn'
 end
 
 
