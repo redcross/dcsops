@@ -69,7 +69,11 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     @assignment
   end
   def shift_lead
-    @shift_lead ||= Scheduler::ShiftAssignment.includes(:shift).where(date: item.date, scheduler_shifts: {shift_group_id: item.shift.shift_group, county_id: item.shift.county}).first
+    @shift_lead ||= Scheduler::ShiftAssignment.includes(:shift)
+        .where(date: item.date)
+        .where{{shift => {shift_group_id => my{item.shift.shift_group_id}, county_id => my{item.shift.county_id}}}}
+        .where{shift.dispatch_role != nil}.order("scheduler_shifts.dispatch_role asc")
+        .first
   end
   def other_assignments
     Scheduler::ShiftAssignment.includes(:shift).where(date: item.date, scheduler_shifts: {shift_group_id: item.shift.shift_group, county_id: item.shift.county}).references(:shift).order('scheduler_shifts.ordinal')

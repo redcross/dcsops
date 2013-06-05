@@ -4,7 +4,7 @@ This is just a friendly automatic reminder that you have an upcoming Red Cross D
 
 You are signed up as <%= item.shift.name %> for the <%= item.shift.shift_group.name %> shift<% if item.shift.shift_group.period == 'daily' %> on <%= item.date.strftime("%A, %B %d") %> from <%= item.local_start_time.strftime("%l:%M%p").strip %> to <%= item.local_end_time.strftime("%l:%M%p").strip %>.<% else %> from <%= item.local_start_time.strftime("%A, %B %D at %k:%M%p") %> to <%= item.local_end_time.strftime("%A, %B %D at %k:%M%p") %>.<% end %>
 
-<% if shift_lead %>
+<% if shift_lead and shift_lead != item.person %>
 The lead for your shift is <%= shift_lead.person.full_name %>, phone <%= shift_lead.person.phone_order.first(2).map{|ph| "#{ph[:number]}"}.join(" or ") %>
 
 If we get a DAT call-out, <%= shift_lead.person.first_name %> will contact you at the following phone numbers:
