@@ -1,0 +1,39 @@
+// Place all the styles related to the Incidents::HomeController controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+body.incidents {
+  .all-incidents-map img, .incident-map img {
+    max-width: none;
+    width: auto; display:inline;
+  }
+}
+
+body.incidents.home.root {
+  .incident-box {
+    border-radius: 10px;
+    border: 1px solid rgb(221, 221, 221);
+    padding: 5px 10px;
+    margin: 10px 0;
+  }
+}
+
+body.incidents.home.map {
+  form {
+    input,select {
+      max-width: 100%;
+    }
+  }
+
+  .sidebar-nav {
+    max-width: 80%;
+
+    .input-prepend {
+      max-width: 80%;
+
+      input {
+        max-width: 80%
+      }
+    }
+  }
+}

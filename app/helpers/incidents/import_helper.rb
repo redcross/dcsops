@@ -1,0 +1,2 @@
+module Incidents::ImportHelper
+end

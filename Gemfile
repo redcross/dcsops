@@ -24,6 +24,9 @@ gem "ri_cal" # Ical Rendering
 gem "cancan", github: 'jlaxson/cancan'
 gem "ruby-openid", require: 'openid'
 
+gem 'geokit'
+gem 'google-v3-geocoder'
+
 gem 'formtastic', github: 'justinfrench/formtastic', branch: 'rails4beta'
 gem 'formtastic-bootstrap'
 gem 'ransack',             github: 'ernie/ransack',            branch: 'rails-4'

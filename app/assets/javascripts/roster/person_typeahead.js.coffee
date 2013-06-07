@@ -2,7 +2,7 @@ class window.PersonTypeaheadController
   constructor: (dom, callback, filter={}) ->
     @callback = callback
 
-    $('#select-person').typeahead
+    $(dom).typeahead
       source: (query, process) =>
         if query.length <= 2
           process([])

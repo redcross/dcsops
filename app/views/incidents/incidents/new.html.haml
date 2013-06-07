@@ -6,10 +6,12 @@
   .row
     .span6
       =f.inputs "Basic" do
-        =f.input :incident_number, placeholder: "#{Date.today.strftime "%Y"}-1234"
-        =f.input :county
-        =f.input :date, as: :date_picker
-        =f.input :incident_type, as: :select, collection: %w(fire flood police)
+        =f.input :incident_number, placeholder: "#{Date.today.strftime "%y"}-123"
+        =f.input :county, include_blank: false, collection: Roster::County.where{name != 'Chapter'}
+        =f.input :date, as: :bootstrap_date
+        =f.input :incident_type, as: :select, collection: {"Fire" => 'fire', 'Police Action' => 'police', 'Flood' => 'flood'}, include_blank: false
+        =f.input :incident_call_type, as: :select, collection: {"Hot" => 'hot', "Cold" => 'cold'}, include_blank: false
+        =f.input :team_lead_id, as: :person_typeahead, text_value: lambda{|obj| Roster::Person.where(id: obj.team_lead_id).first.try(:full_name)}
     .span6
       =f.inputs "Demographics" do
         =f.input :num_adults
@@ -17,8 +19,11 @@
         =f.input :num_families
         =f.input :num_cases
         =f.input :units_affected
-  .row
-    =f.inputs "Location" do
+  
+  =f.inputs "Location" do
+    .row
+      %br
+    .row
       .span6
         =f.input :address
         =f.input :cross_street

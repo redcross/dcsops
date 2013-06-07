@@ -26,14 +26,15 @@
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
-          %a.brand(href="/") ARCBA DAT
+          %a.brand(href="/")<
+            ARCBA
+            %strong> DAT
           .container.nav-collapse
             %ul.nav
               %li= link_to "DAT Scheduling", scheduler_root_path
-              %li= link_to 'Incidents', incidents_incidents_path
+              %li= link_to 'Incidents', incidents_root_path
               -if has_admin_dashboard_access
-                %li= link_to "Roster Admin", roster_admin_chapters_path
-                %li= link_to "Scheduling Admin", scheduler_admin_shifts_path
+                %li= link_to "Admin", scheduler_admin_shifts_path
             -if current_user
               %ul.nav.pull-right
                 %li= link_to "Logged in as #{current_user.first_name} #{current_user.last_name}", roster_person_path(current_user)

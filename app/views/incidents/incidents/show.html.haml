@@ -1,51 +1,207 @@
-%p#notice= notice
+%h1
+  =resource.incident_number
+  #{resource.city}, #{resource.state}
+  %small
+    =resource.date.to_s :dow_short
+    ==-
+    =resource.incident_type.titleize
 
-%p
-  %b Chapter:
-  = resource.chapter
-%p
-  %b County:
-  = resource.county
-%p
-  %b Incident number:
-  = resource.incident_number
-%p
-  %b Cas incident number:
-  = resource.cas_incident_number
-%p
-  %b Date:
-  = resource.date
-%p
-  %b City:
-  = resource.city
-%p
-  %b Units affected:
-  = resource.units_affected
-%p
-  %b Num adults:
-  = resource.num_adults
-%p
-  %b Num children:
-  = resource.num_children
-%p
-  %b Num families:
-  = resource.num_families
-%p
-  %b Num cases:
-  = resource.num_cases
-%p
-  %b Incident type:
-  = resource.incident_type
-%p
-  %b Incident description:
-  = resource.incident_description
-%p
-  %b Narrative brief:
-  = resource.narrative_brief
-%p
-  %b Narrative:
-  = resource.narrative
+.tabbable
+  %ul.nav.nav-tabs
+    %li
+      %a{href: "#inc-summary", "data-toggle"=>"tab"} Summary
+    %li.active
+      %a{href: "#inc-details", "data-toggle"=>"tab"} Details
+    %li
+      %a{href: "#inc-dispatch", "data-toggle"=>"tab"} Cases
+    %li
+      %a{href: "#inc-dispatch", "data-toggle"=>"tab"} Timeline
+    %li
+      %a{href: "#inc-responders", "data-toggle"=>"tab"} Responders
+    %li
+      %a{href: "#inc-photos", "data-toggle"=>"tab"} Photos
+    %li
+      %a{href: "#inc-responders", "data-toggle"=>"tab"} Changes
+  
+.tab-content
+  .tab-pane#inc-summary
+    .row
+      .span6
+        %h4 At a glance:
+        %table.table.table-bordered.table-condensed
+          %tr
+            %th Units Affected
+            %td=resource.units_affected
+          %tr
+            %th Num. Adults
+            %td=resource.num_adults
+          %tr
+            %th Num. Children
+            %td=resource.num_children
+          %tr
+            %th Num. Families
+            %td=resource.num_families
+          %tr
+            %th Cases Opened On Scene
+            %td=resource.num_cases
+        %p.lead=resource.narrative_brief
+      .span6
+        .map-container{style: "border-radius: 10px; overflow: hidden"}
+          .incident-map{style: "height: 300px"}
 
-= link_to 'Edit', edit_resource_path(resource)
-\|
-= link_to 'Back', collection_path
+  .tab-pane.active#inc-details
+    %h3 Location
+    =resource.address
+    (cross #{resource.cross_street})
+    %br
+    #{resource.city}, #{resource.state} #{resource.zip}
+    %br
+    =resource.county.name
+    County
+
+    %h3 
+      DAT Details
+      %small Edit
+    .row
+      .span4
+        %h4 Demographics
+        %table.table.table-bordered.table-condensed
+          %tr
+            %th Num. Adults
+            %td=resource.num_adults
+          %tr
+            %th Num. Children
+            %td=resource.num_children
+          %tr
+            %th Num. Families
+            %td=resource.num_families
+          %tr
+            %th People Injured
+            %td=resource.num_cases
+          %tr
+            %th People Hospitalized
+            %td=resource.num_cases
+          %tr
+            %th People Deceased
+            %td=resource.num_cases
+          %tr
+            %th Cases Opened On Scene
+            %td=resource.num_cases
+      .span4
+        %h4 Damage Assessment
+        %table.table.table-bordered.table-condensed
+          %tr
+            %th Total Units
+            %td=resource.units_affected
+          %tr
+            %th Units Affected
+            %td=resource.units_affected
+          %tr
+            %th Units Minor
+            %td=resource.num_adults
+          %tr
+            %th Units Major
+            %td=resource.num_children
+          %tr
+            %th Units Destroyed
+            %td=resource.num_families
+      .span4
+        %h4 Response
+        %table.table.table-bordered.table-condensed
+          %tr
+            %th Team Lead
+            %td=resource.team_lead.try(:full_name)
+          %tr
+            %th Number of Responders
+            %td=resource.units_affected
+          %tr
+            %th Time to On Scene
+            %td 48 minutes
+          %tr
+            %th Type of Call
+            %td Hot/Cold
+          %tr
+            %th Assistance Provided
+            %td Housing, Comfort Kits, Food, Clothing
+    .row
+      .span4
+        %h4 Description
+        = resource.narrative_brief
+      .offset1.span7
+        %h4 Narrative
+        = resource.narrative
+    %h3 
+      Casework
+      %small
+        Incident:
+        -if resource.cas_incident_number.nil?
+          %span.invalid 
+        -else
+          =resource.cas_incident.cas_incident_number
+      -if resource.cas_incident.nil?
+        %button.btn.btn-primary.btn-mini Link to CAS Incident
+    -if resource.cas_incident_number and resource.cas_incident.nil?
+      A CAS Incident has been provided but no data for the incident was found.  If this is a new incident, it may take 12-24 hours for incident data to become available.
+    -elsif resource.cas_incident
+      - cas = resource.cas_incident
+      -if cas.notes.present?
+        %h4 Notes
+        =cas.notes
+      .row
+        .span6
+          %h4 Details
+          %table.table.table-condensed.table-bordered
+            %tr
+              %th Total Casework Clients
+              %td=cas.num_clients
+            %tr
+              %th Incident Name
+              %td=cas.cas_name
+            %tr
+              %th Incident Number
+              %td=cas.cas_incident_number
+            -if cas.is_dr
+              %tr
+                %th DR Number
+                %td=cas.dr_number
+              %tr
+                %th DR Level
+                %td=cas.dr_level
+            %tr
+              %th Incident Created
+              %td=cas.incident_date
+            %tr
+              %th Date Last Case Open
+              %td=cas.last_date_with_open_cases
+            %tr
+              %th Data Updated
+              %td=cas.last_import
+
+        .span6
+          %h4 Cases
+          %table.table.table-condensed.table-bordered
+            %tr
+              %th Total Cases
+              %td=cas.cases_opened
+            %tr
+              %th Cases Open
+              %td=cas.cases_open
+            %tr
+              %th Cases Closed
+              %td=cas.cases_closed
+            %tr
+              %th Cases w/ Financial Assistance
+              %td=cas.cases_with_assistance
+            %tr
+              %th Cases w/ Service Only
+              %td=cas.cases_service_only
+
+
+  .tab-pane#inc-dispatch
+
+  .tab-pane#inc-responders
+
+- content_for :footer_js do
+  = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
+  :javascript
+    incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json})

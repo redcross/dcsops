@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130605173717) do
+ActiveRecord::Schema.define(version: 20130606235005) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "resource_id",   null: false
@@ -28,18 +28,76 @@ ActiveRecord::Schema.define(version: 20130605173717) do
   add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace"
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
 
+  create_table "incidents_cas_cases", force: true do |t|
+    t.integer  "cas_incident_id"
+    t.string   "case_number"
+    t.integer  "num_clients"
+    t.string   "family_name"
+    t.date     "case_last_updated"
+    t.date     "case_opened"
+    t.boolean  "case_is_open"
+    t.string   "language"
+    t.text     "narrative"
+    t.string   "address"
+    t.string   "city"
+    t.string   "state"
+    t.string   "post_incident_plans"
+    t.text     "notes"
+    t.datetime "last_import"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_cas_cases", ["cas_incident_id"], name: "index_incidents_cas_cases_on_cas_incident_id"
+
+  create_table "incidents_cas_incidents", force: true do |t|
+    t.string   "dr_number"
+    t.string   "cas_incident_number"
+    t.string   "cas_name"
+    t.integer  "dr_level"
+    t.boolean  "is_dr"
+    t.string   "county_name"
+    t.integer  "cases_opened"
+    t.integer  "cases_open"
+    t.integer  "cases_closed"
+    t.integer  "cases_with_assistance"
+    t.integer  "cases_service_only"
+    t.integer  "num_clients"
+    t.integer  "phantom_cases"
+    t.date     "last_date_with_open_cases"
+    t.integer  "incident_id"
+    t.date     "incident_date"
+    t.text     "notes"
+    t.datetime "last_import"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_cas_incidents", ["incident_id"], name: "index_incidents_cas_incidents_on_incident_id"
+
   create_table "incidents_incidents", force: true do |t|
     t.integer  "chapter_id"
     t.integer  "county_id"
     t.string   "incident_number"
+    t.string   "incident_type"
+    t.string   "incident_call_type"
     t.string   "cas_incident_number"
     t.date     "date"
+    t.integer  "units_total"
     t.integer  "units_affected"
+    t.integer  "units_minor"
+    t.integer  "units_major"
+    t.integer  "units_destroyed"
     t.integer  "num_adults"
     t.integer  "num_children"
     t.integer  "num_families"
     t.integer  "num_cases"
-    t.string   "incident_type"
+    t.integer  "num_people_injured"
+    t.integer  "num_people_hospitalized"
+    t.integer  "num_people_deceased"
+    t.datetime "responder_notified"
+    t.datetime "responder_arrived"
+    t.datetime "responder_departed"
     t.string   "incident_description"
     t.text     "narrative_brief"
     t.text     "narrative"
@@ -50,12 +108,27 @@ ActiveRecord::Schema.define(version: 20130605173717) do
     t.string   "zip"
     t.decimal  "lat"
     t.decimal  "lng"
+    t.string   "idat_incident_id"
+    t.string   "idat_incident_rev"
+    t.datetime "last_idat_sync"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id"
   add_index "incidents_incidents", ["county_id"], name: "index_incidents_incidents_on_county_id"
+
+  create_table "incidents_responder_assignments", force: true do |t|
+    t.integer  "person_id"
+    t.integer  "incident_id"
+    t.string   "role"
+    t.string   "response"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_responder_assignments", ["incident_id"], name: "index_incidents_responder_assignments_on_incident_id"
+  add_index "incidents_responder_assignments", ["person_id"], name: "index_incidents_responder_assignments_on_person_id"
 
   create_table "roster_cell_carriers", force: true do |t|
     t.string   "name"
@@ -212,8 +285,8 @@ ActiveRecord::Schema.define(version: 20130605173717) do
     t.boolean  "email_swap_requested"
     t.boolean  "email_all_swaps"
     t.boolean  "email_calendar_signups"
-    t.boolean  "email_all_shifts_at"
-    t.boolean  "sms_all_shifts_at"
+    t.integer  "email_all_shifts_at"
+    t.integer  "sms_all_shifts_at"
     t.date     "last_all_shifts_email"
     t.date     "last_all_shifts_sms"
     t.datetime "created_at"

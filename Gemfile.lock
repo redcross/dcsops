@@ -166,6 +166,12 @@ GEM
     ffi (1.2.1)
     formtastic-bootstrap (2.1.1)
       formtastic (~> 2.2)
+    geokit (1.6.5)
+      multi_json
+    google-v3-geocoder (1.0.0)
+      geokit (>= 1.5.0)
+      geokit (>= 1.5.0)
+      json
     haml (4.0.2)
       tilt
     haml-rails (0.4)
@@ -188,6 +194,7 @@ GEM
     jquery-ui-rails (4.0.3)
       jquery-rails
       railties (>= 3.1.0)
+    json (1.8.0)
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -318,6 +325,8 @@ DEPENDENCIES
   faker
   formtastic!
   formtastic-bootstrap
+  geokit
+  google-v3-geocoder
   haml-rails
   has_scope
   inherited_resources

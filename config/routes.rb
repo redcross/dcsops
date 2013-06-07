@@ -1,10 +1,6 @@
 require 'authlogic/controller_adapters/rack_adapter'
 
 Scheduler::Application.routes.draw do
-  namespace :incidents do
-    resources :incidents
-  end
-
   break if ARGV.join.include? 'assets:precompile' # this prevents triggering ActiveAdmin during precompile
 
   ActiveAdmin.routes(self)
@@ -23,6 +19,7 @@ Scheduler::Application.routes.draw do
     end
     ret
   }
+
   root to: "roster/sessions#new", constraints: filter
   root to: "root#index", constraints: lambda{|req| !filter.call(req)}, as: nil
 
@@ -54,12 +51,12 @@ Scheduler::Application.routes.draw do
   end
 
   namespace :roster do
-    resources :chapters
-    resources :positions
-    resources :counties
+    #resources :chapters
+    #resources :positions
+    #resources :counties
     resources :people
     resource :session
-    resources :cell_carriers
+    #resources :cell_carriers
 
     scope :openid, controller: 'open_id', path: 'openid', as: 'openid' do
       get 'user/:user_id', action: :user, as: :user
@@ -67,4 +64,13 @@ Scheduler::Application.routes.draw do
       match 'endpoint', via: [:get, :post], as: :endpoint, action: :endpoint
     end
   end
+
+  namespace :incidents do
+    root to: "home#root"
+    match 'map', via: [:get, :post], to: "home#map"
+    resources :incidents
+  end
+
+  match 'import/:import_secret/:provider/cas-v:version', via: [:head, :post], to: 'incidents/import#import_cas', version: /\d+/
+  match 'import/vc-v:version', via: [:head, :post], to: 'incidents/home#import_cas', version: /\d+/
 end
