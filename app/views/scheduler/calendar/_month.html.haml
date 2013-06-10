@@ -42,7 +42,7 @@
           - date = date.tomorrow
           -if date.wday == 0
             - break
-    - weekly_groups.each do |group, shifts|
+    - if weekly_groups.count > 0
       / If we get here, we are at the sunday of the week following the one we want to display,
       / or the month has ended.
       -if date == month.next_month
@@ -53,8 +53,7 @@
         - wdate = date.advance( days: -6)
       -if wdate < month
         - wdate = month
-      - shifts.each do |shift|
-        %tbody{:"data-week" => wdate.at_beginning_of_week.to_s}
-          =render partial: 'week', locals: {date: wdate, editable: editable}
+      %tbody{:"data-week" => wdate.at_beginning_of_week.to_s}
+        =render partial: 'week', locals: {date: wdate, editable: editable}
 :javascript
   $('#calendar-title').html($('#new-title').html())
