@@ -2,40 +2,53 @@ class Incidents::Incident < ActiveRecord::Base
   belongs_to :chapter, class_name: 'Roster::Chapter'
   belongs_to :county, class_name: 'Roster::County'
 
-  has_many :responder_assignments, class_name: 'Incidents::ResponderAssignment'
-  has_one :team_lead, {class_name: 'Incidents::ResponderAssignment'}, lambda{ where(role: 'team_lead') }
-
   has_one :cas_incident, class_name: 'Incidents::CasIncident'
+  has_one :dat_incident, class_name: 'Incidents::DatIncident'
 
   validates :chapter, :county, :date, presence: true
-  validates :num_adults, :num_children, :num_families, :num_cases, :units_affected, presence: true, numericality: true
-  validates :address, :cross_street, :city, :state, :zip, presence: true
-
-  validates :incident_call_type, presence: true, inclusion: {in: %w(hot cold)}
-  validates :incident_type, presence: true, inclusion: {in: %w(fire flood police)}
   validates :incident_number, presence: true, format: /\A1[3-9]-\d+\z/, uniqueness: true
 
-  validates :team_lead_id, presence: true, on: :create
-  validate :team_lead_is_person, on: :create
+  #delegate :address,  :city, :state, :zip, :lat, :lng, :num_adults, :num_children, to: :dat_incident
+  #delegate :units_affected, to: :dat_incident
 
-  after_create :create_team_lead
-
-  attr_accessor :team_lead_id
-
-  def team_lead_is_person
-    unless Roster::Person.where(id: team_lead_id).count == 1
-      errors[:team_lead_id] << "is not a person"
-      false
+  def update_from_dat_incident
+    address_fields = [:address,  :city, :state, :zip, :lat, :lng, :num_adults, :num_children, :num_families]
+    if dat_incident
+      address_fields.each do |f|
+        self.send "#{f}=", dat_incident.send(f)
+      end
     end
-  end
-
-  def create_team_lead
-    person = Roster::Person.where(id: team_lead_id).first
-    responder_assignments.create! role: 'team_lead', person: person
+    save
   end
 
   def to_param
     incident_number
+  end
+
+  def county_name
+    county.try :name
+  end
+
+  def services_description
+    dat = dat_incident
+    dat.services && dat.services.map(&:titleize).to_sentence
+  end
+
+  def to_label
+    [incident_number, county.try(:name), date.to_s, dat_incident.try(:incident_type)].compact.join " "
+  end
+
+  def link_to_cas_incident(cas)
+    raise "Already have a CAS Incident" if cas_incident.present?
+    raise "CAS Incident is already linked" if cas.incident.present?
+
+
+    self.class.transaction do 
+      self.cas_incident_number = cas.cas_incident_number
+      cas.incident = self
+      self.save!
+      cas.save!
+    end
   end
 
   scope :incident_stats, lambda {

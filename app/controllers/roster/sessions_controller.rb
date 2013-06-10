@@ -3,6 +3,8 @@ require 'net/https'
 class Roster::SessionsController < ApplicationController
   respond_to :html, :json
 
+  newrelic_ignore only: [:new]
+
   skip_before_filter :require_valid_user!#, except: [:destroy] #, only: [:new, :create]
 
   def logout

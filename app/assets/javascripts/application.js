@@ -16,5 +16,5 @@
 //= require bootstrap-datepicker
 //= require_tree .
 //= require bootstrap-editable
-
+//= require cocoon
 // require turbolinks

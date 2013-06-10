@@ -2,6 +2,7 @@ require 'base64'
 
 class Incidents::ImportController < ApplicationController
   include ActionController::Live
+  newrelic_ignore_apdex
 
   skip_before_filter :require_valid_user!, only: :import_cas
   protect_from_forgery except: [:import_cas]

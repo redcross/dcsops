@@ -9,6 +9,15 @@ class ApplicationController < ActionController::Base
 
   #check_authorization
 
+  rescue_from CanCan::AccessDenied do |exception|
+    begin
+      flash[:error] = "You are not authorized to access that page."
+      redirect_to :back
+    rescue ActionController::RedirectBackError
+      redirect_to root_path
+    end
+  end
+
   def current_user_session
     return @current_user_session if defined?(@current_user_session)
     @current_user_session = Roster::Session.find

@@ -6,3 +6,4 @@ end
 
 date_format :dow_short, "%a, %b %e"
 date_format :dow_long, "%A, %B %e"
+date_format :mdy, "%B %-d %Y"

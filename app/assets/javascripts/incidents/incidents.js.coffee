@@ -3,7 +3,8 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 class window.IncidentLocationController
-  fields: ['address', 'city', 'state', 'zip']
+  fields: ['search_for_address']
+  form_base: 'incidents_dat_incident'
 
   constructor: (currentLat, currentLng) ->
     dom = $('.incident-map')[0]
@@ -28,13 +29,19 @@ class window.IncidentLocationController
       @marker.setMap @map
 
     @fields.forEach (fname) =>
-      $('#incidents_incident_' + fname).on 'change', (evt) =>
+      $('#' + @form_base + '_' + fname).on 'change', (evt) =>
         this.updateMap()
 
+  setFieldVal: (fname, val) ->
+    $('#' + @form_base + '_' + fname).val(val)
+
+  getFieldVal: (fname) ->
+    $('#' + @form_base + '_' + fname).val()
+
   updateMap: () ->
-    vals = @fields.map (fname) ->
-      $('#incidents_incident_' + fname).val()
-    return unless vals[0]? and vals[0] != '' and vals[1]? and vals[1] != ''
+    vals = @fields.map (fname) =>
+      this.getFieldVal(fname)
+    return unless vals[0]? and vals[0] != ''
     query = vals.join(", ")
     console.log query
     @coder.geocode {address:query, location: @map.getCenter(), bounds: @bounds}, (results, status) =>
@@ -47,8 +54,21 @@ class window.IncidentLocationController
         @marker.setPosition(pos)
         @marker.setMap(@map)
 
-        $('#incidents_incident_lat').val(pos.lat())
-        $('#incidents_incident_lng').val(pos.lng())
+        this.setFieldVal('lat', pos.lat())
+        this.setFieldVal('lng', pos.lng())
+
+        this.setFieldVal('address', result.formatted_address.split(", ")[0])
+
+        result.address_components.forEach (el) =>
+          el.types.forEach (type) =>
+            if type == 'neighborhood'
+              this.setFieldVal('neighborhood', el.long_name)
+            else if type == 'locality'
+              this.setFieldVal('city', el.long_name)
+            else if type == 'administrative_area_level_1'
+              this.setFieldVal('state', el.short_name)
+            else if type == 'postal_code'
+              this.setFieldVal('zip', el.long_name)
       else
         console.log status, results
         @marker.setMap null
@@ -94,6 +114,7 @@ class window.AllIncidentsHeatmapController
         pt = new google.maps.LatLng(obj.lat, obj.lng)
         @bounds.extend  pt
         location: pt
+        #weight: obj.clients
         
       @heatmap = new google.maps.visualization.HeatmapLayer
         data: @data

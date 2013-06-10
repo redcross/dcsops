@@ -1,0 +1,2 @@
+module Incidents::DatIncidentsHelper
+end

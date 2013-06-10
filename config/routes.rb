@@ -1,6 +1,7 @@
 require 'authlogic/controller_adapters/rack_adapter'
 
 Scheduler::Application.routes.draw do
+
   break if ARGV.join.include? 'assets:precompile' # this prevents triggering ActiveAdmin during precompile
 
   ActiveAdmin.routes(self)
@@ -68,7 +69,15 @@ Scheduler::Application.routes.draw do
   namespace :incidents do
     root to: "home#root"
     match 'map', via: [:get, :post], to: "home#map"
-    resources :incidents
+    resources :incidents do
+      resource :dat, controller: :dat_incidents
+
+      collection do
+        get :needs_report
+        match :link_cas, via: [:get, :post], as: :link_cas
+      end
+    end
+    resources :dat_incidents, only: [:new, :create]
   end
 
   match 'import/:import_secret/:provider/cas-v:version', via: [:head, :post], to: 'incidents/import#import_cas', version: /\d+/

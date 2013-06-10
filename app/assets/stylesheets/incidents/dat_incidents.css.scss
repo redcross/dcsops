@@ -1,0 +1,36 @@
+// Place all the styles related to the Incidents::DatIncidents controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+table.form-table {
+  .control-group {
+    margin: 0;
+  }
+
+  label.control-label {
+    float: none;
+    width: auto;
+    display: none;
+  }
+
+  .controls {
+    float: none;
+    display: inline-block;
+    width: auto;
+    margin: 0;
+    //margin: 0 0 0 20px;
+  }
+}
+
+body.incidents.dat_incidents {
+  input, select {
+    width: 120px;
+    max-width: 208px;
+    padding-right: 20px;
+  }
+
+  input[type="checkbox"], input[type="submit"] {
+    width: auto;
+    padding-right: inherit;
+  }
+}

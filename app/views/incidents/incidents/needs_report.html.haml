@@ -1,0 +1,23 @@
+%h1 Incidents Needing Incident Report
+
+%table.table
+  %thead
+    %tr
+      %th Incident Number
+      %th County
+      %th Date
+      %th Actions
+  %tbody
+    -needs_report_collection.each do |inc|
+      %tr
+        %td=inc.incident_number
+        %td=inc.county.name
+        %td=inc.date.to_s :dow_short
+        %td
+          %a.btn.btn-primary{href: new_incidents_incident_dat_path(inc)} Submit Incident Report
+
+%h3 Don't see your incident?
+The dispatch call center must assign an incident number in order to submit a report.  If you do not have an incident number, call dispatch and request one.  Then refresh the page and you should see your incident listed.
+
+%h3 Still don't see your incident?
+%a.btn.btn-warning{href: new_incidents_dat_incident_path} Submit New Incident Report

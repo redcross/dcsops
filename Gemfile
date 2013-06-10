@@ -23,12 +23,15 @@ gem "authlogic"
 gem "ri_cal" # Ical Rendering
 gem "cancan", github: 'jlaxson/cancan'
 gem "ruby-openid", require: 'openid'
+gem "chronic"
+gem "roadie", github: 'Mange/roadie'
 
 gem 'geokit'
 gem 'google-v3-geocoder'
 
 gem 'formtastic', github: 'justinfrench/formtastic', branch: 'rails4beta'
 gem 'formtastic-bootstrap'
+gem 'cocoon', github: 'nathanvda/cocoon'
 gem 'ransack',             github: 'ernie/ransack',            branch: 'rails-4'
 gem 'activeadmin',       github: 'jlaxson/active_admin', branch: 'rails4' # github: 'akashkamboj/active_admin', branch: 'rails4' # 
 

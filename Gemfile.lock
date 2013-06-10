@@ -1,4 +1,14 @@
 GIT
+  remote: git://github.com/Mange/roadie.git
+  revision: 07affc7d468dc4983552d38c56597a9e9b98552f
+  specs:
+    roadie (2.3.4)
+      actionmailer (> 3.0.0, < 5.0.0)
+      css_parser (~> 1.3.4)
+      nokogiri (~> 1.5.0)
+      sprockets
+
+GIT
   remote: git://github.com/ernie/ransack.git
   revision: 4078f4fd0ff8b48658e1b69fe8bce0c36933f19c
   branch: rails-4
@@ -101,6 +111,12 @@ GIT
     formtastic (2.2.1)
       actionpack (>= 3.0)
 
+GIT
+  remote: git://github.com/nathanvda/cocoon.git
+  revision: 80b73cd66d90be3d4795d3492d6940b22ce3eba7
+  specs:
+    cocoon (1.1.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -108,6 +124,7 @@ GEM
     activerecord-deprecated_finders (1.0.2)
     activerecord-postgresql-adapter (0.0.1)
       pg
+    addressable (2.3.4)
     arbre (1.0.1)
       activesupport (>= 3.0.0)
     arel (4.0.0)
@@ -137,6 +154,8 @@ GEM
     coffee-script-source (1.6.2)
     columnize (0.3.6)
     commonjs (0.2.6)
+    css_parser (1.3.4)
+      addressable
     debugger (1.5.0)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -217,6 +236,7 @@ GEM
     multipart-post (1.2.0)
     nailgun (0.0.3)
     newrelic_rpm (3.6.2.96)
+    nokogiri (1.5.10)
     orm_adapter (0.0.7)
     pg (0.15.1)
     polyamorous (0.6.3)
@@ -318,6 +338,8 @@ DEPENDENCIES
   autotest
   bootstrap-x-editable-rails
   cancan!
+  chronic
+  cocoon!
   coffee-rails (~> 4.0.0.rc1)
   debugger
   delorean
@@ -339,6 +361,7 @@ DEPENDENCIES
   ransack!
   responders
   ri_cal
+  roadie!
   rspec
   rspec-rails
   ruby-openid

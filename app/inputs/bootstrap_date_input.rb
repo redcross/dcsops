@@ -6,6 +6,6 @@ class ::BootstrapDateInput <  FormtasticBootstrap::Inputs::StringInput
   end
 
   def input_html_options
-    super.merge("data-provide" => "datepicker", "data-date-format" => "yyyy-mm-dd")
+    super.merge("data-provide" => "datepicker", "data-date-format" => "yyyy-mm-dd", "data-autoclose" => "true")
   end
 end

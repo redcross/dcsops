@@ -1,0 +1,17 @@
+%h1 Listing incidents_dat_incidents
+
+%table
+  %tr
+    %th
+    %th
+    %th
+
+  - @incidents_dat_incidents.each do |incidents_dat_incident|
+    %tr
+      %td= link_to 'Show', incidents_dat_incident
+      %td= link_to 'Edit', edit_incidents_dat_incident_path(incidents_dat_incident)
+      %td= link_to 'Destroy', incidents_dat_incident, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Dat incident', new_incidents_dat_incident_path

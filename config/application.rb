@@ -23,6 +23,8 @@ module Scheduler
     config.autoload_paths << "#{Rails.root}/app/inputs"
     config.autoload_paths << "#{Rails.root}/lib"
 
+    config.roadie.provider = Roadie::AssetPipelineProvider.new
+
   end
   def self.table_name_prefix
     'scheduler_'

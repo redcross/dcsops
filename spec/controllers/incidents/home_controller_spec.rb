@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Incidents::HomeControllerController do
+describe Incidents::HomeController do
 
   describe "GET 'root'" do
     it "returns http success" do

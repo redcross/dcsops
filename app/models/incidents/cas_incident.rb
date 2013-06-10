@@ -20,34 +20,41 @@ class Incidents::CasIncident < ActiveRecord::Base
       inc.num_children = 0
       inc.num_families = self.cases.count
       inc.num_cases = self.cases.count
-      inc.units_affected = self.cases.count
+      #inc.units_affected = self.cases.count
 
       inc.cas_incident_number = cas_incident_number
 
       kase = self.cases.first
-      inc.address = kase.address
-      inc.city = kase.city
-      inc.state = kase.state
-      inc.cross_street = "_"
-      inc.zip = "_"
-      inc.county = Roster::County.find_by_name! (county_name || 'Chapter')
+      if kase
+        inc.address = kase.address
+        inc.city = kase.city
+        inc.state = kase.state
+        inc.cross_street = "_"
+        inc.zip = "_"
 
-      inc.incident_call_type = 'hot'
-      inc.incident_type = 'fire'
-      inc.team_lead_id = Roster::Person.where(last_name: 'Laxson').first.id
+        res = Geokit::Geocoders::GoogleV3Geocoder.geocode( [inc.address, inc.city, inc.state].join(", "))
+        if res
+          (inc.lat, inc.lng) = res.lat, res.lng
+        end
+      elsif county_name
+        res = Geokit::Geocoders::GoogleV3Geocoder.geocode "#{county_name}, CA, USA"
+        if res
+          (inc.lat, inc.lng) = res.lat, res.lng
+        end
+      else
+        return
+      end
+      inc.county = Roster::County.find_by_name (county_name || 'Chapter')
+      return unless inc.county
+
+      #inc.incident_call_type = 'hot'
+      #inc.incident_type = 'fire'
+      #inc.team_lead_id = Roster::Person.where(last_name: 'Laxson').first.id
       inc.date = incident_date
 
-      res = Geokit::Geocoders::GoogleV3Geocoder.geocode( [inc.address, inc.city, inc.state].join(", "))
-      pp res
-      if res
-        (inc.lat, inc.lng) = res.lat, res.lng
+      if inc.save
+        self.save
       end
-
-      pp self
-      pp inc
-
-      inc.save!
-      self.save!
     end
   end
 
