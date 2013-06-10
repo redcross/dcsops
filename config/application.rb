@@ -6,6 +6,7 @@ require 'rails/all'
 Bundler.require(*Rails.groups(assets: %w(development test)))
 
 require File.expand_path("../../lib/ics_handler", __FILE__)
+require File.expand_path("../../lib/sandbox_mail_interceptor", __FILE__)
 
 module Scheduler
   class Application < Rails::Application
@@ -20,6 +21,8 @@ module Scheduler
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
+    config.action_mailer.interceptors = [SandboxMailInterceptor]
   end
   def self.table_name_prefix
     'scheduler_'
