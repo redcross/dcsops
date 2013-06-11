@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130603003926) do
+ActiveRecord::Schema.define(version: 20130611003113) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "resource_id",   null: false
@@ -103,6 +103,8 @@ ActiveRecord::Schema.define(version: 20130603003926) do
     t.datetime "vc_imported_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "lat"
+    t.decimal  "lng"
   end
 
   create_table "roster_position_memberships", force: true do |t|
@@ -121,6 +123,7 @@ ActiveRecord::Schema.define(version: 20130603003926) do
     t.string   "grants_role"
     t.text     "role_scope"
     t.boolean  "hidden",          default: false
+    t.string   "watchfire_role"
   end
 
   create_table "roster_positions_scheduler_shifts", id: false, force: true do |t|

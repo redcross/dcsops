@@ -35,6 +35,8 @@ class Roster::Person < ActiveRecord::Base
 
   accepts_nested_attributes_for :county_memberships, :position_memberships, allow_destroy: true
 
+  after_save :geocode_address
+
   def primary_county
     super || counties.first
   end
@@ -58,6 +60,16 @@ class Roster::Person < ActiveRecord::Base
   def primary_phone
     phone = phone_order.first
     phone && phone[:number]
+  end
+
+  def full_address
+    "#{address1} #{address2} #{city}, #{state}, #{zip}"
+  end
+
+  def geocode_address
+    if lat.nil? or lng.nil? or (changed & %i(address1 address2 city state zip))
+
+    end
   end
 
   def sms_addresses

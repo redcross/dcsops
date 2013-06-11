@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :county, :class => 'Roster::County' do
-    name "My County"
+    name { Faker::Address.city }
     association :chapter
   end
 end
