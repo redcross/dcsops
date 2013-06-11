@@ -5,17 +5,20 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   actions :all, except: [:destroy]
 
   def new
+    if parent? and parent.dat_incident and !parent.dat_incident.new_record?
+      redirect_to action: :edit and return
+    end
+
     build_resource.build_incident if build_resource.incident.nil?
     build_resource.responder_assignments.build
     build_resource.build_team_lead role: 'team_lead'
-
-    if parent? and !parent.dat_incident
-      redirect_to action: :show and return
-    end
     super
   end
 
   def edit
+    unless parent? and parent.dat_incident
+      redirect_to action: :new and return
+    end
     resource.build_team_lead role: 'team_lead' unless resource.team_lead
     edit!
   end

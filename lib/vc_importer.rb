@@ -1,4 +1,4 @@
-class Roster::VCImporter
+class Roster::VcImporter
   def import_data(chapter, file)
     @chapter = chapter
     workbook = Spreadsheet.open(file)
@@ -6,11 +6,15 @@ class Roster::VCImporter
       import_member_data workbook.worksheet("Contact")
       # First Delete all the existing qualification data
 
-      Roster::PositionMembership.destroy_all_for_chapter(chapter)
-      Roster::CountyMembership.destroy_all_for_chapter(chapter)
+      if workbook.worksheet("Positions") and workbook.worksheet("Qualifications")
 
-      import_qualification_data workbook.worksheet("Positions"), 2, 3
-      import_qualification_data workbook.worksheet("Qualifications"), 1, 3
+        Roster::PositionMembership.destroy_all_for_chapter(chapter)
+        Roster::CountyMembership.destroy_all_for_chapter(chapter)
+
+        import_qualification_data workbook.worksheet("Positions"), 2, 3
+        import_qualification_data workbook.worksheet("Qualifications"), 1, 3
+
+      end
     end
   end
   private

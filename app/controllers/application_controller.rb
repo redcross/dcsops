@@ -11,8 +11,11 @@ class ApplicationController < ActionController::Base
 
   rescue_from CanCan::AccessDenied do |exception|
     begin
-      flash[:error] = "You are not authorized to access that page."
-      redirect_to :back
+      respond_to do |fmt|
+        fmt.html{ flash[:error] = "You are not authorized to access that page."; redirect_to :back }
+        fmt.json{ head :forbidden }
+        fmt.ics{ head :forbidden }
+      end
     rescue ActionController::RedirectBackError
       redirect_to root_path
     end

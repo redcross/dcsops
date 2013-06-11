@@ -19,141 +19,84 @@ require 'spec_helper'
 # that an instance is receiving a specific message.
 
 describe Incidents::IncidentsController do
+  include LoggedIn
 
-  # This should return the minimal set of attributes required to create a valid
-  # Incidents::Incident. As you add validations to Incidents::Incident, be sure to
-  # adjust the attributes here as well.
-  let(:valid_attributes) { { "chapter" => "" } }
+  before(:each) do
+    @person.update_attribute :last_name, 'Laxson'
+  end
 
-  # This should return the minimal set of values that should be in the session
-  # in order to pass any filters (e.g. authentication) defined in
-  # Incidents::IncidentsController. Be sure to keep this updated too.
-  let(:valid_session) { {} }
+  describe "#needs_report" do
+    it "displays the list" do
+      inc = FactoryGirl.create :incident
+      inc2 = FactoryGirl.create :dat_incident
+      Incidents::Incident.count.should == 2
 
-  describe "GET index" do
-    it "assigns all incidents_incidents as @incidents_incidents" do
-      incident = Incidents::Incident.create! valid_attributes
-      get :index, {}, valid_session
-      assigns(:incidents_incidents).should eq([incident])
+      get :needs_report
+
+      response.should be_success
+      controller.send(:needs_report_collection).should =~ [inc]
     end
   end
 
-  describe "GET show" do
-    it "assigns the requested incidents_incident as @incidents_incident" do
-      incident = Incidents::Incident.create! valid_attributes
-      get :show, {:id => incident.to_param}, valid_session
-      assigns(:incidents_incident).should eq(incident)
-    end
-  end
+  describe "#link_cas" do
+    it "displays the list" do
+      cas = FactoryGirl.create :cas_incident
+      cas2 = FactoryGirl.create :cas_incident
+      inc = FactoryGirl.create :incident
+      inc2 = FactoryGirl.create :incident
 
-  describe "GET new" do
-    it "assigns a new incidents_incident as @incidents_incident" do
-      get :new, {}, valid_session
-      assigns(:incidents_incident).should be_a_new(Incidents::Incident)
-    end
-  end
+      inc.link_to_cas_incident(cas2)
 
-  describe "GET edit" do
-    it "assigns the requested incidents_incident as @incidents_incident" do
-      incident = Incidents::Incident.create! valid_attributes
-      get :edit, {:id => incident.to_param}, valid_session
-      assigns(:incidents_incident).should eq(incident)
-    end
-  end
+      get :link_cas
 
-  describe "POST create" do
-    describe "with valid params" do
-      it "creates a new Incidents::Incident" do
-        expect {
-          post :create, {:incidents_incident => valid_attributes}, valid_session
-        }.to change(Incidents::Incident, :count).by(1)
-      end
-
-      it "assigns a newly created incidents_incident as @incidents_incident" do
-        post :create, {:incidents_incident => valid_attributes}, valid_session
-        assigns(:incidents_incident).should be_a(Incidents::Incident)
-        assigns(:incidents_incident).should be_persisted
-      end
-
-      it "redirects to the created incidents_incident" do
-        post :create, {:incidents_incident => valid_attributes}, valid_session
-        response.should redirect_to(Incidents::Incident.last)
-      end
+      response.should be_success
+      controller.send(:cas_incidents_to_link).should =~ [cas]
     end
 
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved incidents_incident as @incidents_incident" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        Incidents::Incident.any_instance.stub(:save).and_return(false)
-        post :create, {:incidents_incident => { "chapter" => "invalid value" }}, valid_session
-        assigns(:incidents_incident).should be_a_new(Incidents::Incident)
-      end
+    it "can link an incident" do
+      cas = FactoryGirl.create :cas_incident
+      inc = FactoryGirl.create :incident
 
-      it "re-renders the 'new' template" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        Incidents::Incident.any_instance.stub(:save).and_return(false)
-        post :create, {:incidents_incident => { "chapter" => "invalid value" }}, valid_session
-        response.should render_template("new")
-      end
-    end
-  end
+      post :link_cas, cas_id: cas.id, incident_id: inc.id
+      response.should be_success
 
-  describe "PUT update" do
-    describe "with valid params" do
-      it "updates the requested incidents_incident" do
-        incident = Incidents::Incident.create! valid_attributes
-        # Assuming there are no other incidents_incidents in the database, this
-        # specifies that the Incidents::Incident created on the previous line
-        # receives the :update_attributes message with whatever params are
-        # submitted in the request.
-        Incidents::Incident.any_instance.should_receive(:update).with({ "chapter" => "" })
-        put :update, {:id => incident.to_param, :incidents_incident => { "chapter" => "" }}, valid_session
-      end
-
-      it "assigns the requested incidents_incident as @incidents_incident" do
-        incident = Incidents::Incident.create! valid_attributes
-        put :update, {:id => incident.to_param, :incidents_incident => valid_attributes}, valid_session
-        assigns(:incidents_incident).should eq(incident)
-      end
-
-      it "redirects to the incidents_incident" do
-        incident = Incidents::Incident.create! valid_attributes
-        put :update, {:id => incident.to_param, :incidents_incident => valid_attributes}, valid_session
-        response.should redirect_to(incident)
-      end
+      inc.reload.cas_incident_number.should == cas.cas_incident_number
     end
 
-    describe "with invalid params" do
-      it "assigns the incidents_incident as @incidents_incident" do
-        incident = Incidents::Incident.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        Incidents::Incident.any_instance.stub(:save).and_return(false)
-        put :update, {:id => incident.to_param, :incidents_incident => { "chapter" => "invalid value" }}, valid_session
-        assigns(:incidents_incident).should eq(incident)
-      end
-
-      it "re-renders the 'edit' template" do
-        incident = Incidents::Incident.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        Incidents::Incident.any_instance.stub(:save).and_return(false)
-        put :update, {:id => incident.to_param, :incidents_incident => { "chapter" => "invalid value" }}, valid_session
-        response.should render_template("edit")
-      end
-    end
-  end
-
-  describe "DELETE destroy" do
-    it "destroys the requested incidents_incident" do
-      incident = Incidents::Incident.create! valid_attributes
+    it "can promote to an incident" do
+      cas = FactoryGirl.create :cas_incident
+      FactoryGirl.create :county, name: cas.county_name
       expect {
-        delete :destroy, {:id => incident.to_param}, valid_session
-      }.to change(Incidents::Incident, :count).by(-1)
+        post :link_cas, cas_id: cas.id, commit: 'Promote to Incident'
+        response.should be_success
+      }.to change(Incidents::Incident, :count).by(1)
+
+      Incidents::Incident.where(cas_incident_number: cas.cas_incident_number).first.should_not be_nil
     end
 
-    it "redirects to the incidents_incidents list" do
-      incident = Incidents::Incident.create! valid_attributes
-      delete :destroy, {:id => incident.to_param}, valid_session
-      response.should redirect_to(incidents_incidents_url)
+  end
+
+  describe "#show" do
+    it "should succeed with no cas or dat" do
+      inc = FactoryGirl.create :incident
+      get :show, id: inc.to_param
+      response.should be_success
+    end
+
+    it "should succeed with cas" do
+      inc = FactoryGirl.create :incident
+      cas = FactoryGirl.create :cas_incident
+      inc.link_to_cas_incident cas
+
+      get :show, id: inc.to_param
+      response.should be_success
+    end
+
+    it "should succeed with dat" do
+      inc = FactoryGirl.create :incident
+      dat = FactoryGirl.create :dat_incident, incident: inc
+      get :show, id: inc.to_param
+      response.should be_success
     end
   end
 

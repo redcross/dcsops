@@ -1,5 +1,3 @@
-require 'vc_importer'
-
 class Roster::ImportMailer < ActionMailer::Base
   def receive(message)
     components = message.subject.split(/-/)
@@ -8,7 +6,7 @@ class Roster::ImportMailer < ActionMailer::Base
     chapter_code = components[0]
     chapter = Roster::Chapter.where(code: chapter_code).first!
 
-    importer = Roster::VCImporter.new
+    importer = Roster::VcImporter.new
 
     message.attachments.each do |att|
       StringIO.open(att.body.decoded) do |io|

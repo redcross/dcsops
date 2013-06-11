@@ -27,7 +27,7 @@ class Incidents::IncidentsMailer < ActionMailer::Base
   def no_incident_report(incident)
     @incident = incident
 
-    mail to: "John Laxson <jlaxson@mac.com>"
+    mail to: "John Laxson <jlaxson@mac.com>", subject: "Missing Incident Report"
   end
 
   # Subject can be set in your I18n file at config/locales/en.yml

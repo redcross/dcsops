@@ -61,7 +61,7 @@
         .control-group
           %label.control-label Other Assistance
           .controls
-            - {"Opened Evac Center" => 'evac_center', 'Comfort Kits' => 'comfort_kits'}.each do |label, val|
+            - {"Opened Evac Center" => 'evac_center', 'Comfort Kits' => 'comfort_kits', "Canteened Responders" => 'canteened_responders'}.each do |label, val|
               %label.checkbox
                 =check_box_tag "incidents_dat_incident[services][]", val, services.include?( val)
                 =label

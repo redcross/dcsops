@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe "incidents/dat_incidents/new" do
-  before(:each) do
-    assign(:incidents_dat_incident, stub_model(Incidents::DatIncident).as_new_record)
-  end
+  has_resource(:dat_incident) {Incidents::DatIncident.new}
 
-  it "renders new incidents_dat_incident form" do
+  it "should render" do
+    view.stub!(:form_url).and_return(incidents_dat_incidents_path)
+
     render
 
     # Run the generator again with the --webrat flag if you want to use webrat matchers

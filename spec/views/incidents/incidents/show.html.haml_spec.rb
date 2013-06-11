@@ -1,41 +1,65 @@
 require 'spec_helper'
 
 describe "incidents/incidents/show" do
+  let(:person) {FactoryGirl.create :person, last_name: 'Laxson'}
+  let(:ability) {Incidents::Ability.new person}
+
   before(:each) do
-    @incidents_incident = assign(:incidents_incident, stub_model(Incidents::Incident,
-      :chapter => nil,
-      :county => nil,
-      :incident_number => "Incident Number",
-      :cas_incident_number => "Cas Incident Number",
-      :city => "City",
-      :units_affected => 1,
-      :num_adults => 2,
-      :num_children => 3,
-      :num_families => 4,
-      :num_cases => 5,
-      :incident_type => "Incident Type",
-      :incident_description => "Incident Description",
-      :narrative_brief => "MyText",
-      :narrative => "MyText"
-    ))
+    view.controller.stub! :current_ability => ability
   end
 
-  it "renders attributes in <p>" do
-    render
-    # Run the generator again with the --webrat flag if you want to use webrat matchers
-    rendered.should match(//)
-    rendered.should match(//)
-    rendered.should match(/Incident Number/)
-    rendered.should match(/Cas Incident Number/)
-    rendered.should match(/City/)
-    rendered.should match(/1/)
-    rendered.should match(/2/)
-    rendered.should match(/3/)
-    rendered.should match(/4/)
-    rendered.should match(/5/)
-    rendered.should match(/Incident Type/)
-    rendered.should match(/Incident Description/)
-    rendered.should match(/MyText/)
-    rendered.should match(/MyText/)
+  describe "with no linked incidents" do
+    has_resource(:incident) { FactoryGirl.create :incident }
+
+    it "should render" do
+      render
+
+      rendered.should match(@incident.incident_number)
+      rendered.should match("Link to CAS Incident")
+    end
+  end
+
+  describe "with linked dat incident" do
+    has_resource(:incident) { FactoryGirl.create :incident }
+
+    it "should render" do
+      dat = FactoryGirl.create :dat_incident, incident: @incident
+
+      render
+
+      rendered.should match(edit_incidents_incident_dat_path(@incident))
+      rendered.should match('Demographics')
+      rendered.should match(dat.address)
+    end
+  end
+
+  describe "with linked cas incident" do
+    has_resource(:incident) { FactoryGirl.create :incident }
+
+    it "should render" do
+      cas = FactoryGirl.create :cas_incident
+      @incident.link_to_cas_incident cas
+      @incident.reload
+
+      render
+
+      rendered.should match(cas.cas_incident_number)
+      rendered.should match('Total Casework Clients')
+      rendered.should_not match("Link to CAS Incident")
+    end
+  end
+
+  describe "with cas number but no incident" do
+    has_resource(:incident) { FactoryGirl.create :incident }
+
+    it "should render" do
+      @incident.update_attribute :cas_incident_number, "1-123456"
+
+      render
+
+      rendered.should match(@incident.cas_incident_number)
+      rendered.should match("Link to CAS Incident")
+      rendered.should_not match('Total Casework Clients')
+    end
   end
 end

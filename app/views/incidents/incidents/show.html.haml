@@ -147,7 +147,7 @@
           -if resource.cas_incident_number.nil?
             %span.invalid 
           -else
-            =resource.cas_incident.cas_incident_number
+            =resource.cas_incident_number
         -if resource.cas_incident.nil?
           %button.btn.btn-primary.btn-mini Link to CAS Incident
       -if resource.cas_incident_number and resource.cas_incident.nil?

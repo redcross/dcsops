@@ -52,9 +52,9 @@ describe Scheduler::ShiftAssignmentsController do
       it "should access denied if a regular user" do
         3.times { FactoryGirl.create :shift_assignment }
 
-        expect {
-          get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
-        }.to raise_error(CanCan::AccessDenied)
+        get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
+        response.should_not be_success
+        response.code.should == "403"
       end
 
       it 'should show all shifts I am a county admin for' do
