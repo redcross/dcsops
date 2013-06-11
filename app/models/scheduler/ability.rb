@@ -8,7 +8,7 @@ class Scheduler::Ability
     #can :read, Roster::Person, id: person.id
     #can :read, Scheduler::ShiftAssignment, shift: {county_id: county_ids}
     can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], {id: person.id}
-    can [:read, :destroy, :create, :swap], Scheduler::ShiftAssignment, person_id: person.id
+    can [:read, :destroy, :create, :swap], Scheduler::ShiftAssignment, person: {id: person.id}
     can :swap, Scheduler::ShiftAssignment, {available_for_swap: true}
 
     # County Admin role
@@ -28,7 +28,6 @@ class Scheduler::Ability
 
         can :receive_admin_notifications, Scheduler::NotificationSetting, id: person.id
     end
-
 
     # Define abilities for the passed in user here. For example:
     #

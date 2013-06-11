@@ -16,13 +16,13 @@ describe Scheduler::ShiftGroup do
       Delorean.time_travel_to @chapter.time_zone.now.change hour: 6
 
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift1]
-      arr.first.start_date.should == Date.today
+      arr.first.start_date.should == @chapter.time_zone.today
 
       Delorean.time_travel_to@chapter.time_zone.now.change hour: 12
 
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift2]
       arr.first.start_date.should be_a(Date)
-      arr.first.start_date.should == Date.today
+      arr.first.start_date.should == @chapter.time_zone.today
 
       Delorean.time_travel_to@chapter.time_zone.now.change hour: 5
 
@@ -31,7 +31,7 @@ describe Scheduler::ShiftGroup do
       Delorean.time_travel_to @chapter.time_zone.now.change hour: 3
 
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift2]
-      arr.first.start_date.should == Date.yesterday
+      arr.first.start_date.should == @chapter.time_zone.today.yesterday
 
     end
     it "should return current weekly groups" do
@@ -51,14 +51,44 @@ describe Scheduler::ShiftGroup do
       arr.first.start_date.should eq Date.current.at_beginning_of_week
 
       Delorean.time_travel_to 'friday 8am'
-
-      (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ []
+      (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift2]
+      arr.first.start_date.should eq Date.current.at_beginning_of_week
 
       Delorean.time_travel_to 'saturday 8am'
 
+      (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ []
+
+      Delorean.time_travel_to 'monday 8am'
+
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift3]
-      arr.first.start_date.should eq Date.current.at_beginning_of_week
+      arr.first.start_date.should eq Date.current.at_beginning_of_week.last_week
     end
+
+    it "should return current weekly groups with negative start offset" do
+      @shift1 = FactoryGirl.create(:shift_group, chapter: @chapter, period: 'weekly', start_offset: -1.day, end_offset: 3.days)
+
+      #Delorean.time_travel_to 'monday 8am'
+#
+      #(arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift1]
+      #arr.first.start_date.should eq Date.current.at_beginning_of_week
+
+      Delorean.time_travel_to 'sunday 8am'
+
+      (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift1]
+      arr.first.start_date.should eq Date.current.at_beginning_of_week.next_week
+
+      Delorean.time_travel_to 'friday 8am'
+
+      (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ []
+    end
+
+    it "should return current monthly groups" do
+      @shift1 = FactoryGirl.create(:shift_group, chapter: @chapter, period: 'monthly', start_offset: 0, end_offset: 31)
+      (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift1]
+      arr.first.start_date.should be_a(Date)
+      arr.first.start_date.should eq Date.current.at_beginning_of_month
+    end
+
   end
 
   describe "#next_group" do

@@ -52,35 +52,41 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
     self.where(chapter_id: chapter).select{|group|
       if group.period == 'daily'
         day_offset = now.seconds_since_midnight
-        day_plus_offset = day_offset + 1.day.to_i
+        day_plus_offset = (day_offset + 1.day).to_i
 
         check_offset(group.start_offset, group.end_offset, day_offset, day_plus_offset) do |is_plus|
           group.start_date = is_plus ? now.to_date.yesterday : now.to_date
         end
       elsif group.period == 'weekly'
-        week_offset = (now.wday * 1.day.to_i) + now.seconds_since_midnight
-        week_plus_offset = week_offset + 7.days.to_i
+        wday = (now.to_date - now.at_beginning_of_week.to_date).to_i
 
-        check_offset(group.start_offset, group.end_offset, week_offset, week_plus_offset) do |is_plus|
-          group.start_date = is_plus ? now.to_date.at_beginning_of_week.advance(weeks: -1) : now.to_date.at_beginning_of_week
+        week_offset = ((wday * 1.day) + now.seconds_since_midnight).to_i
+        week_plus_offset = (week_offset + 7.days).to_i
+        week_minus_offset = -(7.days-week_offset).to_i
+
+        check_offset(group.start_offset, group.end_offset, week_offset, week_plus_offset, week_minus_offset) do |is_plus, is_minus|
+          group.start_date = is_minus ? now.to_date.at_beginning_of_week.advance(weeks: 1) : (is_plus ? now.to_date.at_beginning_of_week.advance(weeks: -1) : now.to_date.at_beginning_of_week)
         end
       elsif group.period == 'monthly'
         month_offset = now.day
         month_plus_offset = now.day + now.months_since(1).at_end_of_month.day
 
         check_offset(group.start_offset, group.end_offset, month_offset, month_plus_offset) do |is_plus|
-          group.start_date = is_plus ? now.months_since(1).at_beginning_of_month : now.at_beginning_of_month
+          group.start_date = is_plus ? now.months_since(1).at_beginning_of_month.to_date : now.at_beginning_of_month.to_date
         end
       end
     }
   end
 
-  def self.check_offset(start_offset, end_offset, current, current_plus)
+  def self.check_offset(start_offset, end_offset, current, current_plus, current_minus=nil)
     if (start_offset <= current and current < end_offset) 
-      yield false
+      yield false, false
       true
     elsif (start_offset <= current_plus and current_plus < end_offset)
-      yield true
+      yield true, false
+      true
+    elsif current_minus and (start_offset <= current_minus and current_minus < end_offset) 
+      yield false, true
       true
     else
       false
