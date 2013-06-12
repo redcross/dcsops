@@ -69,8 +69,12 @@
 
       %h3 
         DAT Details
-        %small
-          =link_to "Edit", edit_incidents_incident_dat_path(resource)
+        -if resource.dat_incident && can?( :update, resource.dat_incident)
+          %small
+            =link_to "Edit", edit_incidents_incident_dat_path(resource)
+        -elsif resource.dat_incident.nil? && can?( :create, Incidents::DatIncident)
+          %small
+            =link_to "Submit Report", edit_incidents_incident_dat_path(resource)
       -if dat
         .row
           .span4
@@ -125,7 +129,7 @@
                 %td=dat.responder_assignments.unscoped.on_scene.count
               %tr
                 %th Time to On Scene
-                %td 48 minutes
+                %td
               %tr
                 %th Type of Call
                 %td
@@ -148,7 +152,7 @@
             %span.invalid 
           -else
             =resource.cas_incident_number
-        -if resource.cas_incident.nil?
+        -if resource.cas_incident.nil? and can?(:link_cas, resource)
           %button.btn.btn-primary.btn-mini Link to CAS Incident
       -if resource.cas_incident_number and resource.cas_incident.nil?
         A CAS Incident has been provided but no data for the incident was found.  If this is a new incident, it may take 12-24 hours for incident data to become available.

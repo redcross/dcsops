@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'vc_importer'
+#require 'vc_importer'
 
 if ENV['TEST_IMPORT']
 
