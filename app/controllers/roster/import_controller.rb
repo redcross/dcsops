@@ -3,7 +3,7 @@ class Roster::ImportController < ApplicationController
   include MailImportController
   newrelic_ignore_apdex
 
-  skip_before_filter :require_valid_user!, only: :import_cas
+  skip_before_filter :require_valid_user!, only: :import_vc
 
   import_handler :import_vc
   def import_vc_handler(message, attach_name, attach, content)
@@ -11,6 +11,7 @@ class Roster::ImportController < ApplicationController
 
     importer = case params[:version]
     when "1" then Roster::VcImporter.new
+    when "2" then Roster::VcPositionsImporter.new
     else raise "Unknown import version #{params[:version]}"
     end
 

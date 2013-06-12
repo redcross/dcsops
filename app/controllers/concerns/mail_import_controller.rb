@@ -15,21 +15,29 @@ module MailImportController
       define_method method do
         head :ok and return if request.head? 
         
-        case params[:provider]
-        when 'mandrill'
-          # Todo: Validate Sig
-          json = JSON.parse( params[:mandrill_events])
-          json.each do |evt|
-            raise "Unknown event type '#{evt['event']}'" unless evt['event'] == 'inbound'
+        begin
+          case params[:provider]
+          when 'mandrill'
+            # Todo: Validate Sig
+            json = JSON.parse( params[:mandrill_events])
+            json.each do |evt|
+              raise "Unknown event type '#{evt['event']}'" unless evt['event'] == 'inbound'
 
-            message = evt['msg']
-            message['attachments'].each do |name, attach|
-              content = Base64.decode64(attach['content'])
-              self.send(:"#{method}_handler", message, name, attach, content)
+              message = evt['msg']
+              message['attachments'].each do |name, attach|
+                content = Base64.decode64(attach['content'])
+                self.send(:"#{method}_handler", message, name, attach, content)
+              end
             end
+          else
+            raise "Unknown Mail Provider #{params[:provider]}"
           end
-        else
-          raise "Unknown Mail Provider #{params[:provider]}"
+
+        rescue => e
+          capture_exception(e)
+          puts e.to_s
+          puts e.backtrace.first(10).join("\n")
+          raise e
         end
       end
 

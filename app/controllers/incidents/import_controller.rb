@@ -27,6 +27,9 @@ class Incidents::ImportController < ApplicationController
           puts "Importing attachment #{i} @ #{step}..."
         end
       end
+    else
+      puts "Chapter #{message['subject']} not found"
+      raise "Chapter Not found #{message['subject']}"
     end
 
   ensure

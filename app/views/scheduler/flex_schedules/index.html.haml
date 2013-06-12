@@ -7,7 +7,7 @@
 .noprint
   =form_tag scheduler_flex_schedules_path, method: :get do
     =select_tag "county", options_from_collection_for_select(Roster::County.all, :id, :name, current_scopes[:county]), multiple: false, id: 'choose-county'
-    %table
+    %table.table-bordered.filter-table
       %tr
         %th
         - days_of_week.each do |d|
@@ -24,20 +24,29 @@
   %thead
     %tr
       %th Person
+      %th Positions
       %th Phone 1
       %th Phone 2
+      %th Email
       - days_of_week.each do |d|
         %th.day-label{colspan: 2}=d[0..2].titleize
       %th.noprint
-  - collection.each do |sched|
-    %tbody
+  %tbody
+    - collection.each do |sched|
       %tr
         %td= sched.person.full_name
+        %td
+          %ul 
+            - sched.person.positions.map(&:name).each do |pos|
+              %li
+                %small=pos
         - phones = sched.person.phone_order
         %td
           = phones[0] && phones[0][:number]
         %td
           = phones[1] && phones[1][:number]
+        %td
+          %small=sched.person.email
         - days_of_week.each do |d|
           %td.day= sched.available(d, 'day') ? 'D' : ''
           %td.night= sched.available(d, 'night') ? 'N' : ''

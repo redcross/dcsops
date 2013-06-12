@@ -4,7 +4,26 @@
 
 $border-color: rgb(221, 221, 221);
 
+body.scheduler.flex_schedules {
+  .filter-table td {
+    padding: 5px;
+  }
+}
+
 .flex-table {
+  .positions {
+    line-height: 1;
+    br {
+      line-height: 0;
+    }
+  }
+  ul {
+    margin: 0;
+  }
+  li {
+    display: block;
+    line-height: 1;
+  }
   th.day-label {
     text-align: center;
     border-left: 1px solid $border-color;

@@ -6,15 +6,15 @@ class Roster::VcImporter
       import_member_data workbook.worksheet("Contact")
       # First Delete all the existing qualification data
 
-      if workbook.worksheet("Positions") and workbook.worksheet("Qualifications")
-
-        Roster::PositionMembership.destroy_all_for_chapter(chapter)
-        Roster::CountyMembership.destroy_all_for_chapter(chapter)
-
-        import_qualification_data workbook.worksheet("Positions"), 2, 3
-        import_qualification_data workbook.worksheet("Qualifications"), 1, 3
-
-      end
+      #if workbook.worksheet("Positions") and workbook.worksheet("Qualifications")
+#
+      #  Roster::PositionMembership.destroy_all_for_chapter(chapter)
+      #  Roster::CountyMembership.destroy_all_for_chapter(chapter)
+#
+      #  import_qualification_data workbook.worksheet("Positions"), 2, 3
+      #  import_qualification_data workbook.worksheet("Qualifications"), 1, 3
+#
+      #end
     end
   end
   private
@@ -51,7 +51,8 @@ class Roster::VcImporter
       #pp "#{sheet[idx, data_col]} #{idx} #{vc_id}"
 
       unless person and person.vc_id == vc_id
-        person = Roster::Person.find_by! chapter_id: @chapter, vc_id: vc_id
+        person = Roster::Person.find_by chapter_id: @chapter, vc_id: vc_id
+        next unless person
       end
 
       counties.each do |county|
