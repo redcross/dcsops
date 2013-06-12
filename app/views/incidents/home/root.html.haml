@@ -1,9 +1,23 @@
-.pull-right
-  =link_to "Report Incident", needs_report_incidents_incidents_path
-%h2.center
-  #{current_user.chapter.short_name} DAT Incidents
-  %br
-  %small
+.row
+  .span12
+    .span3.noprint(style="float: left; margin-right: -100%")
+      %ul.nav.nav-tabs.nav-stacked
+        %li
+          %a{href: needs_report_incidents_incidents_path}
+            Submit Incident Report
+            %i.icon-chevron-right
+        -if can? :link_cas, Incidents::Incident
+          %li
+            %a{href: link_cas_incidents_incidents_path}
+              Link CAS Incidents
+              %i.icon-chevron-right
+        -if can? :tracker, Incidents::Incident
+          %li
+            %a{href: tracker_incidents_incidents_path}
+              Incident Tracker
+              %i.icon-chevron-right
+    %h2.center
+      #{current_user.chapter.short_name} DAT Incidents
     
 .row
   - {"30 Days" => Incidents::Incident.unscoped.where{date >= 1.month.ago}.incident_stats, "This Year" => Incidents::Incident.where{date >= "2012-07-01"}.incident_stats, "5 Years" => Incidents::Incident.where{date >= 5.years.ago}.incident_stats}.each do |title, stats|

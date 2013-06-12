@@ -3,7 +3,9 @@ class Incidents::IncidentsController < Incidents::BaseController
   defaults finder: :find_by_incident_number!
   load_and_authorize_resource except: [:link_cas]
 
-  custom_actions collection: [:needs_report, :link_cas]
+  custom_actions collection: [:needs_report, :link_cas, :tracker]
+
+  has_scope :in_county, as: :county_id_eq
 
   def link_cas
     authorize! :read, Incidents::CasIncident
@@ -44,6 +46,12 @@ class Incidents::IncidentsController < Incidents::BaseController
     helper_method :needs_report_collection
     def needs_report_collection
       @_report_collection ||= end_of_association_chain.joins{dat_incident.outer}.where{dat_incident.id == nil}
+    end
+
+    helper_method :tracker_collection
+    def tracker_collection
+      @_tracker_collection ||= apply_scopes(end_of_association_chain).joins{cas_incident.cases.outer}.where{((cas_incident.cases_open > 0) | (cas_incident.last_date_with_open_cases >= 7.days.ago)) & (cas_incident.cases.case_last_updated > 2.months.ago)}.includes{cas_incident.cases}.uniq
+          .order{date.desc}
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

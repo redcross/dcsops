@@ -1,4 +1,4 @@
-class Incidents::HomeController < ApplicationController
+class Incidents::HomeController < Incidents::BaseController
 
   def root
   end
@@ -12,7 +12,7 @@ class Incidents::HomeController < ApplicationController
 
   helper_method :recent_incidents, :map_json_for
   def recent_incidents
-    @_recents ||= Incidents::Incident.order(:date).reverse_order.limit(7)
+    @_recents ||= Incidents::Incident.includes{dat_incident}.order(:date).reverse_order.limit(7)
   end
 
   def map_json_for(incidents)

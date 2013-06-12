@@ -7,6 +7,11 @@ body.incidents {
     max-width: none;
     width: auto; display:inline;
   }
+
+  .nav .icon-chevron-right {
+    float: right;
+    margin-top: 5px
+  }
 }
 
 body.incidents.home.root {

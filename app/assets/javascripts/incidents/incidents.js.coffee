@@ -129,3 +129,15 @@ class window.AllIncidentsHeatmapController
 
     @map.fitBounds @bounds
 
+class window.IncidentsTrackerController
+  constructor: () ->
+    $(".narrative-button").on "click", (evt) =>
+      el = $(evt.target)
+      path = el.data('url')
+      $("#narrative-modal .modal-body").text('Loading...')
+      $("#narrative-modal").modal('show')
+      $.ajax
+        url: path
+        success: (data, status, xhr) =>
+          $("#narrative-modal .modal-body").html(data)
+          setTimeout ( () -> $("#narrative-modal .modal-body").scrollTop(0) ), 100

@@ -11,6 +11,8 @@ class Incidents::Incident < ActiveRecord::Base
   #delegate :address,  :city, :state, :zip, :lat, :lng, :num_adults, :num_children, to: :dat_incident
   #delegate :units_affected, to: :dat_incident
 
+  scope :in_county, -> county {where{county_id == county}}
+
   def update_from_dat_incident
     address_fields = [:address,  :city, :state, :zip, :lat, :lng, :num_adults, :num_children, :num_families]
     if dat_incident

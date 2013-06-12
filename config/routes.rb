@@ -74,10 +74,16 @@ Scheduler::Application.routes.draw do
 
       collection do
         get :needs_report
+        get :tracker
         match :link_cas, via: [:get, :post], as: :link_cas
       end
     end
     resources :dat_incidents, only: [:new, :create]
+    resources :cas_incidents do
+      resources :cases, controller: 'cas_cases' do
+        get :narrative, on: :member
+      end
+    end
   end
 
   match 'import/:import_secret/:provider/cas-v:version', via: [:head, :post], to: 'incidents/import#import_cas', version: /\d+/

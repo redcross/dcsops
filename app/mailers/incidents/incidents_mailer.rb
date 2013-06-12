@@ -14,7 +14,9 @@ class Incidents::IncidentsMailer < ActionMailer::Base
     @weekly_stats = Incidents::Incident.where{date.in(@start_date..@end_date)}.incident_stats
     @yearly_stats = Incidents::Incident.where{date >= '2012-07-01'}.incident_stats
 
-    @title = "ARCBA Disaster Operations Report - Week of #{@start_date.to_s :mdy}"
+    @subtitle = "Week of #{@start_date.to_s :mdy}"
+
+    @title = "ARCBA Disaster Operations Report - #{@subtitle}"
 
     mail to: "John Laxson <jlaxson@mac.com>", subject: @title
   end
@@ -45,10 +47,16 @@ class Incidents::IncidentsMailer < ActionMailer::Base
 
   helper_method :static_maps_url
   def static_maps_url
-    "https://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=300x600&markers=|#{incidents_marker_param}"
+    "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=300x600&markers=#{URI::encode incidents_marker_param}&scale=2"
+  end
+
+  def image_content
+    uri = URI(static_maps_url)
+    resp = Net::HTTP.get_response uri
+    { content_type: resp['Content-Type'], content: resp.body }
   end
 
   def incidents_marker_param
-    @incidents.map{|i| [i.lat.to_s, i.lng.to_s].join(",")}.join("|")
+    "|" + @incidents.map{|i| [i.lat.to_s, i.lng.to_s].join(",")}.join("|")
   end
 end

@@ -1,11 +1,16 @@
 class Incidents::CasIncident < ActiveRecord::Base
   belongs_to :incident, class_name: 'Incidents::Incident'
   has_many :cases, class_name: 'Incidents::CasCase'
+  alias :cas_cases :cases
 
   validates :incident_id, :cas_incident_number, :dr_number, uniqueness: {allow_blank: true, allow_nil: true}
 
   def is_dr
     dr_number != cas_incident_number
+  end
+
+  def to_param
+    cas_incident_number
   end
 
   # For Debug Purposes

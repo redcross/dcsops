@@ -68,7 +68,12 @@ class Incidents::CasImporter
 
       cols.each_with_index do |col_name, idx|
         next unless col_name
-        the_case.send "#{col_name}=".to_sym, sheet[row, idx]
+        case Incidents::CasCase.columns_hash[col_name.to_s].type
+        when :boolean
+          the_case.send "#{col_name}=".to_sym, sheet[row, idx]=='Open'
+        else
+          the_case.send "#{col_name}=".to_sym, sheet[row, idx]
+        end
       end
       the_case.last_import = Time.now
       if !the_case.save
