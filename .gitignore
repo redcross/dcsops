@@ -20,3 +20,4 @@
 .DS_Store
 .idea
 *.sublime-workspace
+config/database.yml

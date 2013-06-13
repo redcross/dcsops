@@ -25,6 +25,8 @@ class Roster::VcPositionsImporter
 
     errors = []
 
+    puts "Have #{sheet.last_row_index-1} rows"
+
     (1..(sheet.last_row_index-1)).each do |idx|
       vc_id = sheet[idx, data_col].to_i
       pos_name = sheet[idx, pos_col]
@@ -34,7 +36,12 @@ class Roster::VcPositionsImporter
 
       unless person and person.vc_id == vc_id
         person = Roster::Person.find_by chapter_id: @chapter, vc_id: vc_id
-        errors << vc_id and next unless person
+        puts "Person for chap #{@chapter.id} vc_id #{vc_id} is #{person.inspect}"
+        unless person
+          errors << vc_id 
+          next
+        end
+
       end
 
       counties.each do |county|
@@ -60,7 +67,7 @@ class Roster::VcPositionsImporter
 
     end
 
-    pp errors
+    puts errors.inspect
 
   end
 
