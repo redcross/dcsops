@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "incidents/incidents/show" do
   let(:person) {FactoryGirl.create :person, last_name: 'Laxson'}
-  let(:ability) {Incidents::Ability.new person}
+  let(:ability) {grant_role! 'incidents_admin', nil, person; Incidents::Ability.new person}
 
   before(:each) do
     view.controller.stub! :current_ability => ability

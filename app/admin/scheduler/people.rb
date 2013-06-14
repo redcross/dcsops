@@ -1,4 +1,4 @@
-ActiveAdmin.register Roster::Person, namespace: 'scheduler_admin', as: 'Person' do
+ActiveAdmin.register Roster::Person, as: 'Person' do
   batch_action :destroy, false
   batch_action :edit, false
 
@@ -8,19 +8,7 @@ ActiveAdmin.register Roster::Person, namespace: 'scheduler_admin', as: 'Person' 
 
   index do
     column :name_last_first, sortable: "last_name"
-
-    column "Number of Shifts" do |person|
-      Scheduler::ShiftAssignment.where(person_id: person).where('date <= ?', Date.current).count
-    end
-
-    column "Last Shift" do |person|
-      Scheduler::ShiftAssignment.where(person_id: person).where('date <= ?', Date.current).first.try(:date)
-    end
-
-    column "Next Shift" do |person|
-      Scheduler::ShiftAssignment.where(person_id: person).where('date >= ?', Date.current).first.try(:date)
-    end
-
+    column :username
     column :last_login
 
     default_actions
@@ -54,6 +42,7 @@ ActiveAdmin.register Roster::Person, namespace: 'scheduler_admin', as: 'Person' 
           table_for person.position_memberships do
             column( :name) { |rec| rec.position && rec.position.name }
             column(:persistent) { |rec| rec.persistent ? 'Yes' : ''}
+            column(:roles) {|rec| rec.roles.map(&:name).join ", "}
           end
         end
       end

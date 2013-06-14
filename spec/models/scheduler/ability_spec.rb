@@ -64,9 +64,7 @@ describe Scheduler::Ability do
 
   context "as county dat admin" do
     before(:each) do
-      @position.grants_role = 'county_dat_admin'
-      @position.role_scope = @person.county_ids
-      @position.save
+      grant_role! 'county_dat_admin', @person.county_ids
 
       @non_county_person = FactoryGirl.create :person, chapter: @person.chapter
     end

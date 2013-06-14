@@ -3,7 +3,7 @@ class AdminAbility
 
   def initialize(person)
 
-    is_config = person.positions.any?{|pos| pos.grants_role == 'chapter_config'}
+    is_config = person.roles.any?{|r| r.grant_name == 'chapter_config' }
 
     if is_config # is site manager
       can [:read, :update], Roster::Chapter, id: person.chapter_id
@@ -11,6 +11,7 @@ class AdminAbility
       can :manage, Roster::Position
       can :manage, Roster::CellCarrier
       can :manage, Roster::Person
+      can :manage, Roster::Role
 
       can :manage, Scheduler::DispatchConfig
       can :manage, Scheduler::Shift

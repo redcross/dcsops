@@ -51,19 +51,15 @@ describe Scheduler::ShiftAssignmentsController do
     context "?show_shifts=all" do
       it "should access denied if a regular user" do
         3.times { FactoryGirl.create :shift_assignment }
-
-        get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
-        response.should_not be_success
-        response.code.should == "403"
+        expect {
+          get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
+        }.to raise_error(CanCan::AccessDenied)
       end
 
       it 'should show all shifts I am a county admin for' do
         (0..2).map { |i| pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties; FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+6+i) }
 
-        pos = @person.positions.first
-        pos.grants_role = 'county_dat_admin'
-        pos.role_scope = @person.county_ids
-        pos.save
+        grant_role! 'county_dat_admin', @person.county_ids
 
         get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
 
@@ -74,10 +70,7 @@ describe Scheduler::ShiftAssignmentsController do
       it "should merge other shifts into the same event" do
         (1..3).map { |i| pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties; FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+i) }
 
-        pos = @person.positions.first
-        pos.grants_role = 'county_dat_admin'
-        pos.role_scope = @person.county_ids
-        pos.save
+        grant_role! 'county_dat_admin', @person.county_ids
 
         get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
 

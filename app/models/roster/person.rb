@@ -7,6 +7,7 @@ class Roster::Person < ActiveRecord::Base
 
   has_many :position_memberships, class_name: 'Roster::PositionMembership'
   has_many :positions, class_name: 'Roster::Position', through: :position_memberships
+  has_many :roles, class_name: 'Roster::Role', through: :positions
 
   belongs_to :home_phone_carrier, class_name: 'Roster::CellCarrier'
   belongs_to :cell_phone_carrier, class_name: 'Roster::CellCarrier'
@@ -35,7 +36,15 @@ class Roster::Person < ActiveRecord::Base
 
   accepts_nested_attributes_for :county_memberships, :position_memberships, allow_destroy: true
 
-  after_save :geocode_address
+  before_save :geocode_address
+
+  def has_role(grant_name)
+    roles.select{|p| p.grant_name == grant_name}.present?
+  end
+
+  def scope_for_role(grant_name)
+    roles.select{|p| p.grant_name == grant_name}.map(&:role_scope).map{ |scope| scope.include?( :county_ids) ? county_ids : scope}.flatten.compact.uniq
+  end
 
   def primary_county
     super || counties.first
@@ -67,8 +76,14 @@ class Roster::Person < ActiveRecord::Base
   end
 
   def geocode_address
-    if lat.nil? or lng.nil? or (changed & %i(address1 address2 city state zip))
-
+    return if Rails.env.test?
+    
+    if lat.nil? or lng.nil? or (changed & %w(address1 address2 city state zip)).present?
+      puts 'geocoding'
+      res = Geokit::Geocoders::GoogleV3Geocoder.geocode( [address1, address2, city, state, zip].join(" "))
+      if res
+        (self.lat, self.lng) = res.lat, res.lng
+      end
     end
   end
 

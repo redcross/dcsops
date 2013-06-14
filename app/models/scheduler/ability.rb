@@ -11,10 +11,14 @@ class Scheduler::Ability
     can [:read, :destroy, :create, :swap], Scheduler::ShiftAssignment, person: {id: person.id}
     can :swap, Scheduler::ShiftAssignment, {available_for_swap: true}
 
-    # County Admin role
-    positions = person.positions
-    admin_county_ids = positions.select{|p| p.grants_role == 'county_dat_admin'}.map(&:role_scope).flatten
-    if positions.any?{|p| p.grants_role == 'chapter_dat_admin' }
+    county_ids = person.scope_for_role('county_roster')
+    if county_ids.present?
+        can :index, [Scheduler::FlexSchedule], {person: {county_memberships: {county_id: county_ids}}}
+        can :index, Roster::Person, {county_memberships: {county_id: county_ids}}
+    end
+
+    admin_county_ids = person.scope_for_role('county_dat_admin')
+    if person.has_role 'chapter_dat_admin'
         admin_county_ids = admin_county_ids + person.chapter.county_ids
     end
     admin_county_ids = admin_county_ids.uniq

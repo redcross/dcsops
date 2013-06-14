@@ -21,12 +21,9 @@ require 'spec_helper'
 describe Incidents::IncidentsController do
   include LoggedIn
 
-  before(:each) do
-    @person.update_attribute :last_name, 'Laxson'
-  end
-
   describe "#needs_report" do
     it "displays the list" do
+      grant_role! 'submit_incident_report'
       inc = FactoryGirl.create :incident
       inc2 = FactoryGirl.create :dat_incident
       Incidents::Incident.count.should == 2
@@ -39,6 +36,7 @@ describe Incidents::IncidentsController do
   end
 
   describe "#link_cas" do
+    before(:each) { grant_role! 'cas_admin' }
     it "displays the list" do
       cas = FactoryGirl.create :cas_incident
       cas2 = FactoryGirl.create :cas_incident
@@ -77,6 +75,7 @@ describe Incidents::IncidentsController do
   end
 
   describe "#show" do
+    before(:each) { grant_role! 'incidents_admin' }
     it "should succeed with no cas or dat" do
       inc = FactoryGirl.create :incident
       get :show, id: inc.to_param

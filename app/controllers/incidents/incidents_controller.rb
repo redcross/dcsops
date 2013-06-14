@@ -13,7 +13,7 @@ class Incidents::IncidentsController < Incidents::BaseController
       cas = Incidents::CasIncident.find params[:cas_id]
       incident = Incidents::Incident.find params[:incident_id]
 
-      authorize! :link_cas, cas
+      authorize! :link, cas
 
       incident.link_to_cas_incident(cas)
     elsif request.post? and params[:cas_id] and params[:commit] == 'Promote to Incident'

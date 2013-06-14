@@ -3,22 +3,35 @@ class Incidents::Ability
 
   def initialize(person)
     can :read, :incidents
-    can [:read, :needs_report], Incidents::Incident
+    can [:read], Incidents::Incident
     can :read_details, Incidents::Incident
-    can :create, Incidents::DatIncident
 
-    return unless %w(Laxson Hersher Hancock Terrell).include? person.last_name
+    is_admin = person.has_role 'incidents_admin'
+
+    if is_admin or person.has_role 'submit_incident_report'
+        can :needs_report, Incidents::Incident
+        can :create, Incidents::DatIncident
+    end
+
+    if is_admin or person.has_role 'cas_admin'
+        can [:link_cas], Incidents::Incident
+        can [:read, :promote, :link], Incidents::CasIncident
+        can [:manage], Incidents::CasCase
+    end
+
+    if is_admin or person.has_role 'incident_details'
+        can :read_dat_details, Incidents::Incident
+    end
+
+    if is_admin or person.has_role 'cas_details'
+        can :tracker, Incidents::Incident
+        can :read_case_details, Incidents::Incident
+        can :narrative, Incidents::CasCase
+    end
+
+    if is_admin
+        can :manage, Incidents::DatIncident
+    end
     
-    can :read_case_details, Incidents::Incident
-    can :read_dat_details, Incidents::Incident
-
-    can :tracker, Incidents::Incident
-
-    can [:create, :update], Incidents::DatIncident
-
-    # Admin Privs
-    can [:link_cas], Incidents::Incident
-    can [:read, :promote], Incidents::CasIncident
-    can [:manage], Incidents::CasCase
   end
 end

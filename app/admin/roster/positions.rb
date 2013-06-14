@@ -13,4 +13,12 @@ ActiveAdmin.register Roster::Position, namespace: 'roster_admin', as: 'Position'
     end
   end
 
+  form do |f|
+    f.inputs
+    f.inputs do
+      f.input :roles, as: :check_boxes
+    end
+    f.actions
+  end
+
 end

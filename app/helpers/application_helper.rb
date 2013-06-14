@@ -21,6 +21,6 @@ module ApplicationHelper
   end
 
   def has_admin_dashboard_access
-    @_admin_access = current_user && current_user.positions.detect{|p| p.grants_role == 'chapter_config' }
+    @_admin_access = current_user && current_user.has_role( 'chapter_config')
   end
 end

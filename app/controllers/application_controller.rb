@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   #check_authorization
 
   rescue_from CanCan::AccessDenied do |exception|
+    raise exception and return if Rails.env.test?
     begin
       respond_to do |fmt|
         fmt.html{ flash[:error] = "You are not authorized to access that page."; redirect_to :back }
