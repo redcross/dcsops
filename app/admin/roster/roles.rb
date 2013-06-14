@@ -1,4 +1,4 @@
-ActiveAdmin.register Roster::Role, as: 'Roles' do
+ActiveAdmin.register Roster::Role, as: 'Role' do
   menu parent: 'Roster'
 
   controller do
