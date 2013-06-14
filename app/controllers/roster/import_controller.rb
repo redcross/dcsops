@@ -9,7 +9,7 @@ class Roster::ImportController < ApplicationController
 
   import_handler :import_vc
   def import_vc_handler(message, attach_name, attach, content)
-    @stream = false
+    @stream = true
 
     importer = case params[:version]
     when "1" then Roster::VcImporter.new

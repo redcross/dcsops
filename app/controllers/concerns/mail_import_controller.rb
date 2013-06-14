@@ -34,7 +34,7 @@ module MailImportController
           end
 
         rescue => e
-          capture_exception(e)
+          Raven.capture_exception(e)
           puts e.to_s
           puts e.backtrace.first(10).join("\n")
           raise e

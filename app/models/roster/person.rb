@@ -85,6 +85,13 @@ class Roster::Person < ActiveRecord::Base
         (self.lat, self.lng) = res.lat, res.lng
       end
     end
+
+    return true
+  rescue TooManyQueriesError
+    self.lat = nil
+    self.lng = nil
+
+    return true
   end
 
   def sms_addresses
