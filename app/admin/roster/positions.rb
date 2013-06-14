@@ -9,7 +9,7 @@ ActiveAdmin.register Roster::Position, namespace: 'roster_admin', as: 'Position'
 
   controller do
     def resource_params
-      request.get? ? [] : [params.require(:position).permit(:name, :vc_regex_raw, :hidden, :chapter_id, :watchfire_role)]
+      request.get? ? [] : [params.require(:position).permit(:name, :vc_regex_raw, :hidden, :chapter_id, :watchfire_role, :role_ids => [])]
     end
   end
 

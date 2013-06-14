@@ -2,10 +2,11 @@
   .span12
     .span3.noprint(style="float: left; margin-right: -100%")
       %ul.nav.nav-tabs.nav-stacked
-        %li
-          %a{href: needs_report_incidents_incidents_path}
-            Submit Incident Report
-            %i.icon-chevron-right
+        -if can? :needs_report, Incidents::Incident
+          %li
+            %a{href: needs_report_incidents_incidents_path}
+              Submit Incident Report
+              %i.icon-chevron-right
         -if can? :link_cas, Incidents::Incident
           %li
             %a{href: link_cas_incidents_incidents_path}
