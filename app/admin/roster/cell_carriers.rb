@@ -1,4 +1,4 @@
-ActiveAdmin.register Roster::CellCarrier, namespace: 'roster_admin', as: 'Cell Carrier' do
+ActiveAdmin.register Roster::CellCarrier, as: 'Cell Carrier' do
   menu parent: 'Roster'
 
   controller do

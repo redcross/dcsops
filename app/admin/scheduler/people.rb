@@ -4,7 +4,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
 
   actions :all, except: [:destroy]
 
-  menu parent: 'Scheduling'
+  menu parent: 'Roster'
 
   index do
     column :name_last_first, sortable: "last_name"

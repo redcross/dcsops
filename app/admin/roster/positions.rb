@@ -1,4 +1,4 @@
-ActiveAdmin.register Roster::Position, namespace: 'roster_admin', as: 'Position' do
+ActiveAdmin.register Roster::Position, as: 'Position' do
 
   menu parent: 'Roster'
 

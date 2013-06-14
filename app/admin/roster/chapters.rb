@@ -1,4 +1,4 @@
-ActiveAdmin.register Roster::Chapter, namespace: 'roster_admin', as: 'Chapter' do
+ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
   menu parent: 'Roster'
 
   actions :all, except: [:destroy]

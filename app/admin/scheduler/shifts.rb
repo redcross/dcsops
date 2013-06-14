@@ -1,4 +1,4 @@
-ActiveAdmin.register Scheduler::Shift, namespace: 'scheduler_admin', as: 'Shift' do
+ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   menu parent: 'Scheduling'
 
   actions :all, except: [:destroy]

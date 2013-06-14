@@ -1,4 +1,4 @@
-ActiveAdmin.register Roster::County, namespace: 'roster_admin', as: 'County' do
+ActiveAdmin.register Roster::County, as: 'County' do
 
   menu parent: 'Roster'
 
