@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130614071633) do
+ActiveRecord::Schema.define(version: 20130614164907) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string    "resource_id",   null: false
@@ -29,22 +29,22 @@ ActiveRecord::Schema.define(version: 20130614071633) do
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
 
   create_table "import_logs", force: true do |t|
-    t.string   "controller"
-    t.string   "name"
-    t.string   "url"
-    t.string   "result"
-    t.string   "message_subject"
-    t.string   "file_name"
-    t.integer  "file_size"
-    t.integer  "num_rows"
-    t.text     "log"
-    t.text     "import_errors"
-    t.string   "exception"
-    t.string   "exception_message"
-    t.text     "exception_trace"
-    t.float    "runtime"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "controller"
+    t.string    "name"
+    t.string    "url"
+    t.string    "result"
+    t.string    "message_subject"
+    t.string    "file_name"
+    t.integer   "file_size"
+    t.integer   "num_rows"
+    t.text      "log"
+    t.text      "import_errors"
+    t.string    "exception"
+    t.string    "exception_message"
+    t.text      "exception_trace"
+    t.float     "runtime"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "incidents_cas_cases", force: true do |t|
@@ -129,34 +129,37 @@ ActiveRecord::Schema.define(version: 20130614071633) do
 
   add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true
 
+  create_table "incidents_deployments", force: true do |t|
+    t.integer  "person_id"
+    t.string   "dr_name"
+    t.string   "gap"
+    t.string   "group"
+    t.string   "activity"
+    t.string   "position"
+    t.string   "qual"
+    t.date     "date_first_seen"
+    t.date     "date_last_seen"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "incidents_incidents", force: true do |t|
     t.integer   "chapter_id"
     t.integer   "county_id"
     t.string    "incident_number"
     t.string    "incident_type"
-    t.string    "incident_call_type"
     t.string    "cas_incident_number"
     t.date      "date"
-    t.integer   "units_total"
-    t.integer   "units_affected"
-    t.integer   "units_minor"
-    t.integer   "units_major"
-    t.integer   "units_destroyed"
     t.integer   "num_adults"
     t.integer   "num_children"
     t.integer   "num_families"
     t.integer   "num_cases"
-    t.integer   "num_people_injured"
-    t.integer   "num_people_hospitalized"
-    t.integer   "num_people_deceased"
-    t.timestamp "responder_notified"
-    t.timestamp "responder_arrived"
-    t.timestamp "responder_departed"
     t.string    "incident_description"
     t.text      "narrative_brief"
     t.text      "narrative"
     t.string    "address"
     t.string    "cross_street"
+    t.string    "neighborhood"
     t.string    "city"
     t.string    "state"
     t.string    "zip"
@@ -171,6 +174,7 @@ ActiveRecord::Schema.define(version: 20130614071633) do
 
   add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id"
   add_index "incidents_incidents", ["county_id"], name: "index_incidents_incidents_on_county_id"
+  add_index "incidents_incidents", ["incident_number"], name: "index_incidents_incidents_on_incident_number", unique: true
 
   create_table "incidents_responder_assignments", force: true do |t|
     t.integer   "person_id"
@@ -270,13 +274,13 @@ ActiveRecord::Schema.define(version: 20130614071633) do
   end
 
   create_table "roster_positions", force: true do |t|
-    t.integer  "chapter_id"
-    t.string   "name"
-    t.string   "vc_regex_raw"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "hidden",         default: false
-    t.string   "watchfire_role"
+    t.integer   "chapter_id"
+    t.string    "name"
+    t.string    "vc_regex_raw"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.boolean   "hidden",         default: false
+    t.string    "watchfire_role"
   end
 
   create_table "roster_positions_roles", id: false, force: true do |t|
@@ -290,11 +294,12 @@ ActiveRecord::Schema.define(version: 20130614071633) do
   end
 
   create_table "roster_roles", force: true do |t|
-    t.string   "name"
-    t.string   "grant_name"
-    t.text     "role_scope"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "chapter_id"
+    t.string    "name"
+    t.string    "grant_name"
+    t.text      "role_scope"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "scheduler_dispatch_configs", force: true do |t|

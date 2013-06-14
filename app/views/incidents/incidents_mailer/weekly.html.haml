@@ -5,14 +5,15 @@
       =@title
     /%link(rel="stylesheet" href="application.css")
     :scss
-      h1, h2, h3 {
+      h1, h2, h3, h4 {
         font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-        
+        width: 100%;
         line-height: 1.3;
 
         small {
           font-size: 75%;
         }
+
       }
       h1 {
         font-size: 24px;
@@ -22,6 +23,10 @@
       }
       h3 {
         font-size: 14px;
+        margin-bottom: 0;
+      }
+      h4 {
+        font-size: 12px;
         margin-bottom: 0;
       }
       .center {
@@ -50,60 +55,118 @@
         font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
       }
       body {
-        min-width: 500px;
+        background-color: #eee;
+        padding: 0;
+        zmargin: 0;
+        zwidth: 100%;
       }
+      #wrapper {
+        margin: auto;
+        width: 550px;
+        padding: 0;
+      }
+      #content {
+        background-color: #ffffff;
+        border: 1px solid rgb(221, 221, 221);
+        padding: .1in;
+        width: 100%;
+      }
+
+      .hdpi {
+        display: none;
+      }
+    %style(data-immutable=true)
+      :plain
+        @media (-webkit-min-device-pixel-ratio: 2), 
+          (min-resolution: 192dpi) {
+          .image-cell img {
+            display: none !important;
+          }
+          .image-cell {
+            background-image: url("#{static_maps_url(true)}");
+            width: 200px !important;
+            height: 400px !important;
+            background-size: 200px 400px;
+          }
+        }
   %body
-    %h1.center
-      ARCBA Disaster Operations Report
-      %br
-      %small
-        =@subtitle
-    %table(style="width: 100%")
-      %tr
-        %td(style="vertical-align: top")
-          %table.counts
-            %tr
-              %td.center
-                %strong This Week
-                %br
-                =pluralize @weekly_stats.incident_count, "incident"
-                %br
-                =pluralize @weekly_stats.case_count, 'case'
-                %br
-                =pluralize @weekly_stats.client_count, 'client'
-              %td.center
-                %strong This Year
-                %br
-                =pluralize @yearly_stats.incident_count, "incident"
-                %br
-                =pluralize @yearly_stats.case_count, 'case'
-                %br
-                =pluralize @yearly_stats.client_count, 'client'
-          %h2.center Incident Details
-          - @incidents.each do |inc|
-            %h3
-              =inc.date.to_s :dow_short
-              ==-
-              #{inc.city}, #{inc.state}
-              %small (#{inc.county.name})
-            - dat = inc.dat_incident
-            - if dat
-              - adults = inc.num_adults; children = inc.num_children; units = dat.units_affected
-              %p
-                %strong Incident:
-                =dat.incident_type.titleize
-              %p
-                %strong Impact:
-                =[adults > 0 ? pluralize(adults, "adult") : nil, children > 0 ? pluralize(children, "child") : nil, units && units > 0 ? pluralize(units, "unit") : nil].compact.join(", ")
-              %p
-                %strong Services Provided:
-                =inc.services_description
-        %td(style="width: 200px; max-width: 200px; vertical-align: top; overflow: visible")
-          %img{src: static_maps_url, style: "height: 400px; max-height: 400px !important; width: 200px !important"}
-      %tr
-        %td
-          / Need this here as Apple mail sometimes won't display the last cell in a table
-        %td
-    
-    %br
-    %br
+    #wrapper
+      %h1.center
+        ARCBA Disaster Operations Report
+        %br
+        %small
+          =@subtitle
+      #content
+        %table(style="width: 100%")
+          %tr
+            %td(style="width: 100%; vertical-align: top")
+              %table.counts
+                %tr
+                  %td.center
+                    %strong This Week
+                    %br
+                    =pluralize @weekly_stats.incident_count, "incident"
+                    %br
+                    =pluralize @weekly_stats.case_count, 'case'
+                    %br
+                    =pluralize @weekly_stats.client_count, 'client'
+                  %td.center
+                    %strong This Year
+                    %br
+                    =pluralize @yearly_stats.incident_count, "incident"
+                    %br
+                    =pluralize @yearly_stats.case_count, 'case'
+                    %br
+                    =pluralize @yearly_stats.client_count, 'client'
+              %h2.center Local Incident Details
+              - @incidents.each do |inc|
+                %h4
+                  =inc.date.to_s :dow_short
+                  ==-
+                  #{inc.city}, #{inc.state}
+                  %small (#{inc.county.name})
+                - dat = inc.dat_incident
+                - if dat
+                  - adults = inc.num_adults; children = inc.num_children; units = dat.units_affected
+                  %p
+                    %strong Incident:
+                    =dat.incident_type.titleize
+                    %strong Impact:
+                    =[adults > 0 ? pluralize(adults, "adult") : nil, children > 0 ? pluralize(children, "child") : nil, units && units > 0 ? pluralize(units, "unit") : nil].compact.join(", ")
+                  %p
+                    %strong Services Provided:
+                    =inc.services_description
+            %td(style="vertical-align: top; overflow: visible")
+              %div.image-cell
+                %img{src: static_maps_url(false), style: "height: 400px; width: 200px"}
+          %tr
+            %td
+              / Need this here as Apple mail sometimes won't display the last cell in a table
+            %td
+        
+        %h2.center Local Incident Sitreps
+        There are no significant local incidents to report at this time.
+
+        %h2.center Deployments
+        -if @deployments.blank?
+          There are no deployments on record at this time.
+        -else
+          - @deployments.each do |dr_name, deps|
+            %h3=dr_name
+            %table.table
+              - i = 0
+              - while i < deps.count
+                %tr
+                  -2.times do
+                    - i += 1; next if i >= deps.count
+                    - dep = deps[i]
+                    %td
+                      =dep.person.full_name
+                      (#{dep.person.primary_county.try(:abbrev)})
+                    /%td=dep.dr_name
+                    %td=dep.gap
+              %tr
+                %td
+                %td
+        %br
+        %br

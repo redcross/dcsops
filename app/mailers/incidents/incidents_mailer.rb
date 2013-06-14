@@ -8,11 +8,15 @@ class Incidents::IncidentsMailer < ActionMailer::Base
   #
   def weekly(chapter)
     @chapter = chapter
-    @start_date = chapter.time_zone.today.at_beginning_of_week.last_week
+    @start_date = chapter.time_zone.today.at_beginning_of_week.last_week.next_week
     @end_date = @start_date.next_week.yesterday
-    @incidents = Incidents::Incident.all.joins{dat_incident}#Incidents::Incident.where{date.in(@start_date..@end_date)}.order{date}
-    @weekly_stats = Incidents::Incident.where{date.in(@start_date..@end_date)}.incident_stats
+    @incidents = Incidents::Incident.where{date.in(my{@start_date..@end_date})}.order{date}.to_a
+    @weekly_stats = Incidents::Incident.where{date.in(my{@start_date..@end_date})}.incident_stats
     @yearly_stats = Incidents::Incident.where{date >= '2012-07-01'}.incident_stats
+
+    @deployments = Incidents::Deployment.includes{person.counties}.where{date_last_seen >= my{@start_date}}.uniq.to_a
+                                        .sort_by{|a| a.person.counties.first.try(:name) || '' }
+                                        .reduce({}) { |hash, d| hash[d.dr_name] ||= []; hash[d.dr_name] << d; hash}
 
     @subtitle = "Week of #{@start_date.to_s :mdy}"
 
@@ -46,8 +50,9 @@ class Incidents::IncidentsMailer < ActionMailer::Base
   private
 
   helper_method :static_maps_url
-  def static_maps_url
-    "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=300x600&markers=#{URI::encode incidents_marker_param}&scale=2"
+  def static_maps_url(retina=false)
+    size = "200x400"
+    "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=#{size}&markers=#{URI::encode incidents_marker_param}&scale=#{retina ? '2' : '1'}&key=AIzaSyBabBKA3eRH_Pj1UdHEvzISS0crsOScsf4"
   end
 
   def image_content

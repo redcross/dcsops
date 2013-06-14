@@ -88,4 +88,5 @@ Scheduler::Application.routes.draw do
 
   match 'import/:import_secret/:provider/cas-v:version', via: [:head, :post], to: 'incidents/import#import_cas', version: /\d+/
   match 'import/:import_secret/:provider/vc-v:version', via: [:head, :post], to: 'roster/import#import_vc', version: /\d+/
+  match 'import/:import_secret/:provider/deployment-v:version', via: [:head, :post], to: 'incidents/import#import_deployment', version: /\d+/
 end
