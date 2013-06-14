@@ -43,7 +43,7 @@ class Roster::Person < ActiveRecord::Base
   end
 
   def scope_for_role(grant_name)
-    roles.select{|p| p.grant_name == grant_name}.map(&:role_scope).map{ |scope| scope.include?( :county_ids) ? county_ids : scope}.flatten.compact.uniq
+    roles.select{|p| p.grant_name == grant_name}.map(&:role_scope).map{ |scope| scope.include?('county_ids') ? county_ids : scope}.flatten.compact.uniq
   end
 
   def primary_county
