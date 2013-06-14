@@ -1,6 +1,7 @@
 class Roster::PositionMembership < ActiveRecord::Base
   belongs_to :person
   belongs_to :position
+  has_many :roles, through: :position
 
   #validates_presence_of :person, :position
 
