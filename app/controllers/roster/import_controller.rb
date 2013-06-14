@@ -17,28 +17,21 @@ class Roster::ImportController < ApplicationController
     else raise "Unknown import version #{params[:version]}"
     end
 
-    puts attach.inspect
-
-    puts Digest::MD5.hexdigest(content)
-
     subject = message['subject']
-    puts subject
     chapter_code = subject.split("-")[0]
-    puts chapter_code
     chapter = Roster::Chapter.where(code: chapter_code).first
-    puts chapter.inspect
-    #if chapter
-      io = StringIO.open(content)
-      i = 0
-      errors = importer.import_data(chapter, io) do |step|
-        i = i + 1
-        if (i % 10) == 0
-          response.stream.write '.' if @stream
-          puts "Importing attachment #{i} @ #{step}..."
-        end
+
+    io = StringIO.open(content)
+    self.import_errors = importer.import_data(chapter, io) do |step|
+      self.import_num_rows += 1
+      if (self.import_num_rows % 10) == 0
+        response.stream.write '.' if @stream
+        msg = "Importing attachment #{self.import_num_rows} @ #{step}..."
+        puts msg
+        self.import_log << msg
+        self.import_log << "\n"
       end
-      puts errors.inspect
-    #end
+    end
 
   ensure
     response.stream.close if @stream

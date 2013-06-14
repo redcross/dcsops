@@ -2,6 +2,7 @@ class Roster::VcPositionsImporter
   def import_data(chapter, file)
     @chapter = chapter
     workbook = Spreadsheet.open(file)
+    errs = []
     Roster::Person.transaction do
 
       Roster::PositionMembership.destroy_all_for_chapter(chapter)
@@ -9,11 +10,13 @@ class Roster::VcPositionsImporter
       Roster::CountyMembership.destroy_all_for_chapter(chapter)
       yield "Counties Cleared" if block_given?
 
-      import_qualification_data workbook.worksheet(0), 1, 0 do |s|
+      errs = import_qualification_data workbook.worksheet(0), 1, 0 do |s|
         yield s if block_given?
       end
 
     end
+
+    errs
   end
   private
   def import_qualification_data(sheet, data_col, pos_col)
@@ -25,8 +28,6 @@ class Roster::VcPositionsImporter
 
     errors = []
 
-    puts "Have #{sheet.last_row_index-1} rows"
-
     (1..(sheet.last_row_index-1)).each do |idx|
       vc_id = sheet[idx, data_col].to_i
       pos_name = sheet[idx, pos_col]
@@ -36,7 +37,6 @@ class Roster::VcPositionsImporter
 
       unless person and person.vc_id == vc_id
         person = Roster::Person.find_by chapter_id: @chapter, vc_id: vc_id
-        puts "Person for chap #{@chapter.id} vc_id #{vc_id} is #{person.inspect}"
         unless person
           errors << vc_id 
           next
@@ -68,6 +68,8 @@ class Roster::VcPositionsImporter
     end
 
     puts errors.inspect
+
+    errors
 
   end
 

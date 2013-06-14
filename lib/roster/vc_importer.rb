@@ -3,7 +3,7 @@ class Roster::VcImporter
     @chapter = chapter
     workbook = Spreadsheet.open(file)
     Roster::Person.transaction do
-      import_member_data workbook.worksheet("Contact")
+      data_errs = import_member_data workbook.worksheet("Contact")
       # First Delete all the existing qualification data
 
       #if workbook.worksheet("Positions") and workbook.worksheet("Qualifications")
@@ -16,6 +16,7 @@ class Roster::VcImporter
 #
       #end
     end
+    {data_errs: data_errs}
   end
   private
   def import_member_data(sheet)

@@ -77,6 +77,8 @@ class Roster::Person < ActiveRecord::Base
 
   def geocode_address
     return if Rails.env.test?
+
+    return
     
     if lat.nil? or lng.nil? or (changed & %w(address1 address2 city state zip)).present?
       puts 'geocoding'

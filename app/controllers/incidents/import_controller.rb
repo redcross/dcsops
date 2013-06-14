@@ -9,7 +9,6 @@ class Incidents::ImportController < ApplicationController
 
   import_handler :import_cas
   def import_cas_handler(message, attach_name, attach, content)
-    @stream = true
 
     importer = case params[:version]
     when "1" then Incidents::CasImporter.new
@@ -19,21 +18,20 @@ class Incidents::ImportController < ApplicationController
     chapter = Roster::Chapter.where(code: message['subject']).first
     if chapter
       io = StringIO.open(content)
-      i = 0
-      importer.import_data(chapter, io) do |step|
-        i = i + 1
-        if (i % 10) == 0
+      self.import_errors = importer.import_data(chapter, io) do |step|
+        self.import_num_rows += 1
+        if (self.import_num_rows % 10) == 0
           response.stream.write '.' if @stream
-          puts "Importing attachment #{i} @ #{step}..."
+          msg = "Importing attachment #{self.import_num_rows} @ #{step}..."
+
+          puts msg
+          self.import_log << msg + "\n"
         end
       end
     else
       puts "Chapter #{message['subject']} not found"
       raise "Chapter Not found #{message['subject']}"
     end
-
-  ensure
-    response.stream.close if @stream
   end
 
 end

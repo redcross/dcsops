@@ -16,6 +16,8 @@ class AdminAbility
       can :manage, Scheduler::DispatchConfig
       can :manage, Scheduler::Shift
       can :manage, Scheduler::ShiftGroup
+
+      can :manage, ImportLog
     end
 
   end
