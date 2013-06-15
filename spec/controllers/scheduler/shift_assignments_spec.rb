@@ -148,8 +148,7 @@ describe Scheduler::ShiftAssignmentsController do
     it "should allow accepting a swap" do
       Roster::Session.create @person2
 
-      @assignment.available_for_swap = true
-      @assignment.save
+      @assignment.update_attribute :available_for_swap, true
 
       post :swap, id: @assignment.id, accept_swap: true
 
@@ -159,9 +158,19 @@ describe Scheduler::ShiftAssignmentsController do
       Scheduler::ShiftAssignment.last.person.should == @person2
     end
 
-    it "should allow accepting a swap as admin" do
-      @assignment.available_for_swap = true
-      @assignment.save
+    it "should not allow accepting a swap to someone else" do
+      @assignment.update_attribute :available_for_swap, true
+
+      post :swap, id: @assignment.id, accept_swap: true, swap_to_id: @person2.id
+
+      response.should_not be_redirect
+
+      ActionMailer::Base.deliveries.should be_empty # 
+    end
+
+    it "should allow accepting a swap to someone else as admin" do
+      grant_role! 'county_dat_admin', @person.county_ids
+      @assignment.update_attribute :available_for_swap, true
 
       post :swap, id: @assignment.id, accept_swap: true, swap_to_id: @person2.id
 

@@ -35,8 +35,8 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
 
   def swap
     if params[:is_swap]
-      resource.available_for_swap = true
-      resource.save!
+      # Don't want this to fail if shift permissions have changed for some reason
+      resource.update_attribute :available_for_swap, true
       mailed_people = []
 
       if params[:swap_to_id].present?
@@ -56,13 +56,13 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
 
 
     elsif params[:accept_swap] and resource.available_for_swap
-      if can_swap_to_others? and params[:swap_to_id].present?
+      if can?(:create, Scheduler::ShiftAssignment.new({person_id: params[:swap_to_id]}))#can_swap_to_others? and params[:swap_to_id].present?
         person = Roster::Person.find params[:swap_to_id]
       else
         person = current_user
       end
       new_record = resource.swap_to person
-      if new_record.save
+      if can?(:create, new_record) and new_record.save
         Scheduler::SwapMailer.swap_confirmed(resource, new_record).deliver
         Scheduler::NotificationSetting.admins_to_notify_swap(resource, to_mail).each do |recipient|
           Scheduler::SwapMailer.swap_confirmed(resource, new_record, recipient).deliver
@@ -70,14 +70,14 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
         redirect_to new_record, action: :swap
         return
       else
+        flash.now[:error] = new_record.errors.full_messages.join
         #pp new_record.errors
         #resource.errors = new_record.errors # get it to show errors
       end
 
 
     elsif params[:cancel_swap]
-      resource.available_for_swap = false
-      resource.save
+      resource.update_attribute :available_for_swap, false
     end
     show!
   end
@@ -91,7 +91,9 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
 
   helper_method :can_swap_to_others?, :collection_by_date
   def can_swap_to_others?
-    true
+    # This should be true where we have given :manage permissions to specific assignments
+    # The swap code will check if this is legal for a given swap later
+    can? :swap_to_others, Scheduler::ShiftAssignment
   end
 
   def collection_by_date
