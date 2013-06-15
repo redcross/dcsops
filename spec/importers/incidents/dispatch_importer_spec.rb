@@ -27,8 +27,9 @@ describe Incidents::DispatchImporter do
       inc.contact_phone.should == "(510)227-9475"
       inc.caller_id.should == "5105954566"
 
-      # inc.received_at
-      # inc.delivered_at
+      inc.received_at.should == chapter.time_zone.parse( "2013-06-13 19:16:00")
+      inc.delivered_at.should == chapter.time_zone.parse( "2013-06-13 19:18:20")
+      
       inc.delivered_to.should == 'JOHN'
     end
 
@@ -43,6 +44,8 @@ describe Incidents::DispatchImporter do
       dial.should_not be_nil
       dial.result.should == "RLY'D"
       dial.recipient.should == "650-555-1212 DOE, JOHN - CELL"
+      dial.action_at.should == chapter.time_zone.parse( "2013-06-13 19:17:00")
+      dial.operator.should == 'FBGL'
     end
   end
 end
