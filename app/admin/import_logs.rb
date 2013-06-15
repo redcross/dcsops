@@ -15,7 +15,7 @@ ActiveAdmin.register ImportLog, as: 'Import Logs' do
     column :exception
     column :exception_message
     column :runtime, sortable: 'runtime' do |rec|
-      rec && ("%0.3fs" % rec.runtime)
+      rec.runtime && ("%0.3fs" % rec.runtime)
     end
     column :created_at
     column :updated_at
@@ -33,7 +33,7 @@ ActiveAdmin.register ImportLog, as: 'Import Logs' do
       row :file_size
       row :num_rows
       row :runtime do
-        r && ("%0.3fs" % r.runtime)
+        r.runtime && ("%0.3fs" % r.runtime)
       end
 
       row :created_at
