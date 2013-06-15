@@ -19,9 +19,9 @@ module MailImportController
         define_method method do
           head :ok and return if request.head? 
 
-          @stream = true
+          @stream = true unless defined? @stream
 
-          Raven::Context.clear! # Raven will try to get data from rack, which will die since we stream these...
+          Raven::Context.clear! if @stream # Raven will try to get data from rack, which will die since we stream these...
 
           @log = ImportLog.create! controller: self.class.to_s, name: method.to_s, url: request.url, start_time: Time.now
           
@@ -38,16 +38,25 @@ module MailImportController
                 message = evt['msg']
                 @log.update_attribute :message_subject, message['subject']
 
-                message['attachments'].each do |name, attach|
-                  @log.update_attribute :file_name, name
+                if self.respond_to? :"#{method}_handler"
+                  message['attachments'].each do |name, attach|
+                    @log.update_attribute :file_name, name
 
-                  content = Base64.decode64(attach['content'])
-                  @log.update_attribute :file_size, content.length
+                    content = Base64.decode64(attach['content'])
+                    @log.update_attribute :file_size, content.length
 
+                    self.import_log = ""
+                    self.import_num_rows = 0
+
+                    self.send(:"#{method}_handler", message, name, attach, content)
+                  end
+                end
+
+                if self.respond_to? :"#{method}_body_handler"
                   self.import_log = ""
                   self.import_num_rows = 0
 
-                  self.send(:"#{method}_handler", message, name, attach, content)
+                  self.send(:"#{method}_body_handler", message, message['text'])
                 end
               end
             else
@@ -60,6 +69,8 @@ module MailImportController
             @log.import_errors = self.import_errors.to_s
             @log.runtime = (Time.now - @log.start_time)
             @log.save!
+
+            head :ok unless @stream
 
           rescue => e
             @log.num_rows = self.import_num_rows
