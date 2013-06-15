@@ -12,7 +12,10 @@ class Roster::SessionsController < ApplicationController
   end
 
   def new
-    if path = request.env['SET_RETURN_TO']
+
+    if current_user_session
+      redirect_to(request.env['SET_RETURN_TO'] || session[:redirect_after_login] || root_path) and return
+    elsif path = request.env['SET_RETURN_TO']
       session[:redirect_after_login] = path
     end
 
