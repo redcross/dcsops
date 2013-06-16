@@ -26,7 +26,7 @@ module Scheduler
 
     config.roadie.provider = Roadie::AssetPipelineProvider.new
 
-    config.action_mailer.interceptors = [SandboxMailInterceptor]
+    #config.action_mailer.interceptors = [SandboxMailInterceptor]
   end
   def self.table_name_prefix
     'scheduler_'
