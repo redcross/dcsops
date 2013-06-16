@@ -75,7 +75,7 @@ describe Scheduler::ShiftGroup do
       Delorean.time_travel_to 'sunday 8am'
 
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift1]
-      arr.first.start_date.should eq Date.current.at_beginning_of_week.next_week
+      arr.first.start_date.should eq @chapter.time_zone.today.at_beginning_of_week.next_week
 
       Delorean.time_travel_to 'friday 8am'
 

@@ -18,6 +18,7 @@ class AdminAbility
       can :manage, Scheduler::ShiftGroup
 
       can :manage, ImportLog
+      can :manage, MOTD
     end
 
   end

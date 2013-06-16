@@ -8,6 +8,7 @@ describe Incidents::DispatchImporter do
   let(:fixture) { File.read fixture_path }
 
   before(:each) do
+    @county = FactoryGirl.create :county, chapter: chapter, name: 'Contra Costa'
     subject.import_data chapter, fixture
   end
 
@@ -46,6 +47,16 @@ describe Incidents::DispatchImporter do
       dial.recipient.should == "650-555-1212 DOE, JOHN - CELL"
       dial.action_at.should == chapter.time_zone.parse( "2013-06-13 19:17:00")
       dial.operator.should == 'FBGL'
+    end
+
+    it "should create an incident" do
+      inc = Incidents::Incident.first
+      inc.should_not be_nil
+
+      inc.incident_number.should == '14-044'
+      inc.date.should == Date.civil(2013, 6, 13)
+      inc.county.should == @county
+      inc.chapter.should == chapter
     end
   end
 end

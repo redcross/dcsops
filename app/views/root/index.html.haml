@@ -14,7 +14,12 @@
           %i.icon-calendar.icon-2x
           %h4 DAT Scheduling
     .row
-      %h5.center Other Tools
+      .app
+        %a{href: incidents_root_path}
+          %i.icon-fire.icon-2x
+          %h4 Incidents
+    .row
+      %h4.center Other Tools
     .row
       .app
         %a{href: "https://volunteerconnection.redcross.org/"}
@@ -35,11 +40,7 @@
     -#    %a{href: "#"}
     -#      %i.icon-desktop.icon-2x
     -#      %h4 iDAT
-    .row
-      .app
-        %a{href: incidents_root_path}
-          %i.icon-fire.icon-2x
-          %h4 Incidents
+    
     -#.row
     -#  .app
     -#    %a{href: "#"}
@@ -55,4 +56,21 @@
     -#    %a{href: "#"}
     -#      %i.icon-cog.icon-2x
     -#      %h4 Administration
-        
+    .row
+      %h4.center Help
+    .row
+      .app
+        %a{href: "/ARCBADAT-QuickStart.pdf"}
+          %i.icon-question-sign.icon-2x
+          %h4 Quick Start Guide
+    .row
+      .app
+        %a{href: "/ARCBADAT-SetupGuide.pdf"}
+          %i.icon-question-sign.icon-2x
+          %h4 Setup Guide
+    -if current_user and (current_user.has_role 'county_dat_admin' or current_user.has_role 'chapter_dat_admin')
+      .row
+        .app
+          %a{href: "/ARCBADAT-AdminGuide.pdf"}
+            %i.icon-question-sign.icon-2x
+            %h4 DAT Administrator's Guide

@@ -23,4 +23,12 @@ module ApplicationHelper
   def has_admin_dashboard_access
     @_admin_access = current_user && current_user.has_role( 'chapter_config')
   end
+
+  def current_messages
+    if current_user
+      @_current_messages ||= MOTD.active(current_user.chapter).to_a
+    else
+      []
+    end
+  end
 end

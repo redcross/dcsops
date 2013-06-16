@@ -3,5 +3,12 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 jQuery ->
-  $('.sandbox-dialog button').click () ->
-    document.cookie = "no-sandbox-dialog=1;expires=Sat, 17 Jun 2013 22:23:20 GMT;path=/"
+  $('.sandbox-dialog button').click (evt) ->
+    el = $(evt.target).closest(".sandbox-dialog")
+    console.log el
+    cookie_name = $(el).data('cookie-code')
+    cookie_val = $(el).data('cookie-value')
+    cookie_end = $(el).data('cookie-end')
+    console.log cookie_name, cookie_val, cookie_end
+
+    document.cookie = "-motd-#{cookie_name}=#{cookie_val};expires=#{cookie_end};path=/"

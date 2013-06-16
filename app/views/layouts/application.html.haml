@@ -41,23 +41,17 @@
                 %li= link_to "Logout", roster_session_path, method: :delete
 
     .container
-
-      -if cookies['no-sandbox-dialog'] != '1'
-        .row.noprint
+      - current_messages.each do |motd|
+        -if cookies["-motd-#{motd.cookie_code}"] != motd.cookie_version.to_s
+          .row.noprint
           .span12
-            .alert.alert-info.sandbox-dialog
+            .alert.sandbox-dialog{class: motd.dialog_class, data: {cookie_code: motd.cookie_code, cookie_value: motd.cookie_version, cookie_end: (motd.ends || 1.month.from_now).httpdate}}
               %i.icon-warning-sign.icon-3x.float-left{style: 'float: left; padding-right: .3em'}
-              The scheduling system is currently in sandbox mode so you can experiment without making permanent changes.  All data will be erased on Sunday, June 15th.  Please send any feedback to your DAT Administrator.  For more information, refer to the
-              %strong
-                %a{href: "/ARCBADAT-QuickStart.pdf"} Quick Start Guide
-              or the
-              %strong
-                %a{href: "/ARCBADAT-SetupGuide.pdf"} Setup Manual.
+              = motd.html.html_safe
 
               %button.close{"data-dismiss" => 'alert'} 
                 x
                 -#&#215;
-
       .row
         .span12
           = bootstrap_flash

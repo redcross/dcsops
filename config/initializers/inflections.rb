@@ -17,4 +17,5 @@
 
 ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.uncountable %w( dispatch_config )
+  inflect.acronym 'MOTD'
 end

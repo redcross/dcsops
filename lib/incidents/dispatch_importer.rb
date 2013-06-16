@@ -67,6 +67,13 @@ class Incidents::DispatchImporter
       log_object.log_items.destroy_all
       log_object.log_items = log_items.select(&:present?).map{|attrs| Incidents::DispatchLogItem.new attrs}
       log_object.save!
+
+      if log_object.incident.nil?
+        log_object.create_incident! incident_number: log_object.incident_number, 
+                                            chapter: chapter,
+                                               date: log_object.received_at.in_time_zone(chapter.time_zone).to_date,
+                                             county: chapter.counties.where{name == log_object.county_name}.first
+      end
     end
   end
 
