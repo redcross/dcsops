@@ -3,6 +3,10 @@ class Incidents::HomeController < Incidents::BaseController
   def root
   end
 
+  def operations
+
+  end
+
   def map
     @search = Incidents::Incident.search(params[:q])
     @incidents = @search.result.where{(lat != nil) & (lng != nil) & (lat.in 37.165368468295085..38.251787162859415) & (lng.in(-123.84274052031253..-121.45321415312503))}
@@ -17,7 +21,7 @@ class Incidents::HomeController < Incidents::BaseController
 
   def map_json_for(incidents)
     incidents.map do |inc|
-      {id: inc.incident_number, lat: inc.lat, lng: inc.lng, clients: inc.num_adults + inc.num_children}
+      {id: inc.incident_number, lat: inc.lat, lng: inc.lng, clients: inc.num_adults + inc.num_children, status: inc.incident_status}
     end
   end
 end

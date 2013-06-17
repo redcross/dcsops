@@ -70,9 +70,11 @@ Scheduler::Application.routes.draw do
   namespace :incidents do
     root to: "home#root"
     match 'map', via: [:get, :post], to: "home#map"
+    get :operations, to: "home#operations"
     resources :incidents do
       resource :dat, controller: :dat_incidents
-
+      resources :event_logs
+      
       collection do
         get :needs_report
         get :tracker

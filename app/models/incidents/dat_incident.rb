@@ -1,6 +1,7 @@
 class Incidents::DatIncident < ActiveRecord::Base
   belongs_to :incident, class_name: 'Incidents::Incident'
   has_many :responder_assignments, lambda { where{role != 'team_lead'}}, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
+  has_many :all_responder_assignments, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id
   has_one :team_lead, lambda{ where(role: 'team_lead')}, class_name: 'Incidents::ResponderAssignment', foreign_key: 'incident_id'
 
   accepts_nested_attributes_for :incident, reject_if: :cant_update_incident

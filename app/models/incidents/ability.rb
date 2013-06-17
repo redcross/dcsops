@@ -11,6 +11,7 @@ class Incidents::Ability
     if is_admin or person.has_role 'submit_incident_report'
         can :needs_report, Incidents::Incident
         can :create, Incidents::DatIncident
+        can :create, Incidents::EventLog
     end
 
     if is_admin or person.has_role 'cas_admin'
