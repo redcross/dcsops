@@ -4,6 +4,10 @@ class Scheduler::HomeController < Scheduler::BaseController
     authorize! :read, current_person if current_person != current_user
   end
 
+  def on_call
+
+  end
+
   private
   helper_method :shifts_available_for_month
   def shifts_available_for_month(month, scope={:mine => current_person})

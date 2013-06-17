@@ -1,0 +1,20 @@
+
+- groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_person.chapter)
+- counties.each do |county|
+  - shifts = Scheduler::Shift.where(county_id: county, shift_group_id: groups).order(:ordinal)
+  - next if shifts.blank?
+  -if counties.length > 1
+    %strong=county.name
+    %br
+  - shifts.each do |shift|
+    -assignments = shift.shift_assignments.for_day(Date.today)
+    .shift
+      %small
+        = shift.name
+        -if assignments.blank?
+          ==- OPEN
+        -else
+          -assignments.each do |ass|
+            ==-
+            = ass.person.full_name
+            ="(#{ass.person.primary_phone})"
