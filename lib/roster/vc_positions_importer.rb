@@ -1,4 +1,6 @@
 class Roster::VcPositionsImporter
+  attr_accessor :chapter
+  
   def import_data(chapter, file)
     @chapter = chapter
     workbook = Spreadsheet.open(file)
@@ -18,7 +20,7 @@ class Roster::VcPositionsImporter
 
     errs
   end
-  private
+
   def import_qualification_data(sheet, data_col, pos_col)
 
     counties = @chapter.counties.to_a.select{|c| c.vc_regex}
