@@ -2,21 +2,28 @@ class Roster::VcImporter
   def import_data(chapter, file)
     @chapter = chapter
     workbook = Spreadsheet.open(file)
+    data_errs = nil
+    pos_errs = nil
+    qual_errs = nil
+
+    pos = Roster::VcPositionsImporter.new
+    pos.chapter = chapter
+
     Roster::Person.transaction do
-      data_errs = import_member_data workbook.worksheet("Contact")
+      data_errs = import_member_data workbook.worksheet("Contact") { |str| yield str if block_given? }
       # First Delete all the existing qualification data
 
-      #if workbook.worksheet("Positions") and workbook.worksheet("Qualifications")
-#
-      #  Roster::PositionMembership.destroy_all_for_chapter(chapter)
-      #  Roster::CountyMembership.destroy_all_for_chapter(chapter)
-#
-      #  import_qualification_data workbook.worksheet("Positions"), 2, 3
-      #  import_qualification_data workbook.worksheet("Qualifications"), 1, 3
-#
-      #end
+      if workbook.worksheet("Positions") and workbook.worksheet("Qualifications")
+      
+        Roster::PositionMembership.destroy_all_for_chapter(chapter)
+        Roster::CountyMembership.destroy_all_for_chapter(chapter)
+      
+        pos_errs = pos.import_qualification_data( workbook.worksheet("Positions"), 2, 3)  { |str| yield str if block_given? }
+        qual_errs = pos.import_qualification_data( workbook.worksheet("Qualifications"), 1, 3) { |str| yield str if block_given? }
+      
+      end
     end
-    {data_errs: data_errs}
+    {data_errs: data_errs, pos_errs: pos_errs, qual_errs: qual_errs}
   end
   private
   def import_member_data(sheet)
@@ -36,47 +43,6 @@ class Roster::VcImporter
       person.vc_imported_at = Time.now
       person.save!
     end
-  end
-  def import_qualification_data(sheet, data_col, pos_col)
-
-    counties = @chapter.counties.to_a.select{|c| c.vc_regex}
-    positions = @chapter.positions.to_a.select{|c| c.vc_regex}
-
-    person = nil
-
-    (1..(sheet.last_row_index-1)).each do |idx|
-      vc_id = sheet[idx, data_col].to_i
-      pos_name = sheet[idx, pos_col]
-      matched = false
-
-      #pp "#{sheet[idx, data_col]} #{idx} #{vc_id}"
-
-      unless person and person.vc_id == vc_id
-        person = Roster::Person.find_by chapter_id: @chapter, vc_id: vc_id
-        next unless person
-      end
-
-      counties.each do |county|
-        if county.vc_regex.match pos_name
-          person.counties << county unless person.counties.include? county
-          matched=true
-          break
-        end
-      end
-
-      positions.each do |position|
-        if position.vc_regex.match pos_name
-          person.positions << position unless person.positions.include? position
-          matched=true
-          break
-        end
-      end
-
-      #puts "Warning, vc_id=#{vc_id} and person #{person.inspect} did not match qualification #{pos_name}" unless matched
-      person.save!
-
-    end
-
   end
 
 end
