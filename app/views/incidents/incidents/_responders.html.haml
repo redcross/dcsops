@@ -5,7 +5,7 @@
     %th Role
     %th Response
     %th Action
-  - resource.dat_incident.all_responder_assignments.each do |assignment|
+  - (resource.dat_incident.try(:all_responder_assignments) || []).each do |assignment|
     %tr
       %td=assignment.person.full_name
       %td=assignment.role.titleize
