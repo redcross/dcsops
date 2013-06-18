@@ -18,7 +18,10 @@ class Roster::Person < ActiveRecord::Base
   scope :name_contains, lambda {|query| 
     where{lower(first_name.op('||', ' ').op('||', last_name)).like("%#{query.downcase}%")}
   }
-  scope :for_vc_account, lambda {|account| where(vc_id: account).first}
+
+  def self.for_vc_account(account)
+    self.where(vc_id: account).first
+  end
 
   scope :in_county, lambda {|county| joins(:counties).where(:roster_counties => {id: county})}
   scope :with_position, lambda {|county| joins(:positions).where(:roster_positions => {id: county})}
