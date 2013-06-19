@@ -7,7 +7,7 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   RESPONSES_TO_LABELS = RESPONSES.map{|x| {x => x.titleize}}.inject(:merge)
 
   belongs_to :person, class_name: 'Roster::Person'
-  belongs_to :incident, class_name: 'Incidents::DatIncident', foreign_key: 'incident_id'
+  belongs_to :incident, class_name: 'Incidents::Incident', foreign_key: 'incident_id'
 
   validates_presence_of :person
   validates :role, presence: true, inclusion: {in: ROLES}

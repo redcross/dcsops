@@ -122,11 +122,11 @@
               %tr
                 %th Team Lead
                 %td
-                  -if dat.team_lead
-                    =dat.team_lead.person.try(:full_name)
+                  -if resource.team_lead
+                    =resource.team_lead.person.try(:full_name)
               %tr
                 %th Number of Responders
-                %td=dat.responder_assignments.unscoped.on_scene.count
+                %td=resource.on_scene_responder_assignments.count
               %tr
                 %th Time to On Scene
                 %td

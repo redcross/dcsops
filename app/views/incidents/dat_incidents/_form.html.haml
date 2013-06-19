@@ -16,11 +16,12 @@
         /=f.input :date, as: :bootstrap_date
         =f.input :incident_type, as: :select, collection: {"Fire" => 'fire', 'Police Action' => 'police', 'Flood' => 'flood'}, include_blank: false
         =f.input :incident_call_type, as: :select, collection: {"Hot" => 'hot', "Cold" => 'cold'}, include_blank: false
-        =f.semantic_fields_for :team_lead do |f|
-          =f.semantic_errors
-          =f.input :person, as: :person_typeahead, text_value: lambda{|obj| Roster::Person.where(id: obj.person_id).first.try(:full_name)}, label: "Team Lead"
-          =f.input :role, as: :hidden, input_html: {value: "team_lead"}
-          =f.input :response, as: :hidden, input_html: {value: "available"}
+        =f.semantic_fields_for :incident do |f|
+          =f.semantic_fields_for :team_lead do |f|
+            =f.semantic_errors
+            =f.input :person, as: :person_typeahead, text_value: lambda{|obj| Roster::Person.where(id: obj.person_id).first.try(:full_name)}, label: "Team Lead"
+            =f.input :role, as: :hidden, input_html: {value: "team_lead"}
+            =f.input :response, as: :hidden, input_html: {value: "available"}
         .control-group
           %label.control-label Completed By
           .controls
@@ -96,42 +97,43 @@
     .row
       .span12
         =f.inputs "Responders" do
-          %table.table.form-table#responder-table
-            %thead
-              %tr
-                %th Name
-                %th Flex
-                %th Role
-                %th Response
-                %th Actions
-            %tbody
-              %tr
-                %td.team-lead-name=resource.team_lead.try(:person).try :full_name
-                %td
-                %td Team Lead
-                %td Available
-                %td
-              =f.semantic_fields_for :responder_assignments do |r|
-                =render 'responder_assignment_fields', f: r
-            %tfoot
-              %tr
-                %th(colspan=4)
-                  %h4 Responders On Call:
-              %tr
-                %th Name
-                %th Shift Position
-              - (sched = scheduled_responders).each do |shift|
+          =f.semantic_fields_for :incident do |f|
+            %table.table.form-table#responder-table
+              %thead
                 %tr
-                  %td=shift.person.full_name
-                  %td=shift.shift.name
-                  %td=link_to_add_association 'Add Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary", wrap_object: ->(assoc){assoc.person = shift.person; assoc}
-              - flex_responders(resource, sched).each do |flex|
+                  %th Name
+                  %th Flex
+                  %th Role
+                  %th Response
+                  %th Actions
+              %tbody
                 %tr
-                  %td=flex.person.full_name
-                  %td Flex
-                  %td=link_to_add_association 'Add Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary", wrap_object: ->(assoc){assoc.person = flex.person; assoc.was_flex = true; assoc}
+                  %td.team-lead-name=resource.incident.try(:team_lead).try(:person).try :full_name
+                  %td
+                  %td Team Lead
+                  %td Available
+                  %td
+                =f.semantic_fields_for :responder_assignments do |r|
+                  =render 'responder_assignment_fields', f: r
+              %tfoot
+                %tr
+                  %th(colspan=4)
+                    %h4 Responders On Call:
+                %tr
+                  %th Name
+                  %th Shift Position
+                - (sched = scheduled_responders).each do |shift|
+                  %tr
+                    %td=shift.person.full_name
+                    %td=shift.shift.name
+                    %td=link_to_add_association 'Add Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary", wrap_object: ->(assoc){assoc.person = shift.person; assoc}
+                - flex_responders(resource, sched).each do |flex|
+                  %tr
+                    %td=flex.person.full_name
+                    %td Flex
+                    %td=link_to_add_association 'Add Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary", wrap_object: ->(assoc){assoc.person = flex.person; assoc.was_flex = true; assoc}
 
-          =link_to_add_association 'Add Other Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary"
+            =link_to_add_association 'Add Other Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary"
   =f.actions :submit, label: 'Submit Incident Report'
 
 - content_for :footer_js do

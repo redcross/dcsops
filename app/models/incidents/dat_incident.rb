@@ -1,23 +1,16 @@
 class Incidents::DatIncident < ActiveRecord::Base
   belongs_to :incident, class_name: 'Incidents::Incident'
-  has_many :responder_assignments, lambda { where{role != 'team_lead'}}, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
-  has_one :team_lead, lambda{ where(role: 'team_lead')}, class_name: 'Incidents::ResponderAssignment', foreign_key: 'incident_id'
-
-  accepts_nested_attributes_for :incident, reject_if: :cant_update_incident
-  accepts_nested_attributes_for :team_lead
-  accepts_nested_attributes_for :responder_assignments, reject_if: -> hash {(hash[:person_id].blank? || hash[:role].blank?)}, allow_destroy: true
-
+  
+  accepts_nested_attributes_for :incident#, reject_if: :cant_update_incident
+  
   validates :num_adults, :num_children, :num_families, presence: true, numericality: true
   validates :address, :cross_street, :city, :state, :zip, presence: true
 
   validates :units_affected, :units_minor, :units_major, :units_destroyed, presence: true, numericality: true
   validates :num_people_injured, :num_people_hospitalized, :num_people_deceased, presence: true, numericality: true
 
-
   validates :incident_call_type, presence: true, inclusion: {in: %w(hot cold)}
   validates :incident_type, presence: true, inclusion: {in: %w(fire flood police)}
-
-  validates_associated :team_lead
 
   serialize :services
 
