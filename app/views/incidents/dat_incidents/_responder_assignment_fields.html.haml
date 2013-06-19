@@ -1,7 +1,8 @@
 %tr.nested-fields
   %td=f.input :person, as: :person_typeahead, text_value: -> obj {obj.person.try :full_name}
-  %td=f.input :role, collection: %w(recruited team_lead trainee_lead responder public_affairs health_services mental_health dispatch activator).map{|x| {x.titleize => x}}.inject(:merge)
-  %td=f.input :response, collection: %w(available not_available no_answer wrong_number no_longer_active).map{|x| {x.titleize => x}}.inject(:merge)
+  %td=f.input :was_flex, label: 'Flex Responder'
+  %td=f.input :role, collection: Incidents::ResponderAssignment::ROLES_TO_LABELS.invert
+  %td=f.input :response, collection: Incidents::ResponderAssignment::RESPONSES_TO_LABELS.invert
   %td
     =f.input :_destroy, as: :hidden, input_html: {value: '0'}
     =link_to_remove_association 'Remove', f, class: "btn btn-danger"

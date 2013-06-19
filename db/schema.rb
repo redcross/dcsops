@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130618232215) do
+ActiveRecord::Schema.define(version: 20130619170040) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string    "resource_id",   null: false
@@ -130,51 +130,51 @@ ActiveRecord::Schema.define(version: 20130618232215) do
   add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true
 
   create_table "incidents_deployments", force: true do |t|
-    t.integer  "person_id"
-    t.string   "dr_name"
-    t.string   "gap"
-    t.string   "group"
-    t.string   "activity"
-    t.string   "position"
-    t.string   "qual"
-    t.date     "date_first_seen"
-    t.date     "date_last_seen"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "person_id"
+    t.string    "dr_name"
+    t.string    "gap"
+    t.string    "group"
+    t.string    "activity"
+    t.string    "position"
+    t.string    "qual"
+    t.date      "date_first_seen"
+    t.date      "date_last_seen"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "incidents_dispatch_log_items", force: true do |t|
-    t.integer  "dispatch_log_id"
-    t.datetime "action_at"
-    t.string   "action_type"
-    t.string   "recipient"
-    t.string   "operator"
-    t.string   "result"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "dispatch_log_id"
+    t.timestamp "action_at"
+    t.string    "action_type"
+    t.string    "recipient"
+    t.string    "operator"
+    t.string    "result"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   add_index "incidents_dispatch_log_items", ["dispatch_log_id"], name: "index_incidents_dispatch_log_items_on_dispatch_log_id"
 
   create_table "incidents_dispatch_logs", force: true do |t|
-    t.string   "incident_number"
-    t.integer  "chapter_id"
-    t.integer  "incident_id"
-    t.datetime "received_at"
-    t.datetime "delivered_at"
-    t.string   "delivered_to"
-    t.string   "incident_type"
-    t.string   "address"
-    t.string   "cross_street"
-    t.string   "county_name"
-    t.string   "displaced"
-    t.string   "services_requested"
-    t.string   "agency"
-    t.string   "contact_name"
-    t.string   "contact_phone"
-    t.string   "caller_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "incident_number"
+    t.integer   "chapter_id"
+    t.integer   "incident_id"
+    t.timestamp "received_at"
+    t.timestamp "delivered_at"
+    t.string    "delivered_to"
+    t.string    "incident_type"
+    t.string    "address"
+    t.string    "cross_street"
+    t.string    "county_name"
+    t.string    "displaced"
+    t.string    "services_requested"
+    t.string    "agency"
+    t.string    "contact_name"
+    t.string    "contact_phone"
+    t.string    "caller_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   add_index "incidents_dispatch_logs", ["chapter_id"], name: "index_incidents_dispatch_logs_on_chapter_id"
@@ -233,22 +233,23 @@ ActiveRecord::Schema.define(version: 20130618232215) do
     t.string    "response"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.boolean   "was_flex",    default: false
   end
 
   add_index "incidents_responder_assignments", ["incident_id"], name: "index_incidents_responder_assignments_on_incident_id"
   add_index "incidents_responder_assignments", ["person_id"], name: "index_incidents_responder_assignments_on_person_id"
 
   create_table "motds", force: true do |t|
-    t.integer  "chapter_id"
-    t.datetime "begins"
-    t.datetime "ends"
-    t.string   "cookie_code"
-    t.text     "html"
-    t.string   "dialog_class"
-    t.integer  "cookie_version"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "path_regex_raw"
+    t.integer   "chapter_id"
+    t.timestamp "begins"
+    t.timestamp "ends"
+    t.string    "cookie_code"
+    t.text      "html"
+    t.string    "dialog_class"
+    t.integer   "cookie_version"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "path_regex_raw"
   end
 
   add_index "motds", ["chapter_id"], name: "index_motds_on_chapter_id"

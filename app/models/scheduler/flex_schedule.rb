@@ -11,6 +11,10 @@ class Scheduler::FlexSchedule < ActiveRecord::Base
     )
   }
 
+  scope :available_at, lambda { |day, shift|
+    where("available_#{day}_#{shift}".to_sym => true)
+  }
+
   def available(day, shift)
     self.send "available_#{day}_#{shift}".to_sym
   end

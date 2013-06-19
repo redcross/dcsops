@@ -7,8 +7,12 @@ class Incidents::DatIncident < ActiveRecord::Base
   accepts_nested_attributes_for :team_lead
   accepts_nested_attributes_for :responder_assignments, reject_if: -> hash {(hash[:person_id].blank? || hash[:role].blank?)}, allow_destroy: true
 
-  validates :num_adults, :num_children, :num_families, :units_total, presence: true, numericality: true
+  validates :num_adults, :num_children, :num_families, presence: true, numericality: true
   validates :address, :cross_street, :city, :state, :zip, presence: true
+
+  validates :units_affected, :units_minor, :units_major, :units_destroyed, presence: true, numericality: true
+  validates :num_people_injured, :num_people_hospitalized, :num_people_deceased, presence: true, numericality: true
+
 
   validates :incident_call_type, presence: true, inclusion: {in: %w(hot cold)}
   validates :incident_type, presence: true, inclusion: {in: %w(fire flood police)}

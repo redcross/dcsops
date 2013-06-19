@@ -9,9 +9,6 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       redirect_to action: :edit and return
     end
 
-    build_resource.build_incident if build_resource.incident.nil?
-    build_resource.responder_assignments.build
-    build_resource.build_team_lead role: 'team_lead'
     super
   end
 
@@ -19,12 +16,13 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     unless parent? and parent.dat_incident
       redirect_to action: :new and return
     end
-    resource.build_team_lead role: 'team_lead' unless resource.team_lead
+    #resource.build_team_lead role: 'team_lead' unless resource.team_lead
     edit!
   end
 
   def create
     #build_resource.responder_assignments.build
+    pp build_resource, build_resource.team_lead, build_resource.responder_assignments
     create! { url_for resource.incident }
   end
 
@@ -36,6 +34,48 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   helper_method :form_url
   def form_url
     params[:incident_id] ? incidents_incident_dat_path(params[:incident_id]) : incidents_dat_incidents_path
+  end
+
+  helper_method :scheduled_responders, :flex_responders
+  def scheduled_responders(obj=build_resource)
+    if obj.incident.county
+      time = obj.incident.created_at || current_user.chapter.time_zone.now
+      groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_user.chapter, time)
+      assignments = groups.map{|grp| Scheduler::ShiftAssignment.joins{shift}.where{(shift.county_id == my{obj.incident.county}) & (shift.shift_group_id == grp) & (date == grp.start_date)}}.flatten
+                    .select{|ass| !obj.responder_assignments.detect{|resp| resp.person == ass.person }}
+    else
+      []
+    end
+  end
+
+  def flex_responders(obj=build_resource, scheduled_responders)
+    if obj.incident.county
+      time = obj.incident.created_at.in_time_zone(current_user.chapter.time_zone) || current_user.chapter.time_zone.now
+      dow = time.strftime("%A").downcase
+      hour = time.hour
+      period = (hour >= 7 && hour < 19) ? 'day' : 'night'
+      schedules = Scheduler::FlexSchedule.for_county(obj.incident.county).available_at(dow, period)
+      assignments = schedules.select{|sched| !obj.responder_assignments.detect{|resp| resp.person == sched.person }}
+                    .select{|sched| !scheduled_responders.detect{|resp| resp.person == sched.person }}
+    else
+      []
+    end
+  end
+
+  def build_resource
+    return @_build_resource if @_build_resource
+
+    obj = super
+
+    obj.build_incident if obj.incident.nil?
+    #obj.responder_assignments.build
+    obj.build_team_lead role: 'team_lead' unless obj.team_lead
+
+    #scheduled_responders(obj).each do |resp|
+    #  obj.responder_assignments.build person: resp.person unless obj.responder_assignments.detect{|ra| ra.person == resp.person}
+    #end
+
+    @_build_resource = obj
   end
 
     #def build_resource
@@ -68,13 +108,15 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
       keys << {:incident_attributes => [:incident_number, :date, :county_id]}
       keys << {:team_lead_attributes => [:id, :person_id, :role, :response]}
-      keys << {:responder_assignments_attributes => [:id, :person_id, :role, :response, :_destroy]}
+      keys << {:responder_assignments_attributes => [:id, :person_id, :role, :response, :_destroy, :was_flex]}
       keys << {:services => []}
 
       args = params.require(:incidents_dat_incident).permit(*keys)
       if args[:incident_attributes]
         args[:incident_attributes][:chapter_id] = current_user.chapter_id
       end
+
+      pp args
 
       [args]
     end
