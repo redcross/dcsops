@@ -1,6 +1,8 @@
 =render partial: 'view_header'
 
-- shifts = @all_assignments.reduce({}) { |hash, shift| hash[shift.person] ||= {}; hash[shift.person][shift.date] ||= {}; hash[shift.person][shift.date][shift.shift.shift_group] = shift; hash}
+- all_shifts = {}
+- shifts = @all_assignments.reduce({}) { |hash, shift| hash[shift.person] ||= {}; hash[shift.person][shift.date] ||= {}; hash[shift.person][shift.date][shift.shift.shift_group] = shift; all_shifts[shift.shift.abbrev] = shift.shift.name; hash}
+- flex_schedules = Scheduler::FlexSchedule.where{id.in(shifts.keys)}.reduce({}) { |hash, sched| hash[sched.id] = sched; hash }
 %h3
   = spreadsheet_county.name
   DAT Schedule - 
@@ -29,6 +31,7 @@
         - daily_groups.each do |grp, _|
           %th=grp.name[0].upcase
   -shifts.each do |person, dates|
+    -flex = flex_schedules[person.id]
     %tr.data-row
       %td.header=person.full_name
       - numbers = person.phone_order
@@ -40,10 +43,13 @@
           = numbers[1][:number]
       - (@month..@month.end_of_month).each do |day|
         - daily_groups.each do |grp, shifts|
+          - is_flex = flex && %w(day night).include?(grp.name.downcase) && flex.available(Date::DAYNAMES[day.wday].downcase, grp.name.downcase)
           - ass = dates[day].try(:[], grp)
-          %td.period{class: ass ? "has-shift" : "no-shift"}
+          %td.period{class: (ass) ? "has-shift" : (is_flex ? 'flex-shift' : "no-shift")}
             -if ass
               = ass.shift.abbrev.split("").join(" ")
+            -elsif is_flex
+              F
   %tfoot
     %tr
       %th Person
@@ -58,4 +64,8 @@
         =@month.strftime "%B, %Y"
       - (@month..@month.end_of_month).each do |day|
         %th{colspan: 2}=day.day
+    %tr
+      %th{colspan: (@month.end_of_month.day * 2) + 3}
+        Legend:
+        = all_shifts.each_pair.map{|abbrev, name| "#{abbrev}: #{name}"}.join(", ")
       

@@ -115,6 +115,9 @@ body.calendar {
       //
       background-image: -webkit-linear-gradient(top left, #000 0%, #000 100%);;
     }
+    .flex-shift {
+      background-color: rgba(0, 0, 0, 0.5) !important;
+    }
     .period {
       width: .2in;
       font-size: 6pt;
