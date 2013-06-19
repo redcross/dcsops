@@ -95,7 +95,9 @@ class window.AllIncidentsMapController
 
 class window.AllIncidentsHeatmapController
 
-  constructor: (objects, display) ->
+  constructor: (objects, display, config) ->
+    @config = config
+
     dom = $('.all-incidents-map')[0]
     google.maps.visualRefresh = true
     opts =
@@ -126,8 +128,12 @@ class window.AllIncidentsHeatmapController
         new google.maps.Marker
           position: pt
           map: @map
+          icon: this.iconForEvent(obj.status)
 
     @map.fitBounds @bounds
+
+  iconForEvent: (event) ->
+    ""
 
 class window.IncidentsTrackerController
   constructor: () ->
@@ -141,3 +147,8 @@ class window.IncidentsTrackerController
         success: (data, status, xhr) =>
           $("#narrative-modal .modal-body").html(data)
           setTimeout ( () -> $("#narrative-modal .modal-body").scrollTop(0) ), 100
+
+class window.IncidentEventLogsController
+  constructor: () ->
+    $('#add-log-button').on "click", (evt) =>
+      $("#create-event-modal").modal('show')

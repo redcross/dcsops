@@ -4,6 +4,8 @@ class Incidents::Incident < ActiveRecord::Base
 
   has_one :cas_incident, class_name: 'Incidents::CasIncident'
   has_one :dat_incident, class_name: 'Incidents::DatIncident'
+  has_many :event_logs, ->{ order{event_time} }, class_name: 'Incidents::EventLog'
+  has_one :latest_event_log, ->{ order{event_time.desc}.where{event != 'note'} }, class_name: 'Incidents::EventLog'
 
   has_many :responder_assignments, lambda { where{role != 'team_lead'}}, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
   has_many :on_scene_responder_assignments, lambda { on_scene }, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
@@ -33,6 +35,15 @@ class Incidents::Incident < ActiveRecord::Base
 
   def to_param
     incident_number
+  end
+
+  def incident_status
+    latest_event_log.try(:event)
+  end
+  
+  def incident_status_title
+    event = latest_event_log.try(:event)
+    event && Incidents::EventLog::EVENTS_TO_DESCRIPTIONS[event]
   end
 
   def county_name

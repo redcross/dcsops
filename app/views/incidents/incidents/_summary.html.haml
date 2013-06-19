@@ -1,0 +1,26 @@
+- dat = resource.dat_incident
+
+.row
+  .span6
+    %h4 At a glance:
+    %table.table.table-bordered.table-condensed
+      %tr
+        %th Units Affected
+        -if dat
+          %td=dat.units_affected
+      %tr
+        %th Num. Adults
+        %td=resource.num_adults
+      %tr
+        %th Num. Children
+        %td=resource.num_children
+      %tr
+        %th Num. Families
+        %td=resource.num_families
+      %tr
+        %th Cases Opened On Scene
+        %td=resource.num_cases
+    %p.lead=resource.narrative_brief
+  .span6
+    .map-container{style: "border-radius: 10px; overflow: hidden"}
+      .incident-map{style: "height: 300px"}

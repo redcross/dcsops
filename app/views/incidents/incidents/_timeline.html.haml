@@ -1,0 +1,22 @@
+
+%h3 
+  Timeline
+
+- resource.event_logs.each do |evt|
+  %h4
+    =evt.event_time.to_s :time
+    \-
+    =Incidents::EventLog::EVENTS_TO_DESCRIPTIONS[evt.event]
+    -if evt.event == 'note'
+      %small
+        =evt.person.full_name
+        =evt.event_time.to_s :date_time
+    -else
+      %small
+        =evt.event_time.to_s :date_time
+  =evt.message
+%hr
+%button.btn.btn-primary(data-target="#create-event" data-toggle="collapse") Add Log
+.collapse#create-event
+  - new_log = Incidents::EventLog.new incident: resource, event_time: current_user.chapter.time_zone.now
+  =render '/incidents/event_logs/form', incident: resource, resource: new_log

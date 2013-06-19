@@ -1,0 +1,8 @@
+%h4 Add Event
+=semantic_form_for [incident, resource], url: incidents_incident_event_logs_path(incident), builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: true do |f|
+  =f.input :event, as: :select, collection: Incidents::EventLog::EVENT_TYPES
+  =f.input :event_time
+  =f.input :message, input_html: {rows: 4}
+  =f.actions do
+    =f.action :reset, label: "Cancel", button_html: {class: "btn btn-danger", confirm: "Are you sure you want to cancel?", data: {target: "#create-event", toggle: "collapse"}}
+    =f.action :submit, label: "Create Log", button_html: {class: "btn btn-primary"}

@@ -2,8 +2,6 @@ class Incidents::DatIncident < ActiveRecord::Base
   belongs_to :incident, class_name: 'Incidents::Incident'
   
   accepts_nested_attributes_for :incident#, reject_if: :cant_update_incident
-  
-  validates :num_adults, :num_children, :num_families, presence: true, numericality: true
   validates :address, :cross_street, :city, :state, :zip, presence: true
 
   validates :units_affected, :units_minor, :units_major, :units_destroyed, presence: true, numericality: true

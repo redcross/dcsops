@@ -1,0 +1,16 @@
+%h3 Cases
+
+- (resource.cas_incident.try(:cases)||[]).each do |kase|
+  %h4
+    = kase.address
+    \-
+    = kase.family_name
+  %p
+    %strong Status:
+    =kase.case_is_open ? 'Open' : 'Closed'
+  %p
+    %strong Post Incident Plans
+    =kase.post_incident_plans
+  %p
+    %strong Notes
+    =kase.notes

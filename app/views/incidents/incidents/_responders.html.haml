@@ -1,0 +1,14 @@
+%h3 Responders
+%table.table
+  %tr
+    %th Name
+    %th Role
+    %th Response
+    %th Action
+  - (resource.dat_incident.try(:all_responder_assignments) || []).each do |assignment|
+    %tr
+      %td=assignment.person.full_name
+      %td=assignment.role.titleize
+      %td=assignment.response.try :titleize
+      %td
+        %button.btn (Edit)
