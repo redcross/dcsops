@@ -26,7 +26,9 @@ module ApplicationHelper
 
   def current_messages
     if current_user
-      @_current_messages ||= MOTD.active(current_user.chapter).to_a
+      @_current_messages ||= MOTD.active(current_user.chapter).to_a.select{|motd|
+        motd.path_regex.nil? or motd.path_regex.match(request.fullpath)
+      }
     else
       []
     end

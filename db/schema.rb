@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130616152720) do
+ActiveRecord::Schema.define(version: 20130618232215) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string    "resource_id",   null: false
@@ -180,6 +180,19 @@ ActiveRecord::Schema.define(version: 20130616152720) do
   add_index "incidents_dispatch_logs", ["chapter_id"], name: "index_incidents_dispatch_logs_on_chapter_id"
   add_index "incidents_dispatch_logs", ["incident_id"], name: "index_incidents_dispatch_logs_on_incident_id"
 
+  create_table "incidents_event_logs", force: true do |t|
+    t.integer  "incident_id"
+    t.integer  "person_id"
+    t.string   "event"
+    t.datetime "event_time"
+    t.text     "message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_event_logs", ["incident_id"], name: "index_incidents_event_logs_on_incident_id"
+  add_index "incidents_event_logs", ["person_id"], name: "index_incidents_event_logs_on_person_id"
+
   create_table "incidents_incidents", force: true do |t|
     t.integer   "chapter_id"
     t.integer   "county_id"
@@ -235,6 +248,7 @@ ActiveRecord::Schema.define(version: 20130616152720) do
     t.integer  "cookie_version"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "path_regex_raw"
   end
 
   add_index "motds", ["chapter_id"], name: "index_motds_on_chapter_id"
