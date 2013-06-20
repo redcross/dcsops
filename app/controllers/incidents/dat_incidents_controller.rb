@@ -36,7 +36,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   end
 
   helper_method :scheduled_responders, :flex_responders
-  def scheduled_responders(obj=build_resource)
+  def scheduled_responders(obj=@dat_incident)
     if obj.incident.county
       time = obj.incident.created_at || current_user.chapter.time_zone.now
       groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_user.chapter, time)
@@ -47,7 +47,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     end
   end
 
-  def flex_responders(obj=build_resource, scheduled_responders)
+  def flex_responders(obj=@dat_incident, scheduled_responders)
     if obj.incident.county
       time = obj.incident.created_at.in_time_zone(current_user.chapter.time_zone) || current_user.chapter.time_zone.now
       dow = time.strftime("%A").downcase
@@ -67,10 +67,8 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     obj = super
 
     obj.build_incident if obj.incident.nil?
-    #obj.responder_assignments.build
-    pp obj.incident
-    pp obj.incident.team_lead
-    obj.incident.build_team_lead role: 'team_lead', response: 'available' unless obj.incident.team_lead or !request.get?
+    obj.incident.update_attributes incident_params if incident_params
+    obj.incident.build_team_lead role: 'team_lead', response: 'available' unless obj.incident.team_lead
 
     #scheduled_responders(obj).each do |resp|
     #  obj.responder_assignments.build person: resp.person unless obj.responder_assignments.detect{|ra| ra.person == resp.person}
@@ -107,19 +105,22 @@ class Incidents::DatIncidentsController < Incidents::BaseController
              :units_total, :units_affected, :units_minor, :units_major, :units_destroyed 
            ]
 
-      keys << {:incident_attributes => [:incident_number, :date, :county_id,
-        :team_lead_attributes => [:id, :person_id, :role, :response],
-        :responder_assignments_attributes => [:id, :person_id, :role, :response, :_destroy, :was_flex]
-      ]}
       keys << {:services => []}
 
       args = params.require(:incidents_dat_incident).permit(*keys)
-      if args[:incident_attributes]
-        args[:incident_attributes][:chapter_id] = current_user.chapter_id
-      end
-
-      pp args
+      #if args[:incident_attributes]
+      #  args[:incident_attributes][:chapter_id] = current_user.chapter_id
+      #end
 
       [args]
+    end
+
+    def incident_params
+      return nil if request.get?
+
+      @_incident_params ||= params.require(:incidents_dat_incident).permit({:incident_attributes => [
+        :team_lead_attributes => [:id, :person_id, :role, :response],
+        :responder_assignments_attributes => [:id, :person_id, :role, :response, :_destroy, :was_flex]
+      ]})[:incident_attributes]
     end
 end
