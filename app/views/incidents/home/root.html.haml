@@ -46,6 +46,7 @@
           %a{href: incidents_incident_path(inc)}
             =inc.date.strftime "%-m/%-d"
             #{inc.city}
+          %small(style="color: grey")=inc.incident_number
         %br
         -if inc.dat_incident
           #{pluralize inc.dat_incident.units_affected, "Unit"}, 
