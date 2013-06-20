@@ -1,7 +1,7 @@
 require 'csv'
 
 class Scheduler::DirectlineMailer < ActionMailer::Base
-  default from: "DAT Scheduling <arcba.vcimport@gmail.com>"
+  default from: "DAT Scheduling <directline.export@arcbadat.org>"
 
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
@@ -9,11 +9,14 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   #   en.scheduler.reminders_mailer.email_invite.subject
   #
   def export(chapter, start_date, end_date)
+    start_date = start_date.to_date
+    end_date = end_date.to_date
     @chapter = chapter
     people = []
 
+
     shift_data = CSV.generate do |csv|
-      csv << ["County", "Start", "End", "On Call Person IDs"]
+      csv << ["County", "Start", "End", "On Call Person IDs"] + (1..20).map{|x| "On Call #{x}"}
       chapter.counties.each do |county|
         config = Scheduler::DispatchConfig.for_county county
         next unless config.is_active
@@ -23,7 +26,8 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
             shifts = group.shifts.where(county_id: county).where("dispatch_role is not null").order(:dispatch_role)
             shifts = shifts.map{|sh| Scheduler::ShiftAssignment.where(date: date, shift_id: sh).first }.compact
             people = people + shifts.map(&:person)
-            csv << ([county.name, local_offset(date, group.start_offset), local_offset(date, group.end_offset)] + shifts.map(&:person_id) + config.backup_list.map(&:id))
+            person_list = shifts.map(&:person_id) + config.backup_list.map(&:id)
+            csv << ([county.name, local_offset(date, group.start_offset), local_offset(date, group.end_offset)] + person_list)
           end
         end
       end
@@ -40,7 +44,7 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
     attachments["shift_data.csv"] = shift_data
     attachments["roster.csv"] = person_data
 
-    mail to: "jlaxson@mac.com", subject: "Red Cross Export - Chapter #{chapter.code}", body: "Export processed at #{Time.zone.now}"
+    mail to: "redcross@directlineinc.com", subject: "Red Cross Export - Chapter #{chapter.code}", body: "Export processed at #{Time.zone.now}"
   end
 
   private
