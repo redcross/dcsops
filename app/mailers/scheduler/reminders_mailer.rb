@@ -51,19 +51,41 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     mail to: setting.person.sms_addresses, subject: ""
   end
 
+  def daily_swap_reminder(setting)
+    now = setting.person.chapter.time_zone.now
+    prepare_swap_groups(setting)
+    if @swap_groups.present?
+      mail to: setting.person.email, subject: "Daily Shift Swaps Reminder for #{now.strftime("%b %d")}"
+    else
+      self.message.perform_deliveries = false
+    end
+  end
+
   private
   def prepare_reminders(setting)
     @setting = setting
     @groups = Scheduler::ShiftGroup.current_groups_for_chapter(setting.person.chapter)
     @groups = Scheduler::ShiftGroup.next_groups(setting.person.chapter)
 
-    counties = setting.person.counties.to_a.first
+    counties = setting.person.primary_county
 
     @groups = @groups.uniq.reduce({}) do |hash, grphash|
       hash.tap{|h|
         h[grphash] = grphash[:group].shifts.where(county_id: counties).order(:ordinal).to_a
       }
     end
+  end
+  def prepare_swap_groups(setting)
+    @setting = setting
+
+    counties = setting.person.primary_county
+
+    @swap_groups = Scheduler::ShiftAssignment.includes{shift.county}.where{(shift.county_id.in(counties))}.available_for_swap(setting.person.chapter).reduce({}) do |hash, ass|
+      hash[ass.shift.county] ||= []
+      hash[ass.shift.county] << ass
+      hash
+    end
+
   end
   def item
     @assignment

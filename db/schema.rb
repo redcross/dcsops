@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130619170040) do
+ActiveRecord::Schema.define(version: 20130620194522) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "resource_id",   null: false
@@ -429,6 +429,7 @@ ActiveRecord::Schema.define(version: 20130619170040) do
     t.date     "last_all_shifts_sms"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "email_all_swaps_daily"
   end
 
   create_table "scheduler_shift_assignments", force: true do |t|

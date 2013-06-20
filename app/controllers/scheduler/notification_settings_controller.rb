@@ -18,7 +18,7 @@ class Scheduler::NotificationSettingsController < Scheduler::BaseController
   end
 
   def time_periods
-    { "never" => "", "when starting" => 0, "1 hour before" => 1.hour, "2 hours before" => 2.hours, "3 hours before" => 3.hours, "1 day before" => 1.day, "2 days before" => 2.days, "3 days before" => 3.days}
+    { "never" => "", "when starting" => 0, "1 hour before" => 1.hour, "2 hours before" => 2.hours, "3 hours before" => 3.hours, "8 hours before" => 8.hours, "1 day before" => 1.day, "2 days before" => 2.days, "3 days before" => 3.days}
   end
 
   def time_periods_for_select
@@ -42,6 +42,6 @@ class Scheduler::NotificationSettingsController < Scheduler::BaseController
   def resource_params
     [params.require(:scheduler_notification_setting).permit({:shift_notification_phones => []}, :sms_advance_hours, :email_advance_hours, :send_email_invites,
         :sms_only_before, :sms_only_after, :email_swap_requested, :email_all_swaps, :email_calendar_signups, :email_all_shifts_at,
-        :sms_all_shifts_at)]
+        :sms_all_shifts_at, :email_all_swaps_daily)]
   end
 end

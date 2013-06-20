@@ -122,6 +122,10 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     joins(:shift => :shift_group).references(:shift => :shift_group).where('date > ? or (date=? AND scheduler_shift_groups.end_offset > ?)', time.to_date, time.to_date, time.in_time_zone.seconds_since_midnight)
   }
 
+  scope :available_for_swap, -> (chapter) {
+    where{(available_for_swap==true) & (date >= chapter.time_zone.today)}
+  }
+
   def local_start_time
     local_offset(date, shift.shift_group.start_offset)
   end

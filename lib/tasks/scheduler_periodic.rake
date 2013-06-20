@@ -1,6 +1,8 @@
 namespace :scheduler_periodic do
   task :send_reminders => [:send_invites, :send_email, :send_sms, :send_daily_email, :send_daily_sms]
 
+  task :send_daily => [:send_daily_shift_swap]
+
   task :send_invites => [:environment] do
     Roster::Chapter.all.each do |chapter|
       Scheduler::ShiftAssignment.needs_email_invite(chapter).find_each do |assignment|
@@ -47,8 +49,14 @@ namespace :scheduler_periodic do
   end
 
   task :send_dispatch_roster => [:environment] do
-    Roster::Chapter.each do |ch|
+    Roster::Chapter.all.each do |ch|
 
+    end
+  end
+
+  task :send_daily_shift_swap => [:environment] do
+    Scheduler::NotificationSetting.where{(email_all_swaps_daily == true)}.each do |setting|
+      Scheduler::RemindersMailer.daily_swap_reminder(setting).deliver
     end
   end
 end

@@ -60,7 +60,7 @@ describe Scheduler::RemindersMailer do
       @shift = FactoryGirl.create :shift, shift_group: @group, county: @admin.counties.first, positions: @admin.positions
 
       @person = FactoryGirl.create :person, chapter: @chapter, positions: @shift.positions, counties: [@shift.county]
-      ass = FactoryGirl.create :shift_assignment, shift: @shift, date: Date.current, person: @person
+      @ass = FactoryGirl.create :shift_assignment, shift: @shift, date: Date.current, person: @person
     
       @setting = Scheduler::NotificationSetting.create id: @admin.id
     end
@@ -91,6 +91,39 @@ describe Scheduler::RemindersMailer do
       it "renders the body" do
         mail.body.encoded.should match(@shift.abbrev)
       end
+    end
+
+    describe "daily_swap_reminder" do
+      let(:mail) { Scheduler::RemindersMailer.daily_swap_reminder(@setting) }
+
+      before(:each) do
+        @setting.update_attribute :email_all_swaps_daily, true
+        @ass.update_attribute :available_for_swap, true
+      end
+
+      describe "with a shift to swap" do
+
+        it "renders the headers" do
+          mail.subject.should match("Daily Shift Swaps Reminder")
+          mail.to.should eq([@admin.email])
+          mail.from.should eq(from_address)
+        end
+      
+        it "renders the body" do
+          mail.body.encoded.should match(@ass.person.full_name)
+        end      
+
+      end
+
+      describe "with no shifts to swap" do
+
+        it "should not deliver" do
+          @ass.update_attribute :available_for_swap, false
+          mail.perform_deliveries.should be_false
+        end
+
+      end
+
     end
   end
 end

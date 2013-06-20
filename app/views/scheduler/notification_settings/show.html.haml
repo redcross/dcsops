@@ -18,6 +18,9 @@
       %p
         =editable_select resource, :email_all_swaps, [{value: 0, text: "Do not"},{value: 1, text: "Do"}], is_boolean: true
         send me reminders for all shift swaps.
+      %p
+        =editable_select resource, :email_all_swaps_daily, [{value: 0, text: "Do not"},{value: 1, text: "Do"}], is_boolean: true
+        send me a daily summary of outstanding shift swaps.
     %p
       %small
         Email invites will be sent to
