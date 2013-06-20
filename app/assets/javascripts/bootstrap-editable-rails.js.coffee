@@ -20,7 +20,6 @@ jQuery ($) ->
           params[resource] = obj
         else
           params = obj
-        console.log params.name, params.value, resource, obj, params
         delete params.name
         delete params.value
         delete params.pk
