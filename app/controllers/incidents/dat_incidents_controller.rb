@@ -1,6 +1,6 @@
 class Incidents::DatIncidentsController < Incidents::BaseController
   inherit_resources
-  belongs_to :incident, singleton: true, finder: :find_by_incident_number!, parent_class: Incidents::Incident, optional: true
+  belongs_to :incident, singleton: true, finder: :find_by_incident_number!, parent_class: Incidents::Incident
 
   actions :all, except: [:destroy]
 
@@ -22,7 +22,6 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
   def create
     #build_resource.responder_assignments.build
-    pp build_resource, build_resource.team_lead, build_resource.responder_assignments
     create! { url_for resource.incident }
   end
 
@@ -69,7 +68,9 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
     obj.build_incident if obj.incident.nil?
     #obj.responder_assignments.build
-    obj.incident.build_team_lead role: 'team_lead' unless obj.incident.team_lead
+    pp obj.incident
+    pp obj.incident.team_lead
+    obj.incident.build_team_lead role: 'team_lead', response: 'available' unless obj.incident.team_lead or !request.get?
 
     #scheduled_responders(obj).each do |resp|
     #  obj.responder_assignments.build person: resp.person unless obj.responder_assignments.detect{|ra| ra.person == resp.person}
@@ -106,7 +107,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
              :units_total, :units_affected, :units_minor, :units_major, :units_destroyed 
            ]
 
-      keys << {:incident_attributes => [:id, :incident_number, :date, :county_id,
+      keys << {:incident_attributes => [:incident_number, :date, :county_id,
         :team_lead_attributes => [:id, :person_id, :role, :response],
         :responder_assignments_attributes => [:id, :person_id, :role, :response, :_destroy, :was_flex]
       ]}

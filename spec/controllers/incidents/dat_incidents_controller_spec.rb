@@ -56,10 +56,16 @@ describe Incidents::DatIncidentsController do
     before(:each) do
       @incident = FactoryGirl.create :incident
       @dat = FactoryGirl.build :dat_incident
+      @lead = FactoryGirl.create :person
     end
     it "should allow creating" do
       expect {
-        post :create, incident_id: @incident.to_param, incidents_dat_incident: @dat.attributes
+        attrs = @dat.attributes
+        attrs[:incident_attributes] = {id: @incident.id}
+        attrs[:incident_attributes][:team_lead_attributes] = {person_id: @lead.id, role: 'team_lead', response: 'available'}
+
+        post :create, incident_id: @incident.to_param, incidents_dat_incident: attrs
+        pp controller.send(:resource).errors
         response.should redirect_to(@incident)
       }.to change(Incidents::DatIncident, :count).by(1)
     end
@@ -78,9 +84,11 @@ describe Incidents::DatIncidentsController do
     it "should allow creating" do
       @incident = FactoryGirl.build :incident
       @dat = FactoryGirl.build :dat_incident
+      @lead = FactoryGirl.create :person
 
       attrs = @dat.attributes
       attrs[:incident_attributes] = @incident.attributes
+      attrs[:incident_attributes][:team_lead_attributes] = {person_id: @lead.id, role: 'team_lead', response: 'available'}
 
       expect {
         post :create, incidents_dat_incident: attrs

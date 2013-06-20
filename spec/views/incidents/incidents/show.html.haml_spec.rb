@@ -6,6 +6,7 @@ describe "incidents/incidents/show" do
 
   before(:each) do
     view.controller.stub! :current_ability => ability
+    view.stub! :current_user => person
   end
 
   describe "with no linked incidents" do
@@ -24,6 +25,7 @@ describe "incidents/incidents/show" do
 
     it "should render" do
       dat = FactoryGirl.create :dat_incident, incident: @incident
+      @incident.reload
 
       render
 

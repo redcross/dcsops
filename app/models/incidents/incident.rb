@@ -10,13 +10,14 @@ class Incidents::Incident < ActiveRecord::Base
   has_many :responder_assignments, lambda { where{role != 'team_lead'}}, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
   has_many :on_scene_responder_assignments, lambda { on_scene }, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
   has_one :team_lead, lambda{ where(role: 'team_lead')}, class_name: 'Incidents::ResponderAssignment', foreign_key: 'incident_id'
-  accepts_nested_attributes_for :team_lead
+  
+  accepts_nested_attributes_for :team_lead, update_only: true
   accepts_nested_attributes_for :responder_assignments, reject_if: -> hash {(hash[:person_id].blank?)}, allow_destroy: true
 
 
   validates :chapter, :county, :date, presence: true
   validates :incident_number, presence: true, format: /\A1[3-9]-\d+\z/, uniqueness: true
-  validates_associated :team_lead, if: ->(inc) {inc.dat_incident}
+  validates_associated :team_lead, if: ->(inc) {inc.dat_incident}, allow_nil: false
 
   #delegate :address,  :city, :state, :zip, :lat, :lng, :num_adults, :num_children, to: :dat_incident
   #delegate :units_affected, to: :dat_incident
