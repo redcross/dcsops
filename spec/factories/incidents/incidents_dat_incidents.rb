@@ -16,11 +16,14 @@ FactoryGirl.define do
     units_minor 10
     units_major 10
     units_destroyed 10
-    units_total 10
 
     num_people_injured 5
     num_people_hospitalized 5
     num_people_deceased 5
+
+    responder_notified 2.hours.ago
+    responder_arrived 1.hour.ago
+    responder_departed Time.zone.now
 
     address { Faker::Address.street_address }
     cross_street {Faker::Address.street_name }

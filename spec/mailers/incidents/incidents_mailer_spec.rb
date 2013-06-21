@@ -9,11 +9,11 @@ describe Incidents::IncidentsMailer do
   end
 
   describe "weekly" do
-    let(:mail) { Incidents::IncidentsMailer.weekly(@chapter) }
+    let(:mail) { Incidents::IncidentsMailer.weekly(@chapter, person) }
 
     it "renders the headers" do
       mail.subject.should match("ARCBA Disaster Operations")
-      #mail.to.should eq(["to@example.org"])
+      mail.to.should eq([person.email])
       mail.from.should eq(from_address)
     end
 
@@ -27,7 +27,7 @@ describe Incidents::IncidentsMailer do
   end
 
   describe "no_incident_report" do
-    let(:report) { stub :incident, incident_number: "12-345", county_name: 'County', created_at: Time.zone.now}
+    let(:report) { stub :incident, incident_number: "12-345", county_name: 'County', created_at: Time.zone.now, dispatch_log: stub( delivered_to: "Bob")}
     let(:mail) { Incidents::IncidentsMailer.no_incident_report(report, person) }
 
     it "renders the headers" do
@@ -42,6 +42,7 @@ describe Incidents::IncidentsMailer do
 
     it "renders the body" do
       mail.body.encoded.should match("An incident number was created for your")
+      mail.body.encoded.should match("Person Contacted by Dispatch: Bob")
     end
   end
 
