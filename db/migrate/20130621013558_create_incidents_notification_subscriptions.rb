@@ -4,6 +4,7 @@ class CreateIncidentsNotificationSubscriptions < ActiveRecord::Migration
       t.references :person, index: true
       t.references :county, index: true
       t.string :notification_type
+      t.boolean :persistent, default: false
 
       t.timestamps
     end

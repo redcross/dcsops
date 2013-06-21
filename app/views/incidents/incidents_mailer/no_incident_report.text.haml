@@ -4,9 +4,9 @@
   An incident number was created for your county at least 24 hours ago, but no incident report has been received.  This is an automated report, so if it is in error, please disregard, otherwise see below for details and a link to submit the report.
 
       Incident Number: #{@incident.incident_number}
-      County: #{@incident.county.name}
+      County: #{@incident.county_name}
       Date and Time Created: #{@incident.created_at.to_s}
-      Person Contacted by Dispatch: ...
+      Person Contacted by Dispatch: #{@incident.dispatch_log.delivered_to}
 
   You can use this link to submit the incident report:
   #{new_incidents_incident_dat_url(@incident)}

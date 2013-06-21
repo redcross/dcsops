@@ -27,17 +27,17 @@ describe Incidents::IncidentsMailer do
   end
 
   describe "no_incident_report" do
-    let(:report) { stub :incident, incident_number: "12-345", county: stub(:county, name: 'County'), created_at: Time.zone.now}
-    let(:mail) { Incidents::IncidentsMailer.no_incident_report(report) }
+    let(:report) { stub :incident, incident_number: "12-345", county_name: 'County', created_at: Time.zone.now}
+    let(:mail) { Incidents::IncidentsMailer.no_incident_report(report, person) }
 
     it "renders the headers" do
-      mail.subject.should eq("Missing Incident Report")
+      mail.subject.should eq("Missing Incident Report For County")
       mail.from.should eq(from_address)
     end
 
     it "should be to the county designated contact" do
       pending
-      mail.to.should eq(["to@example.org"])
+      mail.to.should eq([person.email])
     end
 
     it "renders the body" do

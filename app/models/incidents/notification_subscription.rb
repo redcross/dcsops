@@ -2,7 +2,7 @@ class Incidents::NotificationSubscription < ActiveRecord::Base
   belongs_to :person, class_name: 'Roster::Person'
   belongs_to :county, class_name: 'Roster::County'
 
-  TYPES = %w(new_incident incident_dispatch incident_report weekly)
+  TYPES = %w(new_incident incident_dispatch incident_report missing_report weekly)
 
   validates :notification_type, inclusion: {in: TYPES}, presence: true, uniqueness: {scope: [:person_id, :county_id]}
 

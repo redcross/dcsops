@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130621013558) do
+ActiveRecord::Schema.define(version: 20130621171031) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "resource_id",   null: false
@@ -220,6 +220,7 @@ ActiveRecord::Schema.define(version: 20130621013558) do
     t.datetime "last_idat_sync"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "last_no_incident_warning"
   end
 
   add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id"
