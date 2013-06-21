@@ -30,7 +30,7 @@
       Subscribe to this URL to show your shifts in your calendaring program:
       %small
         %pre
-          -url = scheduler_shift_assignments_url(format: 'ics', api_token: resource.calendar_api_token, protocol: 'ical')
+          -url = scheduler_shift_assignments_url(format: 'ics', api_token: resource.calendar_api_token, protocol: 'webcal')
           %a{href: url}=url
     -if can_see_admin_notifications
       %p
@@ -39,7 +39,7 @@
         shifts in your calendaring program:
         %small
           %pre
-            -url = scheduler_shift_assignments_url(format: 'ics', api_token: resource.calendar_api_token, show_shifts: 'all', protocol: 'ical')
+            -url = scheduler_shift_assignments_url(format: 'ics', api_token: resource.calendar_api_token, show_shifts: 'all', protocol: 'webcal')
             %a{href: url}=url
     %h3 Email
     %p
