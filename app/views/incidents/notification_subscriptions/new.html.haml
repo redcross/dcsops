@@ -1,0 +1,7 @@
+%h1 Incidents Notification
+
+%p You are not currently subscribed to the weekly disaster operations report.
+
+%p
+  = form_tag url_for(action: :create), method: :post do
+    =submit_tag 'Subscribe', class: 'btn btn-primary'

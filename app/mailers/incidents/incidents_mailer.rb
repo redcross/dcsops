@@ -47,7 +47,27 @@ class Incidents::IncidentsMailer < ActionMailer::Base
     mail to: "to@example.org"
   end
 
+  def new_incident(incident, recipient)
+    @incident = incident
+    mail to: format_address(recipient), subject: "New Incident For #{incident.county_name}"
+  end
+
+  def incident_dispatched(incident, recipient)
+    @incident = incident
+    mail to: format_address(recipient), subject: "Incident For #{incident.county_name} Dispatched", template_name: 'new_incident'
+  end
+
+  def incident_report(incident, recipient)
+
+  end
+
   private
+
+  def format_address(person)
+    addr = Mail::Address.new person.email
+    addr.display_name = person.full_name
+    addr.format
+  end
 
   helper_method :static_maps_url
   def static_maps_url(retina=false)

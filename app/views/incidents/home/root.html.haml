@@ -1,39 +1,43 @@
 .row
-  .span12
-    .span3.noprint(style="float: left; margin-right: -100%")
-      %ul.nav.nav-tabs.nav-stacked
-        -if can? :needs_report, Incidents::Incident
-          %li
-            %a{href: needs_report_incidents_incidents_path}
-              Submit Incident Report
-              %i.icon-chevron-right
-        -if can? :link_cas, Incidents::Incident
-          %li
-            %a{href: link_cas_incidents_incidents_path}
-              Link CAS Incidents
-              %i.icon-chevron-right
-        -if can? :tracker, Incidents::Incident
-          %li
-            %a{href: tracker_incidents_incidents_path}
-              Incident Tracker
-              %i.icon-chevron-right
+  .span3
+    %ul.nav.nav-tabs.nav-stacked
+      -if can? :needs_report, Incidents::Incident
+        %li
+          %a{href: needs_report_incidents_incidents_path}
+            Submit Incident Report
+            %i.icon-chevron-right
+      -if can? :link_cas, Incidents::Incident
+        %li
+          %a{href: link_cas_incidents_incidents_path}
+            Link CAS Incidents
+            %i.icon-chevron-right
+      -if can? :tracker, Incidents::Incident
+        %li
+          %a{href: tracker_incidents_incidents_path}
+            Incident Tracker
+            %i.icon-chevron-right
+      -if can? :create, Incidents::NotificationSubscription.new(person: current_user, notification_type: 'weekly')
+        %li
+          %a{href: incidents_notification_subscription_weekly_path(current_user)}
+            Manage Subscription
+            %i.icon-chevron-right
+  .span9
     %h2.center
       #{current_user.chapter.short_name} DAT Incidents
-    
-.row
-  - {"30 Days" => Incidents::Incident.unscoped.where{date >= 1.month.ago}.incident_stats, "This Year" => Incidents::Incident.where{date >= "2012-07-01"}.incident_stats, "5 Years" => Incidents::Incident.where{date >= 5.years.ago}.incident_stats}.each do |title, stats|
-    .span4
-      %h3.center=title
-      %p.center.lead
-        %small
-          %i.icon-fire
-          =pluralize stats.incident_count, "Incident"
-          %br
-          %i.icon-group
-          =pluralize stats.case_count, "Family"
-          %br
-          %i.icon-user
-          =pluralize stats.client_count, "Client"
+    .row
+      - {"30 Days" => Incidents::Incident.unscoped.where{date >= 1.month.ago}.incident_stats, "This Year" => Incidents::Incident.where{date >= "2012-07-01"}.incident_stats, "5 Years" => Incidents::Incident.where{date >= 5.years.ago}.incident_stats}.each do |title, stats|
+        .span3
+          %h3.center=title
+          %p.center.lead
+            %small
+              %i.icon-fire
+              =pluralize stats.incident_count, "Incident"
+              %br
+              %i.icon-group
+              =pluralize stats.case_count, "Family"
+              %br
+              %i.icon-user
+              =pluralize stats.client_count, "Client"
 .row
   .span4
     %h4 Recent Incidents

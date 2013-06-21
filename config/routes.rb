@@ -87,6 +87,9 @@ Scheduler::Application.routes.draw do
         get :narrative, on: :member
       end
     end
+    scope "notification_subscriptions", as: :notification_subscription do
+      resources :weekly, controller: 'notification_subscriptions', notification_type: 'weekly'
+    end
   end
 
   match 'import/:import_secret/:provider/cas-v:version', via: [:head, :post], to: 'incidents/import#import_cas', version: /\d+/

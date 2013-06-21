@@ -1,0 +1,19 @@
+:plain
+  A New Dispatch Request Was Received:
+
+    Incident: #{@incident.incident_number}
+    County: #{@incident.county_name}
+-if dispatch = @incident.dispatch_log
+  :plain
+      Incident Type: #{dispatch.incident_type}
+      Address: #{dispatch.address}
+      # Displaced: #{dispatch.displaced}
+      Services Requested: #{dispatch.services_requested}
+      Agency: #{dispatch.agency}
+      Contact: #{dispatch.contact_name}
+      Phone: #{dispatch.contact_phone}
+#{'\n\n'}
+-if dispatch and dispatch.delivered_at
+  :plain
+      Delivered At: #{dispatch.delivered_at.to_s :date_time}
+      Delivered To: #{dispatch.delivered_to}

@@ -7,13 +7,15 @@ describe Incidents::DispatchImporter do
   let(:fixture_path) { "spec/fixtures/incidents/dispatch_logs/#{fixture_name}" }
   let(:fixture) { File.read fixture_path }
 
-  before(:each) do
+  let(:import) do
     @county = FactoryGirl.create :county, chapter: chapter, name: 'Contra Costa'
     subject.import_data chapter, fixture
   end
 
   describe "1.txt" do
     it "should parse the incident" do
+      import
+
       inc = Incidents::DispatchLog.first
       inc.should_not be_nil
 
@@ -35,6 +37,8 @@ describe Incidents::DispatchImporter do
     end
 
     it "should parse the event logs" do
+      import
+
       inc = Incidents::DispatchLog.first
       inc.should_not be_nil
 
@@ -50,6 +54,8 @@ describe Incidents::DispatchImporter do
     end
 
     it "should create an incident" do
+      import
+
       inc = Incidents::Incident.first
       inc.should_not be_nil
 
@@ -57,6 +63,38 @@ describe Incidents::DispatchImporter do
       inc.date.should == Date.civil(2013, 6, 13)
       inc.county.should == @county
       inc.chapter.should == chapter
+    end
+
+    it "should notify IncidentCreated" do
+      Incidents::IncidentCreated.any_instance.should_receive(:save)
+
+      import
+    end
+
+    it "should notify DispatchLogUpdated" do
+      Incidents::DispatchLogUpdated.any_instance.should_receive(:save)
+
+      import
+    end
+
+    describe "with an incident already existing" do
+      before(:each) do
+        @inc = FactoryGirl.create :incident, incident_number: '14-044'
+      end
+      let(:fixture_name) { self.class.superclass.description }
+
+      it "should assign the existing incident" do
+        import
+
+        log = Incidents::DispatchLog.first
+        log.incident.should == @inc
+      end
+
+      it "should not notify IncidentCreated" do
+        Incidents::IncidentCreated.any_instance.should_not_receive(:save)
+
+        import
+      end
     end
   end
 end

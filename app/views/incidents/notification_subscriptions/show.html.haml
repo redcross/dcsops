@@ -1,0 +1,13 @@
+%h1 Incidents Notification
+
+%p 
+  You are currently subscribed to the weekly disaster operations report.
+  
+%p
+  Reports will be sent to
+  %strong=resource.person.email
+  \.
+
+%p
+  = form_tag url_for(action: :destroy), method: :delete do
+    =submit_tag 'Unsubscribe', class: 'btn btn-primary'

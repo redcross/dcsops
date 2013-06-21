@@ -69,11 +69,18 @@ class Incidents::DispatchImporter
       log_object.save!
 
       if log_object.incident.nil?
-        log_object.create_incident! incident_number: log_object.incident_number, 
-                                            chapter: chapter,
-                                               date: log_object.received_at.in_time_zone(chapter.time_zone).to_date,
-                                             county: chapter.counties.where{name == log_object.county_name}.first
+        if inc = Incidents::Incident.find_by( incident_number: log_object.incident_number)
+          log_object.incident = inc
+          log_object.save
+        else
+          log_object.create_incident! incident_number: log_object.incident_number, 
+                                              chapter: chapter,
+                                                 date: log_object.received_at.in_time_zone(chapter.time_zone).to_date,
+                                               county: chapter.counties.where{name == log_object.county_name}.first
+          Incidents::IncidentCreated.new(log_object.incident).save
+        end
       end
+      Incidents::DispatchLogUpdated.new(log_object).save
     end
   end
 

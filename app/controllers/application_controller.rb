@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
     begin
       respond_to do |fmt|
         fmt.html{ flash[:error] = "You are not authorized to access that page."; redirect_to :back }
+        fmt.pdf{ flash[:error] = "You are not authorized to access that page."; redirect_to :back }
         fmt.json{ head :forbidden }
         fmt.ics{ head :forbidden }
       end
@@ -34,11 +35,12 @@ class ApplicationController < ActionController::Base
   end
 
   def require_valid_user!(return_to=url_for(only_path: false))
-    session[:redirect_after_login] = return_to if return_to
     #puts "Setting redirec to #{return_to}"
     unless current_user_session
+      session[:redirect_after_login] = return_to if return_to
       respond_to do |fmt|
         fmt.html{ redirect_to new_roster_session_path }
+        fmt.pdf{ redirect_to new_roster_session_path }
         fmt.json{ head :unauthorized }
         fmt.ics{ head :unauthorized }
       end

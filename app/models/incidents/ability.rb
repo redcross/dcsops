@@ -8,6 +8,9 @@ class Incidents::Ability
 
     is_admin = person.has_role 'incidents_admin'
 
+    # for now, anyone can do the weekly subscription
+    can :manage, Incidents::NotificationSubscription, person_id: person.id, notification_type: 'weekly'
+
     if is_admin or person.has_role 'submit_incident_report'
         can :needs_report, Incidents::Incident
         can :create, Incidents::DatIncident

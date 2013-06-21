@@ -31,7 +31,6 @@ describe "incidents/incidents/show" do
 
       rendered.should match(edit_incidents_incident_dat_path(@incident))
       rendered.should match('Demographics')
-      rendered.should match(dat.address)
     end
   end
 

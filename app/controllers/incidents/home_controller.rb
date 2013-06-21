@@ -24,4 +24,8 @@ class Incidents::HomeController < Incidents::BaseController
       {id: inc.incident_number, lat: inc.lat, lng: inc.lng, clients: inc.num_adults + inc.num_children, status: inc.incident_status}
     end
   end
+
+  def is_subscribed_weekly
+    Incidents::NotificationSetting.where{(person_id==my{current_user}) & (notification_type == 'weekly')}.exists?
+  end
 end

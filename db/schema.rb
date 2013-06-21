@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130620194522) do
+ActiveRecord::Schema.define(version: 20130621013558) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "resource_id",   null: false
@@ -225,6 +225,23 @@ ActiveRecord::Schema.define(version: 20130620194522) do
   add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id"
   add_index "incidents_incidents", ["county_id"], name: "index_incidents_incidents_on_county_id"
   add_index "incidents_incidents", ["incident_number"], name: "index_incidents_incidents_on_incident_number", unique: true
+
+  create_table "incidents_notification_settings", force: true do |t|
+    t.boolean  "send_weekly_report"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "incidents_notification_subscriptions", force: true do |t|
+    t.integer  "person_id"
+    t.integer  "county_id"
+    t.string   "notification_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_notification_subscriptions", ["county_id"], name: "index_incidents_notification_subscriptions_on_county_id"
+  add_index "incidents_notification_subscriptions", ["person_id"], name: "index_incidents_notification_subscriptions_on_person_id"
 
   create_table "incidents_responder_assignments", force: true do |t|
     t.integer  "person_id"

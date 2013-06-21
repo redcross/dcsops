@@ -1,7 +1,7 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :incidents_dispatch_log, :class => 'Incidents::DispatchLog' do
+  factory :dispatch_log, :class => 'Incidents::DispatchLog' do
     incident_number "MyString"
     incident nil
     received_at "2013-06-14 15:57:56"
@@ -13,7 +13,7 @@ FactoryGirl.define do
     county_name "MyString"
     displaced "MyString"
     services_requested "MyString"
-    agency_string "MyString"
+    agency "MyString"
     contact_name "MyString"
     contact_phone "MyString"
     caller_id "MyString"
