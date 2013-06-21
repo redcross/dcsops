@@ -42,6 +42,8 @@ class Roster::VcImporter
       end
       person.vc_imported_at = Time.now
       person.save!
+
+      yield "Member Data"
     end
   end
 
