@@ -10,7 +10,7 @@ class Roster::VcImporter
     pos.chapter = chapter
 
     Roster::Person.transaction do
-      data_errs = import_member_data workbook.worksheet("Contact") { |str| yield str if block_given? }
+      data_errs = import_member_data( workbook.worksheet("Contact")) { |str| yield str if block_given? }
       # First Delete all the existing qualification data
 
       if !Rails.env.production? and workbook.worksheet("Positions") and workbook.worksheet("Qualifications")

@@ -247,6 +247,11 @@ GEM
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
+    rails_12factor (0.0.2)
+      rails_serve_static_assets
+      rails_stdout_logging
+    rails_serve_static_assets (0.0.1)
+    rails_stdout_logging (0.0.1)
     rainbow (1.1.4)
     raindrops (0.11.0)
     rake (10.0.4)
@@ -358,6 +363,7 @@ DEPENDENCIES
   newrelic_rpm
   puma
   rails (~> 4.0.0.rc1)!
+  rails_12factor
   ransack!
   responders
   ri_cal
