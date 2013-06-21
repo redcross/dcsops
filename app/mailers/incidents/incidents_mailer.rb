@@ -6,7 +6,7 @@ class Incidents::IncidentsMailer < ActionMailer::Base
   #
   #   en.incidents.incidents_mailer.weekly.subject
   #
-  def weekly(chapter)
+  def weekly(chapter, recipient)
     @chapter = chapter
     @start_date = chapter.time_zone.today.at_beginning_of_week.last_week.next_week
     @end_date = @start_date.next_week.yesterday
@@ -22,7 +22,7 @@ class Incidents::IncidentsMailer < ActionMailer::Base
 
     @title = "ARCBA Disaster Operations Report - #{@subtitle}"
 
-    mail to: "John Laxson <jlaxson@mac.com>", subject: @title
+    mail to: format_address(recipient), subject: @title
   end
 
   # Subject can be set in your I18n file at config/locales/en.yml

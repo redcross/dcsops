@@ -57,7 +57,7 @@ describe "" do
       Incidents::IncidentMissingReport.should_not_receive(:new)
       expect {
         subject.invoke
-      }.to_not change{@incident.reload.last_no_incident_warning}
+      }
     end
 
     it "should not send a reminder if the incident was pinged recently" do
@@ -66,7 +66,7 @@ describe "" do
       Incidents::IncidentMissingReport.should_not_receive(:new)
       expect {
         subject.invoke
-      }.to_not change{@incident.reload.last_no_incident_warning}
+      }
     end
 
     it "should not send a reminder if the incident has an incident report" do
@@ -76,7 +76,30 @@ describe "" do
       Incidents::IncidentMissingReport.should_not_receive(:new)
       expect {
         subject.invoke
-      }.to_not change{@incident.reload.last_no_incident_warning}
+      }
+    end
+  end
+
+  describe "incidents_periodic:send_weekly_report" do
+    before(:each) do
+      @incident = FactoryGirl.create :incident
+      @person = FactoryGirl.create :person, chapter: @incident.chapter
+    end
+
+    it "should send the weekly report to a person with a subscription on a monday" do
+      Delorean.time_travel_to Date.current.at_beginning_of_week.in_time_zone
+      Incidents::NotificationSubscription.create! person: @person, county: nil, notification_type: 'weekly'
+
+      Incidents::IncidentsMailer.should_receive(:weekly).with(@person.chapter, @person).and_return(stub :deliver => true)
+      subject.invoke
+    end
+
+    it "should not send the weekly report on another day" do
+      Delorean.time_travel_to 'tuesday noon'
+      Incidents::NotificationSubscription.create! person: @person, county: nil, notification_type: 'weekly'
+
+      Incidents::IncidentsMailer.should_not_receive(:weekly)
+      subject.invoke
     end
   end
 end
