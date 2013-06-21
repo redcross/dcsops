@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130621171031) do
+ActiveRecord::Schema.define(version: 20130621204134) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string    "resource_id",   null: false
@@ -95,36 +95,36 @@ ActiveRecord::Schema.define(version: 20130621171031) do
   add_index "incidents_cas_incidents", ["incident_id"], name: "index_incidents_cas_incidents_on_incident_id"
 
   create_table "incidents_dat_incidents", force: true do |t|
-    t.integer   "incident_id"
-    t.string    "incident_type"
-    t.string    "incident_call_type"
-    t.string    "verified_by"
-    t.integer   "num_adults"
-    t.integer   "num_children"
-    t.integer   "num_families"
-    t.integer   "num_people_injured"
-    t.integer   "num_people_hospitalized"
-    t.integer   "num_people_deceased"
-    t.timestamp "responder_notified"
-    t.timestamp "responder_arrived"
-    t.timestamp "responder_departed"
-    t.string    "address"
-    t.string    "cross_street"
-    t.string    "neighborhood"
-    t.string    "city"
-    t.string    "state"
-    t.string    "zip"
-    t.decimal   "lat"
-    t.decimal   "lng"
-    t.integer   "units_total"
-    t.integer   "units_affected"
-    t.integer   "units_minor"
-    t.integer   "units_major"
-    t.integer   "units_destroyed"
-    t.text      "narrative"
-    t.text      "services"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "incident_id"
+    t.string   "incident_type"
+    t.string   "incident_call_type"
+    t.string   "verified_by"
+    t.integer  "num_adults"
+    t.integer  "num_children"
+    t.integer  "num_families"
+    t.integer  "num_people_injured"
+    t.integer  "num_people_hospitalized"
+    t.integer  "num_people_deceased"
+    t.datetime "responder_notified"
+    t.datetime "responder_arrived"
+    t.datetime "responder_departed"
+    t.string   "address"
+    t.string   "cross_street"
+    t.string   "neighborhood"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.decimal  "lat"
+    t.decimal  "lng"
+    t.integer  "units_affected"
+    t.integer  "units_minor"
+    t.integer  "units_major"
+    t.integer  "units_destroyed"
+    t.text     "narrative"
+    t.text     "services"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "structure_type"
   end
 
   add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true

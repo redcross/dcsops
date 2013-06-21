@@ -14,8 +14,8 @@
         /=f.input :incident_number, placeholder: "#{Date.today.strftime "%y"}-123"
         /=f.input :county, include_blank: false, collection: Roster::County.where{name != 'Chapter'}
         /=f.input :date, as: :bootstrap_date
-        =f.input :incident_type, as: :select, collection: {"Fire" => 'fire', 'Police Action' => 'police', 'Flood' => 'flood'}, include_blank: false
-        =f.input :incident_call_type, as: :select, collection: {"Hot" => 'hot', "Cold" => 'cold'}, include_blank: false
+        =f.input :incident_type, as: :select, collection: Incidents::DatIncident::INCIDENT_TYPES.map{|x| [x.titleize, x]}, include_blank: false
+        =f.input :incident_call_type, as: :select, collection: Incidents::DatIncident::CALL_TYPES.map{|x| [x.titleize, x]}, include_blank: false
         =f.semantic_fields_for :incident do |f|
           =f.semantic_fields_for :team_lead do |f|
             =f.semantic_errors
@@ -32,14 +32,16 @@
         =f.input :num_children
         =f.input :num_families
         /=f.input :num_cases
-        =f.input :units_total
+        =f.input :num_people_injured
+        =f.input :num_people_hospitalized
+        =f.input :num_people_deceased
   
   =f.inputs "Location" do
     .row
       %br
       .span6
         =f.input :search_for_address
-        =f.input :cross_street
+        -#=f.input :cross_street
         =f.input :address, input_html: {readonly: true}
         =f.input :city, input_html: {readonly: true}
         =f.input :state, default: 'CA', input_html: {readonly: true}
@@ -80,16 +82,13 @@
     .row
       .span6
         =f.inputs "Damage Assessment" do
+          =f.input :structure_type, collection: Incidents::DatIncident::STRUCTURE_TYPES.map{|x| [x.titleize, x]}
           /=f.input :units_total
           =f.input :units_affected
           =f.input :units_minor
           =f.input :units_major
           =f.input :units_destroyed
       .span6
-        =f.inputs "Clients" do
-          =f.input :num_people_injured
-          =f.input :num_people_hospitalized
-          =f.input :num_people_deceased
         =f.inputs "Timeline" do
           =f.input :responder_notified, as: :string
           =f.input :responder_arrived, as: :string

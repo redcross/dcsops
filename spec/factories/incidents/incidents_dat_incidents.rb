@@ -6,6 +6,7 @@ FactoryGirl.define do
 
     incident_type 'fire'
     incident_call_type 'hot'
+    structure_type 'apartment'
 
     num_adults 1
     num_children 1
