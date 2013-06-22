@@ -22,7 +22,9 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
   def create
     #build_resource.responder_assignments.build
-    create! { url_for resource.incident }
+    create! do |success, failure|
+      success.html { Incidents::IncidentReportFiled.new(resource.incident.reload).save; redirect_to resource.incident}
+    end
   end
 
   def update

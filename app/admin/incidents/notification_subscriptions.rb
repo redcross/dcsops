@@ -11,6 +11,7 @@ ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
     column :person
     column :notification_type
     column :county
+    column :persistent
     default_actions
   end
 
@@ -19,6 +20,7 @@ ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
       f.input :person
       f.input :county
       f.input :notification_type, collection: Incidents::NotificationSubscription::TYPES.map{|x| [x.titleize, x]}
+      f.input :persistent
       f.actions
     end
   end

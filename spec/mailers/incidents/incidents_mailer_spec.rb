@@ -36,7 +36,6 @@ describe Incidents::IncidentsMailer do
     end
 
     it "should be to the county designated contact" do
-      pending
       mail.to.should eq([person.email])
     end
 
@@ -83,6 +82,25 @@ describe Incidents::IncidentsMailer do
     it "renders the body" do
       mail.body.encoded.should match("Incident Type: Flood")
       mail.body.encoded.should match("Delivered To: Bob")
+    end
+  end
+
+  describe "incident_report_filed" do
+    let(:dat) { FactoryGirl.create :dat_incident}
+    let(:report) { FactoryGirl.create :incident, dat_incident: dat}
+    let(:mail) { Incidents::IncidentsMailer.incident_report_filed(report, person) }
+
+    it "renders the headers" do
+      mail.subject.should eq("Incident Report Filed For #{report.county.name}")
+      mail.from.should eq(from_address)
+    end
+
+    it "should be to the designated contact" do
+      mail.to.should eq([person.email])
+    end
+
+    it "renders the body" do
+      mail.body.encoded.should match("A New DAT Incident Report was filed")
     end
   end
 

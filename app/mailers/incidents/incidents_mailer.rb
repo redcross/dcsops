@@ -8,6 +8,7 @@ class Incidents::IncidentsMailer < ActionMailer::Base
   #
   def weekly(chapter, recipient)
     @chapter = chapter
+    @person = recipient
     @start_date = chapter.time_zone.today.at_beginning_of_week.last_week.next_week
     @end_date = @start_date.next_week.yesterday
     @incidents = Incidents::Incident.where{date.in(my{@start_date..@end_date})}.order{date}.to_a
@@ -57,8 +58,9 @@ class Incidents::IncidentsMailer < ActionMailer::Base
     mail to: format_address(recipient), subject: "Incident For #{incident.county_name} Dispatched", template_name: 'new_incident'
   end
 
-  def incident_report(incident, recipient)
-
+  def incident_report_filed(incident, recipient)
+    @incident = incident
+    mail to: format_address(recipient), subject: "Incident Report Filed For #{incident.county_name}"
   end
 
   private

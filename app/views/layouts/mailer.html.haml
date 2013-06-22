@@ -1,0 +1,108 @@
+!!! 5
+%html
+  %head
+    %title
+      =@title
+    /%link(rel="stylesheet" href="application.css")
+    :scss
+      h1, h2, h3, h4 {
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        width: 100%;
+        line-height: 1.3;
+
+        small {
+          font-size: 75%;
+        }
+
+      }
+      h1 {
+        font-size: 24px;
+      }
+      h2 {
+        font-size: 18px;
+      }
+      h3 {
+        font-size: 14px;
+        margin-bottom: 0;
+      }
+      h4 {
+        font-size: 12px;
+        margin-bottom: 0;
+      }
+      .center {
+        text-align: center;
+      }
+      .table {
+        width: 100%;
+
+        td {
+          border-top: 1px solid rgb(221, 221, 221);
+        }
+
+        th {
+          font-weight: bold;
+        }
+      }
+      .nowrap {
+        white-space: nowrap;
+      }
+      p {
+        margin: 0;
+      }
+      .counts {
+        width: 100%;
+        font-size: 18px;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+      }
+      body {
+        background-color: #eee;
+        padding: 0;
+        zmargin: 0;
+        zwidth: 100%;
+      }
+      #wrapper {
+        margin: auto;
+        width: 550px;
+        padding: 0;
+      }
+      #content {
+        background-color: #ffffff;
+        border: 1px solid rgb(221, 221, 221);
+        padding: .1in;
+        width: 100%;
+      }
+
+      .hdpi {
+        display: none;
+      }
+    = yield :head
+    %style(data-immutable=true)
+      :plain
+        @media (-webkit-min-device-pixel-ratio: 2), 
+          (min-resolution: 192dpi) {
+          .image-cell img {
+            display: none !important;
+          }
+          .image-cell {
+            background-image: url("#{static_maps_url(true)}");
+            width: 200px !important;
+            height: 400px !important;
+            background-size: 200px 400px;
+          }
+        }
+  %body
+    #wrapper
+      = yield :header
+      %h1.center
+        ARCBA Disaster Operations Report
+        %br
+        %small
+          =@subtitle
+      #content
+        = yield
+      %br
+      %br
+      .center
+        This message is automatically sent by the ARCBADAT system.
+        = yield :footer
+        =link_to "Manage or unsubscribe here.", incidents_notification_subscription_weekly_url(@person)

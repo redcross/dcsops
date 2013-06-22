@@ -52,25 +52,33 @@ describe Incidents::DatIncidentsController do
       @incident = FactoryGirl.create :incident
       @dat = FactoryGirl.build :dat_incident
       @lead = FactoryGirl.create :person
+
+      Incidents::IncidentReportFiled.stub!(new: stub(save: true))
     end
-    #it "should allow creating" do
-    #  expect {
-    #    attrs = @dat.attributes
-    #    attrs[:incident_attributes] = {id: @incident.id}
-    #    attrs[:incident_attributes][:team_lead_attributes] = {person_id: @lead.id, role: 'team_lead', response: 'available'}
-    #    post :create, incident_id: @incident.to_param, incidents_dat_incident: attrs
-    #    response.should redirect_to(@incident)
-    #  }.to change(Incidents::DatIncident, :count).by(1)
-    #end
-    it "should not change incident attributes" do
+
+    let(:create_attrs) {
       attrs = @dat.attributes
-      attrs[:incident_attributes] = {:incident_number => "15-555"}
       attrs[:incident_attributes] = {id: @incident.id}
       attrs[:incident_attributes][:team_lead_attributes] = {person_id: @lead.id, role: 'team_lead', response: 'available'}
+      attrs
+    }
+
+    it "should allow creating" do
       expect {
-        post :create, incident_id: @incident.to_param, incidents_dat_incident: attrs
+        post :create, incident_id: @incident.to_param, incidents_dat_incident: create_attrs
+        response.should redirect_to(@incident)
+      }.to change(Incidents::DatIncident, :count).by(1)
+    end
+    it "should not change incident attributes" do
+      create_attrs[:incident_attributes].merge!( {:incident_number => "15-555"})
+      expect {
+        post :create, incident_id: @incident.to_param, incidents_dat_incident: create_attrs
         response.should redirect_to(@incident)
       }.to_not change{@incident.reload.incident_number}
+    end
+    it "should notify the report was filed" do
+      Incidents::IncidentReportFiled.should_receive(:new).with(@incident).and_return(stub(save: true))
+      post :create, incident_id: @incident.to_param, incidents_dat_incident: create_attrs
     end
   end
 end

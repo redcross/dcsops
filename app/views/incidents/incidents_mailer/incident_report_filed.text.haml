@@ -1,0 +1,22 @@
+- dat = @incident.dat_incident
+:plain
+  A New DAT Incident Report was filed.  See full details at #{incidents_incident_url(@incident)}
+
+    Incident: #{@incident.incident_number}
+    County: #{@incident.county_name}
+    Address: #{@incident.address} #{@incident.city} #{@incident.city} #{@incident.state}
+    Notification Received: #{@incident.created_at.to_s :date_time}
+
+    Incident Type: #{dat.incident_type.titleize}
+    Incident Call Type: #{dat.incident_call_type.titleize}
+    Structure Type: #{dat.structure_type.titleize}
+
+    Population: #{pluralize dat.num_adults, "adult"}, #{pluralize dat.num_children, 'child'}
+    Population: #{dat.num_people_injured} injured, #{dat.num_people_hospitalized} hospitalized, #{dat.num_people_deceased} deceased
+    Families: #{dat.num_families}
+    Units: #{dat.units_total}
+
+    Damage Assessment: #{dat.units_destroyed} destroyed, #{dat.units_major} major, #{dat.units_minor} minor, #{dat.units_affected} affected
+
+    Services Provided: #{@incident.services_description}
+    Narrative: #{dat.narrative}
