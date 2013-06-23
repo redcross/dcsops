@@ -94,6 +94,11 @@
           =f.input :responder_arrived, as: :string
           =f.input :responder_departed, as: :string
     .row
+      .span6
+        =f.inputs "Resources Used" do
+          =f.input :comfort_kits_used
+          =f.input :blankets_used
+    .row
       .span12
         =f.inputs "Responders" do
           =f.semantic_fields_for :incident do |f|

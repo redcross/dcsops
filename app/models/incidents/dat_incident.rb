@@ -11,6 +11,7 @@ class Incidents::DatIncident < ActiveRecord::Base
   validates :units_affected, :units_minor, :units_major, :units_destroyed, presence: true, numericality: true
   validates :num_adults, :num_children, :num_families, presence: true, numericality: true
   validates :num_people_injured, :num_people_hospitalized, :num_people_deceased, presence: true, numericality: true
+  validates :comfort_kits_used, :blankets_used, presence: true, numericality: true
 
   validates :incident_call_type, presence: true, inclusion: {in: CALL_TYPES}
   validates :incident_type, presence: true, inclusion: {in: INCIDENT_TYPES}

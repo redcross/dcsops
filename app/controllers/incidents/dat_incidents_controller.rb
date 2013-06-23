@@ -105,7 +105,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
              :num_people_injured, :num_people_hospitalized, :num_people_deceased,
              :responder_notified, :responder_arrived, :responder_departed,
              :units_total, :units_affected, :units_minor, :units_major, :units_destroyed,
-             :structure_type 
+             :structure_type, :comfort_kits_used, :blankets_used
            ]
 
       keys << {:services => []}

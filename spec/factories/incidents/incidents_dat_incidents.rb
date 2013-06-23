@@ -25,6 +25,9 @@ FactoryGirl.define do
     responder_arrived 1.hour.ago
     responder_departed Time.zone.now
 
+    comfort_kits_used 1
+    blankets_used 10
+
     address { Faker::Address.street_address }
     cross_street {Faker::Address.street_name }
     city {Faker::Address.city}
