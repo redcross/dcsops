@@ -24,14 +24,16 @@ table.form-table {
 
 body.incidents.dat_incidents {
   input, select {
-    width: 120px;
-    max-width: 208px;
-    padding-right: 20px;
+    width: 90%;
+  }
+
+  .controls {
+    width: 172px;
   }
 
   button.address-lookup {
     margin-top: -5px;
-    width: 148px;
+    width: 100%;
   }
 
   input[type="checkbox"], input[type="submit"] {
