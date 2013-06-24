@@ -2,7 +2,9 @@
 	"folders":
 	[
 		{
-			"path": "/Users/jlaxson/Documents/Red Cross/Development/ARCData/Scheduler"
+			"path": "/Users/jlaxson/Documents/Red Cross/Development/ARCData/Scheduler",
+      "folder_exclude_patterns": [".idea", ".sass-cache", "tmp", "log"],
+      "file_exclude_patterns": [".*"]
 		}
 	]
 }

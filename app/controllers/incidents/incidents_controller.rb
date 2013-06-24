@@ -1,11 +1,15 @@
 class Incidents::IncidentsController < Incidents::BaseController
   inherit_resources
   defaults finder: :find_by_incident_number!
-  load_and_authorize_resource except: [:link_cas]
+  load_and_authorize_resource except: [:link_cas, :needs_report]
 
   custom_actions collection: [:needs_report, :link_cas, :tracker]
 
   has_scope :in_county, as: :county_id_eq
+
+  def create
+    create! { new_incidents_incident_dat_path(resource) }
+  end
 
   def link_cas
     authorize! :read, Incidents::CasIncident
@@ -45,7 +49,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     helper_method :needs_report_collection
     def needs_report_collection
-      @_report_collection ||= end_of_association_chain.joins{dat_incident.outer}.where{dat_incident.id == nil}
+      @_report_collection ||= end_of_association_chain.joins{dat_incident.outer}.where{(dat_incident.id == nil) & (ignore_incident_report != true)}
     end
 
     helper_method :tracker_collection

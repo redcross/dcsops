@@ -1,7 +1,8 @@
 ---------------------------------------------------
    TAKEN: DATE: 06/13/2013 TIME: 07:16 PM
 
-DELIVERED: DATE: 06/13/2013 TIME: 19:18:20 DELIVERED TO: JOHN
+DELIVERED: DATE: 06/13/2013 TIME: 07:18 PM
+DELIVERED TO: JOHN
 
 Incident#: 14-044
 Incident: Flooding

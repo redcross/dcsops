@@ -3,7 +3,7 @@
   Timeline
 
 - resource.event_logs.each do |evt|
-  %h4
+  %h5
     =evt.event_time.to_s :time
     \-
     =Incidents::EventLog::EVENTS_TO_DESCRIPTIONS[evt.event]
@@ -14,7 +14,10 @@
     -else
       %small
         =evt.event_time.to_s :date_time
-  =evt.message
+  -if evt.event =~ /dispatch_/
+    %pre=evt.message
+  -else
+    =simple_format evt.message
 %hr
 %button.btn.btn-primary(data-target="#create-event" data-toggle="collapse") Add Log
 .collapse#create-event

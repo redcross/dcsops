@@ -19,5 +19,6 @@
 %h3 Don't see your incident?
 The dispatch call center must assign an incident number in order to submit a report.  If you do not have an incident number, call dispatch and request one.  Then refresh the page and you should see your incident listed.
 
-%h3 Still don't see your incident?
-%a.btn.btn-warning{href: new_incidents_dat_incident_path} Submit New Incident Report
+-if can? :create, Incidents::Incident
+  %h3 Still don't see your incident?
+  %a.btn.btn-warning{href: new_incidents_incident_path} Submit New Incident Report

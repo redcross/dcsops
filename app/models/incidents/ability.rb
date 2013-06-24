@@ -35,6 +35,7 @@ class Incidents::Ability
 
     if is_admin
         can :manage, Incidents::DatIncident
+        can :manage, Incidents::Incident
     end
     
   end

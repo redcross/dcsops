@@ -82,7 +82,6 @@ Scheduler::Application.routes.draw do
         match :link_cas, via: [:get, :post], as: :link_cas
       end
     end
-    resources :dat_incidents, only: [:new, :create]
     resources :cas_incidents do
       resources :cases, controller: 'cas_cases' do
         get :narrative, on: :member

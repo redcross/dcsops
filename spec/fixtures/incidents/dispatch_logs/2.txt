@@ -1,0 +1,75 @@
+        ---------------------------------------------------
+    TAKEN: DATE: 06/13/2013 TIME: 06:57 PM
+
+DELIVERED: DATE: 06/13/2013 TIME: 07:07 PM
+DELIVERED TO: MR. DOE
+
+Incident#: 14-043
+ Incident: Apartment Fire
+  Address: 211 Main St, SAN FRANCISCO
+ X-Street:  
+   County: SAN FRANCISCO
+
+       # Displaced: 36
+Services Requested: Canteine for the fire dept and the 36 people that live he  
+                  : also housing for the tenants.
+                  : 
+
+   Agency: San Francisco Fire Dept
+  Contact: Bob Boberson
+    Phone: (415)555-1212
+
+
+
+
+
+Caller ID: 5105551212
+
+============ Message Dispatch History ===================
+
+06/13/2013 07:05 PM [Dial] 650-555-1212 DOE, JOHN - CELL 
+                    (PMED) RELAYED 
+
+06/13/2013 07:04 PM [Dial] 650-555-1212 DOE, JOHN - CELL 
+                    (PMED) RECORDING: CALLER UNAVAILABLE 
+
+06/13/2013 07:03 PM [Dial] 650-555-1212 DOE, JOHN - CELL 
+                    (PMED) RECORDING: CALLER UNAVIALABLE 
+
+06/13/2013 07:02 PM [Dial] 650-555-1212 DOE, JOHN - CELL 
+                    (PMED) RECORDING N/A 
+
+06/13/2013 07:01 PM [Dial] 650-555-1212 DOE, JOHN - CELL 
+                    (PMED) RECORDING N/A 
+
+06/13/2013 06:57 PM [SMS Message successfully sent]  DOE, JOHN - TEXT/SMS 
+                    (SYS!) 01 
+
+06/13/2013 06:57 PM [SMS Message successfully sent]  DOE, JOHN - TEXT/SMS 
+                    (SYS!) 01 
+
+06/13/2013 06:57 PM [SMS Message successfully sent]  DOE, JOHN - TEXT/SMS 
+                    (SYS!) 01 
+
+06/13/2013 06:57 PM [SMS Message submitted to SMS Server]  DOE, JOHN - TEXT/SMS 
+                    (SYS!) 01 
+
+06/13/2013 06:57 PM [SMS Message submitted to SMS Server]  DOE, JOHN - TEXT/SMS 
+                    (SYS!) 01 
+
+06/13/2013 06:57 PM [SMS Message submitted to SMS Server]  DOE, JOHN - TEXT/SMS 
+                    (SYS!) 01 
+
+06/13/2013 06:57 PM [Auto Action SMS/Text Message Submitted to Queue]  DOE, JOHN - TEXT/SMS 
+                    (SYS!) 21251520000043FMM6823516 
+
+06/13/2013 06:57 PM [Auto Action E-Mail Submitted to Queue]  TESTER, JOE - EMAIL 
+                    (SYS!) 21251520000043FMM6823480 
+
+
+
+
+,21251520000043FXM3641851
+
+
+     

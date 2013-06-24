@@ -22,7 +22,7 @@
             =f.input :person, as: :person_typeahead, text_value: lambda{|obj| Roster::Person.where(id: obj.person_id).first.try(:full_name)}, label: "Team Lead"
             =f.input :role, as: :hidden, input_html: {value: "team_lead"}
             =f.input :response, as: :hidden, input_html: {value: "available"}
-        =f.input :completed_by, as: :string, input_html: {value: resource.completed_by.full_name, readonly: true}
+        =f.input :completed_by, as: :string, input_html: {value: resource.completed_by.try(:full_name), readonly: true}
     .span6
       =f.inputs "Demographics" do
         =f.input :num_adults
