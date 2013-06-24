@@ -60,53 +60,63 @@ class Incidents::DispatchImporter
       end
     end
 
-    if data[:incident_number].present?
-      log_object = Incidents::DispatchLog.where(chapter_id: chapter.id, incident_number: data[:incident_number]).first_or_initialize
-      log_object.update_attributes data
+    created_incident = false
 
-      log_object.log_items.destroy_all
-      log_object.log_items = log_items.select(&:present?).map{|attrs| Incidents::DispatchLogItem.new attrs}
-      log_object.save!
+    Incidents::DispatchLog.transaction do
+      if data[:incident_number].present?
+        log_object = Incidents::DispatchLog.where(chapter_id: chapter.id, incident_number: data[:incident_number]).first_or_initialize
+        log_object.update_attributes data
 
-      if log_object.incident.nil?
-        if inc = Incidents::Incident.find_by( chapter_id: chapter, incident_number: log_object.incident_number)
-          log_object.incident = inc
-          log_object.save
+        log_object.log_items.destroy_all
+        log_object.log_items = log_items.select(&:present?).map{|attrs| Incidents::DispatchLogItem.new attrs}
+        log_object.save!
+
+        if log_object.incident.nil?
+          if inc = Incidents::Incident.find_by( chapter_id: chapter, incident_number: log_object.incident_number)
+            log_object.incident = inc
+            log_object.save
+          else
+            log_object.create_incident! incident_number: log_object.incident_number, 
+                                                chapter: chapter,
+                                                   date: log_object.received_at.in_time_zone(chapter.time_zone).to_date,
+                                                 county: chapter.counties.where{name == log_object.county_name}.first
+            log_object.save!
+            inc = log_object.incident
+            created_incident = true
+            
+          end
+        end
+
+        if log_object.incident
+          # Map the log items to incident events
+          inc = log_object.incident
+
+          received = inc.event_logs.find_or_initialize_by(event: 'dispatch_received')
+          received.event_time = log_object.received_at
+          received.message = details.gsub(/-+/, "").gsub(/\n{3,}/, "\n\n")
+          received.save!
+
+          if log_object.delivered_at
+            relayed = inc.event_logs.find_or_initialize_by(event: 'dispatch_relayed')
+            relayed.event_time = log_object.delivered_at
+            relayed.message = "Delivered to: #{log_object.delivered_to}"
+            relayed.save!
+          end
+
+          inc.event_logs.where(event: 'dispatch_note').delete_all
+          log_object.log_items.each do |item|
+            next if item.action_type =~ /^SMS Message/
+            msg = "#{item.action_type}: #{item.recipient}\nResult: #{item.result}"
+            inc.event_logs.create! event: 'dispatch_note', event_time: item.action_at, message: msg
+          end
+        end
+
+        if created_incident
+          Incidents::IncidentCreated.new(inc).save
         else
-          log_object.create_incident! incident_number: log_object.incident_number, 
-                                              chapter: chapter,
-                                                 date: log_object.received_at.in_time_zone(chapter.time_zone).to_date,
-                                               county: chapter.counties.where{name == log_object.county_name}.first
-          Incidents::IncidentCreated.new(log_object.incident).save
+          Incidents::DispatchLogUpdated.new(log_object).save
         end
       end
-
-      if log_object.incident
-        # Map the log items to incident events
-        inc = log_object.incident
-
-        received = inc.event_logs.find_or_initialize_by(event: 'dispatch_received')
-        received.event_time = log_object.received_at
-        received.message = details.gsub(/-+/, "").gsub(/\n{3,}/, "\n\n")
-        received.save!
-
-        if log_object.delivered_at
-          relayed = inc.event_logs.find_or_initialize_by(event: 'dispatch_relayed')
-          relayed.event_time = log_object.delivered_at
-          relayed.message = "Delivered to: #{log_object.delivered_to}"
-          relayed.save!
-        end
-
-        inc.event_logs.where(event: 'dispatch_note').delete_all
-        log_object.log_items.each do |item|
-          next if item.action_type =~ /^SMS Message/
-          msg = "#{item.action_type}: #{item.recipient}\nResult: #{item.result}"
-          inc.event_logs.create! event: 'dispatch_note', event_time: item.action_at, message: msg
-        end
-      end
-
-
-      Incidents::DispatchLogUpdated.new(log_object).save
     end
   end
 

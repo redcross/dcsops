@@ -1,5 +1,9 @@
-:plain
+-if @incident.dispatch_log.try(:delivered_at)
+  An incident has been dispatched:
+-else
   A New Dispatch Request Was Received:
+
+:plain
 
     Incident: #{@incident.incident_number}
     County: #{@incident.county_name}
@@ -12,8 +16,16 @@
       Agency: #{dispatch.agency}
       Contact: #{dispatch.contact_name}
       Phone: #{dispatch.contact_phone}
-#{'\n\n'}
+#{"\n\n"}
 -if dispatch and dispatch.delivered_at
   :plain
       Delivered At: #{dispatch.delivered_at.to_s :date_time}
       Delivered To: #{dispatch.delivered_to}
+
+-if dispatch
+  #{"\n\n"}
+  History:
+  - dispatch.log_items.sort_by(&:action_at).each do |item|
+    - next if item.action_type =~ /^SMS/
+    :plain
+        #{item.action_type}: #{item.recipient} - #{item.result}

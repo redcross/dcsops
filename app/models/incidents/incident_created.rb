@@ -4,7 +4,9 @@ class Incidents::IncidentCreated
   end
 
   def save
+    pp 'save'
     if @incident.save
+      pp 'saving'
       fire_notifications
     end
   end
@@ -13,6 +15,7 @@ class Incidents::IncidentCreated
     county = @incident.county_id
 
     subscriptions = Incidents::NotificationSubscription.for_county(county).for_type('new_incident')
+    pp subscriptions, @incident.dispatch_log
     subscriptions.each do |sub|
       Incidents::IncidentsMailer.new_incident(@incident, sub.person).deliver
     end

@@ -1,0 +1,46 @@
+---------------------------------------------------
+   TAKEN: DATE: 06/13/2013 TIME: 07:16 PM
+
+Incident#: 14-044
+Incident: Flooding
+ Address: 311 Dogwood Lane, BRENTWOOD
+ ( X-Street: Atwood Road )
+  County: CONTRA COSTA
+
+      # Displaced: 374
+Services Requested: We need food and possibly an evacuation center.  
+                 : Sentence on line two.
+                 : 
+
+  Agency: The Brentwood Police Dept
+ Contact: Sally Smith
+   Phone: (510)227-9475
+
+
+
+
+
+Caller ID: 5105954566
+
+============ Message Dispatch History ===================
+
+06/13/2013 07:16 PM [SMS Message submitted to SMS Server]  DOE, JOHN - TEXT/SMS 
+                   (SYS!) 01 
+
+06/13/2013 07:16 PM [SMS Message submitted to SMS Server]  DOE, JOHN - TEXT/SMS 
+                   (SYS!) 01 
+
+06/13/2013 07:16 PM [SMS Message submitted to SMS Server]  DOE, JOHN - TEXT/SMS 
+                   (SYS!) 01 
+
+06/13/2013 07:16 PM [Auto Action SMS/Text Message Submitted to Queue]  DOE, JOHN - TEXT/SMS 
+                   (SYS!) 21251520000044FMM6936673 
+
+06/13/2013 07:16 PM [Auto Action E-Mail Submitted to Queue]  TESTER, JOE - EMAIL 
+                   (SYS!) 21251520000044FMM6936657 
+
+
+
+
+,21251520000044FNM4998809
+
