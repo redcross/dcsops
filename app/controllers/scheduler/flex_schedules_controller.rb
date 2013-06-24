@@ -14,6 +14,7 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
     end
     scope
   end
+  has_scope :with_position, type: :array
   has_scope :with_availability, type: :boolean, default: true
 
   private

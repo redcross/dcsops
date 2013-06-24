@@ -15,6 +15,8 @@ class Scheduler::FlexSchedule < ActiveRecord::Base
     where("available_#{day}_#{shift}".to_sym => true)
   }
 
+  scope :with_position, lambda {|county| joins{person.positions}.where{person.positions.id.in(county)}}
+
   def available(day, shift)
     self.send "available_#{day}_#{shift}".to_sym
   end
