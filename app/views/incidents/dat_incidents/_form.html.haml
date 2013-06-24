@@ -38,6 +38,9 @@
       %br
       .span6
         =f.input :search_for_address
+        .control-group.address-lookup-group
+          .controls
+            %button.btn.address-lookup Look Up Address
         -#=f.input :cross_street
         =f.input :address, input_html: {readonly: true}
         =f.input :city, input_html: {readonly: true}
@@ -47,7 +50,7 @@
         =f.input :lng, as: :hidden, input_html: {readonly: true}
         =f.input :neighborhood, input_html: {readonly: true}
       .span6
-        .incident-map{style: "height: 300px"}
+        .incident-map{style: "height: 350px"}
 
   .row
     .span6
@@ -149,7 +152,8 @@
                     %td(colspan=2)
 
             =link_to_add_association 'Add Other Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary"
-  =f.actions :submit, label: 'Submit Incident Report'
+  =f.actions do
+    =f.action :submit, label: 'Submit Incident Information'
 
 - content_for :footer_js do
   = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"

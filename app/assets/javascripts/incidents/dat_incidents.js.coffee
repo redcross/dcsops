@@ -20,3 +20,9 @@ class window.DatIncidentsFormController
       evt.preventDefault()
 
       $(evt.target).parents('.control-group').remove()
+
+    $(document).on 'click', 'button.address-lookup', (evt) =>
+      evt.preventDefault();
+      $('#incidents_dat_incident_search_for_address').blur()
+
+

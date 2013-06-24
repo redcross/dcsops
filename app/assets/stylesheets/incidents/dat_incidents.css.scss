@@ -29,6 +29,11 @@ body.incidents.dat_incidents {
     padding-right: 20px;
   }
 
+  button.address-lookup {
+    margin-top: -5px;
+    width: 148px;
+  }
+
   input[type="checkbox"], input[type="submit"] {
     width: auto;
     padding-right: inherit;
