@@ -26,7 +26,8 @@
     %tr
       %th Person
       %th Call First
-      %th Call Second
+      /%th Call Second
+      %th City
       - (@month..@month.end_of_month).each do |day|
         - daily_groups.each do |grp, _|
           %th=grp.name[0].upcase
@@ -38,9 +39,12 @@
       %td.header
         - if numbers.first
           = numbers.first[:number]
-      %td.header
+          (#{numbers.first[:label][0]})
         - if numbers[1]
+          %br
           = numbers[1][:number]
+          (#{numbers[1][:label][0]})
+      %td.header=person.city.try(:titleize)
       - (@month..@month.end_of_month).each do |day|
         - daily_groups.each do |grp, shifts|
           - is_flex = flex && %w(day night).include?(grp.name.downcase) && flex.available(Date::DAYNAMES[day.wday].downcase, grp.name.downcase)
@@ -54,7 +58,8 @@
     %tr
       %th Person
       %th Call First
-      %th Call Second
+      /%th Call Second
+      %th City
       - (@month..@month.end_of_month).each do |day|
         - daily_groups.each do |grp, _|
           %th=grp.name[0].upcase
@@ -67,5 +72,6 @@
     %tr
       %th{colspan: (@month.end_of_month.day * 2) + 3}
         Legend:
+        F: Flex, 
         = all_shifts.each_pair.map{|abbrev, name| "#{abbrev}: #{name}"}.join(", ")
       

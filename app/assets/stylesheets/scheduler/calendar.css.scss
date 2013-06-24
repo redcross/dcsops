@@ -103,11 +103,16 @@ body.calendar {
   .calendar-grid {
     td,th {
       font-size: 8pt;
-      text-align: center;
+      atext-align: center;
+      line-height: 1;
       //
+    }
+    th, td.period {
+      text-align: center;
     }
     td.header {
       white-space: nowrap;
+      border-top: 1px solid rgb(221,221,221);
     }
     .no-shift {
       background-color: black !important; //rgb(180,180,180);
@@ -219,9 +224,10 @@ body.steven {
 }
 
 @page {
-  size: landscape;
+  size: 11in 8.5in;
   counter-increment: page;
   margin: .25in;
+
 }
 
 
