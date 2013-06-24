@@ -32,19 +32,17 @@
         %th.day-label{colspan: 2}=d[0..2].titleize
       %th.noprint
   %tbody
+    - abbrevs = {}
     - collection.each do |sched|
       %tr
         %td= sched.person.full_name
         %td
-          %ul 
-            - sched.person.positions.map(&:name).each do |pos|
-              %li
-                %small=pos
+          %small= sched.person.positions.select{|p|!p.hidden}.map{ |pos|abbrevs[pos.abbrev] = pos.name; "<span data-toggle='tooltip' title='#{h pos.name}'>#{pos.abbrev}</span>".html_safe}.reduce{|a, b| "#{a}, #{b}".html_safe}
         - phones = sched.person.phone_order
         %td
-          = phones[0] && phones[0][:number]
+          = phones[0] && "#{phones[0][:number]} (#{phones[0][:label][0]})"
         %td
-          = phones[1] && phones[1][:number]
+          = phones[1] && "#{phones[1][:number]} (#{phones[1][:label][0]})"
         %td
           %small=sched.person.email
         - days_of_week.each do |d|
@@ -52,3 +50,13 @@
           %td.night= sched.available(d, 'night') ? 'N' : ''
         - if can? :update, sched
           %td.noprint= link_to 'Edit', resource_path(sched)
+  %tfoot
+    %tr
+      %th(colspan=19)
+        %small
+          Positions:
+          = abbrevs.map{|a, n| "#{a}=#{n}"}.join ", "
+      %th.noprint
+- content_for :footer_js do
+  :javascript
+    $("[data-toggle=tooltip]").tooltip()

@@ -8,15 +8,20 @@ body.scheduler.flex_schedules {
   .filter-table td {
     padding: 5px;
   }
+  small {
+    xfont-size: 75%;
+  }
 }
 
 .flex-table {
+  font-size: 90%;
   .positions {
     line-height: 1;
     br {
       line-height: 0;
     }
   }
+
   ul {
     margin: 0;
   }
@@ -28,10 +33,17 @@ body.scheduler.flex_schedules {
     text-align: center;
     border-left: 1px solid $border-color;
     border-right: 1px solid $border-color;
+    afont-size: 85%;
+  }
+  td {
+    padding: 2px;
+    line-height: 1;
   }
   .day,.night {
-    width: 1em;
-    text-align: center
+    width: 10px;
+    text-align: center;
+    afont-size: 85%;
+    apadding: 0
   }
   .day {
     border-left: 1px solid $border-color;

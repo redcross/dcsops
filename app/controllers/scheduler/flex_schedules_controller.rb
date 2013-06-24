@@ -39,6 +39,6 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
     end
 
     def collection
-      apply_scopes(super).with_availability
+      apply_scopes(super).with_availability.uniq
     end
 end
