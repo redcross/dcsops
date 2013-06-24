@@ -6,6 +6,7 @@ describe "incidents/dat_incidents/new" do
   it "should render" do
     view.stub!(:form_url).and_return(incidents_dat_incidents_path)
     view.stub!(:current_user => FactoryGirl.create(:person))
+    @dat_incident.completed_by = view.current_user
 
     render
 

@@ -1,0 +1,6 @@
+.control-group
+  %label.control-label
+  .controls
+    %span.vehicle-name=veh.try(:name)
+    =hidden_field_tag 'incidents_dat_incident[vehicle_ids][]', veh.try(:id)
+    %button.btn.btn-danger.btn-mini.remove-vehicle Remove

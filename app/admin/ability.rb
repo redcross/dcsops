@@ -19,6 +19,8 @@ class AdminAbility
 
       can :manage, Incidents::NotificationSubscription
 
+      can :manage, Logistics::Vehicle
+
       can :manage, ImportLog
       can :manage, MOTD
     end

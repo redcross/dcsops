@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130623215023) do
+ActiveRecord::Schema.define(version: 20130624014800) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "resource_id",   null: false
@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(version: 20130623215023) do
     t.string   "structure_type"
     t.integer  "comfort_kits_used"
     t.integer  "blankets_used"
+    t.integer  "completed_by_id"
   end
 
   add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true
@@ -258,6 +259,30 @@ ActiveRecord::Schema.define(version: 20130623215023) do
 
   add_index "incidents_responder_assignments", ["incident_id"], name: "index_incidents_responder_assignments_on_incident_id"
   add_index "incidents_responder_assignments", ["person_id"], name: "index_incidents_responder_assignments_on_person_id"
+
+  create_table "incidents_vehicle_uses", force: true do |t|
+    t.integer  "vehicle_id"
+    t.integer  "incident_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_vehicle_uses", ["incident_id"], name: "index_incidents_vehicle_uses_on_incident_id"
+  add_index "incidents_vehicle_uses", ["vehicle_id"], name: "index_incidents_vehicle_uses_on_vehicle_id"
+
+  create_table "logistics_vehicles", force: true do |t|
+    t.integer  "chapter_id"
+    t.string   "name"
+    t.string   "category"
+    t.string   "address"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.decimal  "lat"
+    t.decimal  "lng"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "motds", force: true do |t|
     t.integer  "chapter_id"

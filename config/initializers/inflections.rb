@@ -19,4 +19,6 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.uncountable %w( dispatch_config )
   inflect.acronym 'MOTD'
   inflect.acronym 'SRO'
+  inflect.acronym 'SUV'
+  inflect.acronym 'ERV'
 end

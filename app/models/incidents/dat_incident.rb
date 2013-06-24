@@ -1,5 +1,8 @@
 class Incidents::DatIncident < ActiveRecord::Base
   belongs_to :incident, class_name: 'Incidents::Incident'
+  belongs_to :completed_by, class_name: 'Roster::Person'
+  has_many :vehicle_uses, class_name: 'Incidents::VehicleUse', foreign_key: 'incident_id'
+  has_many :vehicles, through: :vehicle_uses, class_name: 'Logistics::Vehicle'
 
   CALL_TYPES = %w(hot cold)
   INCIDENT_TYPES = %w(fire flood police)
@@ -18,6 +21,8 @@ class Incidents::DatIncident < ActiveRecord::Base
   validates :structure_type, presence: true, inclusion: {in: STRUCTURE_TYPES}
 
   validates :responder_notified, :responder_arrived, :responder_departed, presence: true
+
+  validates :completed_by, presence: true
 
   serialize :services
 

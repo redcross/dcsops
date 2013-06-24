@@ -22,10 +22,7 @@
             =f.input :person, as: :person_typeahead, text_value: lambda{|obj| Roster::Person.where(id: obj.person_id).first.try(:full_name)}, label: "Team Lead"
             =f.input :role, as: :hidden, input_html: {value: "team_lead"}
             =f.input :response, as: :hidden, input_html: {value: "available"}
-        .control-group
-          %label.control-label Completed By
-          .controls
-            =current_user.full_name
+        =f.input :completed_by, as: :string, input_html: {value: resource.completed_by.full_name, readonly: true}
     .span6
       =f.inputs "Demographics" do
         =f.input :num_adults
@@ -98,6 +95,18 @@
         =f.inputs "Resources Used" do
           =f.input :comfort_kits_used
           =f.input :blankets_used
+      .span6
+        =f.inputs "Vehicles" do
+          /=f.input :vehicles, as: :check_boxes, collection: Logistics::Vehicle.where{chapter_id == my{current_user.chapter_id}}.order{[category, name]}, group_by: 'category'
+
+          - f.object.vehicles.each do |veh|
+            =render 'vehicle_fields', veh: veh, f: f
+          .control-group.select
+            %label.control-label Add Vehicle
+            .controls
+              =select_tag 'vehicles', grouped_options_for_select(Logistics::Vehicle.where{chapter_id == my{current_user.chapter_id}}.order{[category, name]}.map{|veh| [veh.name, veh.category, veh.id]}.group_by{|arr| arr[1].titleize})
+              %button.btn.btn-primary.btn-mini.add-vehicle{data: {template: render( 'vehicle_fields', veh: nil, f: f)}} Add Vehicle
+          =hidden_field_tag 'incidents_dat_incident[vehicle_ids][]', ''
     .row
       .span12
         =f.inputs "Responders" do
@@ -121,7 +130,7 @@
                   =render 'responder_assignment_fields', f: r
               %tfoot
                 %tr
-                  %th(colspan=4)
+                  %th(colspan=5)
                     %h4 Responders On Call:
                 %tr
                   %th Name
@@ -131,11 +140,13 @@
                     %td=shift.person.full_name
                     %td=shift.shift.name
                     %td=link_to_add_association 'Add Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary", wrap_object: ->(assoc){assoc.person = shift.person; assoc}
+                    %td(colspan=2)
                 - flex_responders(resource, sched).each do |flex|
                   %tr
                     %td=flex.person.full_name
                     %td Flex
                     %td=link_to_add_association 'Add Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary", wrap_object: ->(assoc){assoc.person = flex.person; assoc.was_flex = true; assoc}
+                    %td(colspan=2)
 
             =link_to_add_association 'Add Other Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary"
   =f.actions :submit, label: 'Submit Incident Report'
@@ -143,4 +154,5 @@
 - content_for :footer_js do
   = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
   :javascript
-    incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json})
+    incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json});
+    formController = new DatIncidentsFormController();

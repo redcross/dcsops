@@ -4,6 +4,8 @@ FactoryGirl.define do
   factory :dat_incident, :class => 'Incidents::DatIncident' do
     association :incident
 
+    completed_by { |f| f.association :person, chapter: f.incident.chapter}
+
     incident_type 'fire'
     incident_call_type 'hot'
     structure_type 'apartment'
