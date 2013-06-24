@@ -135,7 +135,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def show_counties
-    @_show_counties ||= ((params[:counties].is_a?(Array) && params[:counties].map(&:to_i)) || (person ? [person.primary_county_id] : []))
+    @_show_counties ||= ((params[:counties].is_a?(Array) && params[:counties].select(&:present?).map(&:to_i)) || (person ? [person.primary_county_id] : [])).compact
   end
 
   def show_shifts
@@ -165,7 +165,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def spreadsheet_county
-    @_spreadsheet_county ||= show_counties.present? && Roster::County.find( show_counties.first)
+    @_spreadsheet_county ||= (show_counties.present? && Roster::County.find( show_counties.first))
   end
 
   def show_only_available
