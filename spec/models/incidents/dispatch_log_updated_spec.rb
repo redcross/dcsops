@@ -8,7 +8,7 @@ describe Incidents::DispatchLogUpdated do
     @person = FactoryGirl.create :person
   end
 
-  it "should notify someone subscribed to incident_dispatch if dispatched_at is fresh and present" do
+  it "should notify someone subscribed to incident_dispatch" do
     @log.reload
     @log.delivered_at = 1.hour.ago
     @log.save
@@ -20,20 +20,4 @@ describe Incidents::DispatchLogUpdated do
     Incidents::DispatchLogUpdated.new(@log).save
   end
 
-  it "should not notify someone subscribed to incident_dispatch if delivered_at is nil" do
-    @log.update_attribute :delivered_at, nil
-    Incidents::NotificationSubscription.create! person: @person, county: nil, notification_type: 'incident_dispatch'
-
-    Incidents::IncidentsMailer.should_not_receive(:incident_dispatched)
-
-    Incidents::DispatchLogUpdated.new(@log).save
-  end
-
-  it "should not notify someone subscribed to incident_dispatch if delivered_at has not been changed" do
-    Incidents::NotificationSubscription.create! person: @person, county: nil, notification_type: 'incident_dispatch'
-
-    Incidents::IncidentsMailer.should_not_receive(:incident_dispatched)
-
-    Incidents::DispatchLogUpdated.new(@log).save
-  end
 end

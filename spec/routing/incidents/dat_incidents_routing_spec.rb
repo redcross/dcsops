@@ -3,11 +3,6 @@ require "spec_helper"
 describe Incidents::DatIncidentsController do
   describe "routing" do
 
-
-    it "routes to #new" do
-      get("/incidents/dat_incidents/new").should route_to("incidents/dat_incidents#new")
-    end
-
     it "routes to #new inside incident" do
       get("/incidents/incidents/15-555/dat/new").should route_to("incidents/dat_incidents#new", :incident_id => '15-555')
     end

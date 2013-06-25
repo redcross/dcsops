@@ -89,8 +89,8 @@ describe Incidents::DispatchImporter do
       import
     end
 
-    it "should notify DispatchLogUpdated" do
-      Incidents::DispatchLogUpdated.any_instance.should_receive(:save)
+    it "should not notify DispatchLogUpdated" do
+      Incidents::DispatchLogUpdated.any_instance.should_not_receive(:save)
 
       import
     end
