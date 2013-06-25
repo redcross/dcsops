@@ -2,7 +2,6 @@ require 'authlogic/controller_adapters/rack_adapter'
 
 Scheduler::Application.routes.draw do
 
-  puts ARGV.join
   break if ARGV.join.include? 'assets:' # this prevents triggering ActiveAdmin during precompile
 
   ActiveAdmin.routes(self)
