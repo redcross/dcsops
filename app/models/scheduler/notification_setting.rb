@@ -3,17 +3,14 @@ class Scheduler::NotificationSetting < ActiveRecord::Base
 
   serialize :shift_notification_phones
 
-  scope :needs_daily_email, ->chapter{
+  scope :needs_daily_email, ->chapter{ needs_daily(chapter, :email) }
+  scope :needs_daily_sms, ->chapter{ needs_daily(chapter, :sms) }
+
+  scope :needs_daily, -> chapter,method {
     now = chapter.time_zone.now
     midnight = now.at_beginning_of_day
     offset = now.seconds_since_midnight
-    joins{person}.where{(person.chapter_id == chapter.id) & (email_all_shifts_at != nil) & (email_all_shifts_at <= offset) & ((last_all_shifts_email == nil) | (last_all_shifts_email < midnight))}.readonly(false)
-  }
-  scope :needs_daily_sms, ->chapter{
-    now = chapter.time_zone.now
-    midnight = now.at_beginning_of_day
-    offset = now.seconds_since_midnight
-    joins{person}.where{(person.chapter_id == chapter.id) & (sms_all_shifts_at != nil) & (sms_all_shifts_at <= offset) & ((last_all_shifts_sms == nil) | (last_all_shifts_sms < midnight))}.readonly(false)
+    joins{person}.where{(person.chapter_id == chapter.id) & (__send__(:"#{method}_all_shifts_at") != nil) & (__send__(:"#{method}_all_shifts_at") <= offset) & ((__send__(:"last_all_shifts_#{method}") == nil) | (__send__(:"last_all_shifts_#{method}") < midnight))}.readonly(false)
   }
 
   before_create :set_calendar_api_token
