@@ -1,0 +1,36 @@
+@media print {
+  a[href]:after {
+  content: "" !important
+  }
+
+  .noprint {
+    display: none !important;
+  }
+}
+
+@media screen {
+  .noscreen {
+    display: none !important;
+  }
+}
+
+a i {
+  text-decoration: none !important;
+}
+
+.center {
+  text-align: center;
+}
+
+.sandbox-dialog {
+  h3 {
+    display: inline-block;
+    margin: 0;
+    line-height: inherit;
+  }
+}
+
+.dat {
+  color: rgb(128, 0, 0);
+  font-weight: 900;
+}
