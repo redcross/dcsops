@@ -49,7 +49,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     helper_method :needs_report_collection
     def needs_report_collection
-      @_report_collection ||= end_of_association_chain.joins{dat_incident.outer}.where{(dat_incident.id == nil) & ((ignore_incident_report != true) | (ignore_incident_report == nil))}
+      @_report_collection ||= end_of_association_chain.joins{dat_incident.outer}.where{(dat_incident.id == nil) & ((ignore_incident_report != true) | (ignore_incident_report == nil))}.order{incident_number}
     end
 
     helper_method :tracker_collection
