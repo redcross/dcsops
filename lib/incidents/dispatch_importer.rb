@@ -38,29 +38,63 @@ class Incidents::DispatchImporter
         } },
     }
 
+  def map_log_items(log, incident, details)
+    received = incident.event_logs.find_or_initialize_by(event: 'dispatch_received')
+    received.event_time = log.received_at
+    received.message = details.gsub(/-+/, "").gsub(/\n{3,}/, "\n\n")
+    received.save!
+
+    if log.delivered_at
+      relayed = incident.event_logs.find_or_initialize_by(event: 'dispatch_relayed')
+      relayed.event_time = log.delivered_at
+      relayed.message = "Delivered to: #{log.delivered_to}"
+      relayed.save!
+    end
+
+    incident.event_logs.where(event: 'dispatch_note').delete_all
+    log.log_items.each do |item|
+      next if item.action_type =~ /^SMS Message/
+      msg = "#{item.action_type}: #{item.recipient}\nResult: #{item.result}"
+      incident.event_logs.create! event: 'dispatch_note', event_time: item.action_at, message: msg
+    end
+  end
+
+  def update_incident(log_object)
+    if log_object.incident.nil?
+      if inc = Incidents::Incident.find_by( chapter_id: @chapter, incident_number: log_object.incident_number)
+        log_object.incident = inc
+        log_object.save
+        return false
+      else
+        log_object.create_incident! incident_number: log_object.incident_number, 
+                                            chapter: @chapter,
+                                               date: log_object.received_at.in_time_zone(@chapter.time_zone).to_date,
+                                             county: @chapter.counties.where{name == log_object.county_name}.first
+        log_object.save!
+        inc = log_object.incident
+        return true
+      end
+    end
+  end
+
+  def run_matchers(matchers, text)
+    matchers.map do |exp, handler|
+      if matches = exp.match(text)
+        handler.call(matches, @chapter)
+      else
+        {}
+      end
+    end.select(&:present?).reduce(:merge)
+  end
+
   def import_data(chapter, body)
+    @chapter = chapter
+
     details, log = body.split("============ Message Dispatch History ===================")
 
-    data = MATCHERS.map do |exp, handler|
-      if matches = exp.match(details)
-        handler.call(matches, chapter)
-      else
-        {}
-      end
-    end
+    data = run_matchers MATCHERS, body
+    log_items = log.split("\n\n").map {|item_text| run_matchers HISTORY_MATCHER, item_text}
 
-    data = data.reduce(:merge)
-
-    exp, handler = HISTORY_MATCHER.to_a.first
-    log_items = log.split("\n\n").map do |item|
-      if matches = exp.match(item)
-        handler.call(matches, chapter)
-      else
-        {}
-      end
-    end
-
-    created_incident = false
 
     Incidents::DispatchLog.transaction do
       if data[:incident_number].present?
@@ -71,48 +105,11 @@ class Incidents::DispatchImporter
         log_object.log_items = log_items.select(&:present?).map{|attrs| Incidents::DispatchLogItem.new attrs}
         log_object.save!
 
-        if log_object.incident.nil?
-          if inc = Incidents::Incident.find_by( chapter_id: chapter, incident_number: log_object.incident_number)
-            log_object.incident = inc
-            log_object.save
-          else
-            log_object.create_incident! incident_number: log_object.incident_number, 
-                                                chapter: chapter,
-                                                   date: log_object.received_at.in_time_zone(chapter.time_zone).to_date,
-                                                 county: chapter.counties.where{name == log_object.county_name}.first
-            log_object.save!
-            inc = log_object.incident
-            created_incident = true
-            
-          end
-        end
-
-        if log_object.incident
-          # Map the log items to incident events
-          inc = log_object.incident
-
-          received = inc.event_logs.find_or_initialize_by(event: 'dispatch_received')
-          received.event_time = log_object.received_at
-          received.message = details.gsub(/-+/, "").gsub(/\n{3,}/, "\n\n")
-          received.save!
-
-          if log_object.delivered_at
-            relayed = inc.event_logs.find_or_initialize_by(event: 'dispatch_relayed')
-            relayed.event_time = log_object.delivered_at
-            relayed.message = "Delivered to: #{log_object.delivered_to}"
-            relayed.save!
-          end
-
-          inc.event_logs.where(event: 'dispatch_note').delete_all
-          log_object.log_items.each do |item|
-            next if item.action_type =~ /^SMS Message/
-            msg = "#{item.action_type}: #{item.recipient}\nResult: #{item.result}"
-            inc.event_logs.create! event: 'dispatch_note', event_time: item.action_at, message: msg
-          end
-        end
+        created_incident = update_incident(log_object)
+        map_log_items(log_object, log_object.incident, details)
 
         if created_incident
-          Incidents::IncidentCreated.new(inc).save
+          Incidents::IncidentCreated.new(log_object.incident).save
         else
           Incidents::DispatchLogUpdated.new(log_object).save
         end
