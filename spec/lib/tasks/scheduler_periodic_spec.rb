@@ -90,13 +90,18 @@ describe "" do
     end
 
     it "should trigger the mailer with no env" do
-      Scheduler::DirectlineMailer.should_receive(:run_for_chapter).with(@chapter, true)
+      Scheduler::DirectlineMailer.should_receive(:run_for_chapter_if_needed).with(@chapter, true)
       subject.invoke
     end
 
     it "should trigger the mailer with IF_NEEDED=false and run the mailer with force=false" do
       ENV.stub(:[]).with("IF_NEEDED").and_return("true")
-      Scheduler::DirectlineMailer.should_receive(:run_for_chapter).with(@chapter, false)
+      Scheduler::DirectlineMailer.should_receive(:run_for_chapter_if_needed).with(@chapter, false)
+      subject.invoke
+    end
+
+    it "should work all the way through" do
+      Scheduler::DirectlineMailer.any_instance.should_receive(:export).with(@chapter, anything, anything).and_return(stub deliver: true)
       subject.invoke
     end
   end
