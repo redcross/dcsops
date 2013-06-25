@@ -80,15 +80,5 @@ Scheduler::Application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    address: ENV['SMTP_ADDRESS'] || ENV['MAILGUN_SMTP_SERVER'],
-    port: ENV['SMTP_PORT'] || ENV['MAILGUN_SMTP_PORT'],
-    authentication: ENV['SMTP_AUTHENTICATION'],
-    user_name: ENV['SENDGRID_USERNAME'] || ENV['MAILGUN_SMTP_LOGIN'] || ENV['MANDRILL_USERNAME'],
-    password: ENV['SENDGRID_PASSWORD'] || ENV['MAILGUN_SMTP_PASSWORD'] || ENV['MANDRILL_APIKEY'],
-    domain: ENV['SMTP_DOMAIN'],
-    enable_starttls_auto: true
-  }
   config.action_mailer.default_url_options = { host: 'www.arcbadat.org' }
 end

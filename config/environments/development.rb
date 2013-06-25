@@ -1,20 +1,4 @@
-class DisableAssetsLogger
-  def initialize(app)
-    @app = app
-    Rails.application.assets.logger = Logger.new('/dev/null')
-  end
-
-  def call(env)
-    previous_level = Rails.logger.level
-    Rails.logger.level = Logger::ERROR if env['PATH_INFO'].index("/assets/") == 0 or env['PATH_INFO'].index("favicon.ico")
-    @app.call(env)
-  ensure
-    Rails.logger.level = previous_level
-  end
-end
-
 Scheduler::Application.configure do
-  config.middleware.insert_before Rails::Rack::Logger, DisableAssetsLogger
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded on
@@ -41,23 +25,10 @@ Scheduler::Application.configure do
   # Debug mode disables concatenation and preprocessing of assets.
   config.assets.debug = true
 
-  email_path = path = File.join(Rails.root, 'config', 'email.yml')
-
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = if File.file? path
+  email_path = File.join(Rails.root, 'config', 'email.yml')
+   if File.file? email_path
     c = YAML.load(File.read(email_path))
-    c['smtp']
-  else
-    # Use environment variables
-    {
-      address: ENV['SMTP_ADDRESS'] || ENV['MAILGUN_SMTP_SERVER'],
-      port: ENV['SMTP_PORT'] || ENV['MAILGUN_SMTP_PORT'],
-      authentication: ENV['SMTP_AUTHENTICATION'],
-      user_name: ENV['SENDGRID_USERNAME'] || ENV['MAILGUN_SMTP_LOGIN'] || ENV['MANDRILL_USERNAME'],
-      password: ENV['SENDGRID_PASSWORD'] || ENV['MAILGUN_SMTP_PASSWORD'] || ENV['MANDRILL_APIKEY'],
-      domain: ENV['SMTP_DOMAIN'],
-      enable_starttls_auto: true
-    }
+    config.action_mailer.smtp_settings = c['smtp']
   end
 
   config.action_mailer.default_url_options = {

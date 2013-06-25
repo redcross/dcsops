@@ -77,6 +77,8 @@ group :development do
   gem 'sqlite3'
   gem 'debugger'
   gem 'unicorn'
+
+  gem 'quiet_assets'
 end
 
 

@@ -27,6 +27,17 @@ module Scheduler
     config.roadie.provider = Roadie::AssetPipelineProvider.new
 
     #config.action_mailer.interceptors = [SandboxMailInterceptor]
+
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+      address: ENV['SMTP_ADDRESS'] || ENV['MAILGUN_SMTP_SERVER'],
+      port: ENV['SMTP_PORT'] || ENV['MAILGUN_SMTP_PORT'],
+      authentication: ENV['SMTP_AUTHENTICATION'],
+      user_name: ENV['SENDGRID_USERNAME'] || ENV['MAILGUN_SMTP_LOGIN'] || ENV['MANDRILL_USERNAME'],
+      password: ENV['SENDGRID_PASSWORD'] || ENV['MAILGUN_SMTP_PASSWORD'] || ENV['MANDRILL_APIKEY'],
+      domain: ENV['SMTP_DOMAIN'],
+      enable_starttls_auto: true
+    }
   end
   def self.table_name_prefix
     'scheduler_'
