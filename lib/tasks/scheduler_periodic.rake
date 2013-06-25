@@ -62,8 +62,7 @@ namespace :scheduler_periodic do
     Raven.capture do
       Roster::Chapter.all.each do |ch|
         next unless ch.code == "05503"
-        day = ch.time_zone.today
-        Scheduler::DirectlineMailer.export(ch, day - 1, day + 60)
+        Scheduler::DirectlineMailer.run_for_chapter(ch, ENV['IF_NEEDED']!='true')
       end
     end
   end

@@ -70,4 +70,34 @@ describe "" do
       end
     end
   end
+
+  describe "scheduler_periodic:send_daily_shift_swap" do
+    before(:each) do
+      @person2 = FactoryGirl.create :person, chapter: @chapter, positions: @person.positions, counties: @person.counties
+      FactoryGirl.create :shift_assignment, shift: @shift, date: @chapter.time_zone.today, person: @person2, available_for_swap: true
+      @setting.update_attribute :email_all_swaps_daily, true
+    end
+
+    it "should send a swap reminder to someone subscribed" do
+      Scheduler::RemindersMailer.should_receive(:daily_swap_reminder).with(@setting).and_return(stub deliver: true)
+      subject.invoke
+    end
+  end
+
+  describe "scheduler_periodic:send_dispatch_roster" do
+    before(:each) do
+      @chapter.update_attribute :code, '05503'
+    end
+
+    it "should trigger the mailer with no env" do
+      Scheduler::DirectlineMailer.should_receive(:run_for_chapter).with(@chapter, true)
+      subject.invoke
+    end
+
+    it "should trigger the mailer with IF_NEEDED=false and run the mailer with force=false" do
+      ENV.stub(:[]).with("IF_NEEDED").and_return("true")
+      Scheduler::DirectlineMailer.should_receive(:run_for_chapter).with(@chapter, false)
+      subject.invoke
+    end
+  end
 end

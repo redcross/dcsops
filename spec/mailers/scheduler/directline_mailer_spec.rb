@@ -16,7 +16,7 @@ describe Scheduler::DirectlineMailer do
     @leadshift = FactoryGirl.create :shift, shift_group: @day, dispatch_role: 1, positions: [@position], county: @county1
     @othershift = FactoryGirl.create :shift, shift_group: @day, positions: [@position], county: @county1
 
-    FactoryGirl.create :shift_assignment, person: @people1.first, date: @chapter.time_zone.today, shift: @leadshift
+    @leadass = FactoryGirl.create :shift_assignment, person: @people1.first, date: @chapter.time_zone.today, shift: @leadshift
     FactoryGirl.create :shift_assignment, person: @people1[1], date: @chapter.time_zone.today, shift: @othershift
 
     @config = Scheduler::DispatchConfig.for_county @county1
@@ -28,6 +28,33 @@ describe Scheduler::DirectlineMailer do
   let(:mail) { Scheduler::DirectlineMailer.export(@chapter, @chapter.time_zone.today, @chapter.time_zone.today.tomorrow)}
   let(:shift_filename) { "shift_data.csv"}
   let(:roster_filename) { "roster.csv"}
+
+  describe "Support methods" do
+    it "Should run when called with force=true" do
+      day = @chapter.time_zone.today
+      Scheduler::DirectlineMailer.any_instance.should_receive(:export).with(@chapter, day-1, day+60).and_return(stub deliver: true)
+      Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter)
+
+      @leadass.reload.synced.should == true
+    end
+
+    it "Should not run with force=false and all assignments synced" do
+      Scheduler::DirectlineMailer.any_instance.should_not_receive(:export)
+      Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter, false)
+    end
+
+    it "Should not run with force=false and an unsynced assignment several days away" do
+      @leadass.update_attribute :date, @chapter.time_zone.today+7
+      Scheduler::DirectlineMailer.any_instance.should_not_receive(:export)
+      Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter, false)
+    end
+
+    it "Should run with force=false and an unsynced assignment today" do
+      @leadass.update_attribute :date, @chapter.time_zone.today
+      Scheduler::DirectlineMailer.any_instance.should_receive(:export).and_return(stub deliver: true)
+      Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter)
+    end
+  end
 
   context "Shift Data" do
     it "Should attach the file" do

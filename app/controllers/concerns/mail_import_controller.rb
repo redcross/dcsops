@@ -77,12 +77,7 @@ module MailImportController
             @log.result = 'exception'
             @log.log = self.import_log
             @log.import_errors = self.import_errors.to_s
-            @log.exception = e.class.to_s
-            @log.exception_message = e.message.to_s
-            trace = ""
-            trace << e.annoted_source_code.to_s if e.respond_to?(:annoted_source_code)
-            trace << e.backtrace.first(10).join("\n  ")
-            @log.exception_trace = trace
+            @log.update_from_exception(e)
             @log.runtime = (Time.now - @log.start_time)
             @log.save!
             puts @log.inspect
