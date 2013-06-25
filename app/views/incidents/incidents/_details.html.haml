@@ -1,10 +1,11 @@
 - dat = resource.dat_incident
 
 %h3 Location
-=resource.address
-%br
-#{resource.city}, #{resource.state} #{resource.zip}
-%br
+-if resource.address
+  =resource.address
+  %br
+  #{resource.city}, #{resource.state} #{resource.zip}
+  %br
 =resource.county.name
 County
 
