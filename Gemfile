@@ -61,20 +61,22 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-group :development do
+
+group :development, :test do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'faker'
   gem 'zonebie'
-
-  gem 'autotest'
-  #gem 'autotest-fsevent'
+  gem 'sqlite3'
 
   gem 'shoulda-matchers'
   gem 'factory_girl_rails'
   gem 'delorean'
+end
 
-  gem 'sqlite3'
+group :development do
+  gem 'autotest'
+  #gem 'autotest-fsevent'
   gem 'debugger'
   gem 'unicorn'
 
