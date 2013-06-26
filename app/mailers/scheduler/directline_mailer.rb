@@ -54,7 +54,7 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   private
 
   def schedule_csv(chapter, start_date, end_date)
-    shift_data = CSV.generate do |csv|
+    shift_data = CSV.generate(row_sep: "\r\n") do |csv|
       csv << ["County", "Start", "End", "On Call Person IDs"] + (1..20).map{|x| "On Call #{x}"}
       chapter.counties.each do |county|
         config = Scheduler::DispatchConfig.for_county county
@@ -79,7 +79,7 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   end
 
   def people_csv
-    CSV.generate do |csv|
+    CSV.generate(row_sep: "\r\n") do |csv|
       csv << ["Person ID", "Last Name", "First Name", "Primary Phone", "Secondary Phone", "SMS Phone", "OnPage ID", "Email"]
       @people.uniq.each do |person|
         phones = person.phone_order
