@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Scheduler::RemindersMailer do
-  let(:from_address) {["scheduling@arcbadat.com"]}
+  let(:from_address) {["scheduling@arcbadat.org"]}
   describe "email_invite" do
     let(:assignment) { FactoryGirl.create :shift_assignment}
     let(:mail) { Scheduler::RemindersMailer.email_invite(assignment) }

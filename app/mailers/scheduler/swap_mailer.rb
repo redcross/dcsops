@@ -1,18 +1,24 @@
 class Scheduler::SwapMailer < ActionMailer::Base
-  default from: "DAT Scheduling <scheduling@arcbadat.com>"
+  include MailerCommon
+
+  default from: "DAT Scheduling <scheduling@arcbadat.org>"
 
   def swap_invite(shift, person)
     @person = person
     @recipient = person
     @shift = shift
-    mail to: person.email, subject: swap_invite_subject
+
+    tag :scheduler, :swap, :swap_invite
+    mail to: format_address(@recipient), subject: swap_invite_subject
   end
 
   def swap_available(shift, recipient)
     @person = nil
     @recipient = recipient
     @shift = shift
-    mail to: recipient.email, subject: swap_invite_subject, template_name: 'swap_invite'
+
+    tag :scheduler, :swap, :swap_available
+    mail to: format_address(@recipient), subject: swap_invite_subject, template_name: 'swap_invite'
   end
 
   def swap_request_notify(shift_assignment)
@@ -25,9 +31,10 @@ class Scheduler::SwapMailer < ActionMailer::Base
 
     subject = "Shift Swap Confirmed for #{new_shift.date.to_s :dow_short} #{new_shift.shift.shift_group.name} #{new_shift.shift.name}"
 
-    recipients ||= [@from.person.email, @to.person.email]
+    recipients ||= [@from.person, @to.person]
 
-    mail to: recipients, subject: subject
+    tag :scheduler, :swap, :swap_confirmed
+    mail to: recipients.map{|p| format_address p}, subject: subject
   end
 
   private

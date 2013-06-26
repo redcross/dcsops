@@ -2,6 +2,7 @@ require 'csv'
 require 'base64'
 
 class Scheduler::WatchfireMailer < ActionMailer::Base
+  include MailerCommon
   default from: "DAT Scheduling <arcba.vcimport@gmail.com>"
 
   DAY_SHIFT = 7..18
@@ -26,6 +27,7 @@ class Scheduler::WatchfireMailer < ActionMailer::Base
     scope = Roster::Person.joins{positions}.where{(positions.watchfire_role != nil) & (positions.watchfire_role == 'dshr')}.uniq
     add_file("Chapter DSHR.csv", generate_file_for_people(scope))
 
+    tag :export
     mail to: "jlaxson@mac.com", subject: "ARCBA Watchfire Export", body: ""
   end
 

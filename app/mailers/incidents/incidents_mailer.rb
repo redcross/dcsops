@@ -1,4 +1,6 @@
 class Incidents::IncidentsMailer < ActionMailer::Base
+  include MailerCommon
+
   default from: "ARCBA DAT <incidents@arcbadat.org>"
 
   # Subject can be set in your I18n file at config/locales/en.yml
@@ -23,6 +25,7 @@ class Incidents::IncidentsMailer < ActionMailer::Base
 
     @title = "ARCBA Disaster Operations Report - #{@subtitle}"
 
+    tag :incidents, :weekly_report
     mail to: format_address(recipient), subject: @title
   end
 
@@ -34,6 +37,7 @@ class Incidents::IncidentsMailer < ActionMailer::Base
   def no_incident_report(incident, recipient)
     @incident = incident
 
+    tag :incidents, :no_incident_report
     mail to: format_address(recipient), subject: "Missing Incident Report For #{incident.county_name}"
   end
 
@@ -45,31 +49,29 @@ class Incidents::IncidentsMailer < ActionMailer::Base
   def orphan_cas
     @greeting = "Hi"
 
+    tag :incidents, :orphan_cas
     mail to: "to@example.org"
   end
 
   def new_incident(incident, recipient)
     @incident = incident
+    tag :incidents, :incidents_notification, :new_incident
     mail to: format_address(recipient), subject: "New Incident For #{incident.county_name}"
   end
 
   def incident_dispatched(incident, recipient)
     @incident = incident
+    tag :incidents, :incidents_notification, :incident_dispatched
     mail to: format_address(recipient), subject: "Incident For #{incident.county_name} Dispatched", template_name: 'new_incident'
   end
 
   def incident_report_filed(incident, recipient)
     @incident = incident
+    tag :incidents, :incidents_notification, :incident_report_filed
     mail to: format_address(recipient), subject: "Incident Report Filed For #{incident.county_name}"
   end
 
   private
-
-  def format_address(person)
-    addr = Mail::Address.new person.email
-    addr.display_name = person.full_name
-    addr.format
-  end
 
   helper_method :static_maps_url
   def static_maps_url(retina=false)

@@ -1,5 +1,6 @@
 class Scheduler::RemindersMailer < ActionMailer::Base
-  default from: "DAT Scheduling <scheduling@arcbadat.com>"
+  include MailerCommon
+  default from: "DAT Scheduling <scheduling@arcbadat.org>"
 
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
@@ -9,7 +10,8 @@ class Scheduler::RemindersMailer < ActionMailer::Base
   def email_invite(assignment)
     @assignment = assignment
 
-    mail to: assignment.person.email, subject: "#{assignment.shift.name} on #{assignment.date.strftime("%b %d")}" do |format|
+    tag :scheduler, :reminders, :email_invite
+    mail to: format_address(assignment.person), subject: "#{assignment.shift.name} on #{assignment.date.strftime("%b %d")}" do |format|
       format.text
       format.ics
     end
@@ -23,7 +25,8 @@ class Scheduler::RemindersMailer < ActionMailer::Base
   def email_reminder(assignment)
     @assignment = assignment
 
-    mail to: assignment.person.email, subject: "#{assignment.shift.name} on #{assignment.date.strftime("%b %d")}"
+    tag :scheduler, :reminders, :email_reminder
+    mail to: format_address(assignment.person), subject: "#{assignment.shift.name} on #{assignment.date.strftime("%b %d")}"
   end
 
   # Subject can be set in your I18n file at config/locales/en.yml
@@ -34,6 +37,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
   def sms_reminder(assignment)
     @assignment = assignment
 
+    tag :scheduler, :reminders, :sms_reminder, :sms
     mail to: assignment.person.sms_addresses, subject: ""
   end
 
@@ -41,13 +45,15 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     now = setting.person.chapter.time_zone.now
     prepare_reminders(setting)
 
-    mail to: setting.person.email, subject: "DAT Shifts for #{now.strftime("%b %d")}"
+    tag :scheduler, :reminders, :daily_email_reminder
+    mail to: format_address(setting.person), subject: "DAT Shifts for #{now.strftime("%b %d")}"
   end
 
   def daily_sms_reminder(setting)
     now = setting.person.chapter.time_zone.now
     prepare_reminders(setting)
 
+    tag :scheduler, :reminders, :daily_sms_reminder, :sms
     mail to: setting.person.sms_addresses, subject: ""
   end
 
@@ -55,7 +61,8 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     now = setting.person.chapter.time_zone.now
     prepare_swap_groups(setting)
     if @swap_groups.present?
-      mail to: setting.person.email, subject: "Daily Shift Swaps Reminder for #{now.strftime("%b %d")}"
+      tag :scheduler, :reminders, :daily_swap_reminder
+      mail to: format_address(setting.person), subject: "Daily Shift Swaps Reminder for #{now.strftime("%b %d")}"
     else
       self.message.perform_deliveries = false
     end

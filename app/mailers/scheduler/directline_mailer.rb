@@ -1,6 +1,7 @@
 require 'csv'
 
 class Scheduler::DirectlineMailer < ActionMailer::Base
+  include MailerCommon
   default from: "DAT Scheduling <directline.export@arcbadat.org>"
 
   # Subject can be set in your I18n file at config/locales/en.yml
@@ -46,6 +47,7 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
     attachments["shift_data.csv"] = schedule_csv(chapter, start_date, end_date)
     attachments["roster.csv"] = people_csv
 
+    tag :export
     mail to: "redcross@directlineinc.com", subject: "Red Cross Export - Chapter #{chapter.code}", body: "Export processed at #{Time.zone.now}"
   end
 
