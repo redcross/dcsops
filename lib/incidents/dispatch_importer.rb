@@ -63,7 +63,9 @@ class Incidents::DispatchImporter
     if log_object.incident.nil?
       if inc = Incidents::Incident.find_by( chapter_id: @chapter, incident_number: log_object.incident_number)
         log_object.incident = inc
+        geocode_incident(log_object, inc)
         log_object.save
+        
         return false
       else
         log_object.create_incident! incident_number: log_object.incident_number, 
@@ -85,6 +87,19 @@ class Incidents::DispatchImporter
         {}
       end
     end.select(&:present?).reduce(:merge)
+  end
+
+  def geocode_incident(log_object, incident)
+    return if Rails.env.test?
+
+    incident.address = log_object.address
+    res = Geokit::Geocoders::GoogleV3Geocoder.geocode "#{log_object.address}, #{log_object.county_name}, CA, USA"
+    if res
+      incident.lat = res.lat
+      incident.lng = res.lng
+    end
+  rescue Geokit::TooManyQueriesError
+    # Not the end of the world
   end
 
   def import_data(chapter, body)
