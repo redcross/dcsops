@@ -15,7 +15,7 @@ describe Incidents::IncidentMissingReport do
   end
 
   it "should notify someone with a dispatch role for that day" do
-    date = Date.today
+    date = @person.chapter.time_zone.today
     @p2 = FactoryGirl.create :person, chapter: @incident.chapter, counties: [@incident.county]
     @group = FactoryGirl.create :shift_group, period: 'daily', start_offset: 0, end_offset: 86400, chapter: @p2.chapter
     @shift = FactoryGirl.create :shift, shift_group: @group, positions: @p2.positions, county: @p2.counties.first, dispatch_role: 1
@@ -29,7 +29,7 @@ describe Incidents::IncidentMissingReport do
   end
 
   it "should not notify someone without a dispatch role for that day" do
-    date = Date.today
+    date = @person.chapter.time_zone.today
     @p2 = FactoryGirl.create :person, chapter: @incident.chapter, counties: [@incident.county]
     @group = FactoryGirl.create :shift_group, period: 'daily', start_offset: 0, end_offset: 86400, chapter: @p2.chapter
     @shift = FactoryGirl.create :shift, shift_group: @group, positions: @p2.positions, county: @p2.counties.first, dispatch_role: nil
