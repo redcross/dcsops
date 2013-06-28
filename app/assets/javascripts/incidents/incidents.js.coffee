@@ -7,6 +7,8 @@ class window.IncidentLocationController
   form_base: 'incidents_dat_incident'
 
   constructor: (currentLat, currentLng) ->
+    return unless window.google # if no gmaps js, don't die
+
     dom = $('.incident-map')[0]
     google.maps.visualRefresh = true
     opts =

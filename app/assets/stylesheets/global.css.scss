@@ -22,6 +22,15 @@ a i {
   text-align: center;
 }
 
+.time-fields {
+  select {
+    width: 50px !important;
+  }
+  input {
+    width: 80px !important;
+  }
+}
+
 .sandbox-dialog {
   h3 {
     display: inline-block;
@@ -33,4 +42,20 @@ a i {
 .dat {
   color: rgb(128, 0, 0);
   font-weight: 900;
+}
+
+fieldset fieldset {
+
+  legend {
+    padding-left: 180px;
+    font-size: 18px;
+    border-bottom: 0;
+  }
+}
+
+
+@media (max-width: 767px) {
+  fieldset fieldset legend {
+    padding: 0
+  }
 }

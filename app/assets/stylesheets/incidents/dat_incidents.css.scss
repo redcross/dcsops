@@ -31,13 +31,45 @@ body.incidents.dat_incidents {
     width: 172px;
   }
 
-  button.address-lookup {
-    margin-top: -5px;
-    width: 100%;
+  form {
+    button.address-lookup {
+      margin-top: -5px;
+    }
+
+    button.btn-block {
+      width: 100%;
+    }
   }
 
   input[type="checkbox"], input[type="submit"] {
     width: auto;
     padding-right: inherit;
+  }
+
+  ul.nav .error {
+    color: rgb(185, 74, 72);
+  }
+
+}
+
+@media (max-width: 767px) {
+  body.incidents.dat_incidents {
+    ul.nav.fixed {
+      position: fixed;
+      left: 0; top: 0; right: 0;
+      height: 40px;
+      background-color: white;
+      z-index: 100;
+    }
+    table.form-table {
+      tr {
+        display: block;
+        border-top: 1px solid gray;
+      }
+      td {
+        display: inline-block;
+        border: 0;
+      }
+    }
   }
 }

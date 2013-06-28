@@ -1,8 +1,8 @@
 %tr.nested-fields
   %td=f.input :person, as: :person_typeahead, text_value: -> obj {obj.person.try :full_name}
+  %td=f.input :role, collection: grouped_options_for_select(grouped_responder_roles, f.object.role)
+  /%td=f.input :response, collection: Incidents::ResponderAssignment::RESPONSES_TO_LABELS.invert
   %td=f.input :was_flex, label: 'Flex Responder'
-  %td=f.input :role, collection: Incidents::ResponderAssignment::ROLES_TO_LABELS.invert
-  %td=f.input :response, collection: Incidents::ResponderAssignment::RESPONSES_TO_LABELS.invert
   %td
     =f.input :_destroy, as: :hidden, input_html: {value: '0'}
     =link_to_remove_association 'Remove', f, class: "btn btn-danger"

@@ -37,6 +37,12 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     params[:incident_id] ? incidents_incident_dat_path(params[:incident_id]) : incidents_dat_incidents_path
   end
 
+  helper_method :grouped_responder_roles
+  def grouped_responder_roles
+    [["Did Not Respond", Incidents::ResponderAssignment::RESPONSES_TO_LABELS.invert.to_a],
+     ["Responded To Incident", Incidents::ResponderAssignment::ROLES_TO_LABELS.invert.to_a.reject{|a| a.last == 'team_lead'}]]
+  end
+
   helper_method :scheduled_responders, :flex_responders
   def scheduled_responders(obj=@dat_incident)
     if obj.incident.county
@@ -70,7 +76,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
     obj.completed_by ||= current_user
     obj.build_incident if obj.incident.nil?
-    obj.incident.update_attributes incident_params if incident_params
+    obj.incident.attributes = incident_params if incident_params
     obj.incident.build_team_lead role: 'team_lead', response: 'available' unless obj.incident.team_lead
 
     #scheduled_responders(obj).each do |resp|
@@ -78,6 +84,12 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     #end
 
     @_build_resource = obj
+  end
+
+  def update_resource(object, attributes)
+    object.build_incident if object.incident.nil?
+    object.incident.attributes = incident_params if incident_params
+    object.update_attributes(*attributes)
   end
 
     #def build_resource
@@ -109,6 +121,10 @@ class Incidents::DatIncidentsController < Incidents::BaseController
              :structure_type, :comfort_kits_used, :blankets_used,
              vehicle_ids: []
            ]
+
+      keys += [
+        {languages: []}
+      ]
 
       keys << {:services => []}
 

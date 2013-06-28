@@ -25,10 +25,16 @@ class Incidents::DatIncident < ActiveRecord::Base
   validates :completed_by, presence: true
 
   serialize :services
+  serialize :languages
 
   after_save :update_incident
 
   attr_accessor :search_for_address
+
+  # Temp fields for form work
+  attr_accessor :canteened_responders, :canteened_clients, :meal_provided, :meal_meals, :meal_vendor#:breakfast_provided, :breakfast_meals, :breakfast_vendor, :lunch_provided, :lunch_meals, :lunch_vendor, :dinner_provided, :dinner_meals, :dinner_vendor
+  attr_accessor :evac_facility_name, :shelter_facility_name, :hotel_name, :hotel_rate
+  attr_accessor :languages
 
   [:responder_notified=, :responder_arrived=, :responder_departed=].each do |sym|
     define_method sym do |val|

@@ -1,0 +1,102 @@
+.row
+  .span6
+    =f.inputs "Narrative" do
+      =f.input :narrative, label: 'Narrative:', input_html: {rows: 6, style: "width: 100%"}
+  .span6
+    =f.inputs "Services" do
+      - services = f.object.services || []
+      .control-group
+        %label.control-label Client Financial Assistance
+        .controls
+          - {"Emergency Housing" => 'housing', 'Food' => 'food', 'Clothing' => 'clothing', 'Medication' => 'medication'}.each do |label, val|
+            %label.checkbox
+              =check_box_tag "incidents_dat_incident[services][]", val, services.include?( val)
+              =label
+      .control-group
+        %label.control-label Other Assistance
+        .controls
+          - {"Mental Health Support" => 'mental_health', 'Translation' => 'translation', "Snacks for Clients" => 'client_snacks'}.each do |label, val|
+            %label.checkbox
+              - more_classes = (val == 'translation') ? {data: {bind: '.collapse.languages'}} : {}
+              =check_box_tag( "incidents_dat_incident[services][]", val, services.include?( val), {class: "services-other-#{val}"}.merge(more_classes))
+              =label
+
+      .collapse.languages{class: f.object.services.try(:include?, 'translation') && 'in'}
+        .control-group
+          %label.control-label Languages Translated
+          .controls
+            - languages = f.object.languages || []
+            - all_languages = %w(english cantonese mandarin vietnamese russian tagalog)
+            - extra_languages = languages - all_languages
+            - all_languages.each do |val|
+              %label.checkbox
+                =check_box_tag "incidents_dat_incident[languages][]", val, languages.include?( val)
+                =val.titleize
+            - extra_languages.each do |val|
+              Other:
+              = text_field_tag "incidents_dat_incident[languages][]", val
+            Other:
+            = text_field_tag "incidents_dat_incident[languages][]"
+
+.row
+  .span6
+    =f.inputs "On-Scene Feeding" do
+      =f.input :canteened_responders, as: :boolean
+      =f.input :canteened_clients, as: :boolean
+      /=f.inputs "Meals Served" do
+      - %w(meal).each do |meal|
+        =f.input :"#{meal}_provided", as: :boolean, input_html: {data: {bind: '.collapse.breakfast'}}
+        .collapse.breakfast{class: f.object.send(:"#{meal}_provided") && 'in'}
+          =f.input :"#{meal}_meals", as: :number
+          =f.input :"#{meal}_vendor"
+
+      /.control-group
+      /  %label.control-label
+      /  .controls
+      /    - {"Opened Evac Center" => 'evac_center', 'Comfort Kits' => 'comfort_kits', "Canteened Responders" => 'canteened_responders'}./each do |label, val|
+      /      %label.checkbox
+      /        /=check_box_tag "incidents_dat_incident[services][]", val, services.include?( val)
+      /        =label
+  .span6
+    =f.inputs "Evac Center/Housing" do
+      .control-group
+        %label.control-label Evacuation Center Opened
+        .controls
+          .btn-group.single-choice
+            %button.btn(data-show=".evac") Yes
+            %button.btn.active(data-hide=".evac") No
+      .collapse.evac
+        =f.input :evac_facility_name
+      .control-group
+        %label.control-label Housing Provided:
+        .controls
+          .btn-group.btn-group-vertical.btn-block.housing.single-choice
+            %button.btn.btn-block.active(data-hide=".housing-collapse .collapse") None
+            %button.btn.btn-block(data-hide=".housing-collapse .collapse" data-show='.hotel' ) Hotel/Motel
+            %button.btn.btn-block(data-hide=".housing-collapse .collapse" data-show='.shelter') Shelter Opened
+      .housing-collapse
+        .collapse.hotel(data-show='hotel' data-toggle='collapse')
+          =f.input :hotel_name
+          =f.input :hotel_rate
+
+        .collapse.shelter(data-show='shelter' data-toggle='collapse') 
+          =f.input :shelter_facility_name
+.row
+  .span6
+    =f.inputs "Resources Used" do
+      =f.input :comfort_kits_used
+      =f.input :blankets_used
+  .span6
+    =f.inputs "Vehicles" do
+      /=f.input :vehicles, as: :check_boxes, collection: Logistics::Vehicle.where{chapter_id == my{current_user.chapter_id}}.order{[category, name]}, group_by: 'category'
+
+      - f.object.vehicles.each do |veh|
+        =render 'vehicle_fields', veh: veh, f: f
+      .control-group.select
+        %label.control-label Add Vehicle
+        .controls
+          =select_tag 'vehicles', grouped_options_for_select(Logistics::Vehicle.where{chapter_id == my{current_user.chapter_id}}.order{[category, name]}.map{|veh| [veh.name, veh.category, veh.id]}.group_by{|arr| arr[1].titleize})
+          %button.btn.btn-primary.btn-mini.add-vehicle{data: {template: render( 'vehicle_fields', veh: nil, f: f)}} Add Vehicle
+      =hidden_field_tag 'incidents_dat_incident[vehicle_ids][]', ''
+=f.actions do
+  =f.action :submit, label: 'Submit Incident Information', button_html: {class: 'btn btn-primary'}

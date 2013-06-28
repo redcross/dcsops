@@ -72,6 +72,7 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'factory_girl_rails'
   gem 'delorean'
+  gem 'coveralls', require: false
 end
 
 group :development do
