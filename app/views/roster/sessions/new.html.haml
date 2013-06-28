@@ -5,9 +5,9 @@
         %i.icon-lock
         Please Sign In
       %p
-        ARCBA DAT uses the same username and password you use to log into Volunteer Connection.
+        -#ARCBA DAT uses the same username and password you use to log into Volunteer Connection.
 
-      = f.text_field :username, class: 'text_field span5', placeholder: 'VC Username'
+      = f.text_field :username, class: 'text_field span5', placeholder: 'Username'
       = f.password_field :password, class: 'text_field span5', placeholder: 'Password'
       /.control-group
       /  = f.label :remember_me, :class => 'control-label'
@@ -20,4 +20,5 @@
       %p
       %p
         If you have forgotten your password, or need to reset or change it, please
-        %a{href: "https://volunteerconnection.redcross.org/?nd=resetpassword"} follow this process on the Volunteer Connection site, and return to ARCBA DAT when complete.
+        -#%a{href: "https://volunteerconnection.redcross.org/?nd=resetpassword"} follow this process on the Volunteer Connection site, and return to ARCBA DAT when complete.
+        contact your DAT Administrator or Supervisor.
