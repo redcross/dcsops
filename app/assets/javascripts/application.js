@@ -17,4 +17,5 @@
 //= require_tree .
 //= require bootstrap-editable
 //= require cocoon
+//= require jquery.countdown
 // require turbolinks
