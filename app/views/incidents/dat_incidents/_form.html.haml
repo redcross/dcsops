@@ -7,10 +7,9 @@
   - services_proxy = FormProxy.new(f); services_html = render 'form_services', f: services_proxy
   - responders_proxy = FormProxy.new(f); responders_html = render 'form_responders', f: responders_proxy
   - all_errors = f.object.errors.map{|key, err| err.present? && key}.compact
-  -# pp f.object.errors, all_errors, responders_proxy.keys
   - basic_has_errors = (all_errors & basic_proxy.keys).present?
   - responders_has_errors = (all_errors & responders_proxy.keys).present?
-  - services_has_errors = (pp (all_errors & services_proxy.keys)).present?
+  - services_has_errors = ((all_errors & services_proxy.keys)).present?
 
   .tabbable
     %ul.nav.nav-tabs
