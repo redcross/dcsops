@@ -129,8 +129,15 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.2)
+    colorize (0.5.8)
     columnize (0.3.6)
     commonjs (0.2.6)
+    coveralls (0.6.7)
+      colorize
+      multi_json (~> 1.3)
+      rest-client
+      simplecov (>= 0.7)
+      thor
     css_parser (1.3.4)
       addressable
     debugger (1.6.0)
@@ -244,6 +251,8 @@ GEM
     rake (10.1.0)
     ref (1.0.5)
     responders (0.6.5)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     ri_cal (0.8.8)
     rspec (2.13.0)
       rspec-core (~> 2.13.0)
@@ -274,6 +283,10 @@ GEM
       uuidtools
     shoulda-matchers (2.2.0)
       activesupport (>= 3.0.0)
+    simplecov (0.7.1)
+      multi_json (~> 1.0)
+      simplecov-html (~> 0.7.1)
+    simplecov-html (0.7.1)
     spreadsheet (0.8.5)
       ruby-ole (>= 1.0)
     sprockets (2.10.0)
@@ -330,6 +343,7 @@ DEPENDENCIES
   chronic
   cocoon!
   coffee-rails (~> 4.0.0.rc1)
+  coveralls
   debugger
   delorean
   factory_girl_rails
