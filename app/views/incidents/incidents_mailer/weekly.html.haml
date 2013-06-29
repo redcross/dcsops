@@ -29,6 +29,9 @@
         font-size: 12px;
         margin-bottom: 0;
       }
+      a {
+        text-decoration: none;
+      }
       .center {
         text-align: center;
       }
@@ -121,10 +124,11 @@
               %h2.center Local Incident Details
               - @incidents.each do |inc|
                 %h4
-                  =inc.date.to_s :dow_short
-                  ==-
-                  #{inc.city}, #{inc.state}
-                  %small (#{inc.county.name})
+                  %a{href:incidents_incident_url(inc)}
+                    =inc.date.to_s :dow_short
+                    ==-
+                    #{inc.city}, #{inc.state}
+                    %small (#{inc.county.name})
                 - dat = inc.dat_incident
                 - if dat
                   - adults = inc.num_adults; children = inc.num_children; units = dat.units_affected

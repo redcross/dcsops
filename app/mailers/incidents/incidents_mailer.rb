@@ -8,11 +8,19 @@ class Incidents::IncidentsMailer < ActionMailer::Base
   #
   #   en.incidents.incidents_mailer.weekly.subject
   #
-  def weekly(chapter, recipient)
+
+  def self.weekly(chapter, recipient)
+    start_date = chapter.time_zone.today.at_beginning_of_week.last_week
+    end_date = start_date.next_week.yesterday
+    self.weekly_for_date_range(chapter, recipient, start_date, end_date)
+  end
+
+  def weekly_for_date_range(chapter, recipient, start_date, end_date)
     @chapter = chapter
     @person = recipient
-    @start_date = chapter.time_zone.today.at_beginning_of_week.last_week.next_week
-    @end_date = @start_date.next_week.yesterday
+    @start_date = start_date
+    @end_date = end_date
+    
     @incidents = Incidents::Incident.where{date.in(my{@start_date..@end_date})}.order{date}.to_a
     @weekly_stats = Incidents::Incident.where{date.in(my{@start_date..@end_date})}.incident_stats
     @yearly_stats = Incidents::Incident.where{date >= '2012-07-01'}.incident_stats
@@ -26,7 +34,7 @@ class Incidents::IncidentsMailer < ActionMailer::Base
     @title = "ARCBA Disaster Operations Report - #{@subtitle}"
 
     tag :incidents, :weekly_report
-    mail to: format_address(recipient), subject: @title
+    mail to: format_address(recipient), subject: @title, template_name: 'weekly'
   end
 
   # Subject can be set in your I18n file at config/locales/en.yml

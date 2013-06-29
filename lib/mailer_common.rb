@@ -17,5 +17,20 @@ module MailerCommon
 
       headers['X-MC-Tags'] = (existing_tags + tags.map(&:to_s)).join(",")
     end
+
+    def sms!
+      generate_alternatives(false)
+      track_clicks(false)
+    end
+
+    def generate_alternatives(val)
+      val = val ? 'true' : 'false'
+      headers['X-MC-AutoHtml'] = val
+      headers['X-MC-Autotext'] = val
+    end
+
+    def track_clicks(val)
+      headers['X-MC-Track'] = (val ? 'opens,clicks' : 'none')
+    end
   #end
 end
