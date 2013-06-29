@@ -19,6 +19,12 @@ class Roster::Person < ActiveRecord::Base
     where{lower(first_name.op('||', ' ').op('||', last_name)).like("%#{query.downcase}%")}
   }
 
+  scope :for_chapter, ->(chapter){where{chapter_id == chapter}}
+
+  scope :has_role_for_scope, -> role_name, scope {
+    joins{roles.role_scopes}.where{(roles.grant_name == role_name) & (roles.role_scopes.scope == scope.to_s)}
+  }
+
   def self.for_vc_account(account)
     self.where(vc_id: account).first
   end
@@ -46,7 +52,7 @@ class Roster::Person < ActiveRecord::Base
   end
 
   def scope_for_role(grant_name)
-    roles.select{|p| p.grant_name == grant_name}.map(&:role_scope).map{ |scope| scope.include?('county_ids') ? county_ids : scope}.flatten.compact.uniq
+    roles.select{|p| p.grant_name == grant_name}.map{|r| r.role_scopes.map(&:scope) }.flatten.map{ |scope| scope == 'county_ids' ? county_ids : scope}.flatten.compact.uniq
   end
 
   def primary_county

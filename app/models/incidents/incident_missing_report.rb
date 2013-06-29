@@ -1,4 +1,9 @@
 class Incidents::IncidentMissingReport
+  include Notifier
+
+  self.notification_type = 'missing_report'
+  self.role_grant_name = 'receive_incident_missing_report'
+
   def initialize(incident)
     @incident = incident
   end
@@ -7,22 +12,24 @@ class Incidents::IncidentMissingReport
     fire_notifications
   end
 
-  def fire_notifications
+  def role_scope
+    @incident.county_id
+  end
+
+  def notification_scope
+    @incident.county_id
+  end
+
+  def additional_notifications
     county = @incident.county_id
+    groups = Scheduler::ShiftGroup.current_groups_for_chapter(@incident.chapter, @incident.created_at)
+    assignments = groups.map{|grp| Scheduler::ShiftAssignment.joins{shift}.where{(shift.shift_group_id == grp) & (date == grp.start_date) & (shift.county_id == county) & (shift.dispatch_role != nil)}.to_a }.flatten.compact
+    assignments.map(&:person)
+  end
 
-    subscriptions = Incidents::NotificationSubscription.for_county(county).for_type('missing_report')
-    subscriptions.each do |sub|
-      Incidents::IncidentsMailer.no_incident_report(@incident, sub.person).deliver
-    end
-
-    if county
-      groups = Scheduler::ShiftGroup.current_groups_for_chapter(@incident.chapter, @incident.created_at)
-
-      assignments = groups.map{|grp| Scheduler::ShiftAssignment.joins{shift}.where{(shift.shift_group_id == grp) & (date == grp.start_date) & (shift.county_id == county) & (shift.dispatch_role != nil)}.to_a }.flatten.compact
-
-      assignments.each do |ass|
-        Incidents::IncidentsMailer.no_incident_report(@incident, ass.person).deliver
-      end
+  def fire_notifications
+    notify do |person|
+      Incidents::IncidentsMailer.no_incident_report(@incident, person).deliver
     end
   end
 end
