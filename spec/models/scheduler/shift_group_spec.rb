@@ -95,7 +95,7 @@ describe Scheduler::ShiftGroup do
       @shift1 = FactoryGirl.create(:shift_group, chapter: @chapter, period: 'monthly', start_offset: 0, end_offset: 31)
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift1]
       arr.first.start_date.should be_a(Date)
-      arr.first.start_date.should eq Date.current.at_beginning_of_month
+      arr.first.start_date.should eq @chapter.time_zone.today.at_beginning_of_month
     end
 
   end
