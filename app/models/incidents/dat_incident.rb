@@ -20,7 +20,7 @@ class Incidents::DatIncident < ActiveRecord::Base
   validates :incident_type, presence: true, inclusion: {in: INCIDENT_TYPES}
   validates :structure_type, presence: true, inclusion: {in: STRUCTURE_TYPES}
 
-  validates :responder_notified, :responder_arrived, :responder_departed, presence: true
+  #validates :responder_notified, :responder_arrived, :responder_departed, presence: true
 
   validates :completed_by, presence: true
 
@@ -47,7 +47,7 @@ class Incidents::DatIncident < ActiveRecord::Base
   end
 
   def update_incident
-    incident.update_from_dat_incident if incident
+    incident.update_from_dat_incident if incident(true)
   end
 
   def units_total

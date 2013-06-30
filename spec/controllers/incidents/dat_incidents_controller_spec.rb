@@ -3,6 +3,8 @@ require 'spec_helper'
 describe Incidents::DatIncidentsController do
   include LoggedIn
 
+
+
   # This should return the minimal set of attributes required to create a valid
   # Incidents::DatIncident. As you add validations to Incidents::DatIncident, be sure to
   # adjust the attributes here as well.
@@ -15,7 +17,12 @@ describe Incidents::DatIncidentsController do
 
   describe "#new" do
 
+    before(:each) do
+      grant_role! :submit_incident_report
+    end
+
     it "should redirect if there is a valid dat incident already" do
+      grant_role! :incidents_admin
       incident = FactoryGirl.create :incident
       dat = FactoryGirl.create :dat_incident, incident: incident
 
@@ -34,6 +41,9 @@ describe Incidents::DatIncidentsController do
 
   describe "#edit" do
     before(:each) do
+      grant_role! :incidents_admin
+    end
+    before(:each) do
       @incident = FactoryGirl.create :incident
       @dat = FactoryGirl.create :dat_incident, incident: @incident
     end
@@ -47,7 +57,11 @@ describe Incidents::DatIncidentsController do
     end
   end
 
-  context "with an existing incident" do
+  context "with an existing incident" do  
+    before(:each) do
+      grant_role! :submit_incident_report
+    end
+
     before(:each) do
       @incident = FactoryGirl.create :incident
       @dat = FactoryGirl.build :dat_incident

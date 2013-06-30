@@ -73,6 +73,13 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'delorean'
   gem 'coveralls', require: false
+
+  gem 'capybara', require: false
+  gem 'selenium-webdriver', require: false
+  gem 'database_cleaner', require: false
+  gem 'sauce'
+  gem 'sauce-connect'
+  gem 'parallel_tests'
 end
 
 group :development do

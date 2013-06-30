@@ -26,7 +26,7 @@
           %label.control-label Languages Translated
           .controls
             - languages = f.object.languages || []
-            - all_languages = %w(english cantonese mandarin vietnamese russian tagalog)
+            - all_languages = %w(english spanish cantonese mandarin vietnamese russian tagalog)
             - extra_languages = languages - all_languages
             - all_languages.each do |val|
               %label.checkbox

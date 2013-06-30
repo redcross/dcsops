@@ -120,8 +120,17 @@ GEM
       sass (>= 3.2.0)
       thor
     builder (3.1.4)
+    capybara (2.1.0)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      xpath (~> 2.0)
+    childprocess (0.3.9)
+      ffi (~> 1.0, >= 1.0.11)
     chronic (0.9.1)
     chunky_png (1.2.8)
+    cmdparse (2.0.5)
     coffee-rails (4.0.0)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0.beta, < 5.0)
@@ -140,6 +149,7 @@ GEM
       thor
     css_parser (1.3.4)
       addressable
+    database_cleaner (1.0.1)
     debugger (1.6.0)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -166,6 +176,7 @@ GEM
     faraday (0.8.7)
       multipart-post (~> 1.1)
     fastercsv (1.5.5)
+    ffi (1.9.0)
     formtastic-bootstrap (2.1.3)
       formtastic (~> 2.2)
     geokit (1.6.5)
@@ -183,6 +194,7 @@ GEM
       railties (>= 3.1, < 4.1)
     has_scope (0.5.1)
     hashie (2.0.5)
+    highline (1.6.19)
     hike (1.2.3)
     i18n (0.6.4)
     inherited_resources (1.3.1)
@@ -214,9 +226,16 @@ GEM
     minitest (4.7.5)
     multi_json (1.7.7)
     multipart-post (1.2.0)
+    net-http-persistent (2.8)
+    net-ssh (2.6.7)
+    net-ssh-gateway (1.2.0)
+      net-ssh (>= 2.6.5)
     newrelic_rpm (3.6.4.122)
     nokogiri (1.5.10)
     orm_adapter (0.0.7)
+    parallel (0.7.0)
+    parallel_tests (0.12.4)
+      parallel
     pg (0.15.1)
     polyamorous (0.6.3)
       activerecord (>= 3.0)
@@ -271,11 +290,33 @@ GEM
       rspec-mocks (~> 2.13.0)
     ruby-ole (1.2.11.7)
     ruby-openid (2.2.3)
+    rubyzip (0.9.9)
     sass (3.2.9)
     sass-rails (4.0.0)
       railties (>= 4.0.0.beta, < 5.0)
       sass (>= 3.1.10)
       sprockets-rails (~> 2.0.0)
+    sauce (3.0.4)
+      childprocess (>= 0.1.6)
+      cmdparse (>= 2.0.2)
+      highline (>= 1.5.0)
+      json (>= 1.2.0)
+      net-http-persistent
+      net-ssh
+      net-ssh-gateway
+      parallel_tests (= 0.12.4)
+      rest-client
+      sauce_whisk (~> 0.0.8)
+      selenium-webdriver (>= 0.1.2)
+    sauce-connect (3.0.0)
+      sauce (~> 3.0.0.beta.2)
+    sauce_whisk (0.0.8)
+      rest-client
+    selenium-webdriver (2.33.0)
+      childprocess (>= 0.2.5)
+      multi_json (~> 1.0)
+      rubyzip
+      websocket (~> 1.0.4)
     sentry-raven (0.4.8)
       faraday (>= 0.7.6)
       hashie (>= 1.1.0)
@@ -325,6 +366,9 @@ GEM
     uuidtools (2.1.4)
     warden (1.2.1)
       rack (>= 1.0)
+    websocket (1.0.7)
+    xpath (2.0.0)
+      nokogiri (~> 1.3)
     zonebie (0.0.4)
       chunky_png
       rainbow
@@ -340,10 +384,12 @@ DEPENDENCIES
   autotest
   bootstrap-x-editable-rails
   cancan!
+  capybara
   chronic
   cocoon!
   coffee-rails (~> 4.0.0.rc1)
   coveralls
+  database_cleaner
   debugger
   delorean
   factory_girl_rails
@@ -359,6 +405,7 @@ DEPENDENCIES
   jquery-rails
   less-rails
   newrelic_rpm
+  parallel_tests
   puma
   quiet_assets
   rails (~> 4.0.0)
@@ -371,6 +418,9 @@ DEPENDENCIES
   rspec-rails
   ruby-openid
   sass-rails (~> 4.0.0.rc1)
+  sauce
+  sauce-connect
+  selenium-webdriver
   sentry-raven
   shoulda-matchers
   spreadsheet

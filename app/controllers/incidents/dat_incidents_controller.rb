@@ -1,15 +1,17 @@
 class Incidents::DatIncidentsController < Incidents::BaseController
   inherit_resources
+  #load_and_authorize_resource :incident, find_by: :find_by_incident_number!
+  load_and_authorize_resource :dat_incident, class: Incidents::DatIncident
   belongs_to :incident, singleton: true, finder: :find_by_incident_number!, parent_class: Incidents::Incident
 
   actions :all, except: [:destroy]
 
-  def new
-    if parent? and parent.dat_incident and !parent.dat_incident.new_record?
+  prepend_before_filter :redirect_from_existing_incident, only: :new
+
+  def redirect_from_existing_incident
+    if parent.dat_incident and !parent.dat_incident.new_record?
       redirect_to action: :edit and return
     end
-
-    super
   end
 
   def edit

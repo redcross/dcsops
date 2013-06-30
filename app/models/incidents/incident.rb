@@ -10,6 +10,7 @@ class Incidents::Incident < ActiveRecord::Base
   has_one :latest_event_log, ->{ order{event_time.desc}.where{event != 'note'} }, class_name: 'Incidents::EventLog'
 
   has_many :responder_assignments, lambda { where{role != 'team_lead'}}, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
+  has_many :all_responder_assignments, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
   has_many :on_scene_responder_assignments, lambda { on_scene }, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
   has_one :team_lead, lambda{ where(role: 'team_lead')}, class_name: 'Incidents::ResponderAssignment', foreign_key: 'incident_id'
   

@@ -22,3 +22,4 @@
 *.sublime-workspace
 config/database.yml
 coverage/
+sauce_connect.log*
