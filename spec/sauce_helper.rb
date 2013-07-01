@@ -3,6 +3,10 @@
 require "sauce"
 require 'sauce/capybara'
 
+module SauceConfig
+  def self.use_sauce?; (ENV['TRAVIS'] || ENV['USE_SAUCE']); end
+end
+
 Sauce.config do |config|
   config[:browsers] = [
     ["Windows 8", "Internet Explorer", "10"],             
@@ -10,4 +14,5 @@ Sauce.config do |config|
     ["OS X 10.8", "Safari", "6"],                         
     #["Linux", "Chrome", nil]
   ]
+  config[:start_tunnel] = SauceConfig.use_sauce?
 end

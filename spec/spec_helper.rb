@@ -1,9 +1,16 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] ||= 'test'
 
-if ENV['TRAVIS']
-  require 'coveralls'
-  Coveralls.wear! 'rails'
+require 'simplecov'
+require 'coveralls'
+
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+  SimpleCov::Formatter::HTMLFormatter,
+  Coveralls::SimpleCov::Formatter
+]
+SimpleCov.start 'rails' do
+  add_filter "/app\\/admin/"
+  add_filter "/lib\\/tasks/"
 end
 
 require File.expand_path("../../config/environment", __FILE__)
@@ -21,7 +28,9 @@ require 'selenium-webdriver'
 require 'database_cleaner'
 require "sauce_helper"
 
-Capybara.default_driver = :sauce
+
+
+Capybara.default_driver = SauceConfig.use_sauce? ? :sauce : :selenium
 Capybara.server_port = ENV['TEST_ENV_NUMBER'] ? (9999+ENV['TEST_ENV_NUMBER'].to_i) : 9999
 
 # Require Formtastic Inputs
@@ -66,9 +75,15 @@ RSpec.configure do |config|
   config.include Delorean
   config.include Authlogic::TestCase
 
+  config.filter_run_excluding :type => :feature if ENV['SKIP_FEATURES']
+
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:suite) do
+    system('rm', '-rf', File.join(Rails.root, 'coverage'))
   end
 
   config.before(:each) do
@@ -77,6 +92,10 @@ RSpec.configure do |config|
 
   config.after(:each) do
     DatabaseCleaner.clean
+  end
+
+  config.before(:each) do
+    SimpleCov.command_name "RSpec:#{Process.pid}#{ENV['TEST_ENV_NUMBER']}"
   end
 end
 
