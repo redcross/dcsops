@@ -1,4 +1,17 @@
 class Incidents::DatIncident < ActiveRecord::Base
+
+  class TimesInCorrectOrder < ActiveModel::Validator
+    MESSAGE = "%s must come before %s"
+    def validate(record)
+      return false unless record.responder_notified and record.responder_arrived and record.responder_departed
+      [[:responder_notified, :responder_arrived], [:responder_arrived, :responder_departed]].each do |first_evt, second_evt|
+        if record.send( first_evt ) > record.send(second_evt)
+          record.errors[second_evt] = MESSAGE % [first_evt.to_s.titleize, second_evt.to_s.titleize]
+        end
+      end
+    end
+  end
+
   belongs_to :incident, class_name: 'Incidents::Incident'
   belongs_to :completed_by, class_name: 'Roster::Person'
   has_many :vehicle_uses, class_name: 'Incidents::VehicleUse', foreign_key: 'incident_id'
@@ -20,7 +33,8 @@ class Incidents::DatIncident < ActiveRecord::Base
   validates :incident_type, presence: true, inclusion: {in: INCIDENT_TYPES}
   validates :structure_type, presence: true, inclusion: {in: STRUCTURE_TYPES}
 
-  #validates :responder_notified, :responder_arrived, :responder_departed, presence: true
+  validates :responder_notified, :responder_arrived, :responder_departed, presence: true
+  validates_with TimesInCorrectOrder
 
   validates :completed_by, presence: true
 
@@ -47,7 +61,32 @@ class Incidents::DatIncident < ActiveRecord::Base
   end
 
   def update_incident
-    incident.update_from_dat_incident if incident(true)
+    if incident(true)
+      incident.update_from_dat_incident
+      update_timeline
+    end
+  end
+
+  [:responder_notified, :responder_arrived, :responder_departed].each do |field|
+    define_method :"#{field}=" do |val|
+      if val.is_a? String
+        super(Time.zone.parse(val))
+      else
+        super(val)
+      end
+    end
+  end
+
+  def update_timeline
+    if responder_notified
+      incident.event_logs.where(event: 'dat_received').first_or_initialize.update_attributes event_time: responder_notified
+    end
+    if responder_arrived
+      incident.event_logs.where(event: 'dat_on_scene').first_or_initialize.update_attributes event_time: responder_arrived
+    end
+    if responder_departed
+      incident.event_logs.where(event: 'dat_departed_scene').first_or_initialize.update_attributes event_time: responder_departed
+    end
   end
 
   def units_total

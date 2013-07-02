@@ -76,6 +76,23 @@ describe "DAT Incident Report" do
     fill_in 'Units destroyed*', with: 1
 
     # Need the times here
+    t = @chapter.time_zone.now
+    fill_in_responder_timeline("#incidents_dat_incident_responder_notified", t)
+    fill_in_responder_timeline("#incidents_dat_incident_responder_arrived", t.advance( hours: 1))
+    fill_in_responder_timeline("#incidents_dat_incident_responder_departed", t.advance( hours: 3))
+  end
+
+  def fill_in_responder_timeline(element, time)
+    find(element).click
+
+    day = time.day.to_s
+    hour = time.hour.to_s
+    minute = hour + ":" + (time.min - (time.min % 5)).to_s
+
+    within(".datetimepicker") do
+        3.times { find('.active').click }
+    end
+
   end
 
   def fill_in_responders

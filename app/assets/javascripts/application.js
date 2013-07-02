@@ -14,8 +14,10 @@
 //= require jquery_ujs
 //= require twitter/bootstrap
 //= require bootstrap-datepicker
-//= require_tree .
+//= require bootstrap-datetimepicker
 //= require bootstrap-editable
 //= require cocoon
 //= require jquery.countdown
+//= require_tree .
+
 // require turbolinks

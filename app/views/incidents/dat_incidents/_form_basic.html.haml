@@ -46,9 +46,9 @@
       =f.input :units_destroyed
   .span6
     =f.inputs "Timeline" do
-      =f.input :responder_notified, as: :time_field#, as: :time
-      =f.input :responder_arrived, as: :string#as: :time_select, input_html: {discard_second: true}
-      =f.input :responder_departed#, as: :string
+      =f.input :responder_notified, as: :time_field
+      =f.input :responder_arrived, as: :time_field
+      =f.input :responder_departed, as: :time_field
 
 .row
   .span12

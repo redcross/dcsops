@@ -7,6 +7,13 @@ class ApplicationController < ActionController::Base
 
   before_filter :require_valid_user!
 
+  around_filter :user_time_zone, :if => :current_user
+
+  def user_time_zone(&block)
+    tz = current_user.try(:chapter).try(:time_zone) || Time.zone 
+    Time.use_zone(tz, &block)
+  end
+
   #check_authorization
 
   rescue_from CanCan::AccessDenied do |exception|

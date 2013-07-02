@@ -27,6 +27,12 @@ body.incidents.dat_incidents {
     width: 90%;
   }
 
+  .input-append, .input-prepend {
+    input {
+      width: 130px;
+    }
+  }
+
   .controls {
     width: 172px;
   }

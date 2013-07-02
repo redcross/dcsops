@@ -1,28 +1,24 @@
-class ::TimeFieldInput <  FormtasticBootstrap::Inputs::StringInput
-  include ActionView::Helpers::TextFieldDateHelper
+class TimeFieldInput <  FormtasticBootstrap::Inputs::StringInput
   def initialize(*opts)
-    #opts.last[:prepend] = "<i class='icon-calendar'></i>".html_safe
+    opts.last[:prepend] = "<i class='icon-calendar'></i>".html_safe
     #opts.last[:append] = "<button class='btn datepicker-today'>Today</button>".html_safe
     super *opts
   end
 
-  #def input_html_options
-  #  super.merge("data-provide" => "datepicker", "data-date-format" => "yyyy-mm-dd", "data-autoclose" => "true")
-  #end
-
   def to_html
-    bootstrap_wrapping do
-      template.tag(:div) do
-        "Date: " << builder.text_field( method, placeholder: 'year', "data-provide" => "datepicker", "data-date-format" => "yyyy-mm-dd", "data-autoclose" => "true", class: 'span2')
-      end +
+    id = input_html_options[:id]
 
-      "Time: " + builder.time_select( method)
-    end
+    super +
+    str = (<<-HTML
+    <script>
+      $("##{id}").datetimepicker({autoclose: true, todayHighlight: true, showMeridian: true});
+    </script>
+    HTML
+    ).html_safe
   end
 
-  def wrapper_html_options
-    super.tap do |options|
-      options[:class] << " time-fields"
-    end
+  def input_html_options
+    super.merge("data-date-format" => "yyyy-mm-dd hh:ii", "data-autoclose" => "true",
+      value: object.send(method).try(:strftime, '%Y-%m-%d %H:%M'))
   end
 end

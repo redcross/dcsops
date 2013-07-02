@@ -3,7 +3,7 @@ class Incidents::EventLog < ActiveRecord::Base
   belongs_to :person, class_name: 'Roster::Person'
 
   validates :event, :event_time, :incident, presence: {allow_blank: false}
-  validates :person, presence: {unless: ->(log){log.event =~ /dispatch_/}}
+  validates :person, presence: {unless: ->(log){log.event =~ /(dispatch_|dat_)/}}
   validates :message, presence: {if: ->(log){log.event == 'note'}, allow_blank: false}
   validates :event, uniqueness: {scope: :incident_id, if: ->(log){!%w(note dispatch_note).include? log.event}}
 
