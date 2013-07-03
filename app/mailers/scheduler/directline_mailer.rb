@@ -66,14 +66,24 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   end
 
   def generate_shifts_for_county(csv, chapter, county, start_date, end_date, backups)
+    latest_time = nil
     (start_date..end_date).each do |date|
-      Scheduler::ShiftGroup.where(chapter_id: chapter, period: 'daily').includes(:shifts).order(:start_offset).each do |group|
+      Scheduler::ShiftGroup.where(chapter_id: chapter, period: 'daily').includes(:shifts).where{shifts.dispatch_role != nil}.order(:start_offset).each do |group|
         shifts = group.shifts.where(county_id: county).where("dispatch_role is not null").order(:dispatch_role)
         shifts = shifts.map{|sh| Scheduler::ShiftAssignment.where(date: date, shift_id: sh).first }.compact
 
         @people = @people + shifts.map(&:person)
         person_list = shifts.map(&:person_id) + backups
-        csv << ([county.name, local_offset(date, group.start_offset), local_offset(date, group.end_offset)] + person_list)
+
+        start_time = local_offset(date, group.start_offset)
+        end_time = local_offset(date, group.end_offset)
+
+        if latest_time and latest_time > start_time
+          raise "A configuration error has occurred and shifts are overlapping"
+        end
+        latest_time = local_offset(date, group.end_offset)
+
+        csv << ([county.name, start_time, end_time] + person_list)
       end
     end
   end

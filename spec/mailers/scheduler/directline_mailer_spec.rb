@@ -16,6 +16,9 @@ describe Scheduler::DirectlineMailer do
     @leadshift = FactoryGirl.create :shift, shift_group: @day, dispatch_role: 1, positions: [@position], county: @county1
     @othershift = FactoryGirl.create :shift, shift_group: @day, positions: [@position], county: @county1
 
+    @leadnight = FactoryGirl.create :shift, shift_group: @night, dispatch_role: 1, positions: [@position], county: @county1
+    @othernight = FactoryGirl.create :shift, shift_group: @night, positions: [@position], county: @county1
+
     @leadass = FactoryGirl.create :shift_assignment, person: @people1.first, date: @chapter.time_zone.today, shift: @leadshift
     FactoryGirl.create :shift_assignment, person: @people1[1], date: @chapter.time_zone.today, shift: @othershift
 
