@@ -12,7 +12,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
 
     tag :scheduler, :reminders, :email_invite
     mail to: format_address(assignment.person), subject: "#{assignment.shift.name} on #{assignment.date.strftime("%b %d")}" do |format|
-      format.text
+      format.html
       format.ics
     end
   end

@@ -1,0 +1,19 @@
+%p
+  #{item.person.first_name}:
+
+%p
+  This is a calendar invite for the DAT shift you recently signed up with.  Accept the invite to automatically add the shift to your calendar.
+
+%p
+  You are signed up as <%= item.shift.name %> for the <%= item.shift.shift_group.name %> shift
+  - if item.shift.shift_group.period == 'daily'
+    on #{item.date.strftime("%A, %B %d")} from #{item.local_start_time.strftime("%l:%M%p").strip} to #{item.local_end_time.strftime("%l:%M%p").strip}.
+  - else
+    from #{item.local_start_time.strftime("%A, %B %D at %k:%M%p")} to #{item.local_end_time.strftime("%A, %B %D at %k:%M%p")}.
+%br
+%br
+%p
+  \--
+%p
+  This message is sent by the ARCBA DAT Scheduling System.  Edit your notification preferences here:
+  =link_to me_scheduler_notification_settings_url, me_scheduler_notification_settings_url

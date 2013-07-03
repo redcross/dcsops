@@ -1,0 +1,39 @@
+%p
+  -if @incident.dispatch_log.try(:delivered_at)
+    An incident has been dispatched:
+  -else
+    A New Dispatch Request Was Received:
+
+%p
+  Incident: #{@incident.incident_number}
+  %br
+  County: #{@incident.county_name}
+  %br
+  -if dispatch = @incident.dispatch_log
+    Incident Type: #{dispatch.incident_type}
+    %br
+    Address: #{dispatch.address}
+    %br
+    \# Displaced: #{dispatch.displaced}
+    %br
+    Services Requested: #{dispatch.services_requested}
+    %br
+    Agency: #{dispatch.agency}
+    %br
+    Contact: #{dispatch.contact_name}
+    %br
+    Phone: #{dispatch.contact_phone}
+    %br
+  -if dispatch and dispatch.delivered_at
+    Delivered At: #{dispatch.delivered_at.to_s :date_time}
+    %br
+    Delivered To: #{dispatch.delivered_to}
+
+%p
+  -if dispatch
+    History:
+    %br
+    - dispatch.log_items.sort_by(&:action_at).each do |item|
+      - next if item.action_type =~ /^SMS/
+      #{item.action_type}: #{item.recipient} - #{item.result}
+      %br

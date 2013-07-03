@@ -1,0 +1,27 @@
+%p
+  Hello,
+%p
+  This is to confirm that a DAT shift has been swapped.
+
+%p
+  Date: #{ @from.date.to_s :dow_long }
+  %br
+  Shift: #{ @from.shift.shift_group.name } #{ @from.shift.name }
+  %br
+  From: #{ @from.person.full_name }
+  %br
+  To: #{ @to.person.full_name }
+
+%p
+  The contact information on file for #{ @to.person.first_name } is:
+  %br
+  - @to.person.phone_order.each_with_index do |ph, i|
+    #{ i }: #{ ph[:number] }
+
+%p
+  If you believe this is in error or have any questions, please contact your DAT Administrator.
+%p
+  \--
+%p
+  This message is sent by the ARCBA DAT Scheduling System.  Edit your notification preferences here:
+  =link_to me_scheduler_notification_settings_url, me_scheduler_notification_settings_url

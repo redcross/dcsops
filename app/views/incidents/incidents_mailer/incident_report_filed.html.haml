@@ -1,0 +1,37 @@
+- dat = @incident.dat_incident
+%p
+  A New DAT Incident Report was filed.  See full details at 
+  =link_to incidents_incident_url(@incident), incidents_incident_url(@incident)
+
+%p
+  Incident: #{@incident.incident_number}
+  %br
+  County: #{@incident.county_name}
+  %br
+  Address: #{@incident.address} #{@incident.city} #{@incident.city} #{@incident.state}
+  %br
+  Notification Received: #{@incident.created_at.to_s :date_time}
+
+%p
+  Incident Type: #{dat.incident_type.titleize}
+  %br
+  Incident Call Type: #{dat.incident_call_type.titleize}
+  %br
+  Structure Type: #{dat.structure_type.titleize}
+
+%p
+  Population: #{pluralize dat.num_adults, "adult"}, #{pluralize dat.num_children, 'child'}
+  %br
+  Population: #{dat.num_people_injured} injured, #{dat.num_people_hospitalized} hospitalized, #{dat.num_people_deceased} deceased
+  %br
+  Families: #{dat.num_families}
+  %br
+  Units: #{dat.units_total}
+
+%p
+  Damage Assessment: #{dat.units_destroyed} destroyed, #{dat.units_major} major, #{dat.units_minor} minor, #{dat.units_affected} affected
+
+%p
+  Services Provided: #{@incident.services_description}
+  %br
+  Narrative: #{dat.narrative}

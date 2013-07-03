@@ -1,0 +1,17 @@
+%p
+  Hello, #{@setting.person.first_name}
+%p
+  Currently Outstanding Shift Swaps:
+
+- @swap_groups.each do |county, shifts|
+  %p
+    #{county.name}:
+    %br
+  - shifts.each do |shift|
+    #{shift.date.to_s :dow_short} - #{shift.shift.shift_group.name} #{shift.shift.name} for #{shift.person.full_name}
+    %br
+%p
+  \--
+%p
+  This message is sent by the ARCBA DAT Scheduling System.  Edit your notification preferences here:
+  =link_to me_scheduler_notification_settings_url, me_scheduler_notification_settings_url

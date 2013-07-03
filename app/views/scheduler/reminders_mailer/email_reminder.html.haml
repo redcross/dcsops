@@ -1,0 +1,43 @@
+%p
+  #{item.person.first_name}:
+%p
+  This is just a friendly automatic reminder that you have an upcoming Red Cross DAT shift!
+%p
+  You are signed up as #{item.shift.name} for the #{ item.shift.shift_group.name } shift
+  - if item.shift.shift_group.period == 'daily'
+    on #{ item.date.strftime("%A, %B %d") } from #{ item.local_start_time.strftime("%l:%M%p").strip } to #{ item.local_end_time.strftime("%l:%M%p").strip }.
+  - else
+    from #{ item.local_start_time.strftime("%A, %B %D at %k:%M%p") } to #{ item.local_end_time.strftime("%A, %B %D at %k:%M%p") }.
+
+%p
+  - if shift_lead and shift_lead != item.person
+    The lead for your shift is #{ shift_lead.person.full_name }, phone #{ shift_lead.person.phone_order.first(2).map{|ph| "#{ph[:number]}"}.join(" or ") }
+    %br
+    If we get a DAT call-out, #{ shift_lead.person.first_name } will contact you at the following phone numbers:
+  - else
+    If we get a DAT call-out, the team lead will contact you at the following phone numbers:
+
+%p
+  - item.person.phone_order.first(2).each_with_index do |ph, index|
+    Your Phone #{ %w(First Second)[index] }: #{ ph[:number] }
+    %br
+
+%p
+  Please make sure that you are reachable on one or both of these numbers at all times throughout your shift! Remember that we commit to one-hour response time to a call. If one of these numbers is a cell phone, please keep it with you at all times, with the ringer on and loud enough that you can hear it, and sufficient battery charge to accept the call and last throughout the deployment of the call.
+%p
+  If your availability changes between now and the end of your shift, or the phone numbers shown above are incorrect, please contact the shift lead as soon as possible.
+
+%p
+  Your team for this shift is:
+  %br
+  - other_assignments.each do |ass|
+    #{ ass.shift.name }: #{ ass.person.full_name }, #{ ass.person.phone_order.first(2).map{|ph| "#{ph[:number]} (#{ph[:label][0].upcase})"}.join(", ") }
+    %br
+
+%p
+  THANK YOU for your participation on Red Cross DAT! Our work is important and brings comfort and reassurance to people in a time of exceptional need.
+%p
+  \--
+%p
+  This message is sent by the ARCBA DAT Scheduling System.  Edit your notification preferences here:
+  =link_to me_scheduler_notification_settings_url, me_scheduler_notification_settings_url
