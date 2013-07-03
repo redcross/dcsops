@@ -28,4 +28,19 @@ class Incidents::HomeController < Incidents::BaseController
   def is_subscribed_weekly
     Incidents::NotificationSetting.where{(person_id==my{current_user}) & (notification_type == 'weekly')}.exists?
   end
+
+  helper_method :incident_stats_boxes
+  def incident_stats_boxes
+    month_begin = current_user.chapter.time_zone.today.at_beginning_of_month
+    last_month = month_begin.last_month
+
+    fy_begin = month_begin.advance months: (month_begin.month >= 7) ? -(month_begin.month - 7) : -(month_begin.month + 6)
+
+    five_fy_begin = fy_begin.advance years: -4
+
+    {"#{month_begin.strftime("%B")} To Date" => Incidents::Incident.unscoped.where{date >= month_begin}.incident_stats, 
+    "#{last_month.strftime("%B")}" => Incidents::Incident.unscoped.where{date.in(last_month..(last_month.at_end_of_month))}.incident_stats, 
+    "FYTD" => Incidents::Incident.where{date >= fy_begin}.incident_stats, 
+    "5 Years" => Incidents::Incident.where{date >= five_fy_begin}.incident_stats}
+  end
 end

@@ -25,8 +25,8 @@
     %h2.center
       #{current_user.chapter.short_name} DAT Incidents
     .row
-      - {"30 Days" => Incidents::Incident.unscoped.where{date >= 1.month.ago}.incident_stats, "This Year" => Incidents::Incident.where{date >= "2012-07-01"}.incident_stats, "5 Years" => Incidents::Incident.where{date >= 5.years.ago}.incident_stats}.each do |title, stats|
-        .span3
+      - incident_stats_boxes.each_with_index do |(title, stats), idx|
+        %div{class: idx==0 ? 'span3' : 'span2'}
           %h3.center=title
           %p.center.lead
             %small
@@ -34,10 +34,12 @@
               =pluralize stats.incident_count, "Incident"
               %br
               %i.icon-group
-              =pluralize stats.case_count, "Family"
+              =pluralize stats.family_count, "Family"
               %br
               %i.icon-user
               =pluralize stats.client_count, "Client"
+
+
 .row
   .span4
     %h4 Recent Incidents

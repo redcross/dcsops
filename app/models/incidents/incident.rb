@@ -113,6 +113,6 @@ class Incidents::Incident < ActiveRecord::Base
   end
 
   scope :incident_stats, lambda {
-    order(nil).select{[count(id).as(:incident_count), sum(num_cases).as(:case_count), sum(num_adults + num_children).as(:client_count)]}.first
+    order(nil).select{[count(id).as(:incident_count), sum(num_cases).as(:case_count), sum(num_families).as(:family_count), sum(num_adults + num_children).as(:client_count)]}.first
   }
 end
