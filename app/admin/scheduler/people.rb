@@ -35,7 +35,12 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
   end
 
   show do
-    attributes_table
+    attributes_table do
+      row :first_name
+      row :vc_id
+      row :vc_member_number
+    end
+    
     columns do
       column do
         panel "Positions" do

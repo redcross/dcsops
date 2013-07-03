@@ -7,6 +7,7 @@ module AutoGeocode
 
   def geocode_address
     return if Rails.env.test?
+    return if address1 == 'Address' and city == 'City'
     
     if lat.nil? or lng.nil? or (changed & %w(address1 address2 city state zip)).present?
       res = Geokit::Geocoders::GoogleV3Geocoder.geocode( [address1, address2, city, state, zip].join(" "))
