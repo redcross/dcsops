@@ -90,6 +90,15 @@ class Incidents::Incident < ActiveRecord::Base
     [incident_number, county.try(:name), date.to_s, dat_incident.try(:incident_type)].compact.join " "
   end
 
+  def time_to_on_scene
+    received = self.event_logs.where{event.in(['dispatch_received', 'dispatch_note', 'dat_received'])}.order{event_time}.first
+    on_scene = self.event_logs.where{event.in(['dat_on_scene'])}.first
+
+    if received and on_scene
+      on_scene.event_time - received.event_time
+    end
+  end
+
   def link_to_cas_incident(cas)
     raise "Already have a CAS Incident" if cas_incident.present?
     raise "CAS Incident is already linked" if cas.incident.present?
