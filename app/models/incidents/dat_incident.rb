@@ -45,11 +45,6 @@ class Incidents::DatIncident < ActiveRecord::Base
 
   attr_accessor :search_for_address
 
-  # Temp fields for form work
-  attr_accessor :canteened_responders, :canteened_clients, :meal_provided, :meal_meals, :meal_vendor#:breakfast_provided, :breakfast_meals, :breakfast_vendor, :lunch_provided, :lunch_meals, :lunch_vendor, :dinner_provided, :dinner_meals, :dinner_vendor
-  attr_accessor :evac_facility_name, :shelter_facility_name, :hotel_name, :hotel_rate
-  attr_accessor :languages
-
   [:responder_notified=, :responder_arrived=, :responder_departed=].each do |sym|
     define_method sym do |val|
       if val.is_a? String
@@ -78,14 +73,11 @@ class Incidents::DatIncident < ActiveRecord::Base
   end
 
   def update_timeline
-    if responder_notified
-      incident.event_logs.where(event: 'dat_received').first_or_initialize.update_attributes event_time: responder_notified
-    end
-    if responder_arrived
-      incident.event_logs.where(event: 'dat_on_scene').first_or_initialize.update_attributes event_time: responder_arrived
-    end
-    if responder_departed
-      incident.event_logs.where(event: 'dat_departed_scene').first_or_initialize.update_attributes event_time: responder_departed
+    {'dat_received' => :responder_notified, 'dat_on_scene' => :responder_arrived, 'dat_departed_scene' => :responder_departed}.each do |event, attr|
+      val = self.send(attr)
+      if val
+        incident.event_logs.where(event: event).first_or_initialize.update_attributes event_time: val
+      end
     end
   end
 

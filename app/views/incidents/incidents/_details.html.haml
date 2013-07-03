@@ -11,12 +11,16 @@ County
 
 %h3 
   DAT Details
-  -if resource.dat_incident && can?( :update, resource.dat_incident)
+  -if dat && can?( :update, resource.dat_incident)
     %small
       =link_to "Edit", edit_incidents_incident_dat_path(resource)
-  -elsif resource.dat_incident.nil? && can?( :create, Incidents::DatIncident)
+  -elsif dat.nil? && can?( :create, Incidents::DatIncident)
     %small
       =link_to "Submit Report", edit_incidents_incident_dat_path(resource)
+  -if dat
+    %small
+      Submitted By:
+      =dat.completed_by.try(:full_name)
 -if dat
   .row
     .span4
@@ -79,6 +83,28 @@ County
         %tr
           %th Assistance Provided
           %td=resource.services_description
+        -if resource.evac_partner_use
+          %tr
+            %th Evac Center
+            %td=resource.evac_partner_use.partner_name
+        -if resource.feeding_partner_use
+          %tr
+            %th Feeding Vendor
+            %td=resource.feeding_partner_use.partner_name
+          %tr
+            %th Meals Served
+            %td=resource.feeding_partner_use.meals_served
+        -if resource.hotel_partner_use
+          %tr
+            %th Hotel
+            %td=resource.hotel_partner_use.partner_name
+          %tr
+            %th Rooms Booked
+            %td=resource.hotel_partner_use.hotel_rooms
+        -if resource.shelter_partner_use
+          %tr
+            %th Shelter Opened
+            %td=resource.shelter_partner_use.partner_name
   .row
     .span4
       %h4 Description

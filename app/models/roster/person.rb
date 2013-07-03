@@ -1,4 +1,6 @@
 class Roster::Person < ActiveRecord::Base
+  include AutoGeocode
+
   belongs_to :chapter, class_name: 'Roster::Chapter'
   belongs_to :primary_county, class_name: 'Roster::County'
 
@@ -45,8 +47,6 @@ class Roster::Person < ActiveRecord::Base
 
   accepts_nested_attributes_for :county_memberships, :position_memberships, allow_destroy: true
 
-  before_save :geocode_address
-
   def has_role(grant_name)
     roles.select{|p| p.grant_name == grant_name}.present?
   end
@@ -82,27 +82,6 @@ class Roster::Person < ActiveRecord::Base
 
   def full_address
     "#{address1} #{address2} #{city}, #{state}, #{zip}"
-  end
-
-  def geocode_address
-    return if Rails.env.test?
-
-    return
-    
-    if lat.nil? or lng.nil? or (changed & %w(address1 address2 city state zip)).present?
-      puts 'geocoding'
-      res = Geokit::Geocoders::GoogleV3Geocoder.geocode( [address1, address2, city, state, zip].join(" "))
-      if res
-        (self.lat, self.lng) = res.lat, res.lng
-      end
-    end
-
-    return true
-  rescue TooManyQueriesError
-    self.lat = nil
-    self.lng = nil
-
-    return true
   end
 
   def sms_addresses

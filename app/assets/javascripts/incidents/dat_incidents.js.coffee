@@ -61,7 +61,6 @@ class window.DatIncidentsFormController
       if (data.show)
         shown = $(data.show)
         shown.collapse('show')
-      console.log data, $(data.show), $(data.hide)
       if (data.hide)
         $(data.hide).not(shown).collapse('hide')
 

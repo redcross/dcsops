@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130629042250) do
+ActiveRecord::Schema.define(version: 20130703194021) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "resource_id",   null: false
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 20130629042250) do
     t.integer  "comfort_kits_used"
     t.integer  "blankets_used"
     t.integer  "completed_by_id"
+    t.text     "languages"
   end
 
   add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true
@@ -225,6 +226,10 @@ ActiveRecord::Schema.define(version: 20130629042250) do
     t.datetime "updated_at"
     t.datetime "last_no_incident_warning"
     t.boolean  "ignore_incident_report"
+    t.boolean  "evac_partner_used",        default: false
+    t.boolean  "hotel_partner_used",       default: false
+    t.boolean  "shelter_partner_used",     default: false
+    t.boolean  "feeding_partner_used",     default: false
   end
 
   add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id"
@@ -241,12 +246,27 @@ ActiveRecord::Schema.define(version: 20130629042250) do
     t.integer  "person_id"
     t.integer  "county_id"
     t.string   "notification_type"
+    t.boolean  "persistent",        default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "incidents_notification_subscriptions", ["county_id"], name: "index_incidents_notification_subscriptions_on_county_id"
   add_index "incidents_notification_subscriptions", ["person_id"], name: "index_incidents_notification_subscriptions_on_person_id"
+
+  create_table "incidents_partner_uses", force: true do |t|
+    t.integer  "incident_id"
+    t.integer  "partner_id"
+    t.string   "role"
+    t.decimal  "hotel_rate"
+    t.integer  "hotel_rooms"
+    t.integer  "meals_served"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_partner_uses", ["incident_id"], name: "index_incidents_partner_uses_on_incident_id"
+  add_index "incidents_partner_uses", ["partner_id"], name: "index_incidents_partner_uses_on_partner_id"
 
   create_table "incidents_responder_assignments", force: true do |t|
     t.integer  "person_id"
@@ -299,6 +319,19 @@ ActiveRecord::Schema.define(version: 20130629042250) do
   end
 
   add_index "motds", ["chapter_id"], name: "index_motds_on_chapter_id"
+
+  create_table "partners_partners", force: true do |t|
+    t.string   "name"
+    t.string   "address1"
+    t.string   "address2"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.decimal  "lat"
+    t.decimal  "lng"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "roster_cell_carriers", force: true do |t|
     t.string   "name"

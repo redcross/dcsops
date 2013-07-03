@@ -130,15 +130,20 @@ describe "DAT Incident Report" do
     check 'Translation'
     check 'Spanish'
 
-    check 'Meal provided'
-    fill_in 'Meal meals', with: 100
-    fill_in 'Meal vendor', with: 'McDonalds'
+    check 'Meal Served'
+    fill_in 'Meals served*', with: 100
+    fill_in 'incidents_dat_incident_incident_attributes_incident_id_feeding_partner_use_text', with: 'McDonalds'
 
-    click_button 'Yes'
-    fill_in 'Evac facility name', with: 'Bill Graham'
+    check 'Evacuation Center Opened'
+    fill_in 'incidents_dat_incident_incident_attributes_incident_id_evac_partner_use_text', with: 'Bill Graham'
 
-    click_button 'Shelter Opened'
-    fill_in 'Shelter facility name', with: 'YMCA'
+    check 'Shelter Opened'
+    fill_in 'incidents_dat_incident_incident_attributes_incident_id_shelter_partner_use_text', with: 'YMCA'
+
+    check 'Hotel/Motel Provided'
+    fill_in 'incidents_dat_incident_incident_attributes_incident_id_hotel_partner_use_text', with: 'Holiday Inn'
+    fill_in 'Hotel rate*', with: 129.00
+    fill_in 'Rooms Booked*', with: 1
 
     fill_in 'Comfort kits used*', with: 10
     fill_in 'Blankets used*', with: 20

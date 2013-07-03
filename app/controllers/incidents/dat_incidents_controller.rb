@@ -71,43 +71,34 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     end
   end
 
+  def prepare_resource(obj)
+    obj.build_incident if obj.incident.nil?
+    obj.incident.build_evac_partner_use if obj.incident.evac_partner_use.nil?
+    obj.incident.build_feeding_partner_use if obj.incident.feeding_partner_use.nil?
+    obj.incident.build_hotel_partner_use if obj.incident.hotel_partner_use.nil?
+    obj.incident.build_shelter_partner_use if obj.incident.shelter_partner_use.nil?
+
+    inc_attrs = incident_params
+    obj.incident.attributes = inc_attrs if inc_attrs
+    obj.incident.build_team_lead role: 'team_lead', response: 'available' unless obj.incident.team_lead
+
+    
+  end
+
   def build_resource
-    return @_build_resource if @_build_resource
+    return @dat_incident if @dat_incident
 
     obj = super
 
     obj.completed_by ||= current_user
-    obj.build_incident if obj.incident.nil?
-    obj.incident.attributes = incident_params if incident_params
-    obj.incident.build_team_lead role: 'team_lead', response: 'available' unless obj.incident.team_lead
+    prepare_resource(obj)    
 
-    #scheduled_responders(obj).each do |resp|
-    #  obj.responder_assignments.build person: resp.person unless obj.responder_assignments.detect{|ra| ra.person == resp.person}
-    #end
-
-    @_build_resource = obj
+    @dat_incident = obj
   end
 
-  def update_resource(object, attributes)
-    object.build_incident if object.incident.nil?
-    object.incident.attributes = incident_params if incident_params
-    object.update_attributes(*attributes)
+  def resource
+    @dat_incident ||= super.tap{|obj| prepare_resource(obj) }
   end
-
-    #def build_resource
-    #  rec = super
-    #  params = resource_params.first || {}
-    #  if params[:incident_id].nil?
-    #    rec.build_incident params[:incident_attributes]
-    #  end
-    #  if params[:responder_assignments_attributes]
-    #    params[:responder_assignments_attributes].each do |data|
-    #      rec.responder_assignments.build data
-    #    end
-    #  end
-    #  rec.responder_assignments.build
-    #  rec
-    #end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
@@ -121,14 +112,10 @@ class Incidents::DatIncidentsController < Incidents::BaseController
              :responder_notified, :responder_arrived, :responder_departed,
              :units_total, :units_affected, :units_minor, :units_major, :units_destroyed,
              :structure_type, :comfort_kits_used, :blankets_used,
-             vehicle_ids: []
+             {vehicle_ids: []},
+             {languages: []},
+             {services: []}
            ]
-
-      keys += [
-        {languages: []}
-      ]
-
-      keys << {:services => []}
 
       args = params.require(:incidents_dat_incident).permit(*keys)
       #if args[:incident_attributes]
@@ -140,10 +127,26 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
     def incident_params
       return nil if request.get?
+      return @_incident_params if defined?(@_incident_params)
 
-      @_incident_params ||= params.require(:incidents_dat_incident).permit({:incident_attributes => [
-        :team_lead_attributes => [:id, :person_id, :role, :response],
-        :responder_assignments_attributes => [:id, :person_id, :role, :response, :_destroy, :was_flex]
-      ]})[:incident_attributes]
+      partner_use_params = [:partner_id, :partner_name, :hotel_rate, :hotel_rooms, :meals_served]
+
+      base = params.require(:incidents_dat_incident)[:incident_attributes]
+      if base
+        @_incident_params ||= base.permit([
+          {:team_lead_attributes => [:id, :person_id, :role, :response]},
+          {:responder_assignments_attributes => [:id, :person_id, :role, :response, :_destroy, :was_flex]},
+          :evac_partner_used,
+          {:evac_partner_use_attributes => partner_use_params},
+          :feeding_partner_used,
+          {:feeding_partner_use_attributes => partner_use_params},
+          :shelter_partner_used,
+          {:shelter_partner_use_attributes => partner_use_params},
+          :hotel_partner_used,
+          {:hotel_partner_use_attributes => partner_use_params}
+        ])
+      else
+        {}
+      end
     end
 end

@@ -23,6 +23,8 @@ class AdminAbility
 
       can :manage, ImportLog
       can :manage, MOTD
+
+      can :manage, Partners::Partner
     end
 
   end

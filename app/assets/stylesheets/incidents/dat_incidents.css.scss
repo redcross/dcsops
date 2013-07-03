@@ -21,7 +21,6 @@ table.form-table {
     //margin: 0 0 0 20px;
   }
 }
-
 body.incidents.dat_incidents {
   input, select {
     width: 90%;
@@ -34,7 +33,12 @@ body.incidents.dat_incidents {
   }
 
   .controls {
-    width: 172px;
+    //width: 172px;
+    margin-right: 20px;
+  }
+
+  .collapse.overflow-visible.in {
+    overflow: visible;
   }
 
   form {

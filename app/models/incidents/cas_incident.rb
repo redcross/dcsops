@@ -3,7 +3,7 @@ class Incidents::CasIncident < ActiveRecord::Base
   has_many :cases, class_name: 'Incidents::CasCase'
   alias :cas_cases :cases
 
-  validates :incident_id, :cas_incident_number, :dr_number, uniqueness: {allow_blank: true, allow_nil: true}
+  #validates :incident_id, :cas_incident_number, :dr_number, uniqueness: {allow_blank: true, allow_nil: true}
 
   def is_dr
     dr_number != cas_incident_number
