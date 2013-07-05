@@ -3,6 +3,7 @@ class Incidents::DispatchImporter
   def self.parse_ampm(chapter, date, time)
     m = /(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}) (AM|PM)/.match("#{date} #{time}")
     hr = m[4].to_i
+    hr -= 12 if hr == 12
     hr += 12 if m[6] == 'PM'
     chapter.time_zone.parse "#{m[3]}-#{m[1]}-#{m[2]} #{hr}:#{m[5]}"
   end
@@ -15,17 +16,17 @@ class Incidents::DispatchImporter
   MATCHERS = {
     /^\s*TAKEN: DATE: ([\d\/]+) TIME: ([\d:]+ (AM|PM))$/ => ->(matches,chapter){ {received_at: parse_ampm(chapter, matches[1], matches[2])} },
     /^\s*DELIVERED: DATE: ([\d\/]+)\s+TIME: ([\d:]+ (AM|PM))\s*\nDELIVERED TO:\s*(.*)\s*(INCIDENT.*)?$/ => ->(matches,chapter){ {delivered_at: parse_ampm(chapter, matches[1], matches[2]), :delivered_to => matches[4]} },
-    /^\s*Incident#: (\d{2}-\d{3})$/ => (->(matches,chapter){ {incident_number: matches[1]} }),
-    /^\s*Incident: (.*)$/ => ->(matches,chapter){ {incident_type: matches[1]} },
-    /^\s*Address: (.*)$/ => ->(matches,chapter){ {address: matches[1]} },
-    /^\s*X-Street: (.*)$/ => ->(matches,chapter){ {cross_street: matches[1]} },
+    /^\s*Incident#: (\d{2}-\d{3})$/ => (->(matches,chapter){ {incident_number: matches[1].strip} }),
+    /^\s*Incident: (.*)$/ => ->(matches,chapter){ {incident_type: matches[1].strip} },
+    /^\s*Address: (.*)$/ => ->(matches,chapter){ {address: matches[1].strip} },
+    /^\s*X-Street: (.*)$/ => ->(matches,chapter){ {cross_street: matches[1].strip} },
     /^\s*County: (.*)$/ => ->(matches,chapter){ {county_name: matches[1].try(:titleize)} },
     /^\s*# Displaced: (\d*)$/ => ->(matches,chapter){ {displaced: matches[1]} },
     /^\s*Services Requested: (.*)\n\s+: (.*)\n\s+: (.*)$/ => ->(matches,chapter){ {services_requested: matches[1..3].compact.map(&:strip).join(" ").strip} },
-    /^\s*Agency: (.*)$/ => ->(matches,chapter){ {agency: matches[1]} },
-    /^\s*Contact: (.*)$/ => ->(matches,chapter){ {contact_name: matches[1]} },
-    /^\s*Phone: (.*)$/ => ->(matches,chapter){ {contact_phone: matches[1]} },
-    /^\s*Caller ID: (.*)$/ => ->(matches,chapter){ {caller_id: matches[1]} },
+    /^\s*Agency: (.*)$/ => ->(matches,chapter){ {agency: matches[1].strip} },
+    /^\s*Contact: (.*)$/ => ->(matches,chapter){ {contact_name: matches[1].strip} },
+    /^\s*Phone: (.*)$/ => ->(matches,chapter){ {contact_phone: matches[1].strip} },
+    /^\s*Caller ID: (.*)$/ => ->(matches,chapter){ {caller_id: matches[1].strip} },
   }
 
   HISTORY_MATCHER = {
@@ -39,10 +40,12 @@ class Incidents::DispatchImporter
     }
 
   def map_log_items(log, incident, details)
-    received = incident.event_logs.find_or_initialize_by(event: 'dispatch_received')
-    received.event_time = log.received_at
-    received.message = details.gsub(/-+/, "").gsub(/\n{3,}/, "\n\n")
-    received.save!
+    if log.received_at
+      received = incident.event_logs.find_or_initialize_by(event: 'dispatch_received')
+      received.event_time = log.received_at
+      received.message = details.gsub(/-+/, "").gsub(/\n{3,}/, "\n\n")
+      received.save!
+    end
 
     if log.delivered_at
       relayed = incident.event_logs.find_or_initialize_by(event: 'dispatch_relayed')
@@ -68,12 +71,14 @@ class Incidents::DispatchImporter
         
         return false
       else
+        inc_date = log_object.received_at ? log_object.received_at.in_time_zone(@chapter.time_zone).to_date : @chapter.time_zone.today
         log_object.create_incident! incident_number: log_object.incident_number, 
                                             chapter: @chapter,
-                                               date: log_object.received_at.in_time_zone(@chapter.time_zone).to_date,
+                                               date: inc_date,
                                              county: @chapter.counties.where{name == log_object.county_name}.first
         log_object.save!
         inc = log_object.incident
+        geocode_incident(log_object, inc)
         return true
       end
     end
@@ -93,13 +98,15 @@ class Incidents::DispatchImporter
     return if Rails.env.test?
 
     incident.address = log_object.address
-    res = Geokit::Geocoders::GoogleV3Geocoder.geocode "#{log_object.address}, #{log_object.county_name}, CA, USA"
+    res = Geokit::Geocoders::GoogleV3Geocoder.geocode "#{log_object.address}, #{log_object.county_name} County, CA, USA"
     if res
       incident.lat = res.lat
       incident.lng = res.lng
     end
   rescue Geokit::TooManyQueriesError
     # Not the end of the world
+  rescue => e
+    Raven.capture_exception(e)
   end
 
   def import_data(chapter, body)

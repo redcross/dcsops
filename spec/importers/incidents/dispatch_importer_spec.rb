@@ -192,4 +192,58 @@ describe Incidents::DispatchImporter do
       inc.event_logs.should have(9).items
     end
   end
+
+  describe "4.txt" do
+    let(:county) {FactoryGirl.create :county, chapter: chapter, name: 'San Francisco'}
+    let(:incident_details) {
+      {incident_number: '14-004',
+            incident_type: 'Structure Fire',
+            address: '123 Main St Street, SAN FRANCISCO',
+            cross_street: 'Mission & Howard',
+            county_name: 'San Francisco',
+            displaced: "4",
+            services_requested: 'Everything - shelter, food and clothing (red cross case , reference number for fire dept is )',
+            agency: 'The American Red Cross',
+            contact_name: 'SF Fire Department',
+            contact_phone: '(415)5551212',
+            caller_id: '8005551212',
+            received_at: nil,
+            delivered_at: chapter.time_zone.parse( "2013-07-05 00:25:00")}
+    }
+    let(:num_event_logs) {10}
+    let(:incident_attributes) {
+      {incident_number: '14-004', date: chapter.time_zone.today, county: county, chapter: chapter}
+    }
+    it "should parse the incident" do
+      import
+
+      inc = Incidents::DispatchLog.first
+      inc.should_not be_nil
+
+      incident_details.each do |attr, val|
+        inc.send(attr).should eq(val)
+      end
+
+    end
+
+    it "should parse the event logs" do
+      import
+
+      inc = Incidents::DispatchLog.first
+      inc.should_not be_nil
+
+      inc.log_items.should have(num_event_logs).items
+    end
+
+    it "should create an incident" do
+      import
+
+      inc = Incidents::Incident.first
+      inc.should_not be_nil
+
+      incident_attributes.each do |attr, val|
+        inc.send(attr).should eq(val)
+      end
+    end
+  end
 end

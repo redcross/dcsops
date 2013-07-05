@@ -1,0 +1,64 @@
+         ---------------------------------------------------
+    TAKEN:
+
+DELIVERED: DATE: 07/05/2013 TIME: 12:25 AM
+DELIVERED TO: BOB RESPONDER
+
+Incident#: 14-004
+   Reason: LOCAL EMERGENCY INCIDENT
+   Caller: AGENCY
+ Incident: Structure Fire
+  Address: 123 Main St Street, SAN FRANCISCO
+ X-Street: Mission & Howard 
+   County: SAN FRANCISCO
+
+       # Displaced: 4
+Services Requested: Everything - shelter, food and clothing  
+                  : (red cross case , reference number for fire dept is
+                  : )
+
+   Agency: The American Red Cross
+  Contact: SF Fire Department
+    Phone: (415)5551212
+
+Caller ID: 8005551212
+
+============ Message Dispatch History ===================
+
+07/05/2013 12:25 AM [Auto Action E-Mail Submitted to Queue]  OFC - EMAIL 
+                    (SYS!) 21251520000123GEM150526 
+
+07/05/2013 12:24 AM [Dial] 415-555-1212 RESPONDER, BOB - CELL 
+                    (NCD)  
+
+07/05/2013 12:18 AM [SMS Message successfully sent]  RESPONDER, BOB - TEXT/SMS 
+                    (SYS!) 03 
+
+07/05/2013 12:17 AM [SMS Message successfully sent]  RESPONDER, BOB - TEXT/SMS 
+                    (SYS!) 02 
+
+07/05/2013 12:17 AM [SMS Message successfully sent]  RESPONDER, BOB - TEXT/SMS 
+                    (SYS!) 01 
+
+07/05/2013 12:17 AM [SMS Message submitted to SMS Server]  RESPONDER, BOB - TEXT/SMS 
+                    (SYS!) 03 
+
+07/05/2013 12:17 AM [SMS Message submitted to SMS Server]  RESPONDER, BOB - TEXT/SMS 
+                    (SYS!) 02 
+
+07/05/2013 12:17 AM [SMS Message submitted to SMS Server]  RESPONDER, BOB - TEXT/SMS 
+                    (SYS!) 01 
+
+07/05/2013 12:17 AM [SMS/Text Message submitted to Queue] 4155551212 RESPONDER, BOB - TEXT/SMS 
+                    (NCD)  
+
+07/05/2013 12:17 AM [Auto Action E-Mail Submitted to Queue]  OFC - EMAIL 
+                    (SYS!) 21251520000123GEM103342 
+
+
+
+
+,21251520000123GEM2854417
+
+
+     
