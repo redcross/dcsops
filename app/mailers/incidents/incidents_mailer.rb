@@ -23,7 +23,7 @@ class Incidents::IncidentsMailer < ActionMailer::Base
     
     @incidents = Incidents::Incident.where{date.in(my{@start_date..@end_date})}.order{date}.to_a
     @weekly_stats = Incidents::Incident.where{date.in(my{@start_date..@end_date})}.incident_stats
-    @yearly_stats = Incidents::Incident.where{date >= '2012-07-01'}.incident_stats
+    @yearly_stats = Incidents::Incident.where{date >= '2013-07-01'}.incident_stats
 
     @deployments = Incidents::Deployment.includes{person.counties}.where{date_last_seen >= my{@start_date}}.uniq.to_a
                                         .sort_by{|a| a.person.counties.first.try(:name) || '' }
