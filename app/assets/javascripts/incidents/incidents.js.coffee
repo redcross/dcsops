@@ -45,11 +45,9 @@ class window.IncidentLocationController
       this.getFieldVal(fname)
     return unless vals[0]? and vals[0] != ''
     query = vals.join(", ")
-    console.log query
     @coder.geocode {address:query, location: @map.getCenter(), bounds: @bounds}, (results, status) =>
       if (status == google.maps.GeocoderStatus.OK)
         result = results[0]
-        console.log result
         pos = result.geometry.location
         @map.setCenter pos
         @map.setZoom 12
@@ -72,14 +70,12 @@ class window.IncidentLocationController
             else if type == 'postal_code'
               this.setFieldVal('zip', el.long_name)
       else
-        console.log status, results
         @marker.setMap null
 
 class window.AllIncidentsMapController
 
   constructor: (objects) ->
     dom = $('.all-incidents-map')[0]
-    console.log dom
     google.maps.visualRefresh = true
     opts =
       zoom: 9

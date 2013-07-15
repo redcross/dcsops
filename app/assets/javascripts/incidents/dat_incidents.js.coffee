@@ -51,7 +51,7 @@ class window.DatIncidentsFormController
     $(document).on 'click', '.housing buttonasdf', (evt) =>
       evt.preventDefault()
       show = $(evt.target).data('show')
-      console.log show, $(".housing-collapse .collapse[data-show=#{show}]"), $(".housing-collapse .collapse[data-show!=#{show}]")
+      #console.log show, $(".housing-collapse .collapse[data-show=#{show}]"), $(".housing-collapse .collapse[data-show!=#{show}]")
       $(".housing-collapse .collapse[data-show=#{show}]").collapse('show')
       $(".housing-collapse .collapse[data-show!=#{show}]").collapse('hide')
 

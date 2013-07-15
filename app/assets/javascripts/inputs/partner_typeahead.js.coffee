@@ -57,12 +57,11 @@ class window.PartnerTypeaheadController
         else "New Partner: #{item}"
 
   addNewItemRow: (serverData, name, process) ->
-    console.log name, serverData
     arr = serverData.slice()
     arr.push(name)
     process(arr)
 
   setCreating: (val) ->
     cmd = val && 'show' || 'hide'
-    console.log cmd
     $(@dom).parents(".collapse").find('.creating').collapse(cmd)
+    
