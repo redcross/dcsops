@@ -43,7 +43,7 @@
 .row
   .span4
     %h4 Recent Incidents
-    -recent_incidents.each do |inc|
+    -recent_incidents.first(7).each do |inc|
       .incident-box(data-incident-id="#{inc.id}")
         %strong
           .pull-right
