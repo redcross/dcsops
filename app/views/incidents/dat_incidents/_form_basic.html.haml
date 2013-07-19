@@ -23,7 +23,7 @@
   .row
     %br
     .span6
-      =f.input :search_for_address
+      =f.input :search_for_address, hint: 'Enter as much information as you have about the address, and then click the "Look Up Address" button below.'
       .control-group.address-lookup-group
         .controls
           %button.btn.btn-block.address-lookup Look Up Address
@@ -40,7 +40,7 @@
   .span6
     =f.inputs "Damage Assessment" do
       =f.input :structure_type, collection: Incidents::DatIncident::STRUCTURE_TYPES.map{|x| [x.titleize, x]}
-      =f.input :units_affected
+      =f.input :units_affected, hint: 'Units affected is the number of units that were involved but did not receive minor, major, or destroyed damage.  This is NOT the sum of the damage levels below.'
       =f.input :units_minor
       =f.input :units_major
       =f.input :units_destroyed

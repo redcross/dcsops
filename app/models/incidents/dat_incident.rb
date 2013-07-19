@@ -19,7 +19,7 @@ class Incidents::DatIncident < ActiveRecord::Base
 
   CALL_TYPES = %w(hot cold)
   INCIDENT_TYPES = %w(fire flood police)
-  STRUCTURE_TYPES = %w(single_family_home apartment sro mobile_home)
+  STRUCTURE_TYPES = %w(single_family_home apartment sro mobile_home commercial none)
   
   accepts_nested_attributes_for :incident, update_only: true#, reject_if: :cant_update_incident
   validates :address, :city, :state, :zip, presence: true # :cross_street
