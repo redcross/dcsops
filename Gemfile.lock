@@ -403,6 +403,7 @@ DEPENDENCIES
   inherited_resources
   jbuilder (~> 1.0.1)
   jquery-rails
+  kaminari
   less-rails
   newrelic_rpm
   parallel_tests

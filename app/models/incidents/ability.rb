@@ -24,7 +24,7 @@ class Incidents::Ability
     end
 
     if is_admin or person.has_role 'incident_details'
-        can :read_dat_details, Incidents::Incident
+        can [:read_dat_details, :index], Incidents::Incident
     end
 
     if is_admin or person.has_role 'cas_details'

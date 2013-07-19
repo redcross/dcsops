@@ -1,47 +1,24 @@
-%h1 Listing incidents_incidents
+.row
+  %h1 Listing Incidents
 
-%table
-  %tr
-    %th Chapter
-    %th County
-    %th Incident number
-    %th Cas incident number
-    %th Date
-    %th City
-    %th Units affected
-    %th Num adults
-    %th Num children
-    %th Num families
-    %th Num cases
-    %th Incident type
-    %th Incident description
-    %th Narrative brief
-    %th Narrative
-    %th
-    %th
-    %th
-
-  - collection.each do |incidents_incident|
+.row
+  %table.span12
     %tr
-      %td= incidents_incident.chapter
-      %td= incidents_incident.county
-      %td= incidents_incident.incident_number
-      %td= incidents_incident.cas_incident_number
-      %td= incidents_incident.date
-      %td= incidents_incident.city
-      %td= incidents_incident.units_affected
-      %td= incidents_incident.num_adults
-      %td= incidents_incident.num_children
-      %td= incidents_incident.num_families
-      %td= incidents_incident.num_cases
-      %td= incidents_incident.incident_type
-      %td= incidents_incident.incident_description
-      %td= incidents_incident.narrative_brief
-      %td= incidents_incident.narrative
-      %td= link_to 'Show', incidents_incident
-      %td= link_to 'Edit', edit_incidents_incident_path(incidents_incident)
-      %td= link_to 'Destroy', incidents_incident, :method => :delete, :data => { :confirm => 'Are you sure?' }
+      %th County
+      %th Incident number
+      %th Cas incident number
+      %th Date
+      %th City
+      %th Incident type
 
-%br
+    - collection.each do |resource|
+      %tr
+        %td= resource.county.name
+        %td= link_to resource.incident_number, resource
+        %td= resource.cas_incident_number
+        %td= resource.date
+        %td= resource.city
+        %td= resource.incident_type
 
-= link_to 'New Incident', new_incidents_incident_path
+.row
+  = paginate collection

@@ -59,6 +59,9 @@
         #{pluralize inc.num_families, "Family"},
         #{pluralize inc.num_adults, "Adult"},
         #{pluralize inc.num_children, "Child"}
+    -if can? :index, Incidents::Incident
+      %h5
+        =link_to 'More Incidents&hellip;'.html_safe, incidents_incidents_path
 
   .span8
     .map-container

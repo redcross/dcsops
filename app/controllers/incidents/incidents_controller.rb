@@ -30,6 +30,10 @@ class Incidents::IncidentsController < Incidents::BaseController
 
   private
 
+    def collection
+      @_incidents ||= super.order{date.desc}.page(params[:page])
+    end
+
     helper_method :cas_incidents_to_link, :incidents_for_cas
     def cas_incidents_to_link
       @_cas ||= Incidents::CasIncident.where{incident_id == nil}.order{incident_date.desc}

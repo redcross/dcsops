@@ -25,6 +25,7 @@ gem "cancan", github: 'jlaxson/cancan'
 gem "ruby-openid", require: 'openid'
 gem "chronic"
 gem "roadie", github: 'Mange/roadie'
+gem "kaminari"
 
 gem 'geokit'
 gem 'google-v3-geocoder'
