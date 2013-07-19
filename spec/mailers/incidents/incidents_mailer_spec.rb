@@ -111,6 +111,24 @@ describe Incidents::IncidentsMailer do
     end
   end
 
+  describe "incident_invalid" do
+    let(:report) { FactoryGirl.create :incident, incident_type: 'duplicate'}
+    let(:mail) { Incidents::IncidentsMailer.incident_invalid(report, person) }
+
+    it "renders the headers" do
+      mail.subject.should eq("Incident #{report.incident_number} Marked Invalid")
+      mail.from.should eq(from_address)
+    end
+
+    it "should be to the designated contact" do
+      mail.to.should eq([person.email])
+    end
+
+    it "renders the body" do
+      mail.body.encoded.should match("The incident below was marked as invalid.")
+    end
+  end
+
   #describe "orphan_cas" do
   #  let(:mail) { Incidents::IncidentsMailer.orphan_cas }
 #

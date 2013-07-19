@@ -1,5 +1,6 @@
 require 'spec_helper'
 
 describe Incidents::Incident do
-  pending "add some examples to (or delete) #{__FILE__}"
+  pending "should collect statistics for a date range"
+  pending "should not include invalid incidents in the statistics"
 end

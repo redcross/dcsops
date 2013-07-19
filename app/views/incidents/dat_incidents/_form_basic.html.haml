@@ -8,7 +8,7 @@
         =f.input :incident_number, input_html: {readonly: readonly}
         =f.input :county, as: (readonly ? :string : :select), input_html: {readonly: readonly, value: resource.incident.try(:county).try(:name)}
         =f.input :date, as: (readonly ? :string : :bootstrap_date), input_html: {readonly: readonly}
-      =f.input :incident_type, as: :select, collection: Incidents::DatIncident::INCIDENT_TYPES.map{|x| [x.titleize, x]}, include_blank: false
+      =f.input :incident_type, as: :select, collection: grouped_incident_types, include_blank: false
       =f.input :incident_call_type, as: :select, collection: Incidents::DatIncident::CALL_TYPES.map{|x| [x.titleize, x]}, include_blank: false
   .span6
     =f.inputs "Demographics" do

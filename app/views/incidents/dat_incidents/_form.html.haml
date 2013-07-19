@@ -33,6 +33,8 @@
       
     .tab-pane#responders{class: (!basic_has_errors && responders_has_errors) && 'active'}=responders_html
 
+=render 'invalid_modal'
+
 - content_for :footer_js do
   = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
   :javascript

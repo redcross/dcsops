@@ -60,6 +60,15 @@ describe "" do
       }
     end
 
+    it "should not send a reminder if the incident has been marked invalid" do
+      @incident.update_attribute :created_at, 24.hours.ago
+      @incident.update_attribute :incident_type, 'invalid'
+      Incidents::IncidentMissingReport.should_not_receive(:new)
+      expect {
+        subject.invoke
+      }
+    end
+
     it "should not send a reminder if the incident was pinged recently" do
       @incident.update_attribute :created_at, 24.hours.ago
       @incident.update_attribute :last_no_incident_warning, 2.hours.ago

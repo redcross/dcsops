@@ -79,6 +79,12 @@ class Incidents::IncidentsMailer < ActionMailer::Base
     mail to: format_address(recipient), subject: "Incident Report Filed For #{incident.county_name}"
   end
 
+  def incident_invalid(incident, recipient)
+    @incident = incident
+    tag :incidents, :incidents_notification, :incident_invalid
+    mail to: format_address(recipient), subject: "Incident #{incident.incident_number} Marked Invalid"
+  end
+
   private
 
   helper_method :static_maps_url

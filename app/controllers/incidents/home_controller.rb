@@ -9,14 +9,14 @@ class Incidents::HomeController < Incidents::BaseController
 
   def map
     @search = Incidents::Incident.search(params[:q])
-    @incidents = @search.result.where{(lat != nil) & (lng != nil) & (lat.in 37.165368468295085..38.251787162859415) & (lng.in(-123.84274052031253..-121.45321415312503))}
+    @incidents = @search.result.valid.where{(lat != nil) & (lng != nil) & (lat.in 37.165368468295085..38.251787162859415) & (lng.in(-123.84274052031253..-121.45321415312503))}
   end
 
   private
 
   helper_method :recent_incidents, :map_json_for
   def recent_incidents
-    @_recents ||= Incidents::Incident.includes{dat_incident}.order{incident_number.desc}.order{date.desc}.limit(7)
+    @_recents ||= Incidents::Incident.valid.includes{dat_incident}.order{incident_number.desc}.order{date.desc}.limit(7)
   end
 
   def map_json_for(incidents)

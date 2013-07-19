@@ -64,6 +64,9 @@ class window.DatIncidentsFormController
       if (data.hide)
         $(data.hide).not(shown).collapse('hide')
 
-
+    $(document).on 'click', '#invalid-incident-button', (evt) =>
+      $('#invalid-incident').modal('show')
 
     $('.collapse').collapse({toggle: false})
+
+

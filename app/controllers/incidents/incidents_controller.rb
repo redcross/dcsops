@@ -3,7 +3,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   defaults finder: :find_by_incident_number!
   load_and_authorize_resource except: [:link_cas, :needs_report]
 
-  custom_actions collection: [:needs_report, :link_cas, :tracker]
+  custom_actions collection: [:needs_report, :link_cas, :tracker], resource: :mark_invalid
 
   has_scope :in_county, as: :county_id_eq
 
@@ -28,10 +28,21 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
   end
 
+  def mark_invalid
+    resource.update_attributes(params.require(:incidents_incident).permit(:incident_type))
+    if resource.save
+      flash[:info] = 'The incident has been removed.'
+      Incidents::IncidentInvalid.new(resource).save
+    else
+      flash[:error] = 'There was an error removing the incident.'
+    end
+    redirect_to needs_report_incidents_incidents_path
+  end
+
   private
 
     def collection
-      @_incidents ||= super.order{date.desc}.page(params[:page])
+      @_incidents ||= super.valid.order{date.desc}.page(params[:page])
     end
 
     helper_method :cas_incidents_to_link, :incidents_for_cas
@@ -53,12 +64,12 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     helper_method :needs_report_collection
     def needs_report_collection
-      @_report_collection ||= end_of_association_chain.joins{dat_incident.outer}.where{(dat_incident.id == nil) & ((ignore_incident_report != true) | (ignore_incident_report == nil))}.order{incident_number}
+      @_report_collection ||= end_of_association_chain.needs_incident_report.order{incident_number}
     end
 
     helper_method :tracker_collection
     def tracker_collection
-      @_tracker_collection ||= apply_scopes(end_of_association_chain).joins{cas_incident.cases.outer}.where{((cas_incident.cases_open > 0) | (cas_incident.last_date_with_open_cases >= 7.days.ago)) & (cas_incident.cases.case_last_updated > 2.months.ago)}.includes{cas_incident.cases}.uniq
+      @_tracker_collection ||= apply_scopes(end_of_association_chain).open_cases.includes{cas_incident.cases}.uniq
           .order{date.desc}
     end
 

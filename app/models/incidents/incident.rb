@@ -1,4 +1,6 @@
 class Incidents::Incident < ActiveRecord::Base
+  INVALID_INCIDENT_TYPES = %w(invalid duplicate not_eligible_for_services)
+
   belongs_to :chapter, class_name: 'Roster::Chapter'
   belongs_to :county, class_name: 'Roster::County'
 
@@ -53,9 +55,21 @@ class Incidents::Incident < ActiveRecord::Base
   #delegate :units_affected, to: :dat_incident
 
   scope :in_county, -> county {where{county_id == county}}
+  scope :incident_stats, lambda {
+    valid.order(nil).select{[count(id).as(:incident_count), sum(num_cases).as(:case_count), sum(num_families).as(:family_count), sum(num_adults + num_children).as(:client_count)]}.first
+  }
+  scope :valid, lambda {
+    where{incident_type.not_in(INVALID_INCIDENT_TYPES) | (incident_type == nil)}
+  }
+  scope :needs_incident_report, lambda {
+    valid.joins{dat_incident.outer}.where{(dat_incident.id == nil) & ((ignore_incident_report != true) | (ignore_incident_report == nil))}
+  }
+  scope :open_cases, lambda {
+    valid.joins{cas_incident.cases.outer}.where{((cas_incident.cases_open > 0) | (cas_incident.last_date_with_open_cases >= 7.days.ago)) & (cas_incident.cases.case_last_updated > 2.months.ago)}
+  }
 
   def update_from_dat_incident
-    address_fields = [:address,  :city, :state, :zip, :lat, :lng, :num_adults, :num_children, :num_families]
+    address_fields = [:address,  :city, :state, :zip, :lat, :lng, :num_adults, :num_children, :num_families, :incident_type]
     if dat_incident
       address_fields.each do |f|
         self.send "#{f}=", dat_incident.send(f)
@@ -111,8 +125,4 @@ class Incidents::Incident < ActiveRecord::Base
       cas.save!
     end
   end
-
-  scope :incident_stats, lambda {
-    order(nil).select{[count(id).as(:incident_count), sum(num_cases).as(:case_count), sum(num_families).as(:family_count), sum(num_adults + num_children).as(:client_count)]}.first
-  }
 end

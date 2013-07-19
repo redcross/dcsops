@@ -1,0 +1,14 @@
+=semantic_form_for resource.incident, url: mark_invalid_incidents_incident_path(resource.incident), builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'} do |f|
+  .modal.hide.fade#invalid-incident
+    .modal-header
+      %h3 Invalid Incident
+    .modal-body
+      %p
+        You have chosen to mark this incident as invalid, and it will be removed from the ARCBA DAT system.
+        This action can only be undone by a DAT Administrator.
+        Are you sure you want to continue?
+      =f.input :incident_type, collection: Incidents::Incident::INVALID_INCIDENT_TYPES.map{|x| [x.titleize, x]}, label: 'Reason', include_blank: false
+    .modal-footer
+      .pull-right
+        %button.button.btn(type="button" data-dismiss="modal") Cancel
+        =f.action :submit, button_html: {class: 'btn btn-danger'}, label: "Remove This Incident"

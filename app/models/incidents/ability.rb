@@ -12,7 +12,7 @@ class Incidents::Ability
     can :manage, Incidents::NotificationSubscription, person_id: person.id, notification_type: 'weekly'
 
     if is_admin or person.has_role 'submit_incident_report'
-        can :needs_report, Incidents::Incident
+        can [:needs_report, :mark_invalid], Incidents::Incident
         can :create, Incidents::DatIncident
         can :create, Incidents::EventLog
     end

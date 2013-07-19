@@ -1,0 +1,12 @@
+%p
+  Hello,
+%p
+  The incident below was marked as invalid.  It will not be counted as a response and an incident report will not be required.
+%p
+  Incident Number: #{@incident.incident_number}
+  %br
+  County: #{@incident.county_name}
+  %br
+  Date and Time Created: #{@incident.created_at.to_s}
+  %br
+  Reason: #{@incident.incident_type.titleize}

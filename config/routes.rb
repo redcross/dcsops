@@ -80,6 +80,9 @@ Scheduler::Application.routes.draw do
         get :tracker
         match :link_cas, via: [:get, :post], as: :link_cas
       end
+      member do
+        match :mark_invalid, via: [:put, :patch]
+      end
     end
     resources :cas_incidents do
       resources :cases, controller: 'cas_cases' do

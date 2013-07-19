@@ -107,7 +107,7 @@ GEM
     arbre (1.0.1)
       activesupport (>= 3.0.0)
     arel (4.0.0)
-    atomic (1.1.9)
+    atomic (1.1.10)
     authlogic (3.3.0)
       activerecord (>= 3.2)
       activesupport (>= 3.2)
