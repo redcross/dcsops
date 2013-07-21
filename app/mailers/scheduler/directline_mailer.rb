@@ -90,10 +90,10 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
 
   def people_csv
     CSV.generate(row_sep: "\r\n") do |csv|
-      csv << ["Person ID", "Last Name", "First Name", "Primary Phone", "Secondary Phone", "SMS Phone", "OnPage ID", "Email"]
+      csv << ["Person ID", "Last Name", "First Name", "Primary Phone", "Secondary Phone", "SMS Phone", "OnPage ID", "Email", "Primary Phone Type", "Secondary Phone Type"]
       @people.uniq.each do |person|
         phones = person.phone_order
-        csv << [person.id, person.last_name, person.first_name, format_phone(phones[0]), format_phone(phones[1]), format_phone(person.phone_order(sms_only: true).first), "", ""] 
+        csv << [person.id, person.last_name, person.first_name, format_phone(phones[0]), format_phone(phones[1]), format_phone(person.phone_order(sms_only: true).first), "", "", phone_type(phones[0]), phone_type(phones[1])] 
       end
     end
   end
@@ -101,6 +101,11 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   def format_phone(ph)
     ph && ph[:number].gsub(/[^0-9]/, '')
   end
+
+  def phone_type(ph)
+    (ph && ph[:carrier].try(:pager)) ? 'pager' : 'phone'
+  end
+
   def local_offset(date, offset)
     #date.in_time_zone.at_beginning_of_day.advance( seconds: offset).iso8601
 
