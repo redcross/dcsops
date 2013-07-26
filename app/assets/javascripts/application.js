@@ -19,5 +19,6 @@
 //= require cocoon
 //= require jquery.countdown
 //= require_tree .
+//= stub es5-shim
 
 // require turbolinks

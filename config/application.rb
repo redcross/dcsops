@@ -39,6 +39,8 @@ module Scheduler
       domain: ENV['SMTP_DOMAIN'],
       enable_starttls_auto: true
     }
+
+    config.assets.precompile += %w( es5-shim.js )
   end
   def self.table_name_prefix
     'scheduler_'

@@ -19,6 +19,9 @@
 
   %body{class: [params[:controller].split(/\//), params[:action]]}
     = javascript_include_tag "application"
+    /[if lt IE 10]
+      = javascript_include_tag "es5-shim"
+      
     .navbar.navbar-responsive-top
       .navbar-inner
         .container
