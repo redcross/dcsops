@@ -66,6 +66,7 @@ describe Incidents::DatIncidentsController do
       @incident = FactoryGirl.create :incident
       @dat = FactoryGirl.build :dat_incident
       @lead = FactoryGirl.create :person
+      @vehicle = FactoryGirl.create :vehicle
 
       Incidents::IncidentReportFiled.stub!(new: stub(save: true))
     end
@@ -74,6 +75,7 @@ describe Incidents::DatIncidentsController do
       attrs = @dat.attributes
       attrs[:incident_attributes] = {id: @incident.id}
       attrs[:incident_attributes][:team_lead_attributes] = {person_id: @lead.id, role: 'team_lead', response: 'available'}
+      attrs[:vehicle_ids] = [@vehicle.id]
       attrs
     }
 

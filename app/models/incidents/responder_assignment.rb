@@ -12,7 +12,7 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   validates_presence_of :person
   validates :role, presence: true, inclusion: {in: ROLES + RESPONSES}
   #validates :response, inclusion: {in: RESPONSES}
-  validates :person_id, uniqueness: {scope: :incident_id}
+  #validates :person_id, uniqueness: {scope: :incident_id}
 
   scope :on_scene, -> { where{ role.in( %w(responder team_lead health_services mental_health) ) } }
 

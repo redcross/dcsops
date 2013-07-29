@@ -9,9 +9,7 @@ class Incidents::IncidentReportFiled
   end
 
   def save
-    if @incident.save
-      fire_notifications
-    end
+    fire_notifications
   end
 
   def role_scope

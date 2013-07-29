@@ -102,6 +102,7 @@
       =f.input :blankets_used
   .span6
     =f.inputs "Vehicles" do
+      =f.semantic_errors :vehicle_uses
       /=f.input :vehicles, as: :check_boxes, collection: Logistics::Vehicle.where{chapter_id == my{current_user.chapter_id}}.order{[category, name]}, group_by: 'category'
 
       - f.object.vehicles.each do |veh|

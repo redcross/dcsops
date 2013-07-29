@@ -22,6 +22,11 @@ class FormProxy
       ret
     end
   end
+
+  def semantic_errors(*args)
+    @keys += args
+    target.semantic_errors(*args)
+  end
   #alias_method :fields_for, :semantic_fields_for
 
   protected

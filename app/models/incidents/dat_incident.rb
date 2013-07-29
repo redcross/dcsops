@@ -12,7 +12,7 @@ class Incidents::DatIncident < ActiveRecord::Base
     end
   end
 
-  belongs_to :incident, class_name: 'Incidents::Incident'
+  belongs_to :incident, class_name: 'Incidents::Incident', inverse_of: :dat_incident
   belongs_to :completed_by, class_name: 'Roster::Person'
   has_many :vehicle_uses, class_name: 'Incidents::VehicleUse', foreign_key: 'incident_id'
   has_many :vehicles, through: :vehicle_uses, class_name: 'Logistics::Vehicle'
@@ -36,7 +36,9 @@ class Incidents::DatIncident < ActiveRecord::Base
   validates :responder_notified, :responder_arrived, :responder_departed, presence: true
   validates_with TimesInCorrectOrder
 
-  validates :completed_by, presence: true
+  validates :completed_by, :vehicle_uses, presence: true
+
+  validates_associated :incident
 
   serialize :services
   serialize :languages

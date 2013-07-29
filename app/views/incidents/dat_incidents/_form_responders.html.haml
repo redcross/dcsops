@@ -2,6 +2,7 @@
   .span12
     =f.inputs "Responders" do
       =f.semantic_fields_for :incident do |f|
+        =f.semantic_errors :responder_assignments
         %table.table.form-table#responder-table
           %thead
             %tr

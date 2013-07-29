@@ -5,7 +5,7 @@ class Incidents::Incident < ActiveRecord::Base
   belongs_to :county, class_name: 'Roster::County'
 
   has_one :cas_incident, class_name: 'Incidents::CasIncident'
-  has_one :dat_incident, class_name: 'Incidents::DatIncident'
+  has_one :dat_incident, class_name: 'Incidents::DatIncident', inverse_of: :incident
   has_one :dispatch_log, class_name: 'Incidents::DispatchLog'
   
   has_many :event_logs, ->{ order{event_time} }, class_name: 'Incidents::EventLog'
@@ -50,6 +50,8 @@ class Incidents::Incident < ActiveRecord::Base
   validates :chapter, :county, :date, presence: true
   validates :incident_number, presence: true, format: /\A1[3-9]-\d+\z/, uniqueness: true
   validates_associated :team_lead, if: ->(inc) {inc.dat_incident}, allow_nil: false
+  validate :ensure_unique_responders
+  #validates_associated :responder_assignments
 
   #delegate :address,  :city, :state, :zip, :lat, :lng, :num_adults, :num_children, to: :dat_incident
   #delegate :units_affected, to: :dat_incident
@@ -68,6 +70,19 @@ class Incidents::Incident < ActiveRecord::Base
     valid.joins{cas_incident.cases.outer}.where{((cas_incident.cases_open > 0) | (cas_incident.last_date_with_open_cases >= 7.days.ago)) & (cas_incident.cases.case_last_updated > 2.months.ago)}
   }
 
+  def ensure_unique_responders
+    # Need this as the uniqueness validation doesn't take into account marked for deletion
+    return unless team_lead and dat_incident
+
+    ids = [team_lead.person_id]
+    responder_assignments.select{|r| !r.marked_for_destruction?}.each do |assignment|
+      if ids.include? assignment.person_id
+        assignment.errors[:person_id] << 'is already taken'
+        errors[:responder_assignments] << 'has duplicates'
+      end
+    end
+  end
+
   def update_from_dat_incident
     address_fields = [:address,  :city, :state, :zip, :lat, :lng, :num_adults, :num_children, :num_families, :incident_type]
     if dat_incident
@@ -75,7 +90,7 @@ class Incidents::Incident < ActiveRecord::Base
         self.send "#{f}=", dat_incident.send(f)
       end
     end
-    save
+    save!
   end
 
   def update_from_cas

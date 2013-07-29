@@ -5,6 +5,7 @@ FactoryGirl.define do
     association :incident
 
     completed_by { |f| f.association :person, chapter: f.incident.chapter}
+    vehicle_uses { |f| [Incidents::VehicleUse.new( vehicle: f.association(:vehicle))]}
 
     incident_type 'fire'
     incident_call_type 'hot'
