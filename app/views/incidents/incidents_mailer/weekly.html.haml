@@ -136,7 +136,7 @@
                     %strong Incident:
                     =dat.incident_type.titleize
                     %strong Impact:
-                    =[adults > 0 ? pluralize(adults, "adult") : nil, children > 0 ? pluralize(children, "child") : nil, units && units > 0 ? pluralize(units, "unit") : nil].compact.join(", ")
+                    =[(adults and adults > 0) ? pluralize(adults, "adult") : nil, (children and children > 0) ? pluralize(children, "child") : nil, (units && units > 0) ? pluralize(units, "unit") : nil].compact.join(", ")
                   %p
                     %strong Services Provided:
                     =inc.services_description
