@@ -21,7 +21,7 @@ class Incidents::IncidentsMailer < ActionMailer::Base
     @start_date = start_date
     @end_date = end_date
     
-    @incidents = Incidents::Incident.where{date.in(my{@start_date..@end_date})}.order{date}.to_a
+    @incidents = Incidents::Incident.valid.where{date.in(my{@start_date..@end_date})}.order{date}.to_a
     @weekly_stats = Incidents::Incident.where{date.in(my{@start_date..@end_date})}.incident_stats
     @yearly_stats = Incidents::Incident.where{date >= '2013-07-01'}.incident_stats
 
