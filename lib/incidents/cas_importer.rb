@@ -13,7 +13,9 @@ class Incidents::CasImporter
       case_errors = import_case_data workbook.worksheet("Cases") do |s|
         yield s if block_given?
       end
-      link_cas_data
+      link_cas_data do |s|
+        yield s if block_given?
+      end
     end
 
     [inc_errors, case_errors]
@@ -78,10 +80,13 @@ class Incidents::CasImporter
       the_case.last_import = Time.now
       if !the_case.save
         errors << the_case
+      else
+        if incident.incident
+          incident.incident.update_from_cas
+        end
       end
-
       if block_given?
-        yield "Case Data"
+        yield "Case Data #{incident_num} #{the_case.case_number}"
       end
     end
 
@@ -89,7 +94,7 @@ class Incidents::CasImporter
   end
 
   def link_cas_data
-    Incidents::Incident.joins{cas_incident}.where{(cas_incident_number != nil) & (cas_incident.id == nil)}.each do |incident|
+    Incidents::Incident.joins{cas_incident.outer}.where{(cas_incident_number != nil) & (cas_incident.id == nil)}.each do |incident|
       cas = Incidents::CasIncident.where(cas_incident_number: incident.cas_incident_number)
       if cas
         cas.incident = incident

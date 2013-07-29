@@ -78,6 +78,13 @@ class Incidents::Incident < ActiveRecord::Base
     save
   end
 
+  def update_from_cas
+    if cas_incident
+      self.num_cases = cas_incident.cases.count
+    end
+    save
+  end
+
   def to_param
     incident_number
   end
