@@ -208,7 +208,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
       when :county then group.shifts.select{|s| show_counties.include? s.county_id}
       when :mine then group.shifts.select{|s| can_take_shift? s}
       end
-      hash[group] = shifts
+      hash[group] = shifts if shifts.present?
       hash
     }
   end

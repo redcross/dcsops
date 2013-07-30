@@ -25,7 +25,7 @@
             %span.pagect
 
         - (@month..@month.end_of_month).each do |day|
-          %th{colspan: 2}=day.day
+          %th{colspan: daily_groups.length}=day.day
       %tr
         %th Person
         %th Call First
@@ -71,9 +71,9 @@
           =spreadsheet_county.name
           =@month.strftime "%B, %Y"
         - (@month..@month.end_of_month).each do |day|
-          %th{colspan: 2}=day.day
+          %th{colspan: daily_groups.length}=day.day
       %tr
-        %th{colspan: (@month.end_of_month.day * 2) + 3}
+        %th{colspan: (@month.end_of_month.day * daily_groups.length) + 3}
           Legend:
           F: Flex, 
           = all_shifts.each_pair.map{|abbrev, name| "#{abbrev}: #{name}"}.join(", ")
