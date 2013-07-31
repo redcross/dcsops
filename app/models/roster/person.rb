@@ -27,6 +27,10 @@ class Roster::Person < ActiveRecord::Base
     joins{roles.role_scopes}.where{(roles.grant_name == role_name) & (roles.role_scopes.scope == scope.to_s)}
   }
 
+  scope :include_carriers, -> {
+    includes{[home_phone_carrier, cell_phone_carrier, work_phone_carrier, alternate_phone_carrier, sms_phone_carrier]}
+  }
+
   def self.for_vc_account(account)
     self.where(vc_id: account).first
   end
