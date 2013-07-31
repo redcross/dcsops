@@ -6,7 +6,7 @@ module ApplicationHelper
     if is_boolean
       value = value ? 1 : 0
     else
-      value ||= ""
+      value = value ? value.to_s : ""
     end
     str=<<-END
     <a href="#" id="#{attr_name}" data-name="#{name}" data-type="select" data-resource="#{model_name}" data-url="#{send "#{model_name}_path", resource}"></a>

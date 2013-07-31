@@ -1,7 +1,7 @@
 class Scheduler::NotificationSetting < ActiveRecord::Base
   belongs_to :person, class_name: 'Roster::Person', foreign_key: :id
 
-  serialize :shift_notification_phones
+  #serialize :shift_notification_phones
 
   scope :needs_daily_email, ->chapter{ needs_daily(chapter, :email) }
   scope :needs_daily_sms, ->chapter{ needs_daily(chapter, :sms) }

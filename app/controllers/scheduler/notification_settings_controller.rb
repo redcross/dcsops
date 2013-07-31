@@ -18,7 +18,7 @@ class Scheduler::NotificationSettingsController < Scheduler::BaseController
   end
 
   def time_periods
-    { "never" => "", "when starting" => 0, "1 hour before" => 1.hour, "2 hours before" => 2.hours, "3 hours before" => 3.hours, "8 hours before" => 8.hours, "1 day before" => 1.day, "2 days before" => 2.days, "3 days before" => 3.days}
+    { "never" => "", "when starting" => 0.to_s, "1 hour before" => 1.hour.to_s, "2 hours before" => 2.hours.to_s, "3 hours before" => 3.hours.to_s, "8 hours before" => 8.hours.to_s, "1 day before" => 1.day.to_s, "2 days before" => 2.days.to_s, "3 days before" => 3.days.to_s}
   end
 
   def time_periods_for_select
