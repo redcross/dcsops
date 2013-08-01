@@ -30,7 +30,7 @@
         %div{class: this_my_shift && 'my-shift'}
           - shifts.select{|sh|sh.active_on_day?(this_date)}.each do |shift|
             - this_assignments = assignments_for_shift_on_day(shift, this_date)
-            %div{class: this_assignments.blank? && 'open'}
+            %div{class: (this_assignments.length < shift.min_desired_signups) && 'open'}
               = render_shift_assignment_info(false, person, shift, nil, this_date, this_assignments, 'week')
       -if spacer_len > 0
         %td.week{colspan: spacer_len}
@@ -44,7 +44,7 @@
         - shifts = shifts.select{|sh|sh.active_on_day?(date)}
         - shifts.each do |shift|
           - assignments=assignments_for_shift_on_day(shift, date).to_a
-          %div{class: assignments.blank? && 'open'}
+          %div{class: (assignments.length < shift.min_desired_signups) && 'open'}
             = render_shift_assignment_info(editable && date >= Date.current.at_beginning_of_week, person, shift, my_shift, date, assignments, 'week')
     -if request.xhr?
       :javascript

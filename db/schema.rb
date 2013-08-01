@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130719225745) do
+ActiveRecord::Schema.define(version: 20130801152935) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string    "resource_id",   null: false
@@ -559,6 +559,8 @@ ActiveRecord::Schema.define(version: 20130719225745) do
     t.date      "signups_available_before"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.integer   "min_desired_signups"
+    t.boolean   "ignore_county",            default: false
   end
 
   add_index "scheduler_shifts", ["county_id"], name: "index_scheduler_shifts_on_county_id"

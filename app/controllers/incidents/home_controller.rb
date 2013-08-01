@@ -9,14 +9,14 @@ class Incidents::HomeController < Incidents::BaseController
 
   def map
     @search = Incidents::Incident.search(params[:q])
-    @incidents = @search.result.valid.where{(lat != nil) & (lng != nil) & (lat.in 37.165368468295085..38.251787162859415) & (lng.in(-123.84274052031253..-121.45321415312503))}
+    @incidents = @search.result.for_chapter(current_chapter).valid.where{(lat != nil) & (lng != nil) & (lat.in 37.165368468295085..38.251787162859415) & (lng.in(-123.84274052031253..-121.45321415312503))}
   end
 
   private
 
   helper_method :recent_incidents, :map_json_for
   def recent_incidents
-    @_recents ||= Incidents::Incident.valid.includes{dat_incident}.order{incident_number.desc}.order{date.desc}.limit(15)
+    @_recents ||= Incidents::Incident.for_chapter(current_chapter).valid.includes{dat_incident}.order{incident_number.desc}.order{date.desc}.limit(15)
   end
 
   def map_json_for(incidents)
@@ -38,9 +38,9 @@ class Incidents::HomeController < Incidents::BaseController
 
     five_fy_begin = fy_begin.advance years: -4
 
-    {"#{month_begin.strftime("%B")} To Date" => Incidents::Incident.unscoped.where{date >= month_begin}.incident_stats, 
-    "#{last_month.strftime("%B")}" => Incidents::Incident.unscoped.where{date.in(last_month..(last_month.at_end_of_month))}.incident_stats, 
-    "FYTD" => Incidents::Incident.where{date >= fy_begin}.incident_stats, 
-    "5 Years" => Incidents::Incident.where{date >= five_fy_begin}.incident_stats}
+    {"#{month_begin.strftime("%B")} To Date" => Incidents::Incident.unscoped.for_chapter(current_chapter).where{date >= month_begin}.incident_stats, 
+    "#{last_month.strftime("%B")}" => Incidents::Incident.unscoped.for_chapter(current_chapter).where{date.in(last_month..(last_month.at_end_of_month))}.incident_stats, 
+    "FYTD" => Incidents::Incident.for_chapter(current_chapter).where{date >= fy_begin}.incident_stats, 
+    "5 Years" => Incidents::Incident.for_chapter(current_chapter).where{date >= five_fy_begin}.incident_stats}
   end
 end

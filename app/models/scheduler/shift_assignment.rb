@@ -155,8 +155,9 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   def local_offset(date, offset)
     #date.in_time_zone.at_beginning_of_day.advance( seconds: offset).iso8601
 
-    beginning_of_day = date.in_time_zone(person.chapter.time_zone).at_beginning_of_day
-    offset_time = beginning_of_day.advance seconds: offset
+    beginning_of_day = date.in_time_zone(shift.shift_group.chapter.time_zone).at_beginning_of_day
+    key = (shift.shift_group.period == 'monthly' ? :days : :seconds)
+    offset_time = beginning_of_day.advance(key => offset)
 
     # advance counts every instant that elapses, not just calendar seconds.  so
     # when crossing DST you might end up one hour off in either direction even though

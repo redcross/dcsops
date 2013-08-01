@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  helper_method :current_user, :current_user_session
+  helper_method :current_user, :current_user_session, :current_chapter
 
   before_filter :require_valid_user!
 
@@ -39,6 +39,10 @@ class ApplicationController < ActionController::Base
     return @current_user if defined?(@current_user)
 
     @current_user = current_user_session && current_user_session.person
+  end
+
+  def current_chapter
+    current_user.chapter
   end
 
   def require_valid_user!(return_to=url_for(only_path: false))

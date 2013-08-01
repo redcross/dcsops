@@ -70,7 +70,7 @@ describe Scheduler::CalendarController do
     }
 
     args.each do |name, extra_params|
-        context name do
+      context name do
 
         it "should render the whole calendar" do
           get :show, extra_params.merge({month: 'august', year: '2013'})
@@ -254,6 +254,21 @@ describe Scheduler::CalendarController do
         xhr :get, :day, date: values[:next_date].to_s, period: partial_name
         response.should be_success
         response.body.should_not match("checkbox")
+      end
+
+      it "should highlight if the shift has less than desired signups" do
+        FactoryGirl.create :shift_assignment, shift: @shift, person: @person, date: values[:prev_date]
+        @shift.update_attribute :min_desired_signups, 2
+        xhr :get, :day, date: values[:date].to_s, period: partial_name
+        response.should be_success
+        response.body.should match(/class=['"]open/)
+      end
+
+      it "should not highlight if the shift has the desired signups" do
+        FactoryGirl.create :shift_assignment, shift: @shift, person: @person, date: values[:prev_date]
+        xhr :get, :day, date: values[:date].to_s, period: partial_name
+        response.should be_success
+        response.body.should_not match(/class=['"]open/)
       end
     end
 

@@ -7,15 +7,18 @@ class Scheduler::Shift < ActiveRecord::Base
   has_many :shift_assignments
 
   validates :max_signups, numericality: true, presence: true
+  validates :min_desired_signups, numericality: true, presence: true
   validates_presence_of :name, :abbrev
 
   def can_sign_up_on_day(date, num_assignments_on_day=nil)
-    return false if date < Date.current
+    today = shift_group.chapter.time_zone.today
+
+    return false if date < today and !allow_signup_in_past?(date)
+    return false unless active_on_day? date
     return false if signups_frozen_before and date < signups_frozen_before
     return false if signups_available_before and date > signups_available_before
-    num_days = (date - shift_group.chapter.time_zone.today).to_i
+    num_days = (date - today).to_i
     return false if max_advance_signup and num_days > max_advance_signup
-
     return true if max_signups == 0
 
     if num_assignments_on_day
@@ -26,8 +29,14 @@ class Scheduler::Shift < ActiveRecord::Base
     return assignments < max_signups
   end
 
+  def allow_signup_in_past?(date)
+    shift_assignments.build(date: date).local_end_time >= shift_group.chapter.time_zone.now
+  end
+
   def can_remove_on_day(date)
-    signups_frozen_before.nil? || (date >= signups_frozen_before)
+    today = shift_group.chapter.time_zone.today
+
+    (date >= today) and (signups_frozen_before.nil? || (date >= signups_frozen_before))
   end
 
   def active_on_day?(date)
@@ -35,7 +44,7 @@ class Scheduler::Shift < ActiveRecord::Base
   end
 
   def can_be_taken_by?(person)
-    if person.counties.to_a.include? county
+    if ignore_county or person.counties.to_a.include?(county)
       pos = positions & person.positions
       !pos.blank?
     else

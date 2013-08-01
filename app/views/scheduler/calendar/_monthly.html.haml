@@ -5,5 +5,5 @@
     - shifts = shifts.select{|sh|sh.active_on_day?(date)}
     - shifts.each do |shift|
       - assignments=assignments_for_shift_on_day(shift, date).to_a
-      %div{class: assignments.blank? && 'open'}
+      %div{class: assignments.length < shift.min_desired_signups && 'open'}
         = render_shift_assignment_info(editable && date >= Date.current.at_beginning_of_month, person, shift, my_shift, date, assignments, 'monthly')

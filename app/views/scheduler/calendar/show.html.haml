@@ -19,7 +19,7 @@
         =text_field_tag :person, (person and "#{person.first_name} #{person.last_name}"), id: "select-person", style: "width: 100px"
         %button.btn#clear-person Clear
       #choose-counties{style: show_shifts==:county || 'display: none'}
-        =select_tag "counties[]", options_from_collection_for_select(Roster::County.all, :id, :name, show_counties.first), multiple: true, id: 'choose-county'
+        =select_tag "counties[]", options_from_collection_for_select(current_chapter.counties, :id, :name, show_counties.first), multiple: true, id: 'choose-county'
     .span3
       %h5 Other Views:
       =view_as_links

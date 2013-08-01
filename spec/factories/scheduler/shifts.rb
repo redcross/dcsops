@@ -5,6 +5,7 @@ FactoryGirl.define do
     name {"Some Shift #{Faker::Name.first_name}"}
     association :shift_group
     max_signups 1
+    min_desired_signups 1
     abbrev 'SH'
   end
 end
