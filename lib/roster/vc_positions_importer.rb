@@ -32,7 +32,9 @@ class Roster::VcPositionsImporter
 
     (1..(sheet.last_row_index-1)).each do |idx|
       vc_id = sheet[idx, data_col].to_i
-      pos_name = sheet[idx, pos_col].strip
+      pos_name = sheet[idx, pos_col]
+      next unless pos_name
+      pos_name.strip!
       matched = false
 
       #pp "#{sheet[idx, data_col]} #{idx} #{vc_id}"
