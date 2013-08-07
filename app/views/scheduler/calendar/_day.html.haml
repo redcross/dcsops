@@ -21,3 +21,6 @@
         - style=""; if assignments.length < shift.min_desired_signups and date >= current_chapter.time_zone.today; style="open"; end
         %td{class: style}
           = render_shift_assignment_info(editable && (date >= current_chapter.time_zone.today), person, shift, my_shift, date, assignments, 'day')
+-if request.xhr?
+  :javascript
+    $("[data-toggle=tooltip]").tooltip()

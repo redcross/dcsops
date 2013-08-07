@@ -18,7 +18,10 @@ module Scheduler::CalendarHelper
       ass = assignments.first
       s << label_tag( cbid, "#{ass.person.first_initial} #{ass.person.last_name}")
     else
-      s << "#{assignments.count} registered"
+      title = assignments.map{|a| a.person.full_name}.join(", ")
+      s << content_tag( :span, :"data-toggle" => 'tooltip', title: title, class: 'multiple-assignments') do
+        "#{assignments.count} registered"
+      end
     end
 
     s.html_safe

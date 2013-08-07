@@ -31,6 +31,10 @@ body.calendar {
       margin: 0;
       line-height: inherit;
     }
+    .multiple-assignments {
+      text-decoration: underline;
+      cursor: pointer;
+    }
   }
 
   .highlight-open-shifts {
