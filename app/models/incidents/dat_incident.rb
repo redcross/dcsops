@@ -24,10 +24,10 @@ class Incidents::DatIncident < ActiveRecord::Base
   accepts_nested_attributes_for :incident, update_only: true#, reject_if: :cant_update_incident
   validates :address, :city, :state, :zip, presence: true # :cross_street
 
-  validates :units_affected, :units_minor, :units_major, :units_destroyed, presence: true, numericality: true
-  validates :num_adults, :num_children, :num_families, presence: true, numericality: true
-  validates :num_people_injured, :num_people_hospitalized, :num_people_deceased, presence: true, numericality: true
-  validates :comfort_kits_used, :blankets_used, presence: true, numericality: true
+  validates :units_affected, :units_minor, :units_major, :units_destroyed, presence: true, numericality: {:greater_than_or_equal_to => 0}
+  validates :num_adults, :num_children, :num_families, presence: true, numericality: {:greater_than_or_equal_to => 0}
+  validates :num_people_injured, :num_people_hospitalized, :num_people_deceased, presence: true, numericality: {:greater_than_or_equal_to => 0}
+  validates :comfort_kits_used, :blankets_used, presence: true, numericality: {:greater_than_or_equal_to => 0}
 
   validates :incident_call_type, presence: true, inclusion: {in: CALL_TYPES}
   validates :incident_type, presence: true, inclusion: {in: INCIDENT_TYPES}
