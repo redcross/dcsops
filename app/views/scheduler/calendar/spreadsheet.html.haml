@@ -5,6 +5,7 @@
     No county to display
   - else 
     - spreadsheet_groups.each do |(group, shifts)|
+      - next if shifts.blank?
       .page
         %h3
           = spreadsheet_county.name
@@ -27,24 +28,30 @@
                 %td=date.strftime "%d-%a"
                 %td=group.name
                 - shifts.each do |shift|
-                  - ass = assignments_for_shift_on_day(shift, date)
-                  - if ass.count > 1
-                    %td="#{ass.count} Registered"
-                    %td
-                    %td
-                  - elsif ass.count == 0
+                  - assignments = assignments_for_shift_on_day(shift, date)
+                  -#- if ass.count > 1
+                  -#  %td="#{ass.count} Registered"
+                  -#  %td
+                  -#  %td
+                  - if assignments.count == 0
                     %td Open
                     %td
                     %td
                   - else
-                    - ass = ass.first
                     %td
-                      = ass.person.full_name
-                    - ass.person.phone_order.first(2).tap{|arr| arr << nil while arr.count < 2}.each do |ph|
+                      - assignments.each_with_index do |ass, idx|
+                        -if idx != 0
+                          %br
+                        = ass.person.full_name
+                    - (0..1).each do |ph_idx|
                       %td
-                        -if ph
-                          =ph[:number]
-                          ="(#{ph[:label][0]})"
+                        - assignments.each_with_index do |ass, idx|
+                          - if idx != 0
+                            %br
+                          - ph = ass.person.phone_order[ph_idx]
+                          -if ph
+                            =ph[:number]
+                            ="(#{ph[:label][0]})"
               - date = date.tomorrow
 
 
