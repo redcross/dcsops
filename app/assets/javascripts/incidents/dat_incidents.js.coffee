@@ -75,6 +75,11 @@ class window.DatIncidentsFormController
         total += Number($("##{el}").val())
       $('#total-units').text(total)
 
+    $(document).on 'click', '[data-toggle=remote-tab]', (evt) =>
+      $target = $(evt.target)
+      href = $target.attr('href')
+      $("[href=#{href}][data-toggle=tab]").tab('show')
+
     $('.collapse').collapse({toggle: false})
 
 
