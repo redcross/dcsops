@@ -40,6 +40,10 @@
   .span6
     =f.inputs "Damage Assessment" do
       =f.input :structure_type, collection: Incidents::DatIncident::STRUCTURE_TYPES.map{|x| [x.titleize, x]}
+      .control-group.address-lookup-group
+        %label.control-label Units Total
+        .controls
+          %strong#total-units 0
       =f.input :units_affected, hint: 'Units affected is the number of units that were involved but did not receive minor, major, or destroyed damage.  This is NOT the sum of the damage levels below.'
       =f.input :units_minor
       =f.input :units_major
