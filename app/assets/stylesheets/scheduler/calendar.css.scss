@@ -6,24 +6,31 @@ body.calendar {
   -webkit-print-color-adjust:exact;
   width: 100%;
 
-  td.day, td.week, td.month[colspan="1"] {
-    font-size: 7pt;
-    line-height: 1.2;
-    border: 1px solid black;
-    vertical-align: top;
-  }
-  td.day {
-    height: 6em;
-    width: 14.2%;
-  }
-  td.week {
-    
-  }
-  td label {
-    font-size: inherit;
-    display: inline;
-    margin: 0;
-    line-height: inherit;
+  table.calendar {
+    &.loading {
+      opacity: 0.5;
+      
+    }
+    width: 100%;
+    td.day, td.week, td.month[colspan="1"] {
+      font-size: 7pt;
+      line-height: 1.2;
+      border: 1px solid black;
+      vertical-align: top;
+    }
+    td.day {
+      height: 6em;
+      width: 14.2%;
+    }
+    td.week {
+      
+    }
+    td label {
+      font-size: inherit;
+      display: inline;
+      margin: 0;
+      line-height: inherit;
+    }
   }
 
   .highlight-open-shifts {
@@ -65,13 +72,10 @@ body.calendar {
     tr:nth-child(2) th.shift-header {
       border-bottom: 1px dashed black;
     }
-  }
-
-  .shifts td {
-    font-size: 100%;
-    line-height: 1.2;
-
-
+    td {
+      font-size: 100%;
+      line-height: 1.2;
+    }
   }
 
   .calendar-spreadsheet {
