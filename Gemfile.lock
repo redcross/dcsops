@@ -28,13 +28,6 @@ GIT
       polyamorous (~> 0.6.0)
 
 GIT
-  remote: git://github.com/geokit/geokit.git
-  revision: f17f397dd32685158e361730a17fead28416f1ee
-  specs:
-    geokit (1.6.5)
-      multi_json (>= 1.3.2)
-
-GIT
   remote: git://github.com/jlaxson/active_admin.git
   revision: 7c9f172db4850cc43a55b68ff66fc413b21065fa
   branch: rails4
@@ -73,6 +66,13 @@ GIT
   specs:
     formtastic (2.2.1)
       actionpack (>= 3.0)
+
+GIT
+  remote: git://github.com/mikefarmer/geokit.git
+  revision: bd2c3050eaa9cf07d64f1d4cf80072eb8e75d5f1
+  specs:
+    geokit (1.6.5)
+      multi_json (>= 1.3.2)
 
 GIT
   remote: git://github.com/nathanvda/cocoon.git

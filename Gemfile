@@ -27,7 +27,7 @@ gem "chronic"
 gem "roadie", github: 'Mange/roadie'
 gem "kaminari"
 
-gem 'geokit', github: 'geokit/geokit'
+gem 'geokit', github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 
 gem 'formtastic', github: 'justinfrench/formtastic', branch: 'rails4beta'
 gem 'formtastic-bootstrap'
