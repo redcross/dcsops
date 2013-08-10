@@ -1,5 +1,8 @@
 module Scheduler::CalendarHelper
   def render_shift_assignment_info(editable, person, shift, my_shift, date, assignments, period)
+    can_take = can_take_shift?(shift)
+    can_sign_up = shift.can_sign_up_on_day(date, assignments.count)
+    can_remove = shift.can_remove_on_day(date)
     s = ""
 
     if show_county_name
@@ -7,7 +10,7 @@ module Scheduler::CalendarHelper
     end
 
     s << shift.name + ": "
-    if editable and person and (my_shift.nil? or my_shift.shift == shift) and ((can_take_shift?(shift) and shift.can_sign_up_on_day(date, assignments.count)) or (my_shift.try(:shift) == shift and shift.can_remove_on_day(date)))
+    if editable and person and (my_shift.nil? or my_shift.shift == shift) and ((can_take and can_sign_up) or (my_shift.try(:shift) == shift and can_remove))
       cbid = "#{date.to_s}-#{shift.id}"
       s << check_box_tag( shift.id.to_s, date.to_s, my_shift.try(:shift) == shift, class: 'shift-checkbox', :"data-assignment" => my_shift.try(:id), id: cbid, :"data-period" => period)
     end

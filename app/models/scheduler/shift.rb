@@ -10,6 +10,14 @@ class Scheduler::Shift < ActiveRecord::Base
   validates :min_desired_signups, numericality: true, presence: true
   validates_presence_of :name, :abbrev
 
+  def normalize_date date
+    case shift_group.period
+    when 'daily' then date
+    when 'weekly' then date.at_beginning_of_week
+    when 'monthly' then date.at_beginning_of_month
+    end
+  end
+
   def can_sign_up_on_day(date, num_assignments_on_day=nil)
     today = shift_group.chapter.time_zone.today
 
@@ -34,8 +42,7 @@ class Scheduler::Shift < ActiveRecord::Base
   end
 
   def can_remove_on_day(date)
-    today = shift_group.chapter.time_zone.today
-
+    today = normalize_date shift_group.chapter.time_zone.today
     (date >= today) and (signups_frozen_before.nil? || (date >= signups_frozen_before))
   end
 

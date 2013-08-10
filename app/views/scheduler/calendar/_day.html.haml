@@ -1,4 +1,3 @@
-/%span{style: "float: left"}=date.day
 %table.shifts
   - first_group = false
   - daily_groups.each_with_index do |(group, shifts), group_idx|
@@ -20,7 +19,7 @@
           %th{class: [group_class, 'shift-header'], rowspan: shifts.count-1}=group.name
         - style=""; if assignments.length < shift.min_desired_signups and date >= current_chapter.time_zone.today; style="open"; end
         %td{class: style}
-          = render_shift_assignment_info(editable && (date >= current_chapter.time_zone.today), person, shift, my_shift, date, assignments, 'day')
+          = render_shift_assignment_info(editable, person, shift, my_shift, date, assignments, 'day')
 -if request.xhr?
   :javascript
     $("[data-toggle=tooltip]").tooltip()

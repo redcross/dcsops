@@ -45,7 +45,7 @@
         - shifts.each do |shift|
           - assignments=assignments_for_shift_on_day(shift, date).to_a
           %div{class: (assignments.length < shift.min_desired_signups) && 'open'}
-            = render_shift_assignment_info(editable && date >= Date.current.at_beginning_of_week, person, shift, my_shift, date, assignments, 'week')
+            = render_shift_assignment_info(editable, person, shift, my_shift, date, assignments, 'week')
     -if request.xhr?
       :javascript
         setTimeout(function() {

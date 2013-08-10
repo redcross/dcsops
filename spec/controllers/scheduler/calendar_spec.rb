@@ -135,7 +135,7 @@ describe Scheduler::CalendarController do
     end
   end
 
-  date = Date.civil(2013,8,8)
+  date = Date.civil(2014,8,8)
   weekly_date = date.at_beginning_of_week
   monthly_date = date.at_beginning_of_month
   
@@ -249,7 +249,6 @@ describe Scheduler::CalendarController do
 
       it "should not be possible to sign up in more than the advance days" do
         days_to = (values[:next_date] - @ch.time_zone.today)
-
         @shift.update_attribute(:max_advance_signup, days_to - 5)
         xhr :get, :day, date: values[:next_date].to_s, period: partial_name
         response.should be_success
