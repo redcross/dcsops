@@ -98,7 +98,7 @@ class Incidents::DispatchImporter
     return if Rails.env.test?
 
     incident.address = log_object.address
-    res = Geokit::Geocoders::GoogleV3Geocoder.geocode "#{log_object.address}, #{log_object.county_name} County, CA, USA"
+    res = Geokit::Geocoders::GoogleGeocoder3.geocode "#{log_object.address}, #{log_object.county_name} County, CA, USA"
     if res
       incident.lat = res.lat
       incident.lng = res.lng

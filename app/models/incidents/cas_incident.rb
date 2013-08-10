@@ -37,12 +37,12 @@ class Incidents::CasIncident < ActiveRecord::Base
         inc.cross_street = "_"
         inc.zip = "_"
 
-        res = Geokit::Geocoders::GoogleV3Geocoder.geocode( [inc.address, inc.city, inc.state].join(", "))
+        res = Geokit::Geocoders::GoogleGeocoder3.geocode( [inc.address, inc.city, inc.state].join(", "))
         if res
           (inc.lat, inc.lng) = res.lat, res.lng
         end
       elsif county_name
-        res = Geokit::Geocoders::GoogleV3Geocoder.geocode "#{county_name}, CA, USA"
+        res = Geokit::Geocoders::GoogleGeocoder3.geocode "#{county_name}, CA, USA"
         if res
           (inc.lat, inc.lng) = res.lat, res.lng
         end

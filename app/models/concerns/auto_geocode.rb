@@ -10,7 +10,7 @@ module AutoGeocode
     return if address1 == 'Address' and city == 'City'
     
     if lat.nil? or lng.nil? or (changed & %w(address1 address2 city state zip)).present?
-      res = Geokit::Geocoders::GoogleV3Geocoder.geocode( [address1, address2, city, state, zip].join(" "))
+      res = Geokit::Geocoders::GoogleGeocoder3.geocode( [address1, address2, city, state, zip].join(" "))
       if res
         (self.lat, self.lng) = res.lat, res.lng
       else
