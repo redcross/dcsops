@@ -105,6 +105,36 @@ describe Scheduler::DirectlineMailer do
     it "should have rows for everyone plus header" do
       csv.count.should eq 2 + 1
     end 
+
+    it "should identify an SMS number" do
+      carrier = FactoryGirl.create :cell_carrier
+      person = @people1.first
+      person.update_attribute :work_phone_carrier, carrier
+
+      row = csv.detect{|row| row[0].to_i == person.id}
+      row.should_not be_nil
+
+      number = person.work_phone.gsub /[^0-9]/, ''
+
+      row[3].should == number # Primary Phone
+      row[5].should == number # correctly detected SMS carrier
+      row[8].should == 'phone'
+    end
+
+    it "should identify a pager number" do
+      carrier = FactoryGirl.create :cell_carrier, pager: true
+      person = @people1.first
+      person.update_attribute :work_phone_carrier, carrier
+
+      row = csv.detect{|row| row[0].to_i == person.id}
+      row.should_not be_nil
+
+      number = person.work_phone.gsub /[^0-9]/, ''
+
+      row[3].should == number # Primary Phone
+      row[5].should_not be_present # when carrier is a pager, don't present as SMS
+      row[8].should == 'pager'
+    end
   end
   
 end

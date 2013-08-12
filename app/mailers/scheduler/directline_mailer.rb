@@ -93,7 +93,9 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
       csv << ["Person ID", "Last Name", "First Name", "Primary Phone", "Secondary Phone", "SMS Phone", "OnPage ID", "Email", "Primary Phone Type", "Secondary Phone Type"]
       @people.uniq.each do |person|
         phones = person.phone_order
-        csv << [person.id, person.last_name, person.first_name, format_phone(phones[0]), format_phone(phones[1]), format_phone(person.phone_order(sms_only: true).first), "", "", phone_type(phones[0]), phone_type(phones[1])] 
+        sms = person.phone_order(sms_only: true).first
+        sms = nil if sms and sms[:carrier].pager
+        csv << [person.id, person.last_name, person.first_name, format_phone(phones[0]), format_phone(phones[1]), format_phone(sms), "", "", phone_type(phones[0]), phone_type(phones[1])] 
       end
     end
   end
