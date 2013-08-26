@@ -162,7 +162,7 @@
               - while i < deps.count
                 %tr
                   -2.times do
-                    - i += 1; next if i >= deps.count
+                    - next if i >= deps.count; i += 1
                     - dep = deps[i]
                     %td
                       =dep.person.full_name
