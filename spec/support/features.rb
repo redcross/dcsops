@@ -11,7 +11,7 @@ module Capybara
   end
 end
 
-
+require File.expand_path("../authentication", __FILE__) # Provides LoggedIn module
 module FeatureSpec
   extend ActiveSupport::Concern
 

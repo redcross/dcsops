@@ -4,6 +4,7 @@ rvm:
 bundler_args: --without development
 before_script:
 - cp config/database.tmpl.yml config/database.yml
+script: "bundle exec rspec spec"
 env:
   global:
   - secure: kKsspHwgpUb63b9bSOkmprrURkKYKSj4rsvJtqzBuBPMpvi2rZYcoGH5xayaCRA8/o9zgoNk98qrSpW93sUHDrRWr9ZZwtQRnJ04PtIp4wMRThyySgER0NWmGzkAm+iryNMjhR+WT9tRuIt3Lv/lp819zvPzPJitZteybAa99Zo=
