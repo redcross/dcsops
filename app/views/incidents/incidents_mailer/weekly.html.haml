@@ -158,12 +158,9 @@
           - @deployments.each do |dr_name, deps|
             %h3=dr_name
             %table.table
-              - i = 0
-              - while i < deps.count
+              - deps.each_slice(2) do |pair|
                 %tr
-                  -2.times do
-                    - next if i >= deps.count; i += 1
-                    - dep = deps[i]
+                  - pair.each do |dep|
                     %td
                       =dep.person.full_name
                       (#{dep.person.primary_county.try(:abbrev)})
