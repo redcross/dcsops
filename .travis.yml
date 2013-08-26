@@ -1,6 +1,10 @@
 language: ruby
 rvm:
-  - 2.0.0
+- 2.0.0
 bundler_args: --without development
 before_script:
-  - cp config/database.tmpl.yml config/database.yml
+- cp config/database.tmpl.yml config/database.yml
+env:
+  global:
+  - secure: kKsspHwgpUb63b9bSOkmprrURkKYKSj4rsvJtqzBuBPMpvi2rZYcoGH5xayaCRA8/o9zgoNk98qrSpW93sUHDrRWr9ZZwtQRnJ04PtIp4wMRThyySgER0NWmGzkAm+iryNMjhR+WT9tRuIt3Lv/lp819zvPzPJitZteybAa99Zo=
+  - secure: ETNfaN8feQxjclb9ebi2xw/3lB+oeiDkCVD5shTi7bA8DHbIQNGAAuE3WUwTQ5bQwZjOfiI8+akVqP4vozEuFgLhTUhUaZAxdO9jzBzubO41eDLkUrqEbl1E3p0FCpotjUMr9DRhsg/COtODBkkH7ZtaJ6Fd//Tbde+LWz6cdlw=
