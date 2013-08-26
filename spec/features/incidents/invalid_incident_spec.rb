@@ -13,10 +13,8 @@ describe "Invalid Incident Report" do
 
     click_link "Submit Incident Report"
     within :xpath, "//td[text()='#{@incident.incident_number}']/ancestor::tr" do
-      click_link "Submit Incident Information"
+      click_button "Mark As Invalid"
     end
-
-    click_button 'Invalid Incident'
 
     select 'Not Eligible For Services'
 

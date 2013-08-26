@@ -81,7 +81,7 @@ Scheduler::Application.routes.draw do
         match :link_cas, via: [:get, :post], as: :link_cas
       end
       member do
-        match :mark_invalid, via: [:put, :patch]
+        match :mark_invalid, via: [:put, :patch, :post]
       end
     end
     resources :cas_incidents do

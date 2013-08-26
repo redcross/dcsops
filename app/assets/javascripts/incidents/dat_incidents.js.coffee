@@ -64,9 +64,6 @@ class window.DatIncidentsFormController
       if (data.hide)
         $(data.hide).not(shown).collapse('hide')
 
-    $(document).on 'click', '#invalid-incident-button', (evt) =>
-      $('#invalid-incident').modal('show')
-
     @da_fields = ['incidents_dat_incident_units_affected', 'incidents_dat_incident_units_minor', 'incidents_dat_incident_units_major', 'incidents_dat_incident_units_destroyed']
     $(document).on 'change', @da_fields.map((el)->"##{el}").join(","), (evt) =>
       total = 0
