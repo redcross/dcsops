@@ -117,8 +117,9 @@ class Roster::OpenIdController < ApplicationController
   def server
     if @server.nil?
       server_url = roster_openid_endpoint_url
-      dir = File.join(Rails.root, 'tmp', 'openid-store')
-      store = OpenID::Store::Filesystem.new(dir)
+      #dir = File.join(Rails.root, 'tmp', 'openid-store')
+      #store = OpenID::Store::Filesystem.new(dir)
+      store = OpenID::Store::Memcache.new Rails.cache
       @server = Server.new(store, server_url)
     end
     return @server

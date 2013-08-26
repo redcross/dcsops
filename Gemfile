@@ -12,6 +12,8 @@ gem 'sass-rails',   '~> 4.0.0.rc1'
 gem 'jquery-rails'
 gem 'haml-rails'
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
+gem "memcachier"
+gem "dalli"
 
 gem 'inherited_resources'
 gem 'responders'
