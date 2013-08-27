@@ -14,5 +14,5 @@ Sauce.config do |config|
     ["OS X 10.8", "Safari", "6"],                         
     #["Linux", "Chrome", nil]
   ]
-  config[:start_tunnel] = SauceConfig.use_sauce?
+  config[:start_tunnel] = SauceConfig.use_sauce? and ENV['SAUCE_CONNECT']
 end

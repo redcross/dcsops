@@ -8,3 +8,9 @@ env:
   global:
   - secure: kKsspHwgpUb63b9bSOkmprrURkKYKSj4rsvJtqzBuBPMpvi2rZYcoGH5xayaCRA8/o9zgoNk98qrSpW93sUHDrRWr9ZZwtQRnJ04PtIp4wMRThyySgER0NWmGzkAm+iryNMjhR+WT9tRuIt3Lv/lp819zvPzPJitZteybAa99Zo=
   - secure: ETNfaN8feQxjclb9ebi2xw/3lB+oeiDkCVD5shTi7bA8DHbIQNGAAuE3WUwTQ5bQwZjOfiI8+akVqP4vozEuFgLhTUhUaZAxdO9jzBzubO41eDLkUrqEbl1E3p0FCpotjUMr9DRhsg/COtODBkkH7ZtaJ6Fd//Tbde+LWz6cdlw=
+addons:
+  sauce_connect:
+    username: 
+      secure: YEgAYoPzQISAxaY4QjUT7DYFfCvH+M1RVdvAJDYwmoee1n56goBGoqDNQmjsucYACb1JzmqujFSMl0Zb2+tPbdz0gtMkMnbkAnQfhQebfTtjrbDBXq7gzhrgEd5hr799ZGWPRyYNarhol5Z+uEiuU6mJUGDB/E+3jOLbm9nYd9w=
+    access_key:
+      secure: cCOGm5Nk7Yk0/L+jm6zV7qufH2SgQLJyYPeaqLzcM1Ovd2BnA9twgT92lGQVW3rz12rRmN3gb0Exuq0xyHMxiMbqjY8ElTTfTd9cHoYzX2LfX2Wjw87RZ4HGggWlUh8DE9y8LiLdsx9lsSr6lCkqJUw0I4/aV61sXh1zzzcfMDA=
