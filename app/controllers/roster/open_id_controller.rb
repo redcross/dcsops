@@ -3,7 +3,7 @@ require "openid/consumer/discovery"
 require 'openid/extensions/sreg'
 require 'openid/extensions/pape'
 require 'openid/extensions/ax'
-require 'openid/store/filesystem'
+require 'openid/store/memcache'
 
 class Roster::OpenIdController < ApplicationController
   include OpenID::Server
