@@ -4,6 +4,7 @@ require 'openid/extensions/sreg'
 require 'openid/extensions/pape'
 require 'openid/extensions/ax'
 require 'openid/store/memcache'
+require 'openid/store/filesystem'
 
 class Roster::OpenIdController < ApplicationController
   include OpenID::Server
@@ -114,12 +115,18 @@ class Roster::OpenIdController < ApplicationController
     end
   end
 
+  def store
+    if Rails.env.production?
+      OpenID::Store::Memcache.new Rails.cache.dalli
+    else
+      dir = File.join(Rails.root, 'tmp', 'openid-store')
+      store = OpenID::Store::Filesystem.new(dir)
+    end
+  end
+
   def server
     if @server.nil?
       server_url = roster_openid_endpoint_url
-      #dir = File.join(Rails.root, 'tmp', 'openid-store')
-      #store = OpenID::Store::Filesystem.new(dir)
-      store = OpenID::Store::Memcache.new Rails.cache
       @server = Server.new(store, server_url)
     end
     return @server
