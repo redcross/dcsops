@@ -87,7 +87,7 @@ end
 group :development do
   gem 'autotest'
   #gem 'autotest-fsevent'
-  gem 'debugger'
+  gem 'byebug'
   gem 'unicorn'
 
   gem 'quiet_assets'

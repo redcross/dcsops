@@ -11,8 +11,11 @@ Sauce.config do |config|
   config[:browsers] = [
     ["Windows 8", "Internet Explorer", "10"],             
     ["Windows 7", "Firefox", "20"],
+    ["Windows XP", "Internet Explorer", "8"],
     ["OS X 10.8", "Safari", "6"],                         
-    #["Linux", "Chrome", nil]
+    ["Linux", "Chrome", ""]
   ]
-  config[:start_tunnel] = SauceConfig.use_sauce? and ENV['SAUCE_CONNECT']
+
+  # This needs to be a boolean, nil won't cut it as a falsish value
+  config[:start_tunnel] = !!(SauceConfig.use_sauce? and ENV['SAUCE_CONNECT'])
 end

@@ -1,16 +1,3 @@
-module Capybara
-  class Session
-    def cookies
-      @cookies ||= begin
-        secret = Rails.application.config.secret_token
-        cookies = ActionDispatch::Cookies::CookieJar.new(secret)
-        cookies.stub(:close!)
-        cookies
-      end
-    end
-  end
-end
-
 require File.expand_path("../authentication", __FILE__) # Provides LoggedIn module
 module FeatureSpec
   extend ActiveSupport::Concern
@@ -23,15 +10,19 @@ module FeatureSpec
     end
 
     before(:each) do
+      secret = Rails.application.config.secret_token
+      cookies = ActionDispatch::Cookies::CookieJar.new(secret)
+      cookies.stub(:close!)
+
       request = ActionDispatch::Request.any_instance
-      request.stub(:cookie_jar).and_return{ page.cookies }
-      request.stub(:cookies).and_return{ page.cookies }
+      request.stub(:cookie_jar).and_return{ cookies }
+      request.stub(:cookies).and_return{ cookies }
 
       @person ||= FactoryGirl.create :person
       @person.reset_persistence_token!
       @person.save!
 
-      page.cookies['roster/person_credentials'] = "#{@person.persistence_token}::#{@person.id}"
+      cookies['roster/person_credentials'] = "#{@person.persistence_token}::#{@person.id}"
     end
 
     after(:each) do
@@ -41,6 +32,11 @@ module FeatureSpec
     after(:all) do
       DatabaseCleaner.strategy = :transaction
     end
+
+    # For some incredibly stupid reason the Sauce gem aliases page to call 'selenium',
+    # which clobbers the entire Capybara wrapper/driver system.  So, put it back and
+    # hoppe this takes precedence.
+    def page; Capybara.current_session; end
   end
 end
 
