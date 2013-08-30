@@ -4,7 +4,7 @@ namespace :scheduler_periodic do
   task :send_daily => [:send_daily_shift_swap]
 
   task :send_invites => [:environment] do
-      Raven.capture do
+    Raven.capture do
       Roster::Chapter.all.each do |chapter|
         Scheduler::ShiftAssignment.needs_email_invite(chapter).find_each do |assignment|
           Scheduler::RemindersMailer.email_invite(assignment)
@@ -70,6 +70,14 @@ namespace :scheduler_periodic do
   task :send_daily_shift_swap => [:environment] do
     Scheduler::NotificationSetting.where{(email_all_swaps_daily == true)}.each do |setting|
       Scheduler::RemindersMailer.daily_swap_reminder(setting).deliver
+    end
+  end
+
+  task :send_watchfire => [:environment] do
+    Raven.capture do
+      Roster::Chapter.all.each do |chapter|
+        Scheduler::WatchfireExport.new.export chapter
+      end
     end
   end
 end
