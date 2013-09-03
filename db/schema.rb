@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130801152935) do
+ActiveRecord::Schema.define(version: 20130901172638) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string    "resource_id",   null: false
@@ -342,6 +342,8 @@ ActiveRecord::Schema.define(version: 20130801152935) do
     t.string    "time_zone_raw"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.string    "vc_username"
+    t.string    "vc_password"
   end
 
   create_table "roster_counties", force: true do |t|

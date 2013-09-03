@@ -43,6 +43,8 @@ gem 'acts_as_flying_saucer', github: 'jlaxson/acts_as_flying_saucer', branch: 'm
 gem 'sentry-raven'
 gem 'newrelic_rpm'
 
+gem 'httparty'
+
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 # gem 'turbolinks'
 
