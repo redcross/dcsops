@@ -66,6 +66,9 @@ class window.IncidentLocationController
 
         this.setFieldVal('address', result.formatted_address.split(", ")[0])
 
+        ['address', 'lat', 'lng', 'neighborhood', 'city', 'state', 'zip'].forEach (field) =>
+          this.setFieldVal field, ''
+
         result.address_components.forEach (el) =>
           el.types.forEach (type) =>
             if type == 'neighborhood'
