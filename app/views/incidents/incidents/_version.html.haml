@@ -1,7 +1,6 @@
 - who = Roster::Person.where(id: version.whodunnit).first.try(:full_name) || version.whodunnit
 - changeset = YAML.load version.object_changes
 - is_incident = (version.item_type == 'Incidents::Incident')
-- pp is_incident, changeset
 
 - ignore_incident_fields = %w(lat lng updated_at num_adults num_children num_families address cross_street neighboorhood city state zip incident_type)
 - unless is_incident and changeset.all?{|key, vals| ignore_incident_fields.include?(key)}
