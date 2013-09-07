@@ -7,6 +7,10 @@ class Incidents::ImportController < ApplicationController
   #protect_from_forgery except: [:import_cas]
   #before_filter :validate_import_secret
 
+  def user_for_paper_trail
+    params[:action].to_s.titleize
+  end
+
   import_handler :import_cas, :import_deployment, :import_dispatch
   def import_cas_handler(message, attach_name, attach, content)
 
