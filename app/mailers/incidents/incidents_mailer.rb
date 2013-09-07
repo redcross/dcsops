@@ -73,10 +73,10 @@ class Incidents::IncidentsMailer < ActionMailer::Base
     mail to: format_address(recipient), subject: "Incident For #{incident.county_name} Dispatched", template_name: 'new_incident'
   end
 
-  def incident_report_filed(incident, recipient)
+  def incident_report_filed(incident, recipient, is_new=true)
     @incident = incident
     tag :incidents, :incidents_notification, :incident_report_filed
-    mail to: format_address(recipient), subject: "Incident Report Filed For #{incident.county_name}"
+    mail to: format_address(recipient), subject: "Incident Report #{is_new ? 'Filed' : 'Updated'} For #{incident.county_name}"
   end
 
   def incident_invalid(incident, recipient)

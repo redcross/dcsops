@@ -15,6 +15,8 @@ class Incidents::Ability
         can [:needs_report, :mark_invalid], Incidents::Incident
         can :create, Incidents::DatIncident
         can :create, Incidents::EventLog
+        today = person.chapter.time_zone.today
+        can :update, Incidents::DatIncident, {incident: {date: ((today-5)..(today+1))}}
     end
 
     if is_admin or person.has_role 'cas_admin'

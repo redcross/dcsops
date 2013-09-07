@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+=begin
 describe Scheduler::WatchfireMailer do
 
   before(:each) do
@@ -72,3 +73,5 @@ context "Shift Data" do
 end
   
 end
+
+=end

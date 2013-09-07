@@ -23,14 +23,15 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   end
 
   def create
-    #build_resource.responder_assignments.build
     create! do |success, failure|
-      success.html { Incidents::IncidentReportFiled.new(resource.incident.reload).save; redirect_to resource.incident}
+      success.html { Incidents::IncidentReportFiled.new(resource.incident.reload, true).save; redirect_to resource.incident}
     end
   end
 
   def update
-    update! {url_for resource.incident }
+    create! do |success, failure|
+      success.html { Incidents::IncidentReportFiled.new(resource.incident.reload, false).save; redirect_to resource.incident}
+    end
   end
 
   private

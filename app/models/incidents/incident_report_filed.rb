@@ -4,8 +4,9 @@ class Incidents::IncidentReportFiled
   self.notification_type = 'incident_report'
   self.role_grant_name = 'receive_incident_report'
 
-  def initialize(incident)
+  def initialize(incident, is_new)
     @incident = incident
+    @is_new = is_new
   end
 
   def save
@@ -22,7 +23,7 @@ class Incidents::IncidentReportFiled
 
   def fire_notifications
     notify do |person|
-      Incidents::IncidentsMailer.incident_report_filed(@incident, person).deliver
+      Incidents::IncidentsMailer.incident_report_filed(@incident, person, @is_new).deliver
     end
   end
 end
