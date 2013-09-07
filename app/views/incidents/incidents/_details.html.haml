@@ -107,6 +107,9 @@ County
           %tr
             %th Shelter Opened
             %td=resource.shelter_partner_use.partner_name
+        %tr
+          %th Vehicles
+          %td= dat.vehicles.map(&:name).to_sentence
   .row
     .span4
       %h4 Description
