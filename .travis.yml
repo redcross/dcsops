@@ -6,11 +6,7 @@ before_script:
 - cp config/database.tmpl.yml config/database.yml
 env:
   global:
-  - secure: NEP7OYPOpFLfGrsTi2RRLN2SmHa4AOtWpQ6b10gXsUDEDItOhG/RedVdycGVY2xQ0KCzFaJ4BcPTf6bwTyPCHi+H+IeSs8CQzK+vwFKnAqtVjN8+xcp5XqK5RMa+AjeW0sxuADjfPg/Y6ZMDUfilOo717SJJi1q/hqELe94IPM8=
-  - secure: ETNfaN8feQxjclb9ebi2xw/3lB+oeiDkCVD5shTi7bA8DHbIQNGAAuE3WUwTQ5bQwZjOfiI8+akVqP4vozEuFgLhTUhUaZAxdO9jzBzubO41eDLkUrqEbl1E3p0FCpotjUMr9DRhsg/COtODBkkH7ZtaJ6Fd//Tbde+LWz6cdlw=
+  - secure: "RQjcEYGShb2H5bd319PcqEQsSOSkHzeE5gB9j473CQzZ+pkuj5ovB4rxjFEWMn+isaHc1TRG8ha09RZMAgMM63x03wN/2b/HMmUIg3L1t/Bih5x0DelktSJHWUtyisaOt4hL8XS4QxevrhwPYZfCz7WxB389E+dTSTREXbEXmCk="
+  - secure: "ipO3BlvYr2ZE4MPi4+nFqSUllZA3v4+anDOFUz0XNc5nOe7/h0xVkOjYAmsB4FAlcwZJvfql77c6LGPKpMc7AdXTAK/Ti4oO04QDDa2pMmmanegE9j8FVIz5bS0ZL8KyaG83ccaF5XQWjAQUz/kA+GjMslnIV0YH3w0ef3I5C9U="
 addons:
-  sauce_connect:
-    username: 
-      secure: X2/6+1oaOJ2kDCHZZ+b2appyI08rZ0L5aVYj8V/hxrjaT9GqXQpGR73JYZR9PqLnM+niKlPxL4MIiw+7kE5L5RtCGHCw7VH4d8+QOm0An08gJC1GMaRvKppms2WAnV41dJDEAnHLuNyiixBIceyjBnsI7XvNjo+4TmlAnxDvXO4=
-    access_key:
-      secure: cCOGm5Nk7Yk0/L+jm6zV7qufH2SgQLJyYPeaqLzcM1Ovd2BnA9twgT92lGQVW3rz12rRmN3gb0Exuq0xyHMxiMbqjY8ElTTfTd9cHoYzX2LfX2Wjw87RZ4HGggWlUh8DE9y8LiLdsx9lsSr6lCkqJUw0I4/aV61sXh1zzzcfMDA=
+  sauce_connect: true
