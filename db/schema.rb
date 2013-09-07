@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130901172638) do
+ActiveRecord::Schema.define(version: 20130907015051) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string    "resource_id",   null: false
@@ -249,14 +249,14 @@ ActiveRecord::Schema.define(version: 20130901172638) do
   add_index "incidents_notification_subscriptions", ["person_id"], name: "index_incidents_notification_subscriptions_on_person_id"
 
   create_table "incidents_partner_uses", force: true do |t|
-    t.integer  "incident_id"
-    t.integer  "partner_id"
-    t.string   "role"
-    t.decimal  "hotel_rate"
-    t.integer  "hotel_rooms"
-    t.integer  "meals_served"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "incident_id"
+    t.integer   "partner_id"
+    t.string    "role"
+    t.decimal   "hotel_rate"
+    t.integer   "hotel_rooms"
+    t.integer   "meals_served"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   add_index "incidents_partner_uses", ["incident_id"], name: "index_incidents_partner_uses_on_incident_id"
@@ -567,5 +567,17 @@ ActiveRecord::Schema.define(version: 20130901172638) do
 
   add_index "scheduler_shifts", ["county_id"], name: "index_scheduler_shifts_on_county_id"
   add_index "scheduler_shifts", ["shift_group_id"], name: "index_scheduler_shifts_on_shift_group_id"
+
+  create_table "versions", force: true do |t|
+    t.string   "item_type",      null: false
+    t.integer  "item_id",        null: false
+    t.string   "event",          null: false
+    t.string   "whodunnit"
+    t.text     "object"
+    t.datetime "created_at"
+    t.text     "object_changes"
+  end
+
+  add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
 
 end

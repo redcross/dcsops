@@ -1,0 +1,25 @@
+- who = Roster::Person.where(id: version.whodunnit).first.try(:full_name) || version.whodunnit
+- changeset = YAML.load version.object_changes
+- is_incident = (version.item_type == 'Incidents::Incident')
+- pp is_incident, changeset
+
+- ignore_incident_fields = %w(lat lng updated_at num_adults num_children num_families address cross_street neighboorhood city state zip incident_type)
+- unless is_incident and changeset.all?{|key, vals| ignore_incident_fields.include?(key)}
+  %h4
+    = version.event.titleize + 'd'
+    by
+    = who
+    at
+    = version.created_at.in_time_zone.to_s :date_time
+  %table.table.table-bordered
+    %tr
+      %th Field
+      %th Old
+      %th New
+    - changeset.each do |key, vals|
+      - next if %w(lat lng updated_at).include? key
+      - next if is_incident and ignore_incident_fields.include? key
+      %tr
+        %td=key.titleize
+        %td=vals.first
+        %td=vals.last

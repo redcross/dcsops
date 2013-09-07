@@ -1,4 +1,5 @@
 class Incidents::Incident < ActiveRecord::Base
+  has_paper_trail
   INVALID_INCIDENT_TYPES = %w(invalid duplicate not_eligible_for_services)
 
   belongs_to :chapter, class_name: 'Roster::Chapter'

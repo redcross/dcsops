@@ -1,4 +1,5 @@
 class Incidents::DatIncident < ActiveRecord::Base
+  has_paper_trail
 
   class TimesInCorrectOrder < ActiveModel::Validator
     MESSAGE = "%s must come before %s"
@@ -89,6 +90,11 @@ class Incidents::DatIncident < ActiveRecord::Base
 
   def cant_update_incident
     !(incident.nil? || incident.new_record?)
+  end
+
+  def languages= list
+    list = list.select(&:present?) if list
+    super(list)
   end
 
 end

@@ -54,6 +54,18 @@ class Incidents::IncidentsController < Incidents::BaseController
       @_names ||= current_user.chapter.counties.map(&:name)
     end
 
+    helper_method :resource_changes
+    def resource_changes
+      return @_changes if defined? @_changes
+
+      @_changes = resource.versions
+      @_changes += resource.dat_incident.versions if resource.dat_incident 
+
+      @_changes.sort_by!(&:created_at).reverse!
+
+      @_changes
+    end
+
     def incidents_for_cas(cas)
       scope = Incidents::Incident.joins{cas_incident.outer}.where{(cas_incident.id == nil) & date.in((cas.incident_date.last_week)..(cas.incident_date.next_week))}
       if county_names.include? cas.county_name

@@ -29,7 +29,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   end
 
   def update
-    create! do |success, failure|
+    update! do |success, failure|
       success.html { Incidents::IncidentReportFiled.new(resource.incident.reload, false).save; redirect_to resource.incident}
     end
   end

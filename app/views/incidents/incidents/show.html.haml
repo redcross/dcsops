@@ -45,7 +45,7 @@
     .tab-pane#inc-cases=render 'cases'
 
   -if can? :read_details, resource
-    .tab-pane#inc-changes
+    .tab-pane#inc-changes=render 'changes'
 
 - content_for :footer_js do
   = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"

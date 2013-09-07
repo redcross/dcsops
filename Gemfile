@@ -28,6 +28,7 @@ gem "ruby-openid", require: 'openid'
 gem "chronic"
 gem "roadie", github: 'Mange/roadie'
 gem "kaminari"
+gem "paper_trail", github: 'airblade/paper_trail'
 
 gem 'geokit', github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 

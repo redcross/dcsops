@@ -9,6 +9,13 @@ GIT
       sprockets
 
 GIT
+  remote: git://github.com/airblade/paper_trail.git
+  revision: 5bc43f15dfc52dbe7935a19ddd5482d28bd959c4
+  specs:
+    paper_trail (3.0.0.beta1)
+      activerecord (>= 3.0, < 5.0)
+
+GIT
   remote: git://github.com/ernie/ransack.git
   revision: 4078f4fd0ff8b48658e1b69fe8bce0c36933f19c
   branch: rails-4
@@ -413,6 +420,7 @@ DEPENDENCIES
   less-rails
   memcachier
   newrelic_rpm
+  paper_trail!
   parallel_tests
   puma
   quiet_assets
