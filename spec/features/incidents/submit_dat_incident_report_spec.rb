@@ -131,7 +131,7 @@ describe "DAT Incident Report" do
     check 'Spanish'
 
     check 'Meal Served'
-    fill_in 'Meals served*', with: 100
+    fill_in '# of Meals Served*', with: 100
     fill_in 'incidents_dat_incident_incident_attributes_incident_id_feeding_partner_use_text', with: 'McDonalds'
 
     check 'Evacuation Center Opened'

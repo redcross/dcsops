@@ -93,7 +93,7 @@ describe Incidents::DatIncidentsController do
       }.to_not change{@incident.reload.incident_number}
     end
     it "should notify the report was filed" do
-      Incidents::IncidentReportFiled.should_receive(:new).with(@incident).and_return(stub(save: true))
+      Incidents::IncidentReportFiled.should_receive(:new).with(@incident, true).and_return(stub(save: true))
       post :create, incident_id: @incident.to_param, incidents_dat_incident: create_attrs
     end
   end
