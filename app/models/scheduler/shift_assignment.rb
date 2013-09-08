@@ -107,6 +107,8 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     .joins{notification_setting}.where{notification_setting.sms_advance_hours != nil}
     .joins{person}.where{person.chapter_id == chapter.id}.readonly(false)
     .select{|ass|
+      ass.person.sms_addresses.present? # Can't send if we don't have any addresses
+    }.select{|ass|
       start = ass.local_start_time
       etime = ass.local_end_time
       notifications_begin = (start - ass.notification_setting.sms_advance_hours)
