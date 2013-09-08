@@ -22,7 +22,7 @@ cd $CONNECT_DIR
 curl $CONNECT_URL > $CONNECT_DOWNLOAD
 unzip $CONNECT_DOWNLOAD
 rm $CONNECT_DOWNLOAD
-echo java -jar Sauce-Connect.jar --readyfile $READY_FILE \
+java -jar Sauce-Connect.jar --readyfile $READY_FILE \
     --tunnel-identifier $TRAVIS_JOB_NUMBER \
     --direct-domains $DIRECT_DOMAINS \
     $SAUCE_USERNAME $SAUCE_ACCESS_KEY &
