@@ -18,5 +18,5 @@ Sauce.config do |config|
 
   # This needs to be a boolean, nil won't cut it as a falsish value
   config[:start_tunnel] = !!(SauceConfig.use_sauce? and ENV['SAUCE_CONNECT'])
-  config[:tunnel_identifier] = ENV['TRAVIS_JOB_NUMBER'] if ENV['TRAVIS_JOB_NUMBER']
+  config[:"tunnel-identifier"] = ENV['TRAVIS_JOB_NUMBER'] if ENV['TRAVIS_JOB_NUMBER']
 end
