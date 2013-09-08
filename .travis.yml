@@ -4,9 +4,8 @@ rvm:
 bundler_args: --without development
 before_script:
 - cp config/database.tmpl.yml config/database.yml
+- bin/sauce_connect_setup.sh
 env:
   global:
   - secure: "RQjcEYGShb2H5bd319PcqEQsSOSkHzeE5gB9j473CQzZ+pkuj5ovB4rxjFEWMn+isaHc1TRG8ha09RZMAgMM63x03wN/2b/HMmUIg3L1t/Bih5x0DelktSJHWUtyisaOt4hL8XS4QxevrhwPYZfCz7WxB389E+dTSTREXbEXmCk="
   - secure: "ipO3BlvYr2ZE4MPi4+nFqSUllZA3v4+anDOFUz0XNc5nOe7/h0xVkOjYAmsB4FAlcwZJvfql77c6LGPKpMc7AdXTAK/Ti4oO04QDDa2pMmmanegE9j8FVIz5bS0ZL8KyaG83ccaF5XQWjAQUz/kA+GjMslnIV0YH3w0ef3I5C9U="
-addons:
-  sauce_connect: true
