@@ -83,7 +83,6 @@ group :development, :test do
   gem 'selenium-webdriver', require: false
   gem 'database_cleaner', require: false
   gem 'sauce'
-  gem 'sauce-connect'
   gem 'parallel_tests'
 end
 

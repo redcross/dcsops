@@ -320,8 +320,6 @@ GEM
       rest-client
       sauce_whisk (~> 0.0.8)
       selenium-webdriver (>= 0.1.2)
-    sauce-connect (3.0.0)
-      sauce (~> 3.0.0.beta.2)
     sauce_whisk (0.0.8)
       rest-client
     selenium-webdriver (2.33.0)
@@ -435,7 +433,6 @@ DEPENDENCIES
   ruby-openid
   sass-rails (~> 4.0.0.rc1)
   sauce
-  sauce-connect
   selenium-webdriver
   sentry-raven
   shoulda-matchers
