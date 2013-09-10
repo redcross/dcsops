@@ -41,6 +41,10 @@ describe "" do
       before(:each) do
         @ass = FactoryGirl.create :shift_assignment, shift: @shift, person: @person, date: @chapter.time_zone.today
         @setting.update_attribute "#{method}_advance_hours", 0
+
+        @person.cell_phone_carrier = Roster::CellCarrier.create name: 'Test', sms_gateway: '@example.com'
+        @person.cell_phone = Faker::PhoneNumber.phone_number
+        @person.save
       end
 
       it "should send a reminder" do

@@ -234,6 +234,10 @@ describe Scheduler::ShiftAssignment do
       before(:each) do
         @prefs.update_attribute :sms_advance_hours, 2.hours # 2 hours ahead of time
         @item = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: zone.today.tomorrow
+      
+        @person.cell_phone_carrier = Roster::CellCarrier.create name: 'Test', sms_gateway: '@example.com'
+        @person.cell_phone = Faker::PhoneNumber.phone_number
+        @person.save
       end
 
       it "should not want to send the reminder ahead of time" do
