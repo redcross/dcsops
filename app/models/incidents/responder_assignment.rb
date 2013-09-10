@@ -14,6 +14,10 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   #validates :response, inclusion: {in: RESPONSES}
   #validates :person_id, uniqueness: {scope: :incident_id}
 
+  def humanized_role
+    ROLES_TO_LABELS[role] || RESPONSES_TO_LABELS[role]
+  end
+
   scope :on_scene, -> { where{ role.in( %w(responder team_lead health_services mental_health) ) } }
 
   

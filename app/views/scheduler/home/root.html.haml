@@ -123,6 +123,22 @@
             %td=shift.person.full_name
             %td
               =link_to "Claim", swap_scheduler_shift_assignment_path(shift), class: "btn btn-small"
+  .span6
+    %h5
+      %i.icon-fire
+      Your Recent Responses
+    %table.table
+      %thead
+        %tr
+          %th Incident
+          %th Status
+      %tbody
+        - responses.each do |response|
+          %tr
+            %td=link_to response.incident.to_label, response.incident
+            %td=response.humanized_role
+    If this information is incomplete or incorrect, please contact your DAT Administrator.
+
 
 - content_for :footer_js do
   :javascript
