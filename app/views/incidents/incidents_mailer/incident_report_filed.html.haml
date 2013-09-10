@@ -35,3 +35,12 @@
   Services Provided: #{@incident.services_description}
   %br
   Narrative: #{dat.narrative}
+
+%p
+  Responders:
+  %br
+  -@incident.all_responder_assignments.each do |response|
+    =response.person.full_name
+    \ - 
+    =response.humanized_role
+    %br
