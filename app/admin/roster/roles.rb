@@ -3,7 +3,7 @@ ActiveAdmin.register Roster::Role, as: 'Role' do
 
   controller do
     def resource_params
-      request.get? ? [] : [params.require(:role).permit(:name, :grant_name, role_scopes: [:scope, :_destroy])]
+      request.get? ? [] : [params.require(:role).permit(:name, :chapter_id, :grant_name, role_scopes: [:scope, :_destroy])]
     end
 
     def collection
