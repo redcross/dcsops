@@ -18,6 +18,10 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
     ROLES_TO_LABELS[role] || RESPONSES_TO_LABELS[role]
   end
 
+  def was_available
+    ROLES.include? role
+  end
+
   scope :on_scene, -> { where{ role.in( %w(responder team_lead health_services mental_health) ) } }
 
   

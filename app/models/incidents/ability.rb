@@ -35,6 +35,10 @@ class Incidents::Ability
         can :narrative, Incidents::CasCase
     end
 
+    if is_admin or person.has_role 'see_responses'
+        can :show, :responders
+    end
+
     if is_admin
         can :manage, Incidents::DatIncident
         can :manage, Incidents::Incident

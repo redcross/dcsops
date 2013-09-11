@@ -21,6 +21,11 @@
           %a{href: incidents_notification_subscription_weekly_path(current_user)}
             Manage Subscription
             %i.icon-chevron-right
+      -if can? :show, :responders
+        %li
+          %a{href: incidents_responders_path}
+            Show Responder Info
+            %i.icon-chevron-right
   .span9
     %h2.center
       #{current_user.chapter.short_name} DAT Incidents

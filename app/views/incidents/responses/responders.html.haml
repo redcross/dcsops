@@ -1,0 +1,43 @@
+=form_tag '', method: :get, class: 'form-horizontal' do
+  Show County:
+  =select_tag :county_id, options_from_collection_for_select(current_chapter.counties, :id, :name, county.try( :id))
+  =submit_tag 'Show', class: 'btn'
+
+.legend
+  %span.text-success
+    %i.icon-check-sign 
+    Available
+  %span
+    %i.icon-check-empty 
+    Not Available (Flex)
+  %span.text-error 
+    %i.icon-remove-sign
+    Not Available (Committed)
+%table.table.table-bordered
+  %thead
+    %tr
+      %th Name
+      %th Last Contacted
+      %th(colspan="10") 
+        Responses
+
+  %tbody
+    - responders.each do |responder, assignments|
+      %tr
+        %th=link_to responder.full_name, responder
+        %td=assignments.first.incident.try(:date).to_s :mdy
+        - assignments.each do |ass|
+          %td
+            %a{href: url_for(ass.incident), title: tooltip_for(ass)}(data-toggle="tooltip")
+              -if ass.was_available
+                %i.icon-large.icon-check-sign.text-success
+              -elsif ass.was_flex
+                %i.icon-large.icon-check-empty
+              -else
+                %i.icon-large.icon-remove-sign.text-error
+            /=ass.humanized_role
+        - (10-assignments.count).times do
+          %td
+
+:javascript
+  $("[data-toggle=tooltip]").tooltip();

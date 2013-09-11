@@ -50,6 +50,13 @@ class Scheduler::Shift < ActiveRecord::Base
     return (shift_begins.nil? || shift_begins <= date) && (shift_ends.nil? || shift_ends > date)
   end
 
+  scope :active_on_day, -> date {
+    where{((shift_begins == nil) | (shift_begins <= date) & ((shift_ends == nil) | (shift_ends > date)))}
+  }
+  scope :for_county, -> county {
+    where{county_id == county}
+  }
+
   def can_be_taken_by?(person)
     if ignore_county or person.counties.to_a.include?(county)
       pos = positions & person.positions

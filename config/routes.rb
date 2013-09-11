@@ -89,6 +89,9 @@ Scheduler::Application.routes.draw do
         get :narrative, on: :member
       end
     end
+    scope "responses", controller: :responses do
+      root to: :responders, as: 'responders'
+    end
     scope "notification_subscriptions", as: :notification_subscription do
       resources :weekly, controller: 'notification_subscriptions', notification_type: 'weekly'
     end
