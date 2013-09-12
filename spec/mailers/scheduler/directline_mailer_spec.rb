@@ -35,7 +35,7 @@ describe Scheduler::DirectlineMailer do
   describe "Support methods" do
     it "Should run when called with force=true" do
       day = @chapter.time_zone.today
-      Scheduler::DirectlineMailer.any_instance.should_receive(:export).with(@chapter, day-1, day+60).and_return(stub deliver: true)
+      Scheduler::DirectlineMailer.any_instance.should_receive(:export).with(@chapter, day-1, day+60).and_return(double deliver: true)
       Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter)
 
       @leadass.reload.synced.should == true
@@ -54,7 +54,7 @@ describe Scheduler::DirectlineMailer do
 
     it "Should run with force=false and an unsynced assignment today" do
       @leadass.update_attribute :date, @chapter.time_zone.today
-      Scheduler::DirectlineMailer.any_instance.should_receive(:export).and_return(stub deliver: true)
+      Scheduler::DirectlineMailer.any_instance.should_receive(:export).and_return(double deliver: true)
       Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter)
     end
   end

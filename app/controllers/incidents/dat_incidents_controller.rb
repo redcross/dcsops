@@ -2,7 +2,8 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   inherit_resources
   #load_and_authorize_resource :incident, find_by: :find_by_incident_number!
   load_and_authorize_resource :dat_incident, class: Incidents::DatIncident
-  belongs_to :incident, singleton: true, finder: :find_by_incident_number!, parent_class: Incidents::Incident
+  defaults singleton: true
+  belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident
 
   actions :all, except: [:destroy]
 

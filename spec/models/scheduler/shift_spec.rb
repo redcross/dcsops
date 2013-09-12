@@ -45,12 +45,12 @@ describe Scheduler::Shift do
     end
 
     it "should be true yesterday if we are allowing signups in the past" do
-      shift.stub! allow_signup_in_past?: true
+      shift.stub allow_signup_in_past?: true
       shift.can_sign_up_on_day(date-1).should be_true
     end
 
     it "should be false if the shift is not active" do
-      shift.stub! active_on_day?: false
+      shift.stub active_on_day?: false
       shift.can_sign_up_on_day(date).should be_false
     end
 

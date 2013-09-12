@@ -107,7 +107,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
         .first
   end
   def other_assignments
-    Scheduler::ShiftAssignment.includes(:shift).where(date: item.date, scheduler_shifts: {shift_group_id: item.shift.shift_group, county_id: item.shift.county}).references(:shift).order('scheduler_shifts.ordinal')
+    Scheduler::ShiftAssignment.includes(:shift).joins(:shift).where(date: item.date, shift: {shift_group_id: item.shift.shift_group, county_id: item.shift.county}).references(:shift).order('scheduler_shifts.ordinal')
   end
   def assignments_for_date_shift(the_date, shift)
     Scheduler::ShiftAssignment.where{shift_id.in(shift.id) & (date == the_date)}

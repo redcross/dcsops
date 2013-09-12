@@ -65,7 +65,7 @@ describe Incidents::IncidentsController do
       cas = FactoryGirl.create :cas_incident
       FactoryGirl.create :county, name: cas.county_name
 
-      Geokit::Geocoders::GoogleGeocoder3.should_receive(:geocode).and_return(stub lat: Faker::Address.latitude, lng: Faker::Address.longitude)
+      Geokit::Geocoders::GoogleGeocoder3.should_receive(:geocode).and_return(double lat: Faker::Address.latitude, lng: Faker::Address.longitude)
 
       expect {
         post :link_cas, cas_id: cas.id, commit: 'Promote to Incident'

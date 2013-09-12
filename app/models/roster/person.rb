@@ -35,8 +35,8 @@ class Roster::Person < ActiveRecord::Base
     self.where(vc_id: account).first
   end
 
-  scope :in_county, lambda {|county| joins(:counties).where(:roster_counties => {id: county})}
-  scope :with_position, lambda {|county| joins(:positions).where(:roster_positions => {id: county})}
+  scope :in_county, lambda {|county| joins(:counties).where(:counties => {id: county})}
+  scope :with_position, lambda {|county| joins(:positions).where(:positions => {id: county})}
   scope :by_name, lambda { order(:last_name, :first_name)}
 
   has_many :shift_assignments, class_name: 'Scheduler::ShiftAssignment'

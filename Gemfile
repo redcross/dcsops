@@ -33,7 +33,7 @@ gem "decent_exposure"
 
 gem 'geokit', github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 
-gem 'formtastic', github: 'justinfrench/formtastic', branch: 'rails4beta'
+gem 'formtastic', '>=2.3.0rc2'
 gem 'formtastic-bootstrap'
 gem 'cocoon', github: 'nathanvda/cocoon'
 gem 'ransack',             github: 'ernie/ransack',            branch: 'rails-4'
@@ -82,8 +82,8 @@ group :development, :test do
 
   gem 'capybara', require: false
   gem 'selenium-webdriver', require: false
-  gem 'database_cleaner', require: false
-  gem 'sauce'
+  gem 'database_cleaner', '~> 1.0.1', require: false # Current 1.1.1 version has catastrophic issue that breaks DB adapters.  Can upgrade when fixed
+  gem 'sauce', '~> 3.0.4'
   gem 'parallel_tests'
 end
 

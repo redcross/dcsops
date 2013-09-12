@@ -9,7 +9,7 @@ describe Incidents::IncidentMissingReport do
   it "should notify someone subscribed to new_incident" do
     Incidents::NotificationSubscription.create! person: @person, county: @incident.county, notification_type: 'missing_report'
 
-    Incidents::IncidentsMailer.should_receive(:no_incident_report).with(@incident, @person).and_return(stub :deliver => true)
+    Incidents::IncidentsMailer.should_receive(:no_incident_report).with(@incident, @person).and_return(double :deliver => true)
 
     Incidents::IncidentMissingReport.new(@incident).save
   end
@@ -21,7 +21,7 @@ describe Incidents::IncidentMissingReport do
     @shift = FactoryGirl.create :shift, shift_group: @group, positions: @p2.positions, county: @p2.counties.first, dispatch_role: 1
     @ass = FactoryGirl.create :shift_assignment, shift: @shift, date: date, person: @p2
 
-    Incidents::IncidentsMailer.should_receive(:no_incident_report).with(@incident, @ass.person).and_return(stub :deliver => true)
+    Incidents::IncidentsMailer.should_receive(:no_incident_report).with(@incident, @ass.person).and_return(double :deliver => true)
 
     Incidents::IncidentMissingReport.new(@incident).save
   end

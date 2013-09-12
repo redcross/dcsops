@@ -29,7 +29,7 @@ describe "" do
     end
 
     it "should send a reminder" do
-      Scheduler::RemindersMailer.should_receive(:email_invite).and_return(stub :deliver => true)
+      Scheduler::RemindersMailer.should_receive(:email_invite).and_return(double :deliver => true)
       subject.invoke
       @ass.reload.email_invite_sent.should be_true
     end
@@ -49,7 +49,7 @@ describe "" do
 
       it "should send a reminder" do
         Delorean.time_travel_to @ass.local_start_time
-        Scheduler::RemindersMailer.should_receive("#{method}_reminder".to_sym).and_return(stub :deliver => true)
+        Scheduler::RemindersMailer.should_receive("#{method}_reminder".to_sym).and_return(double :deliver => true)
         subject.invoke
         @ass.reload["#{method}_reminder_sent"].should be_true
       end
@@ -68,7 +68,7 @@ describe "" do
       it "should send a reminder" do
         Delorean.time_travel_to @chapter.time_zone.now.change(hour: 10)
 
-        Scheduler::RemindersMailer.should_receive("daily_#{method}_reminder".to_sym).and_return(stub :deliver => true)
+        Scheduler::RemindersMailer.should_receive("daily_#{method}_reminder".to_sym).and_return(double :deliver => true)
         subject.invoke
         @setting.reload["last_all_shifts_#{method}"].should == @chapter.time_zone.today
       end
@@ -83,7 +83,7 @@ describe "" do
     end
 
     it "should send a swap reminder to someone subscribed" do
-      Scheduler::RemindersMailer.should_receive(:daily_swap_reminder).with(@setting).and_return(stub deliver: true)
+      Scheduler::RemindersMailer.should_receive(:daily_swap_reminder).with(@setting).and_return(double deliver: true)
       subject.invoke
     end
   end
@@ -105,7 +105,7 @@ describe "" do
     end
 
     it "should work all the way through" do
-      Scheduler::DirectlineMailer.any_instance.should_receive(:export).with(@chapter, anything, anything).and_return(stub deliver: true)
+      Scheduler::DirectlineMailer.any_instance.should_receive(:export).with(@chapter, anything, anything).and_return(double deliver: true)
       subject.invoke
     end
   end

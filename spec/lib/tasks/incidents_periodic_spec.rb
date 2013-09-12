@@ -27,7 +27,7 @@ describe "" do
 
     it "should send a reminder if the incident has a log and was created a while ago" do
       @incident.update_attribute :created_at, 24.hours.ago
-      Incidents::IncidentMissingReport.should_receive(:new).with(@incident).and_return(stub :save => true)
+      Incidents::IncidentMissingReport.should_receive(:new).with(@incident).and_return(double :save => true)
       expect {
         subject.invoke
       }.to change{@incident.reload.last_no_incident_warning}
@@ -36,7 +36,7 @@ describe "" do
     it "should send a reminder if the incident was last pinged a while ago" do
       @incident.update_attribute :created_at, 24.hours.ago
       @incident.update_attribute :last_no_incident_warning, 13.hours.ago
-      Incidents::IncidentMissingReport.should_receive(:new).with(@incident).and_return(stub :save => true)
+      Incidents::IncidentMissingReport.should_receive(:new).with(@incident).and_return(double :save => true)
       expect {
         subject.invoke
       }.to change{@incident.reload.last_no_incident_warning}
@@ -99,7 +99,7 @@ describe "" do
       Delorean.time_travel_to Date.current.at_beginning_of_week.in_time_zone
       Incidents::NotificationSubscription.create! person: @person, county: nil, notification_type: 'weekly'
 
-      Incidents::IncidentsMailer.should_receive(:weekly).with(@person.chapter, @person).and_return(stub :deliver => true)
+      Incidents::IncidentsMailer.should_receive(:weekly).with(@person.chapter, @person).and_return(double :deliver => true)
       subject.invoke
     end
 

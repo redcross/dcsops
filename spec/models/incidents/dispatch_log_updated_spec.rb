@@ -15,7 +15,7 @@ describe Incidents::DispatchLogUpdated do
 
     Incidents::NotificationSubscription.create! person: @person, county: nil, notification_type: 'incident_dispatch'
 
-    Incidents::IncidentsMailer.should_receive(:incident_dispatched).with(@incident, @person).and_return(stub :deliver => true)
+    Incidents::IncidentsMailer.should_receive(:incident_dispatched).with(@incident, @person).and_return(double :deliver => true)
 
     Incidents::DispatchLogUpdated.new(@log).save
   end

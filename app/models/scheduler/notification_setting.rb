@@ -19,7 +19,7 @@ class Scheduler::NotificationSetting < ActiveRecord::Base
   end
 
   def self.people_to_notify_swap(shift_assignment)
-    Roster::Person.joins{notification_setting}.where(scheduler_notification_settings: {email_swap_requested: true}).in_county(shift_assignment.shift.county).with_position(shift_assignment.shift.positions.to_a).to_a
+    Roster::Person.joins{notification_setting}.where(notification_setting: {email_swap_requested: true}).in_county(shift_assignment.shift.county).with_position(shift_assignment.shift.positions.to_a).to_a
   end
 
   def self.admins_to_notify_swap(shift_assignment, ignore=[])

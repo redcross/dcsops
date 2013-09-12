@@ -130,7 +130,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
     if @my_shifts
       @my_shifts[group_id].try(:[], date)
     else
-      Scheduler::ShiftAssignment.includes(:shift => :shift_group).where(:scheduler_shifts => {shift_group_id: group_id}, person_id: person).where(date: date).first
+      Scheduler::ShiftAssignment.includes(:shift => :shift_group).where(:shift => {shift_group_id: group_id}, person_id: person).where(date: date).first
     end
   end
 

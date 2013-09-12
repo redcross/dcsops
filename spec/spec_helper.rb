@@ -101,4 +101,4 @@ RSpec.configure do |config|
   end
 end
 
-Zonebie.set_random_timezone(ascii_map: ENV['MAP'])
+Zonebie.set_random_timezone

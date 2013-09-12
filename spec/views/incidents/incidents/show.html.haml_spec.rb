@@ -5,9 +5,9 @@ describe "incidents/incidents/show" do
   let(:ability) {grant_role! 'incidents_admin', nil, person; Incidents::Ability.new person}
 
   before(:each) do
-    view.controller.stub! :current_ability => ability
-    view.stub! :current_user => person
-    view.stub! :resource_changes => []
+    view.controller.stub :current_ability => ability
+    view.stub :current_user => person
+    view.stub :resource_changes => []
   end
 
   describe "with no linked incidents" do
