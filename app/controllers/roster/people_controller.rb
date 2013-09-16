@@ -7,6 +7,9 @@ class Roster::PeopleController < Roster::BaseController
   has_scope :with_position, type: :array
 
   load_and_authorize_resource
+  def me
+    redirect_to roster_person_url(current_user)
+  end
 
   private
 
