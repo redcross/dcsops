@@ -6,7 +6,7 @@ class AdminAbility
     is_config = person.roles.any?{|r| r.grant_name == 'chapter_config' }
 
     if is_config # is site manager
-      can [:read, :update], Roster::Chapter, id: person.chapter_id
+      can [:read, :update], Roster::Chapter
       can :manage, Roster::County
       can :manage, Roster::Position
       can :manage, Roster::CellCarrier

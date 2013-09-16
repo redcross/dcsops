@@ -45,7 +45,7 @@ class Roster::Person < ActiveRecord::Base
   validates *((1..4).map{|n| "phone_#{n}_preference".to_sym}), inclusion: {in: %w(home cell work alternate sms), allow_blank: true}
   validates_presence_of :chapter
 
-  validates_inclusion_of :primary_county_id, in: lambda{ |person| person.chapter.county_ids }, allow_nil: true, allow_blank: true
+  #validates_inclusion_of :primary_county_id, in: lambda{ |person| person.chapter.county_ids }, allow_nil: true, allow_blank: true
 
   default_scope {order(:last_name, :first_name)}
 
@@ -64,7 +64,7 @@ class Roster::Person < ActiveRecord::Base
   end
 
   def primary_county_id
-    (read_attribute(:primary_county_id) || county_ids.first)
+    (read_attribute(:primary_county_id) || counties.first.try(:id))
   end
 
   def first_initial

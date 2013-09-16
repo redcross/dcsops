@@ -415,6 +415,7 @@ DEPENDENCIES
   less-rails
   memcachier
   newrelic_rpm
+  nokogiri
   paper_trail!
   parallel_tests
   puma
