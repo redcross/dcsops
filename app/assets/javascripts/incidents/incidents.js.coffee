@@ -61,13 +61,12 @@ class window.IncidentLocationController
         @marker.setPosition(pos)
         @marker.setMap(@map)
 
-        this.setFieldVal('lat', pos.lat())
-        this.setFieldVal('lng', pos.lng())
-
         ['address', 'lat', 'lng', 'neighborhood', 'city', 'state', 'zip'].forEach (field) =>
           this.setFieldVal field, ''
 
         this.setFieldVal('address', result.formatted_address.split(", ")[0])
+        this.setFieldVal('lat', pos.lat())
+        this.setFieldVal('lng', pos.lng())
 
         result.address_components.forEach (el) =>
           el.types.forEach (type) =>
