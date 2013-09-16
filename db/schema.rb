@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130907015051) do
+ActiveRecord::Schema.define(version: 20130916014132) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string    "resource_id",   null: false
@@ -27,6 +27,14 @@ ActiveRecord::Schema.define(version: 20130907015051) do
   add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
   add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace"
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
+
+  create_table "api_clients", force: true do |t|
+    t.string   "name"
+    t.string   "app_token"
+    t.string   "app_secret"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "import_logs", force: true do |t|
     t.string    "controller"
@@ -314,17 +322,46 @@ ActiveRecord::Schema.define(version: 20130907015051) do
 
   add_index "motds", ["chapter_id"], name: "index_motds_on_chapter_id"
 
-  create_table "partners_partners", force: true do |t|
-    t.string   "name"
-    t.string   "address1"
-    t.string   "address2"
-    t.string   "city"
-    t.string   "state"
-    t.string   "zip"
-    t.decimal  "lat"
-    t.decimal  "lng"
+  create_table "opro_auth_grants", force: true do |t|
+    t.string   "code"
+    t.string   "access_token"
+    t.string   "refresh_token"
+    t.text     "permissions"
+    t.datetime "access_token_expires_at"
+    t.integer  "user_id"
+    t.integer  "application_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  add_index "opro_auth_grants", ["access_token"], name: "index_opro_auth_grants_on_access_token", unique: true
+  add_index "opro_auth_grants", ["code"], name: "index_opro_auth_grants_on_code", unique: true
+  add_index "opro_auth_grants", ["refresh_token"], name: "index_opro_auth_grants_on_refresh_token", unique: true
+
+  create_table "opro_client_apps", force: true do |t|
+    t.string   "name"
+    t.string   "app_id"
+    t.string   "app_secret"
+    t.text     "permissions"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "opro_client_apps", ["app_id", "app_secret"], name: "index_opro_client_apps_on_app_id_and_app_secret", unique: true
+  add_index "opro_client_apps", ["app_id"], name: "index_opro_client_apps_on_app_id", unique: true
+
+  create_table "partners_partners", force: true do |t|
+    t.string    "name"
+    t.string    "address1"
+    t.string    "address2"
+    t.string    "city"
+    t.string    "state"
+    t.string    "zip"
+    t.decimal   "lat"
+    t.decimal   "lng"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "roster_cell_carriers", force: true do |t|
@@ -569,13 +606,13 @@ ActiveRecord::Schema.define(version: 20130907015051) do
   add_index "scheduler_shifts", ["shift_group_id"], name: "index_scheduler_shifts_on_shift_group_id"
 
   create_table "versions", force: true do |t|
-    t.string   "item_type",      null: false
-    t.integer  "item_id",        null: false
-    t.string   "event",          null: false
-    t.string   "whodunnit"
-    t.text     "object"
-    t.datetime "created_at"
-    t.text     "object_changes"
+    t.string    "item_type",      null: false
+    t.integer   "item_id",        null: false
+    t.string    "event",          null: false
+    t.string    "whodunnit"
+    t.text      "object"
+    t.timestamp "created_at"
+    t.text      "object_changes"
   end
 
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"

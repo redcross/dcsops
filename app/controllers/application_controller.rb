@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include OauthController
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -47,7 +48,7 @@ class ApplicationController < ActionController::Base
 
   def require_valid_user!(return_to=url_for(only_path: false))
     #puts "Setting redirec to #{return_to}"
-    unless current_user_session
+    unless current_user_session || oauth2_api_user
       session[:redirect_after_login] = return_to if return_to
       respond_to do |fmt|
         fmt.html{ redirect_to new_roster_session_path }

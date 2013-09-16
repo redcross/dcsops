@@ -1,5 +1,5 @@
 ActiveAdmin.register ImportLog, as: 'Import Logs' do
-
+  menu parent: 'System'
   actions :index, :show
 
   index do

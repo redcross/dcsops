@@ -25,6 +25,8 @@ class AdminAbility
       can :manage, MOTD
 
       can :manage, Partners::Partner
+
+      can :manage, ApiClient
     end
 
   end

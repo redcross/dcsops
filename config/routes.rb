@@ -53,7 +53,7 @@ Scheduler::Application.routes.draw do
   end
 
   namespace :roster do
-    #resources :chapters
+    resources :chapters
     #resources :positions
     #resources :counties
     resources :people
