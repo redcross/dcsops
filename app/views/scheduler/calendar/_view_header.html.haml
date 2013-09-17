@@ -1,5 +1,5 @@
 =form_tag '', method: :get, class: 'noprint' do
-  =select_tag "counties[]", options_from_collection_for_select(Roster::County.all, :id, :name, show_counties.first), id: 'choose-county'
+  =select_tag "counties[]", options_from_collection_for_select(current_chapter.counties, :id, :name, show_counties.first), id: 'choose-county'
   =submit_tag 'Show'
   %br
   View As: 

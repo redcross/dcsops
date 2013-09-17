@@ -1,6 +1,8 @@
 class Roster::ChaptersController < InheritedResources::Base
   respond_to :html, :json
 
+  actions :index, :show
+
   private
 
     # Never trust parameters from the scary internet, only allow the white list through.
