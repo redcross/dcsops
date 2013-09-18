@@ -95,8 +95,10 @@ group :development do
   gem 'unicorn'
 
   gem 'quiet_assets'
-end
 
+  gem 'capistrano'
+  gem 'rvm-capistrano'
+end
 
 
 # To use ActiveModel has_secure_password
