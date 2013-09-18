@@ -9,6 +9,11 @@ Bundler.require(*Rails.groups(assets: %w(development test)))
 require File.expand_path("../../lib/ics_handler", __FILE__)
 require File.expand_path("../../lib/sandbox_mail_interceptor", __FILE__)
 
+require File.expand_path("../../lib/exposure", __FILE__)
+ActiveSupport.on_load :action_controller do
+  include Exposure
+end
+
 module Scheduler
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.

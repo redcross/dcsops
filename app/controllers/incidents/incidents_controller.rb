@@ -45,27 +45,17 @@ class Incidents::IncidentsController < Incidents::BaseController
       @_incidents ||= super.valid.order{date.desc}.page(params[:page])
     end
 
-    helper_method :cas_incidents_to_link, :incidents_for_cas
-    def cas_incidents_to_link
-      @_cas ||= Incidents::CasIncident.where{incident_id == nil}.order{incident_date.desc}
-    end
+    expose(:needs_report_collection) { end_of_association_chain.needs_incident_report.order{incident_number} }
+    expose(:tracker_collection) { apply_scopes(end_of_association_chain).open_cases.includes{cas_incident.cases}.uniq }
+    expose(:cas_incidents_to_link) { Incidents::CasIncident.where{incident_id == nil}.order{incident_date.desc} }
+    expose(:county_names) { current_user.chapter.counties.map(&:name) }
+    expose(:resource_changes) {
+      changes = resource.versions
+      changes += resource.dat_incident.versions if resource.dat_incident 
+      changes.sort_by!(&:created_at).reverse!
+    }
 
-    def county_names
-      @_names ||= current_user.chapter.counties.map(&:name)
-    end
-
-    helper_method :resource_changes
-    def resource_changes
-      return @_changes if defined? @_changes
-
-      @_changes = resource.versions
-      @_changes += resource.dat_incident.versions if resource.dat_incident 
-
-      @_changes.sort_by!(&:created_at).reverse!
-
-      @_changes
-    end
-
+    helper_method :incidents_for_cas
     def incidents_for_cas(cas)
       scope = Incidents::Incident.joins{cas_incident.outer}.where{(cas_incident.id == nil) & date.in((cas.incident_date - 7)..(cas.incident_date + 7))}
       if county_names.include? cas.county_name
@@ -74,16 +64,6 @@ class Incidents::IncidentsController < Incidents::BaseController
       scope
     end
 
-    helper_method :needs_report_collection
-    def needs_report_collection
-      @_report_collection ||= end_of_association_chain.needs_incident_report.order{incident_number}
-    end
-
-    helper_method :tracker_collection
-    def tracker_collection
-      @_tracker_collection ||= apply_scopes(end_of_association_chain).open_cases.includes{cas_incident.cases}.uniq
-          .order{date.desc}
-    end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params

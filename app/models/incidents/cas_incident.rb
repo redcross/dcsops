@@ -5,6 +5,10 @@ class Incidents::CasIncident < ActiveRecord::Base
 
   #validates :incident_id, :cas_incident_number, :dr_number, uniqueness: {allow_blank: true, allow_nil: true}
 
+  scope :to_link_for_chapter, -> (chapter) {
+    where{incident_id == nil}.order{incident_date.desc}
+  }
+
   def is_dr
     dr_number != cas_incident_number
   end

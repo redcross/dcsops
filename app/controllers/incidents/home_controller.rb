@@ -15,9 +15,7 @@ class Incidents::HomeController < Incidents::BaseController
   private
 
   helper_method :recent_incidents, :map_json_for
-  def recent_incidents
-    @_recents ||= Incidents::Incident.for_chapter(current_chapter).valid.includes{dat_incident}.order{incident_number.desc}.order{date.desc}.limit(15)
-  end
+  expose(:recent_incidents) {Incidents::Incident.for_chapter(current_chapter).valid.includes{dat_incident}.order{incident_number.desc}.order{date.desc}.limit(15)}
 
   def map_json_for(incidents)
     incidents.map do |inc|

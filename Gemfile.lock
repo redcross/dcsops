@@ -166,7 +166,6 @@ GEM
     dalli (2.6.4)
     database_cleaner (1.0.1)
     debugger-linecache (1.2.0)
-    decent_exposure (2.2.1)
     delorean (2.1.0)
       chronic
     devise (3.1.0)
@@ -411,7 +410,6 @@ DEPENDENCIES
   coveralls
   dalli
   database_cleaner (~> 1.0.1)
-  decent_exposure
   delorean
   factory_girl_rails
   faker
