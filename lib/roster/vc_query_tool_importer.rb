@@ -199,6 +199,7 @@ class MemberPositionsImporter < Importer
     # to the person model.  But we want them there so process_row can use above.
     person_attrs = attrs.dup
     position_name = person_attrs.delete :position_name
+    position_name.strip! if position_name
     position_start = person_attrs.delete :position_start
     position_end = person_attrs.delete :position_end
 
@@ -257,10 +258,11 @@ class MemberPositionsImporter < Importer
   end
 
   def process_row? attrs
+    position_name = attrs[:position_name]
     if filter_regex
-      attrs[:position_name] =~ filter_regex
+      position_name.present? and (position_name =~ filter_regex)
     else
-      true
+      position_name.present?
     end
   end
 

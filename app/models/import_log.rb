@@ -23,7 +23,7 @@ class ImportLog < ActiveRecord::Base
     string_logger = Logger.new string
     string_logger.level = 1
     stdout_logger = Logger.new(STDOUT)
-    stdout_logger.level = 0
+    stdout_logger.level = 1
     logger = MultiLogger.new string_logger, stdout_logger
 
     begin

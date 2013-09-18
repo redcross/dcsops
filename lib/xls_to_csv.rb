@@ -1,3 +1,5 @@
+require 'open3'
+
 class XlsToCsv
 
   def self.install!
@@ -20,9 +22,8 @@ class XlsToCsv
     f.close
 
     csv = nil
-    IO.popen [{}, executable_name, f.path] do |io|
-      csv = io.read
-    end
+    csv, stderr_str, status = Open3.capture3({}, executable_name, f.path)
+    raise "Error in xls->csv conversion" unless status.success?
 
     return csv
   ensure
