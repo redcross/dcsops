@@ -11,16 +11,13 @@ class VcQuery
   attr_accessor :logger
 
   def self.get_deployments(chapter)
-    log = ImportLog.create! controller: self.to_s, name: "GetDeployments", start_time: Time.now
-
-    ImportLog.capture(self.to_s, "GetDeployments") do |logger|
+    ImportLog.capture(self.to_s, "GetDeployments-#{chapter.id}") do |logger|
       query = self.new chapter.vc_username, chapter.vc_password
       file = query.get_disaster_query '62797', '2757948', prompt0: [chapter.name].to_json
       StringIO.open file.body do |io|
         Incidents::DeploymentImporter.new.import_data(chapter, io)
       end
     end
-
   end
 
   def initialize(user, pass)
