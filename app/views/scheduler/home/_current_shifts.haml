@@ -1,15 +1,10 @@
-- counties = counties.to_a
-- groups ||= Scheduler::ShiftGroup.current_groups_for_chapter(current_person.chapter)
-- shifts_by_county = Scheduler::Shift.where(shift_group_id: groups, county_id: counties).order(:ordinal).group_by(&:county_id)
-- assignments_by_shift = assignments_by_start_date(groups, shifts_by_county.values.flatten.compact).group_by(&:shift_id)
-- counties.each do |county|
-  - shifts = shifts_by_county[county.id]
+- groups ||= nil
+- current_shifts_tree(counties, groups).each do |county, shifts|
   - next if shifts.blank?
   -if counties.length > 1
     %strong=county.name
     %br
-  - shifts.each do |shift|
-    - assignments = assignments_by_shift[shift.id] || []
+  - shifts.each do |shift, assignments|
     .shift
       %small
         = shift.name
