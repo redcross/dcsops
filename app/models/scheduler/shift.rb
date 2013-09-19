@@ -38,7 +38,7 @@ class Scheduler::Shift < ActiveRecord::Base
   end
 
   def allow_signup_in_past?(date)
-    shift_assignments.build(date: date).local_end_time >= shift_group.chapter.time_zone.now
+    Scheduler::ShiftAssignment.new(date: date, shift: self).local_end_time >= shift_group.chapter.time_zone.now
   end
 
   def can_remove_on_day(date)
