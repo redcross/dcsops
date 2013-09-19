@@ -14,8 +14,8 @@
           -if group_idx == 0
             %th=date.day
           -else
-            %th
-        -elsif idx==1
+            %th{class: [group_class, 'shift-header'], rowspan: shifts.count}=group.name
+        -elsif idx==1 and group_idx == 0
           %th{class: [group_class, 'shift-header'], rowspan: shifts.count-1}=group.name
         - style=""; if assignments.length < shift.min_desired_signups and date >= current_chapter.time_zone.today; style="open"; end
         %td{class: style}
