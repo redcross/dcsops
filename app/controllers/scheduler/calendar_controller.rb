@@ -187,7 +187,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
     return false unless person
     @_person_county_ids ||= person.county_ids.to_a
     @_take_shift_cache ||= {}
-    @_take_shift_cache[shift.id] ||= if person and @_person_county_ids.include? shift.county_id
+    @_take_shift_cache[shift.id] ||= if person and (@_person_county_ids.include?(shift.county_id) or shift.ignore_county)
       pos = shift.positions & person.positions
       !pos.blank?
     end

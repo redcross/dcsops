@@ -2,7 +2,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   class PersonAllowedToTakeShift < ActiveModel::Validator
     def validate(record)
       return false unless record.person and record.shift
-      if record.person.counties.include? record.shift.county
+      if record.person.counties.include?(record.shift.county) or record.shift.ignore_county
         allowed_positions = record.person.positions & record.shift.positions
 
         if allowed_positions.blank?

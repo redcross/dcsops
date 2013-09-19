@@ -33,6 +33,18 @@ describe Scheduler::ShiftAssignment do
     item.errors[:shift].to_s.should include "not allowed to take this shift"
   end
 
+  it "should allow a person from a different county if ignore_county=true" do
+    @shifts.first.update_attribute :county, @counties.second
+
+    item = Scheduler::ShiftAssignment.new person: @person, shift: @shifts.first, date: Date.today
+    item.should_not be_valid
+    item.errors[:shift].to_s.should include "not allowed to take this shift"
+
+    @shifts.first.update_attribute :ignore_county, true
+    item = Scheduler::ShiftAssignment.new person: @person, shift: @shifts.first, date: Date.today
+    item.should be_valid
+  end
+
   it "should prevent a person from taking multiple shifts in the same group in the same day" do
     item = Scheduler::ShiftAssignment.create! person: @person, shift: @shifts.first, date: Date.today
 
