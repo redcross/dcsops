@@ -25,7 +25,8 @@ class Incidents::IncidentsMailer < ActionMailer::Base
     @weekly_stats = Incidents::Incident.where{date.in(my{@start_date..@end_date})}.incident_stats
     @yearly_stats = Incidents::Incident.where{date >= '2013-07-01'}.incident_stats
 
-    @deployments = Incidents::Deployment.includes{person.counties}.where{date_last_seen >= my{@start_date}}.uniq.to_a
+    @deployments = Incidents::Deployment.joins{person.chapter}.where{person.chapter_id == chapter}
+                                        .includes{person.counties}.where{date_last_seen >= my{@start_date}}.uniq.to_a
                                         .sort_by{|a| a.person.counties.first.try(:name) || '' }
                                         .reduce({}) { |hash, d| hash[d.dr_name] ||= []; hash[d.dr_name] << d; hash}
 
