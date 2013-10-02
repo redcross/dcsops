@@ -24,7 +24,7 @@ describe Incidents::IncidentsController do
   describe "#needs_report" do
     it "displays the list" do
       grant_role! 'submit_incident_report'
-      inc = FactoryGirl.create :incident
+      inc = FactoryGirl.create :incident, chapter: @person.chapter
       inc2 = FactoryGirl.create :dat_incident
       Incidents::Incident.count.should == 2
 
@@ -40,8 +40,8 @@ describe Incidents::IncidentsController do
     it "displays the list" do
       cas = FactoryGirl.create :cas_incident
       cas2 = FactoryGirl.create :cas_incident
-      inc = FactoryGirl.create :incident
-      inc2 = FactoryGirl.create :incident
+      inc = FactoryGirl.create :incident, chapter: @person.chapter
+      inc2 = FactoryGirl.create :incident, chapter: @person.chapter
 
       inc.link_to_cas_incident(cas2)
 
@@ -53,7 +53,7 @@ describe Incidents::IncidentsController do
 
     it "can link an incident" do
       cas = FactoryGirl.create :cas_incident
-      inc = FactoryGirl.create :incident
+      inc = FactoryGirl.create :incident, chapter: @person.chapter
 
       post :link_cas, cas_id: cas.id, incident_id: inc.id
       response.should be_success
@@ -80,13 +80,13 @@ describe Incidents::IncidentsController do
   describe "#show" do
     before(:each) { grant_role! 'incidents_admin' }
     it "should succeed with no cas or dat" do
-      inc = FactoryGirl.create :incident
+      inc = FactoryGirl.create :incident, chapter: @person.chapter
       get :show, id: inc.to_param
       response.should be_success
     end
 
     it "should succeed with cas" do
-      inc = FactoryGirl.create :incident
+      inc = FactoryGirl.create :incident, chapter: @person.chapter
       cas = FactoryGirl.create :cas_incident
       inc.link_to_cas_incident cas
 
@@ -95,7 +95,7 @@ describe Incidents::IncidentsController do
     end
 
     it "should succeed with dat" do
-      inc = FactoryGirl.create :incident
+      inc = FactoryGirl.create :incident, chapter: @person.chapter
       dat = FactoryGirl.create :dat_incident, incident: inc
       get :show, id: inc.to_param
       response.should be_success

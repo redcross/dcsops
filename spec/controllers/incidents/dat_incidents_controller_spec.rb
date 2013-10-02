@@ -23,7 +23,7 @@ describe Incidents::DatIncidentsController do
 
     it "should redirect if there is a valid dat incident already" do
       grant_role! :incidents_admin
-      incident = FactoryGirl.create :incident
+      incident = FactoryGirl.create :incident, chapter: @person.chapter
       dat = FactoryGirl.create :dat_incident, incident: incident
 
       get :new, incident_id: incident.to_param
@@ -32,7 +32,7 @@ describe Incidents::DatIncidentsController do
     end
 
     it "should render under an incident" do
-      incident = FactoryGirl.create :incident
+      incident = FactoryGirl.create :incident, chapter: @person.chapter
       get :new, incident_id: incident.to_param
       response.should be_success
     end
@@ -44,7 +44,7 @@ describe Incidents::DatIncidentsController do
       grant_role! :incidents_admin
     end
     before(:each) do
-      @incident = FactoryGirl.create :incident
+      @incident = FactoryGirl.create :incident, chapter: @person.chapter
       @dat = FactoryGirl.create :dat_incident, incident: @incident
     end
     it "should render under an incident" do
@@ -63,7 +63,7 @@ describe Incidents::DatIncidentsController do
     end
 
     before(:each) do
-      @incident = FactoryGirl.create :incident
+      @incident = FactoryGirl.create :incident, chapter: @person.chapter
       @dat = FactoryGirl.build :dat_incident
       @lead = FactoryGirl.create :person
       @vehicle = FactoryGirl.create :vehicle
