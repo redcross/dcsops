@@ -68,7 +68,13 @@ class Incidents::DatIncident < ActiveRecord::Base
   [:responder_notified, :responder_arrived, :responder_departed].each do |field|
     define_method :"#{field}=" do |val|
       if val.is_a? String
-        super(Time.zone.parse(val))
+        time = nil
+        begin
+          time = Time.zone.parse(val)
+        rescue ArgumentError
+          errors[field] << "Invalid time format for #{field.to_s.titleize}: #{val}."
+        end
+        super(time)
       else
         super(val)
       end
