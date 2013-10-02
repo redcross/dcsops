@@ -49,7 +49,7 @@ class Incidents::Incident < ActiveRecord::Base
 
 
   validates :chapter, :county, :date, presence: true
-  validates :incident_number, presence: true, format: /\A1[3-9]-\d+\z/, uniqueness: true
+  validates :incident_number, presence: true, format: /\A1[3-9]-\d+\z/, uniqueness: { scope: :chapter_id }
   validates_associated :team_lead, if: ->(inc) {inc.dat_incident}, allow_nil: false
   validate :ensure_unique_responders
   #validates_associated :responder_assignments
