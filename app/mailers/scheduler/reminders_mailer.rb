@@ -80,7 +80,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
 
     @groups = @groups.uniq.reduce({}) do |hash, grphash|
       hash.tap{|h|
-        h[grphash] = grphash[:group].shifts.where(county_id: counties).order(:ordinal).to_a
+        h[grphash] = grphash[:group].shifts.where(county_id: counties).order(:ordinal).active_on_day(setting.person.chapter.time_zone.today).to_a
       }
     end
   end
