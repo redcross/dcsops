@@ -11,6 +11,10 @@ class Incidents::Ability
     # for now, anyone can do the weekly subscription
     can :manage, Incidents::NotificationSubscription, person_id: person.id, notification_type: 'weekly'
 
+    if person.has_role 'create_incident'
+        can :create, Incidents::Incident
+    end
+
     if is_admin or person.has_role 'submit_incident_report'
         can [:needs_report, :mark_invalid], Incidents::Incident
         can :create, Incidents::DatIncident
