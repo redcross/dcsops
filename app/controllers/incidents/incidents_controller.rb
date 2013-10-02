@@ -42,7 +42,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   private
 
     def collection
-      @_incidents ||= super.valid.order{date.desc}.page(params[:page])
+      @_incidents ||= super.valid.order{date.desc}.includes{county}.page(params[:page])
     end
 
     expose(:needs_report_collection) { end_of_association_chain.needs_incident_report.order{incident_number} }
@@ -64,6 +64,9 @@ class Incidents::IncidentsController < Incidents::BaseController
       scope
     end
 
+    def end_of_association_chain
+      super.where{chapter_id == my{current_chapter}}
+    end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params

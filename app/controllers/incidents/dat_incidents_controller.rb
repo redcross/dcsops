@@ -69,7 +69,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       dow = time.strftime("%A").downcase
       hour = time.hour
       period = (hour >= 7 && hour < 19) ? 'day' : 'night'
-      schedules = Scheduler::FlexSchedule.for_county(obj.incident.county).available_at(dow, period)
+      schedules = Scheduler::FlexSchedule.for_county(obj.incident.county).available_at(dow, period).includes{person}
       assignments = schedules.select{|sched| !obj.incident.responder_assignments.detect{|resp| resp.person == sched.person }}
                     .select{|sched| !scheduled_responders.detect{|resp| resp.person == sched.person }}
     else
@@ -104,6 +104,10 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
   def resource
     @dat_incident ||= super.tap{|obj| prepare_resource(obj) }
+  end
+
+  def end_of_association_chain
+    Incidents::Incident.includes{[dat_incident.completed_by, dat_incident.vehicles, responder_assignments.person]}.where{(chapter_id == my{current_chapter}) & (incident_number == my{params[:incident_id]})}.first!
   end
 
     # Never trust parameters from the scary internet, only allow the white list through.
