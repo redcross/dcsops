@@ -26,7 +26,7 @@ class Roster::PeopleController < Roster::BaseController
     end
 
     def collection
-      @collection ||= apply_scopes(super).merge(search.result(distinct: true)).where(vc_is_active: true)
+      @collection ||= apply_scopes(super).merge(search.result(distinct: true)).where(vc_is_active: true).includes{positions}
     end
 
     expose(:search) { resource_class.search(params[:q]) }

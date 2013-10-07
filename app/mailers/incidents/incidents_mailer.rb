@@ -21,7 +21,7 @@ class Incidents::IncidentsMailer < ActionMailer::Base
     @start_date = start_date
     @end_date = end_date
 
-    scope = Incidents::Incident.valid.joins{chapter}.where{chapter_id == chapter}
+    scope = Incidents::Incident.valid.joins{self.chapter}.where{chapter_id == chapter}
     
     @incidents = scope.where{date.in(my{@start_date..@end_date})}.order{date}.to_a
     @weekly_stats = scope.where{date.in(my{@start_date..@end_date})}.incident_stats
