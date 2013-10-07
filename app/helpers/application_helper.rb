@@ -33,4 +33,8 @@ module ApplicationHelper
       []
     end
   end
+
+  def asset_url(*args)
+    "#{request.protocol}#{request.host_with_port}#{asset_path(*args)}"
+  end
 end

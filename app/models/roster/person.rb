@@ -144,4 +144,8 @@ class Roster::Person < ActiveRecord::Base
   def vc_email_url
     "https://volunteerconnection.redcross.org/?nd=email_member&account_id=#{self.vc_id}"
   end
+
+  def vc_profile_url
+    "https://volunteerconnection.redcross.org/?nd=vms_profile&account_id=#{self.vc_id}"
+  end
 end

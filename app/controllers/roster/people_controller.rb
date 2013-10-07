@@ -1,6 +1,8 @@
 class Roster::PeopleController < Roster::BaseController
   inherit_resources
-  respond_to :html, :json
+  respond_to :html, :json, :kml
+
+  include NamedQuerySupport
 
   has_scope :name_contains
   has_scope :in_county
@@ -24,6 +26,10 @@ class Roster::PeopleController < Roster::BaseController
     end
 
     def collection
-      apply_scopes(super)
+      @collection ||= apply_scopes(super).merge(search.result(distinct: true)).where(vc_is_active: true)
     end
+
+    expose(:search) { resource_class.search(params[:q]) }
+
+    expose(:identify_people) { false }
 end

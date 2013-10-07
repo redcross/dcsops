@@ -27,6 +27,7 @@ class AdminAbility
       can :manage, Partners::Partner
 
       can :manage, ApiClient
+      can :manage, NamedQuery
     end
 
   end

@@ -25,6 +25,7 @@ class ApplicationController < ActionController::Base
         fmt.pdf{ flash[:error] = "You are not authorized to access that page."; redirect_to :back }
         fmt.json{ head :forbidden }
         fmt.ics{ head :forbidden }
+        fmt.kml{ head :forbidden }
       end
     rescue ActionController::RedirectBackError
       redirect_to root_path
@@ -55,6 +56,7 @@ class ApplicationController < ActionController::Base
         fmt.pdf{ redirect_to new_roster_session_path }
         fmt.json{ head :unauthorized }
         fmt.ics{ head :unauthorized }
+        fmt.kml{ head :unauthorized }
       end
     else 
       true

@@ -1,7 +1,10 @@
 class Incidents::IncidentsController < Incidents::BaseController
   inherit_resources
+  respond_to :html, :kml
   defaults finder: :find_by_incident_number!
   load_and_authorize_resource except: [:link_cas, :needs_report]
+
+  include NamedQuerySupport
 
   custom_actions collection: [:needs_report, :link_cas, :tracker], resource: :mark_invalid
 
@@ -42,7 +45,11 @@ class Incidents::IncidentsController < Incidents::BaseController
   private
 
     def collection
-      @_incidents ||= super.valid.order{date.desc}.includes{county}.page(params[:page])
+      @_incidents ||= begin
+        scope = apply_scopes(super).merge(search.result).valid.order{date.desc}.includes{[county, dat_incident, team_lead.person]}
+        scope = scope.page(params[:page]) if should_paginate
+        scope
+      end
     end
 
     expose(:needs_report_collection) { end_of_association_chain.needs_incident_report.order{incident_number} }
@@ -55,6 +62,9 @@ class Incidents::IncidentsController < Incidents::BaseController
       changes.sort_by!(&:created_at).reverse!
     }
 
+    expose(:search) { resource_class.search(params[:q]) }
+    expose(:should_paginate) { params[:page] != 'all' }
+
     helper_method :incidents_for_cas
     def incidents_for_cas(cas)
       scope = Incidents::Incident.joins{cas_incident.outer}.where{(cas_incident.id == nil) & date.in((cas.incident_date - 7)..(cas.incident_date + 7))}
@@ -65,7 +75,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
 
     def end_of_association_chain
-      super.where{chapter_id == my{current_chapter}}
+      named_query ? super : super.where{chapter_id == my{current_chapter}}
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

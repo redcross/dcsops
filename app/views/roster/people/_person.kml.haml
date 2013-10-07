@@ -1,0 +1,19 @@
+%strong Member Number:
+=resource.vc_member_number
+%br
+
+%strong GAPs:
+=[resource.gap_primary, resource.gap_secondary, resource.gap_tertiary].compact.join(' ')
+%br
+
+%strong Positions:
+- resource.positions.each do |p|
+  =p.name
+  %br
+%br
+
+%strong View In:
+=link_to "ARCBADAT", resource, target: '_blank'
+\|
+=link_to "Volunteer Connection", url_for(resource.vc_profile_url), target: '_blank'
+%br

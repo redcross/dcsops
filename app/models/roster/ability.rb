@@ -3,10 +3,11 @@ class Roster::Ability
 
   def initialize(person)
 
-    can :read, Roster::Chapter
-    can [:read, :me], Roster::Person
-    can [:update], Roster::Person, id: person.id
-
+    if person
+        can :read, Roster::Chapter
+        can [:read, :me], Roster::Person
+        can [:update], Roster::Person, id: person.id
+    end
     # Define abilities for the passed in user here. For example:
     #
     #   user ||= User.new # guest user (not logged in)

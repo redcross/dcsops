@@ -1,0 +1,42 @@
+- dat = resource.dat_incident
+
+%strong Type:
+=resource.incident_type.try :titleize
+%br
+
+-if dat
+  %strong Call Type:
+  =resource.dat_incident.incident_call_type.try :titleize
+  %br
+
+%strong Date:
+=resource.date.to_s :dow_short
+%br
+
+%strong Team Lead:
+=resource.team_lead.try(:person).try(:full_name)
+%br
+
+%strong Number of Responders:
+=resource.responder_assignments.count
+%br
+
+-if dat
+  %strong Clients:
+  -if dat.num_adults > 0
+    =pluralize(resource.num_adults, "Adult")
+  -if dat.num_children > 0
+    =pluralize(resource.num_children, "Child")
+  %br
+
+  %strong Units Affected:
+  =dat.units_total
+  %br
+
+  %strong Services Provided:
+  =resource.services_description
+  %br
+
+%strong View In:
+=link_to 'ARCBADAT', url_for(resource)
+%br

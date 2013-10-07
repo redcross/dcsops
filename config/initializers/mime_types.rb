@@ -6,3 +6,5 @@
 
 # Mime::Type.register "text/calendar", :ics
 Mime::Type.register 'application/xrds+xml', :xrds
+Mime::Type.register 'application/vnd.google-earth.kml+xml', :kml
+Mime::Type.register 'application/vnd.google-earth.kmz', :kmz
