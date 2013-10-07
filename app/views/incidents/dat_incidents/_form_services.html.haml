@@ -103,14 +103,13 @@
   .span6
     =f.inputs "Vehicles" do
       =f.semantic_errors :vehicle_uses
-      /=f.input :vehicles, as: :check_boxes, collection: Logistics::Vehicle.where{chapter_id == my{current_user.chapter_id}}.order{[category, name]}, group_by: 'category'
 
       - f.object.vehicles.each do |veh|
         =render 'vehicle_fields', veh: veh, f: f
       .control-group.select
         %label.control-label Add Vehicle
         .controls
-          =select_tag 'vehicles', grouped_options_for_select(Logistics::Vehicle.where{chapter_id == my{current_user.chapter_id}}.order{[category, name]}.map{|veh| [veh.name, veh.category, veh.id]}.group_by{|arr| arr[1].titleize})
+          =select_tag 'vehicles', grouped_options_for_select(Logistics::Vehicle.where{chapter_id == my{current_chapter.id}}.order{[category, name]}.map{|veh| [veh.name, veh.category, veh.id]}.group_by{|arr| arr[1].titleize})
           %button.btn.btn-primary.btn-mini.add-vehicle{data: {template: render( 'vehicle_fields', veh: nil, f: f)}} Add Vehicle
       =hidden_field_tag 'incidents_dat_incident[vehicle_ids][]', ''
 =f.actions do

@@ -54,8 +54,8 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   helper_method :scheduled_responders, :flex_responders
   def scheduled_responders(obj=@dat_incident)
     if obj.incident.county
-      time = obj.incident.created_at || current_user.chapter.time_zone.now
-      groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_user.chapter, time)
+      time = obj.incident.created_at || current_chapter.time_zone.now
+      groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_chapter, time)
       assignments = groups.map{|grp| Scheduler::ShiftAssignment.joins{shift}.where{(shift.county_id == my{obj.incident.county}) & (shift.shift_group_id == grp) & (date == grp.start_date)}}.flatten
                     .select{|ass| !obj.incident.responder_assignments.detect{|resp| resp.person == ass.person }}
     else
@@ -65,7 +65,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
   def flex_responders(obj=@dat_incident, scheduled_responders)
     if obj.incident.county
-      time = obj.incident.created_at.in_time_zone(current_user.chapter.time_zone) || current_user.chapter.time_zone.now
+      time = obj.incident.created_at.in_time_zone(current_chapter.time_zone) || current_chapter.time_zone.now
       dow = time.strftime("%A").downcase
       hour = time.hour
       period = (hour >= 7 && hour < 19) ? 'day' : 'night'
@@ -129,7 +129,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
       args = params.require(:incidents_dat_incident).permit(*keys)
       #if args[:incident_attributes]
-      #  args[:incident_attributes][:chapter_id] = current_user.chapter_id
+      #  args[:incident_attributes][:chapter_id] = current_chapter.id
       #end
 
       [args]

@@ -30,7 +30,7 @@
             %i.icon-chevron-right
   .span9
     %h2.center
-      #{current_user.chapter.short_name} DAT Incidents
+      #{current_chapter.short_name} DAT Incidents
     .row
       - incident_stats_boxes.each_with_index do |(title, stats), idx|
         %div{class: idx==0 ? 'span3' : 'span2'}

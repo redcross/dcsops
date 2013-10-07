@@ -23,7 +23,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   has_scope :time_period, default: 'future', only: [:index] do |controller, scope, arg|
     case arg
     when 'future'
-      scope.where{date >= my{controller.current_user.chapter.time_zone.today.yesterday}}
+      scope.where{date >= my{controller.current_chapter.time_zone.today.yesterday}}
     else
       scope
     end

@@ -29,7 +29,7 @@ class Incidents::HomeController < Incidents::BaseController
 
   helper_method :incident_stats_boxes
   def incident_stats_boxes
-    month_begin = current_user.chapter.time_zone.today.at_beginning_of_month
+    month_begin = current_chapter.time_zone.today.at_beginning_of_month
     last_month = month_begin.last_month
 
     fy_begin = month_begin.advance months: (month_begin.month >= 7) ? -(month_begin.month - 7) : -(month_begin.month + 6)

@@ -55,7 +55,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     expose(:needs_report_collection) { end_of_association_chain.needs_incident_report.order{incident_number} }
     expose(:tracker_collection) { apply_scopes(end_of_association_chain).open_cases.includes{cas_incident.cases}.uniq }
     expose(:cas_incidents_to_link) { Incidents::CasIncident.where{incident_id == nil}.order{incident_date.desc} }
-    expose(:county_names) { current_user.chapter.counties.map(&:name) }
+    expose(:county_names) { current_chapter.counties.map(&:name) }
     expose(:resource_changes) {
       changes = resource.versions
       changes += resource.dat_incident.versions if resource.dat_incident 
@@ -88,6 +88,6 @@ class Incidents::IncidentsController < Incidents::BaseController
       keys << :incident_number if params[:action] == 'create'
 
 
-      request.get? ? [] : [params.require(:incidents_incident).permit(*keys).merge!({chapter_id: current_user.chapter_id})]
+      request.get? ? [] : [params.require(:incidents_incident).permit(*keys).merge!({chapter_id: current_chapter.id})]
     end
 end

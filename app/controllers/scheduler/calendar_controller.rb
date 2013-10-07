@@ -143,7 +143,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def shifts_by_period(period)
-    @_unfiltered_shifts ||= Scheduler::ShiftGroup.includes{[shifts.positions, shifts.county, shifts.shift_group.chapter]}.where(chapter_id: current_user.chapter_id).order(:start_offset).to_a
+    @_unfiltered_shifts ||= Scheduler::ShiftGroup.includes{[shifts.positions, shifts.county, shifts.shift_group.chapter]}.where(chapter_id: current_chapter).order(:start_offset).to_a
 
     @_unfiltered_shifts.select{|sh| sh.period == period}
   end

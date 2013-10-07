@@ -44,7 +44,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_chapter
-    current_user.chapter
+    @current_chapter ||= current_user.chapter
   end
 
   def require_valid_user!(return_to=url_for(only_path: false))

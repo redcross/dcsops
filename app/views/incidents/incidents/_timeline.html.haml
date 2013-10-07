@@ -21,5 +21,5 @@
 %hr
 %button.btn.btn-primary(data-target="#create-event" data-toggle="collapse") Add Log
 .collapse#create-event
-  - new_log = Incidents::EventLog.new incident: resource, event_time: current_user.chapter.time_zone.now
+  - new_log = Incidents::EventLog.new incident: resource, event_time: current_chapter.time_zone.now
   =render '/incidents/event_logs/form', incident: resource, resource: new_log

@@ -3,4 +3,4 @@
   %h2
     On Call Schedule - 
     =grp.start_date.to_s(:dow_long) + " - " + grp.name
-=render partial: 'current_shifts', locals: {counties: current_user.chapter.counties.to_a, groups: groups}
+=render partial: 'current_shifts', locals: {counties: current_chapter.counties.to_a, groups: groups}
