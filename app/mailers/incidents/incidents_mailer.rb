@@ -20,10 +20,12 @@ class Incidents::IncidentsMailer < ActionMailer::Base
     @person = recipient
     @start_date = start_date
     @end_date = end_date
+
+    scope = Incidents::Incident.valid.joins{chapter}.where{chapter_id == chapter}
     
-    @incidents = Incidents::Incident.valid.where{date.in(my{@start_date..@end_date})}.order{date}.to_a
-    @weekly_stats = Incidents::Incident.where{date.in(my{@start_date..@end_date})}.incident_stats
-    @yearly_stats = Incidents::Incident.where{date >= '2013-07-01'}.incident_stats
+    @incidents = scope.where{date.in(my{@start_date..@end_date})}.order{date}.to_a
+    @weekly_stats = scope.where{date.in(my{@start_date..@end_date})}.incident_stats
+    @yearly_stats = scope.where{date >= '2013-07-01'}.incident_stats
 
     @deployments = Incidents::Deployment.joins{person.chapter}.where{person.chapter_id == chapter}
                                         .includes{person.counties}.where{date_last_seen >= my{@start_date}}.uniq.to_a
