@@ -183,16 +183,6 @@ class Scheduler::CalendarController < Scheduler::BaseController
     daily_groups.map{|_, shifts| shifts.map(&:county_id)}.flatten.uniq.count > 1
   end
 
-  def can_take_shift?(shift)
-    return false unless person
-    @_person_county_ids ||= person.county_ids.to_a
-    @_take_shift_cache ||= {}
-    @_take_shift_cache[shift.id] ||= if person and (@_person_county_ids.include?(shift.county_id) or shift.ignore_county)
-      pos = shift.positions & person.positions
-      !pos.blank?
-    end
-  end
-
   def ajax_params
     {
       person_id: person.try(:id),
@@ -206,7 +196,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
       shifts = case show_shifts
       when :all then group.shifts
       when :county then group.shifts.select{|s| show_counties.include? s.county_id}
-      when :mine then group.shifts.select{|s| can_take_shift? s}
+      when :mine then group.shifts.select{|s| person and s.can_be_taken_by? person}
       end
       hash[group] = shifts if shifts.present?
       hash

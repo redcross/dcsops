@@ -55,6 +55,10 @@ body.calendar {
     transform: rotate($rot);
   }
 
+  .dow-header {
+    text-align: center;
+  }
+
   .shifts {
     width: 100%;
 
@@ -65,9 +69,23 @@ body.calendar {
       font-weight: normal;
       white-space: nowrap;
     }
+    th.shift-header-normal {
+      text-align: center;
+      font-size: 110%;
+    }
+    th.shift-side {
+      display: none;
+      border-bottom: 1px dashed black;
+
+      &.last-group {
+        border-bottom-style: none;
+      }
+    }
     th.date-header {
-      max-width: 1em;
+      font-size: 130%;
+      amax-width: 1em;
       padding: 0;
+      text-align: center;
     }
     tr.end-group {
       td,th {
@@ -78,7 +96,7 @@ body.calendar {
       border-bottom: 1px dashed black;
     }
     td {
-      font-size: 100%;
+      afont-size: 125%;
       line-height: 1.2;
     }
   }
@@ -229,6 +247,16 @@ body.steven {
   }
   table {
     -fs-table-paginate: paginate;
+  }
+  h3 {
+    margin: 0;
+    padding: 0;
+  }
+  .shift-side {
+    display: table-cell !important;
+  }
+  .shift-top {
+    display: none;
   }
 }
 

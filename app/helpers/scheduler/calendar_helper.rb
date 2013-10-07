@@ -1,6 +1,6 @@
 module Scheduler::CalendarHelper
   def render_shift_assignment_info(editable, person, shift, my_shift, date, assignments, period)
-    can_take = can_take_shift?(shift)
+    can_take = shift.can_be_taken_by?(person)
     can_sign_up = shift.can_sign_up_on_day(date, assignments.count)
     can_remove = shift.can_remove_on_day(date)
     s = ""

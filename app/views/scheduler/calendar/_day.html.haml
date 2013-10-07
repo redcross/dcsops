@@ -1,4 +1,6 @@
 %table.shifts
+  %tr
+    %th.date-header(colspan=2)=date.day
   - first_group = false
   - daily_groups.each_with_index do |(group, shifts), group_idx|
     - my_shift = nil
@@ -6,17 +8,14 @@
       - my_shift = my_shift_for_group_on_day(group.id, date)
     - group_class = my_shift ? 'my-shift' : ''
     - shifts = shifts.select{|sh|sh.active_on_day?(date)}
+    %tr
+      %th.shift-header-normal.shift-side{class: [group_class, group_idx==(daily_groups.count-1) && 'last-group'], rowspan: shifts.count+1}=group.name
+      %th.shift-header-normal.shift-top{class: group_class}=group.name
+
     -shifts.each_with_index do |shift, idx| 
       - assignments=assignments_for_shift_on_day(shift, date).to_a
       - is_last = (idx == shifts.count-1) && (group_idx != daily_groups.keys.count-1)
       %tr{class: [group_class, is_last ? 'end-group' : '']}
-        -if idx==0
-          -if group_idx == 0
-            %th=date.day
-          -else
-            %th{class: [group_class, 'shift-header'], rowspan: shifts.count}=group.name
-        -elsif idx==1 and group_idx == 0
-          %th{class: [group_class, 'shift-header'], rowspan: shifts.count-1}=group.name
         - style=""; if assignments.length < shift.min_desired_signups and date >= current_chapter.time_zone.today; style="open"; end
         %td{class: style}
           = render_shift_assignment_info(editable, person, shift, my_shift, date, assignments, 'day')
