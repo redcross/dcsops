@@ -4,4 +4,4 @@
     #{date.strftime "%m/%d"} #{group.name}: 
     - shifts.first(2).each do |shift|
       - assignments = assignments_for_date_shift(date, shift)
-      = shift.abbrev + " " + (assignments.empty? ? "Open" : assignments.map(&:person).map{|person| "#{person.first_name[0]}. #{person.last_name} #{person.phone_order.first[:number]}" }.join(", "))
+      = shift.abbrev + " " + (assignments.empty? ? "Open" : assignments.map(&:person).map{|person| "#{person.first_name[0]}. #{person.last_name} #{person.phone_order.map{|ph|ph[:number]}.first}" }.join(", "))
