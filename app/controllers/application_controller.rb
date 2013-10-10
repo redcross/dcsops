@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  helper_method :current_user, :current_user_session, :current_chapter
+  helper_method :current_user, :current_user_session, :current_chapter, :impersonating_user
 
   before_filter :require_valid_user!
 
@@ -40,11 +40,31 @@ class ApplicationController < ActionController::Base
   def current_user
     return @current_user if defined?(@current_user)
 
-    @current_user = current_user_session && current_user_session.person
+    @current_user = current_user_session && (impersonating_user || current_user_session.person)
+  end
+
+  def logged_in_user
+    current_user_session.try(:person)
   end
 
   def current_chapter
     @current_chapter ||= current_user.chapter
+  end
+
+  def impersonating_user
+    return @impersonating_user if defined?(@impersonating_user)
+
+    person = session[:impersonating_user_id] && Roster::Person.find_by( id: session[:impersonating_user_id])
+
+    if person and !can_impersonate(person)
+      person = nil
+    end
+
+    @impersonating_user = person
+  end
+
+  def can_impersonate(person)
+    AdminAbility.new(current_user_session.person).can?(:impersonate, person)
   end
 
   def require_valid_user!(return_to=url_for(only_path: false))

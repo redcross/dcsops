@@ -11,6 +11,10 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     column :username
     column :last_login
 
+    actions do |person|
+      link_to "Impersonate", impersonate_scheduler_admin_person_path(person)
+    end
+
     default_actions
   end
 
@@ -35,11 +39,11 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
   end
 
   show do
-    attributes_table do
-      row :first_name
-      row :vc_id
-      row :vc_member_number
-    end
+    #attributes_table do
+    #  row :first_name
+    #  row :vc_id
+    #  row :vc_member_number
+    #end
     
     columns do
       column do
@@ -66,14 +70,23 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     scope.uniq
   end
 
-  member_action :possess, action: :get do
-    p = resource
-    p.reset_persistence_token! if p.persistence_token.blank?
-    sess = Roster::Session.create!(p, true)
-    redirect_to '/'
+  member_action :impersonate, method: [:get, :delete] do
+    #p = resource
+    #p.reset_persistence_token! if p.persistence_token.blank?
+    #sess = Roster::Session.create!(p, true)
+    if request.get?
+      session[:impersonating_user_id] = resource.id
+      redirect_to '/'
+    else
+      session[:impersonating_user_id] = nil
+      redirect_to :back
+    end
   end
-  action_item only: :show, if: proc{ authorized? :possess, resource} do
-    link_to "Possess", url_for(action: :possess, only_path: true)
+  action_item only: :show, if: proc{ authorized? :impersonate, resource} do
+    link_to "Possess", url_for(action: :impersonate, only_path: true)
+  end
+  action_item only: :show do
+    link_to "Volunteer Connection", resource.vc_profile_url
   end
 
 
@@ -95,6 +108,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
   end
 
   controller do
+
     before_filter only: :index do
       params['q'] ||= {counties_id_in: current_user.county_ids}
     end
