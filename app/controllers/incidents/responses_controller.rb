@@ -9,11 +9,16 @@ class Incidents::ResponsesController < Incidents::BaseController
   }
 
   expose(:responder_assignments) {
-    Incidents::ResponderAssignment.joins{[person.county_memberships]}.includes{[incident.dat_incident, person]}.order('incidents_incidents.date desc, incidents_incidents.incident_number desc').where{person.county_memberships.county_id == my{county.try :id}}.select{|r| r.incident and r.person}
+    Incidents::ResponderAssignment.joins{[person.county_memberships]}.includes{[incident.dat_incident, person]}.where{person.county_memberships.county_id == my{county.try :id}}.select{|r| r.incident and r.person}
   }
 
   expose(:responders) {
-    responder_assignments.sort_by{|a| a.person.last_name}.group_by(&:person)
+    today = Date.current
+    responder_assignments.sort_by{|a| [a.person.last_name, today-a.incident.date]}.group_by(&:person)
+  }
+
+  expose(:max_responses) {
+    10
   }
 
   helper_method :tooltip_for
