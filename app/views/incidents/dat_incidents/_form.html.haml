@@ -36,7 +36,8 @@
 - content_for :footer_js do
   = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
   :javascript
-    incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json});
+    config = #{map_config.to_json};
+    incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json}, config);
     formController = new DatIncidentsFormController();
     $(function() {
       var hash = window.location.hash;

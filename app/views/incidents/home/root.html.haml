@@ -77,7 +77,8 @@
 - content_for :footer_js do
   = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
   :javascript
-    allIncidentsMapController = new AllIncidentsMapController(#{map_json_for(recent_incidents).to_json})
+    config = #{map_config.to_json};
+    allIncidentsMapController = new AllIncidentsMapController(#{map_json_for(recent_incidents).to_json}, config);
 
 
 

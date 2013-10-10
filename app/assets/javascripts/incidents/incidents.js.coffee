@@ -13,14 +13,16 @@ class window.IncidentLocationController
   fields: ['search_for_address']
   form_base: 'incidents_dat_incident'
 
-  constructor: (currentLat, currentLng) ->
+  constructor: (currentLat, currentLng, config) ->
     return unless window.google # if no gmaps js, don't die
+
+    @centerPoint = new google.maps.LatLng(config.lat, config.lng)
 
     dom = $('.incident-map')[0]
     google.maps.visualRefresh = true
     opts =
-      zoom: 9
-      center: new google.maps.LatLng(37.81871654, -122.19014746)
+      zoom: config.zoom
+      center: @centerPoint
       mapTypeId: google.maps.MapTypeId.ROADMAP
       scrollwheel: false
       draggable: false
@@ -28,7 +30,7 @@ class window.IncidentLocationController
     @map = new google.maps.Map(dom, opts)
     @coder = new google.maps.Geocoder()
     @marker = new google.maps.Marker
-    @bounds = new google.maps.LatLngBounds new google.maps.LatLng(36.5407938301337, -124.57967382718749), new google.maps.LatLng(39.143091210253154, -119.52596288968749)
+    @bounds = new google.maps.LatLngBounds new google.maps.LatLng(config.geocode_bounds[0], config.geocode_bounds[1]), new google.maps.LatLng(config.geocode_bounds[2], config.geocode_bounds[3])
 
     if currentLng? and currentLng?
       pos = new google.maps.LatLng(currentLat, currentLng)
@@ -52,7 +54,7 @@ class window.IncidentLocationController
       this.getFieldVal(fname)
     return unless vals[0]? and vals[0] != ''
     query = vals.join(", ")
-    @coder.geocode {address:query, location: @map.getCenter(), bounds: @bounds}, (results, status) =>
+    @coder.geocode {address:query, bounds: @bounds}, (results, status) =>
       if (status == google.maps.GeocoderStatus.OK)
         result = results[0]
         pos = result.geometry.location
@@ -83,12 +85,12 @@ class window.IncidentLocationController
 
 class window.AllIncidentsMapController
 
-  constructor: (objects) ->
+  constructor: (objects, config) ->
     dom = $('.all-incidents-map')[0]
     google.maps.visualRefresh = true
     opts =
-      zoom: 9
-      center: new google.maps.LatLng(37.81871654, -122.19014746)
+      zoom: config.zoom
+      center: new google.maps.LatLng(config.lat, config.lng)
       mapTypeId: google.maps.MapTypeId.ROADMAP
       scrollwheel: false
       draggable: true

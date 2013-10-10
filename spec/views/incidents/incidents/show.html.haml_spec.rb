@@ -7,6 +7,7 @@ describe "incidents/incidents/show" do
   before(:each) do
     view.controller.stub :current_ability => ability
     view.stub :current_user => person
+    view.stub :current_chapter => person.chapter
     view.stub :resource_changes => []
   end
 

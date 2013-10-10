@@ -1,4 +1,5 @@
 class Incidents::HomeController < Incidents::BaseController
+  helper Incidents::MapHelper
 
   def root
   end

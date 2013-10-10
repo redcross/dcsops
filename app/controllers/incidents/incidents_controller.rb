@@ -3,6 +3,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   respond_to :html, :kml
   defaults finder: :find_by_incident_number!
   load_and_authorize_resource except: [:link_cas, :needs_report]
+  helper Incidents::MapHelper
 
   include NamedQuerySupport
 

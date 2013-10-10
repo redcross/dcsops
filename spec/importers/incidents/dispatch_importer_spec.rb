@@ -155,7 +155,7 @@ describe Incidents::DispatchImporter do
 
       inc.log_items.should have(13).items
 
-      dial = inc.log_items.detect{|li| li.action_type == 'Dial'}
+      dial = inc.log_items.order{action_at.desc}.detect{|li| li.action_type == 'Dial'}
       dial.should_not be_nil
       dial.result.should == "RELAYED"
       dial.recipient.should == "650-555-1212 DOE, JOHN - CELL"

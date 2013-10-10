@@ -39,7 +39,7 @@ describe Roster::Person do
       role.role_scopes.build scope: "1"
       role.save!
 
-      person.scope_for_role( grant_name).should eq(['test', 1])
+      person.scope_for_role( grant_name).should =~ ['test', 1]
     end
 
     it "should return county ids for scope if the scope is county_ids" do
@@ -49,7 +49,7 @@ describe Roster::Person do
 
       c = person.counties.create name: 'Test County', chapter: chapter
 
-      person.scope_for_role( grant_name).should eq(person.county_ids + [42])
+      person.scope_for_role( grant_name).should =~ (person.county_ids + [42])
     end
   end
 end
