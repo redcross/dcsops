@@ -1,6 +1,8 @@
 class Roster::Person < ActiveRecord::Base
   include AutoGeocode
 
+  PHONE_TYPES = [:home_phone, :cell_phone, :work_phone, :alternate_phone, :sms_phone]
+
   belongs_to :chapter, class_name: 'Roster::Chapter'
   belongs_to :primary_county, class_name: 'Roster::County'
 
@@ -44,6 +46,7 @@ class Roster::Person < ActiveRecord::Base
 
   validates *((1..4).map{|n| "phone_#{n}_preference".to_sym}), inclusion: {in: %w(home cell work alternate sms), allow_blank: true}
   validates_presence_of :chapter
+  validate :validate_disabled_phones
 
   #validates_inclusion_of :primary_county_id, in: lambda{ |person| person.chapter.county_ids }, allow_nil: true, allow_blank: true
 
@@ -134,7 +137,7 @@ class Roster::Person < ActiveRecord::Base
     end
 
     # Now get all the rest
-    [:home_phone, :cell_phone, :work_phone, :alternate_phone, :sms_phone].each do |label|
+    PHONE_TYPES.each do |label|
       try_phone.call label
     end
 
@@ -148,4 +151,19 @@ class Roster::Person < ActiveRecord::Base
   def vc_profile_url
     "https://volunteerconnection.redcross.org/?nd=vms_profile&account_id=#{self.vc_id}"
   end
+
+  def validate_disabled_phones
+    changed_phones = PHONE_TYPES.select{|label| self.send("#{label}_disable_changed?")}
+    return unless changed_phones.present?
+
+    present_phones = PHONE_TYPES.select{|label| self.send(label).present? }
+
+    if present_phones.all?{|label| self.send("#{label}_disable") }
+      changed_phones.each do |label|
+        self.errors["#{label}_disable"] << "At least one phone number must be available for calls."
+      end
+    end
+  end
+
+
 end
