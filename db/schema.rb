@@ -11,22 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131006231555) do
+ActiveRecord::Schema.define(version: 20131010002843) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+  enable_extension "hstore"
 
   create_table "active_admin_comments", force: true do |t|
-    t.string    "resource_id",   null: false
-    t.string    "resource_type", null: false
-    t.integer   "author_id"
-    t.string    "author_type"
-    t.text      "body"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.string    "namespace"
+    t.string   "resource_id",   null: false
+    t.string   "resource_type", null: false
+    t.integer  "author_id"
+    t.string   "author_type"
+    t.text     "body"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "namespace"
   end
 
-  add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
-  add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace"
-  add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
+  add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
+  add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
+  add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "api_clients", force: true do |t|
     t.string   "name"
@@ -37,290 +41,290 @@ ActiveRecord::Schema.define(version: 20131006231555) do
   end
 
   create_table "import_logs", force: true do |t|
-    t.string    "controller"
-    t.string    "name"
-    t.string    "url"
-    t.string    "result"
-    t.string    "message_subject"
-    t.string    "file_name"
-    t.integer   "file_size"
-    t.integer   "num_rows"
-    t.text      "log"
-    t.text      "import_errors"
-    t.string    "exception"
-    t.string    "exception_message"
-    t.text      "exception_trace"
-    t.float     "runtime"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "controller"
+    t.string   "name"
+    t.string   "url"
+    t.string   "result"
+    t.string   "message_subject"
+    t.string   "file_name"
+    t.integer  "file_size"
+    t.integer  "num_rows"
+    t.text     "log"
+    t.text     "import_errors"
+    t.string   "exception"
+    t.string   "exception_message"
+    t.text     "exception_trace"
+    t.float    "runtime"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "incidents_cas_cases", force: true do |t|
-    t.integer   "cas_incident_id"
-    t.string    "case_number"
-    t.integer   "num_clients"
-    t.string    "family_name"
-    t.date      "case_last_updated"
-    t.date      "case_opened"
-    t.boolean   "case_is_open"
-    t.string    "language"
-    t.text      "narrative"
-    t.string    "address"
-    t.string    "city"
-    t.string    "state"
-    t.string    "post_incident_plans"
-    t.text      "notes"
-    t.timestamp "last_import"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "cas_incident_id"
+    t.string   "case_number"
+    t.integer  "num_clients"
+    t.string   "family_name"
+    t.date     "case_last_updated"
+    t.date     "case_opened"
+    t.boolean  "case_is_open"
+    t.string   "language"
+    t.text     "narrative"
+    t.string   "address"
+    t.string   "city"
+    t.string   "state"
+    t.string   "post_incident_plans"
+    t.text     "notes"
+    t.datetime "last_import"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "incidents_cas_cases", ["cas_incident_id"], name: "index_incidents_cas_cases_on_cas_incident_id"
+  add_index "incidents_cas_cases", ["cas_incident_id"], name: "index_incidents_cas_cases_on_cas_incident_id", using: :btree
 
   create_table "incidents_cas_incidents", force: true do |t|
-    t.string    "dr_number"
-    t.string    "cas_incident_number"
-    t.string    "cas_name"
-    t.integer   "dr_level"
-    t.boolean   "is_dr"
-    t.string    "county_name"
-    t.integer   "cases_opened"
-    t.integer   "cases_open"
-    t.integer   "cases_closed"
-    t.integer   "cases_with_assistance"
-    t.integer   "cases_service_only"
-    t.integer   "num_clients"
-    t.integer   "phantom_cases"
-    t.date      "last_date_with_open_cases"
-    t.integer   "incident_id"
-    t.date      "incident_date"
-    t.text      "notes"
-    t.timestamp "last_import"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "dr_number"
+    t.string   "cas_incident_number"
+    t.string   "cas_name"
+    t.integer  "dr_level"
+    t.boolean  "is_dr"
+    t.string   "county_name"
+    t.integer  "cases_opened"
+    t.integer  "cases_open"
+    t.integer  "cases_closed"
+    t.integer  "cases_with_assistance"
+    t.integer  "cases_service_only"
+    t.integer  "num_clients"
+    t.integer  "phantom_cases"
+    t.date     "last_date_with_open_cases"
+    t.integer  "incident_id"
+    t.date     "incident_date"
+    t.text     "notes"
+    t.datetime "last_import"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "incidents_cas_incidents", ["incident_id"], name: "index_incidents_cas_incidents_on_incident_id"
+  add_index "incidents_cas_incidents", ["incident_id"], name: "index_incidents_cas_incidents_on_incident_id", using: :btree
 
   create_table "incidents_dat_incidents", force: true do |t|
-    t.integer   "incident_id"
-    t.string    "incident_type"
-    t.string    "incident_call_type"
-    t.string    "verified_by"
-    t.integer   "num_adults"
-    t.integer   "num_children"
-    t.integer   "num_families"
-    t.integer   "num_people_injured"
-    t.integer   "num_people_hospitalized"
-    t.integer   "num_people_deceased"
-    t.timestamp "responder_notified"
-    t.timestamp "responder_arrived"
-    t.timestamp "responder_departed"
-    t.string    "address"
-    t.string    "cross_street"
-    t.string    "neighborhood"
-    t.string    "city"
-    t.string    "state"
-    t.string    "zip"
-    t.decimal   "lat"
-    t.decimal   "lng"
-    t.integer   "units_affected"
-    t.integer   "units_minor"
-    t.integer   "units_major"
-    t.integer   "units_destroyed"
-    t.text      "narrative"
-    t.text      "services"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.string    "structure_type"
-    t.integer   "comfort_kits_used"
-    t.integer   "blankets_used"
-    t.integer   "completed_by_id"
-    t.text      "languages"
+    t.integer  "incident_id"
+    t.string   "incident_type"
+    t.string   "incident_call_type"
+    t.string   "verified_by"
+    t.integer  "num_adults"
+    t.integer  "num_children"
+    t.integer  "num_families"
+    t.integer  "num_people_injured"
+    t.integer  "num_people_hospitalized"
+    t.integer  "num_people_deceased"
+    t.datetime "responder_notified"
+    t.datetime "responder_arrived"
+    t.datetime "responder_departed"
+    t.string   "address"
+    t.string   "cross_street"
+    t.string   "neighborhood"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.decimal  "lat"
+    t.decimal  "lng"
+    t.integer  "units_affected"
+    t.integer  "units_minor"
+    t.integer  "units_major"
+    t.integer  "units_destroyed"
+    t.text     "narrative"
+    t.text     "services"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "structure_type"
+    t.integer  "comfort_kits_used"
+    t.integer  "blankets_used"
+    t.integer  "completed_by_id"
+    t.text     "languages"
   end
 
-  add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true
+  add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true, using: :btree
 
   create_table "incidents_deployments", force: true do |t|
-    t.integer   "person_id"
-    t.string    "dr_name"
-    t.string    "gap"
-    t.string    "group"
-    t.string    "activity"
-    t.string    "position"
-    t.string    "qual"
-    t.date      "date_first_seen"
-    t.date      "date_last_seen"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "person_id"
+    t.string   "dr_name"
+    t.string   "gap"
+    t.string   "group"
+    t.string   "activity"
+    t.string   "position"
+    t.string   "qual"
+    t.date     "date_first_seen"
+    t.date     "date_last_seen"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "incidents_dispatch_log_items", force: true do |t|
-    t.integer   "dispatch_log_id"
-    t.timestamp "action_at"
-    t.string    "action_type"
-    t.string    "recipient"
-    t.string    "operator"
-    t.string    "result"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "dispatch_log_id"
+    t.datetime "action_at"
+    t.string   "action_type"
+    t.string   "recipient"
+    t.string   "operator"
+    t.string   "result"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "incidents_dispatch_log_items", ["dispatch_log_id"], name: "index_incidents_dispatch_log_items_on_dispatch_log_id"
+  add_index "incidents_dispatch_log_items", ["dispatch_log_id"], name: "index_incidents_dispatch_log_items_on_dispatch_log_id", using: :btree
 
   create_table "incidents_dispatch_logs", force: true do |t|
-    t.string    "incident_number"
-    t.integer   "chapter_id"
-    t.integer   "incident_id"
-    t.timestamp "received_at"
-    t.timestamp "delivered_at"
-    t.string    "delivered_to"
-    t.string    "incident_type"
-    t.string    "address"
-    t.string    "cross_street"
-    t.string    "county_name"
-    t.string    "displaced"
-    t.string    "services_requested"
-    t.string    "agency"
-    t.string    "contact_name"
-    t.string    "contact_phone"
-    t.string    "caller_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "incident_number"
+    t.integer  "chapter_id"
+    t.integer  "incident_id"
+    t.datetime "received_at"
+    t.datetime "delivered_at"
+    t.string   "delivered_to"
+    t.string   "incident_type"
+    t.string   "address"
+    t.string   "cross_street"
+    t.string   "county_name"
+    t.string   "displaced"
+    t.string   "services_requested"
+    t.string   "agency"
+    t.string   "contact_name"
+    t.string   "contact_phone"
+    t.string   "caller_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "incidents_dispatch_logs", ["chapter_id"], name: "index_incidents_dispatch_logs_on_chapter_id"
-  add_index "incidents_dispatch_logs", ["incident_id"], name: "index_incidents_dispatch_logs_on_incident_id"
+  add_index "incidents_dispatch_logs", ["chapter_id"], name: "index_incidents_dispatch_logs_on_chapter_id", using: :btree
+  add_index "incidents_dispatch_logs", ["incident_id"], name: "index_incidents_dispatch_logs_on_incident_id", using: :btree
 
   create_table "incidents_event_logs", force: true do |t|
-    t.integer   "incident_id"
-    t.integer   "person_id"
-    t.string    "event"
-    t.timestamp "event_time"
-    t.text      "message"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "incident_id"
+    t.integer  "person_id"
+    t.string   "event"
+    t.datetime "event_time"
+    t.text     "message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "incidents_event_logs", ["incident_id"], name: "index_incidents_event_logs_on_incident_id"
-  add_index "incidents_event_logs", ["person_id"], name: "index_incidents_event_logs_on_person_id"
+  add_index "incidents_event_logs", ["incident_id"], name: "index_incidents_event_logs_on_incident_id", using: :btree
+  add_index "incidents_event_logs", ["person_id"], name: "index_incidents_event_logs_on_person_id", using: :btree
 
   create_table "incidents_incidents", force: true do |t|
-    t.integer   "chapter_id"
-    t.integer   "county_id"
-    t.string    "incident_number"
-    t.string    "incident_type"
-    t.string    "cas_incident_number"
-    t.date      "date"
-    t.integer   "num_adults"
-    t.integer   "num_children"
-    t.integer   "num_families"
-    t.integer   "num_cases"
-    t.string    "incident_description"
-    t.text      "narrative_brief"
-    t.text      "narrative"
-    t.string    "address"
-    t.string    "cross_street"
-    t.string    "neighborhood"
-    t.string    "city"
-    t.string    "state"
-    t.string    "zip"
-    t.decimal   "lat"
-    t.decimal   "lng"
-    t.string    "idat_incident_id"
-    t.string    "idat_incident_rev"
-    t.timestamp "last_idat_sync"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.timestamp "last_no_incident_warning"
-    t.boolean   "ignore_incident_report"
-    t.boolean   "evac_partner_used",        default: false
-    t.boolean   "hotel_partner_used",       default: false
-    t.boolean   "shelter_partner_used",     default: false
-    t.boolean   "feeding_partner_used",     default: false
+    t.integer  "chapter_id"
+    t.integer  "county_id"
+    t.string   "incident_number"
+    t.string   "incident_type"
+    t.string   "cas_incident_number"
+    t.date     "date"
+    t.integer  "num_adults"
+    t.integer  "num_children"
+    t.integer  "num_families"
+    t.integer  "num_cases"
+    t.string   "incident_description"
+    t.text     "narrative_brief"
+    t.text     "narrative"
+    t.string   "address"
+    t.string   "cross_street"
+    t.string   "neighborhood"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.decimal  "lat"
+    t.decimal  "lng"
+    t.string   "idat_incident_id"
+    t.string   "idat_incident_rev"
+    t.datetime "last_idat_sync"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "last_no_incident_warning"
+    t.boolean  "ignore_incident_report"
+    t.boolean  "evac_partner_used",        default: false
+    t.boolean  "hotel_partner_used",       default: false
+    t.boolean  "shelter_partner_used",     default: false
+    t.boolean  "feeding_partner_used",     default: false
   end
 
-  add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id"
-  add_index "incidents_incidents", ["county_id"], name: "index_incidents_incidents_on_county_id"
-  add_index "incidents_incidents", ["incident_number"], name: "index_incidents_incidents_on_incident_number", unique: true
+  add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id", using: :btree
+  add_index "incidents_incidents", ["county_id"], name: "index_incidents_incidents_on_county_id", using: :btree
+  add_index "incidents_incidents", ["incident_number"], name: "index_incidents_incidents_on_incident_number", unique: true, using: :btree
 
   create_table "incidents_notification_subscriptions", force: true do |t|
-    t.integer   "person_id"
-    t.integer   "county_id"
-    t.string    "notification_type"
-    t.boolean   "persistent",        default: false
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "person_id"
+    t.integer  "county_id"
+    t.string   "notification_type"
+    t.boolean  "persistent",        default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "incidents_notification_subscriptions", ["county_id"], name: "index_incidents_notification_subscriptions_on_county_id"
-  add_index "incidents_notification_subscriptions", ["person_id"], name: "index_incidents_notification_subscriptions_on_person_id"
+  add_index "incidents_notification_subscriptions", ["county_id"], name: "index_incidents_notification_subscriptions_on_county_id", using: :btree
+  add_index "incidents_notification_subscriptions", ["person_id"], name: "index_incidents_notification_subscriptions_on_person_id", using: :btree
 
   create_table "incidents_partner_uses", force: true do |t|
-    t.integer   "incident_id"
-    t.integer   "partner_id"
-    t.string    "role"
-    t.decimal   "hotel_rate"
-    t.integer   "hotel_rooms"
-    t.integer   "meals_served"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "incident_id"
+    t.integer  "partner_id"
+    t.string   "role"
+    t.decimal  "hotel_rate"
+    t.integer  "hotel_rooms"
+    t.integer  "meals_served"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "incidents_partner_uses", ["incident_id"], name: "index_incidents_partner_uses_on_incident_id"
-  add_index "incidents_partner_uses", ["partner_id"], name: "index_incidents_partner_uses_on_partner_id"
+  add_index "incidents_partner_uses", ["incident_id"], name: "index_incidents_partner_uses_on_incident_id", using: :btree
+  add_index "incidents_partner_uses", ["partner_id"], name: "index_incidents_partner_uses_on_partner_id", using: :btree
 
   create_table "incidents_responder_assignments", force: true do |t|
-    t.integer   "person_id"
-    t.integer   "incident_id"
-    t.string    "role"
-    t.string    "response"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.boolean   "was_flex",    default: false
+    t.integer  "person_id"
+    t.integer  "incident_id"
+    t.string   "role"
+    t.string   "response"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "was_flex",    default: false
   end
 
-  add_index "incidents_responder_assignments", ["incident_id"], name: "index_incidents_responder_assignments_on_incident_id"
-  add_index "incidents_responder_assignments", ["person_id"], name: "index_incidents_responder_assignments_on_person_id"
+  add_index "incidents_responder_assignments", ["incident_id"], name: "index_incidents_responder_assignments_on_incident_id", using: :btree
+  add_index "incidents_responder_assignments", ["person_id"], name: "index_incidents_responder_assignments_on_person_id", using: :btree
 
   create_table "incidents_vehicle_uses", force: true do |t|
-    t.integer   "vehicle_id"
-    t.integer   "incident_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "vehicle_id"
+    t.integer  "incident_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "incidents_vehicle_uses", ["incident_id"], name: "index_incidents_vehicle_uses_on_incident_id"
-  add_index "incidents_vehicle_uses", ["vehicle_id"], name: "index_incidents_vehicle_uses_on_vehicle_id"
+  add_index "incidents_vehicle_uses", ["incident_id"], name: "index_incidents_vehicle_uses_on_incident_id", using: :btree
+  add_index "incidents_vehicle_uses", ["vehicle_id"], name: "index_incidents_vehicle_uses_on_vehicle_id", using: :btree
 
   create_table "logistics_vehicles", force: true do |t|
-    t.integer   "chapter_id"
-    t.string    "name"
-    t.string    "category"
-    t.string    "address"
-    t.string    "city"
-    t.string    "state"
-    t.string    "zip"
-    t.decimal   "lat"
-    t.decimal   "lng"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "chapter_id"
+    t.string   "name"
+    t.string   "category"
+    t.string   "address"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.decimal  "lat"
+    t.decimal  "lng"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "motds", force: true do |t|
-    t.integer   "chapter_id"
-    t.timestamp "begins"
-    t.timestamp "ends"
-    t.string    "cookie_code"
-    t.text      "html"
-    t.string    "dialog_class"
-    t.integer   "cookie_version"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.string    "path_regex_raw"
+    t.integer  "chapter_id"
+    t.datetime "begins"
+    t.datetime "ends"
+    t.string   "cookie_code"
+    t.text     "html"
+    t.string   "dialog_class"
+    t.integer  "cookie_version"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "path_regex_raw"
   end
 
-  add_index "motds", ["chapter_id"], name: "index_motds_on_chapter_id"
+  add_index "motds", ["chapter_id"], name: "index_motds_on_chapter_id", using: :btree
 
   create_table "named_queries", force: true do |t|
     t.string   "name"
@@ -332,78 +336,50 @@ ActiveRecord::Schema.define(version: 20131006231555) do
     t.datetime "updated_at"
   end
 
-  create_table "opro_auth_grants", force: true do |t|
-    t.string   "code"
-    t.string   "access_token"
-    t.string   "refresh_token"
-    t.text     "permissions"
-    t.datetime "access_token_expires_at"
-    t.integer  "user_id"
-    t.integer  "application_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "opro_auth_grants", ["access_token"], name: "index_opro_auth_grants_on_access_token", unique: true
-  add_index "opro_auth_grants", ["code"], name: "index_opro_auth_grants_on_code", unique: true
-  add_index "opro_auth_grants", ["refresh_token"], name: "index_opro_auth_grants_on_refresh_token", unique: true
-
-  create_table "opro_client_apps", force: true do |t|
-    t.string   "name"
-    t.string   "app_id"
-    t.string   "app_secret"
-    t.text     "permissions"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "opro_client_apps", ["app_id", "app_secret"], name: "index_opro_client_apps_on_app_id_and_app_secret", unique: true
-  add_index "opro_client_apps", ["app_id"], name: "index_opro_client_apps_on_app_id", unique: true
-
   create_table "partners_partners", force: true do |t|
-    t.string    "name"
-    t.string    "address1"
-    t.string    "address2"
-    t.string    "city"
-    t.string    "state"
-    t.string    "zip"
-    t.decimal   "lat"
-    t.decimal   "lng"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.string   "address1"
+    t.string   "address2"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.decimal  "lat"
+    t.decimal  "lng"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "roster_cell_carriers", force: true do |t|
-    t.string    "name"
-    t.string    "sms_gateway"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.boolean   "pager"
+    t.string   "name"
+    t.string   "sms_gateway"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "pager"
   end
 
   create_table "roster_chapters", force: true do |t|
-    t.string    "name"
-    t.string    "code"
-    t.string    "short_name"
-    t.string    "time_zone_raw"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.string    "vc_username"
-    t.string    "vc_password"
-    t.string    "vc_position_filter"
+    t.string   "name"
+    t.string   "code"
+    t.string   "short_name"
+    t.string   "time_zone_raw"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "vc_username"
+    t.string   "vc_password"
+    t.string   "vc_position_filter"
+    t.hstore   "config"
   end
 
   create_table "roster_counties", force: true do |t|
-    t.integer   "chapter_id"
-    t.string    "name"
-    t.string    "abbrev"
-    t.string    "county_code"
-    t.string    "fips_code"
-    t.string    "gis_name"
-    t.string    "vc_regex_raw"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "chapter_id"
+    t.string   "name"
+    t.string   "abbrev"
+    t.string   "county_code"
+    t.string   "fips_code"
+    t.string   "gis_name"
+    t.string   "vc_regex_raw"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "roster_county_memberships", force: true do |t|
@@ -463,7 +439,7 @@ ActiveRecord::Schema.define(version: 20131006231555) do
     t.datetime "vc_last_profile_update"
   end
 
-  add_index "roster_people", ["chapter_id", "vc_id"], name: "idx_vc_id"
+  add_index "roster_people", ["vc_id"], name: "idx_vc_id", using: :btree
 
   create_table "roster_position_memberships", force: true do |t|
     t.integer "position_id"
@@ -472,14 +448,14 @@ ActiveRecord::Schema.define(version: 20131006231555) do
   end
 
   create_table "roster_positions", force: true do |t|
-    t.integer   "chapter_id"
-    t.string    "name"
-    t.string    "vc_regex_raw"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.boolean   "hidden",         default: false
-    t.string    "watchfire_role"
-    t.string    "abbrev"
+    t.integer  "chapter_id"
+    t.string   "name"
+    t.string   "vc_regex_raw"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "hidden",         default: false
+    t.string   "watchfire_role"
+    t.string   "abbrev"
   end
 
   create_table "roster_positions_roles", id: false, force: true do |t|
@@ -493,38 +469,38 @@ ActiveRecord::Schema.define(version: 20131006231555) do
   end
 
   create_table "roster_role_scopes", force: true do |t|
-    t.integer   "role_id"
-    t.string    "scope"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "role_id"
+    t.string   "scope"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "roster_role_scopes", ["role_id"], name: "index_roster_role_scopes_on_role_id"
+  add_index "roster_role_scopes", ["role_id"], name: "index_roster_role_scopes_on_role_id", using: :btree
 
   create_table "roster_roles", force: true do |t|
-    t.integer   "chapter_id"
-    t.string    "name"
-    t.string    "grant_name"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "chapter_id"
+    t.string   "name"
+    t.string   "grant_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "scheduler_dispatch_configs", force: true do |t|
-    t.integer   "county_id"
-    t.integer   "backup_first_id"
-    t.integer   "backup_second_id"
-    t.integer   "backup_third_id"
-    t.integer   "backup_fourth_id"
-    t.boolean   "is_active"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "county_id"
+    t.integer  "backup_first_id"
+    t.integer  "backup_second_id"
+    t.integer  "backup_third_id"
+    t.integer  "backup_fourth_id"
+    t.boolean  "is_active"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "scheduler_dispatch_configs", ["backup_first_id"], name: "index_scheduler_dispatch_configs_on_backup_first_id"
-  add_index "scheduler_dispatch_configs", ["backup_fourth_id"], name: "index_scheduler_dispatch_configs_on_backup_fourth_id"
-  add_index "scheduler_dispatch_configs", ["backup_second_id"], name: "index_scheduler_dispatch_configs_on_backup_second_id"
-  add_index "scheduler_dispatch_configs", ["backup_third_id"], name: "index_scheduler_dispatch_configs_on_backup_third_id"
-  add_index "scheduler_dispatch_configs", ["county_id"], name: "index_scheduler_dispatch_configs_on_county_id"
+  add_index "scheduler_dispatch_configs", ["backup_first_id"], name: "index_scheduler_dispatch_configs_on_backup_first_id", using: :btree
+  add_index "scheduler_dispatch_configs", ["backup_fourth_id"], name: "index_scheduler_dispatch_configs_on_backup_fourth_id", using: :btree
+  add_index "scheduler_dispatch_configs", ["backup_second_id"], name: "index_scheduler_dispatch_configs_on_backup_second_id", using: :btree
+  add_index "scheduler_dispatch_configs", ["backup_third_id"], name: "index_scheduler_dispatch_configs_on_backup_third_id", using: :btree
+  add_index "scheduler_dispatch_configs", ["county_id"], name: "index_scheduler_dispatch_configs_on_county_id", using: :btree
 
   create_table "scheduler_dispatch_configs_admin_notifications", id: false, force: true do |t|
     t.integer "scheduler_dispatch_config_id"
@@ -532,108 +508,108 @@ ActiveRecord::Schema.define(version: 20131006231555) do
   end
 
   create_table "scheduler_flex_schedules", force: true do |t|
-    t.integer   "person_id"
-    t.boolean   "available_sunday_day"
-    t.boolean   "available_sunday_night"
-    t.boolean   "available_monday_day"
-    t.boolean   "available_monday_night"
-    t.boolean   "available_tuesday_day"
-    t.boolean   "available_tuesday_night"
-    t.boolean   "available_wednesday_day"
-    t.boolean   "available_wednesday_night"
-    t.boolean   "available_thursday_day"
-    t.boolean   "available_thursday_night"
-    t.boolean   "available_friday_day"
-    t.boolean   "available_friday_night"
-    t.boolean   "available_saturday_day"
-    t.boolean   "available_saturday_night"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.integer  "person_id"
+    t.boolean  "available_sunday_day"
+    t.boolean  "available_sunday_night"
+    t.boolean  "available_monday_day"
+    t.boolean  "available_monday_night"
+    t.boolean  "available_tuesday_day"
+    t.boolean  "available_tuesday_night"
+    t.boolean  "available_wednesday_day"
+    t.boolean  "available_wednesday_night"
+    t.boolean  "available_thursday_day"
+    t.boolean  "available_thursday_night"
+    t.boolean  "available_friday_day"
+    t.boolean  "available_friday_night"
+    t.boolean  "available_saturday_day"
+    t.boolean  "available_saturday_night"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "scheduler_flex_schedules", ["person_id"], name: "index_scheduler_flex_schedules_on_person_id"
+  add_index "scheduler_flex_schedules", ["person_id"], name: "index_scheduler_flex_schedules_on_person_id", using: :btree
 
   create_table "scheduler_notification_settings", force: true do |t|
-    t.integer   "email_advance_hours"
-    t.integer   "sms_advance_hours"
-    t.integer   "sms_only_after",            default: 0
-    t.integer   "sms_only_before",           default: 86400
-    t.boolean   "send_email_invites"
-    t.string    "calendar_api_token"
-    t.text      "shift_notification_phones"
-    t.boolean   "email_swap_requested"
-    t.boolean   "email_all_swaps"
-    t.boolean   "email_calendar_signups"
-    t.integer   "email_all_shifts_at"
-    t.integer   "sms_all_shifts_at"
-    t.date      "last_all_shifts_email"
-    t.date      "last_all_shifts_sms"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.boolean   "email_all_swaps_daily"
+    t.integer  "email_advance_hours"
+    t.integer  "sms_advance_hours"
+    t.integer  "sms_only_after",            default: 0
+    t.integer  "sms_only_before",           default: 86400
+    t.boolean  "send_email_invites"
+    t.string   "calendar_api_token"
+    t.text     "shift_notification_phones"
+    t.boolean  "email_swap_requested"
+    t.boolean  "email_all_swaps"
+    t.boolean  "email_calendar_signups"
+    t.integer  "email_all_shifts_at"
+    t.integer  "sms_all_shifts_at"
+    t.date     "last_all_shifts_email"
+    t.date     "last_all_shifts_sms"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "email_all_swaps_daily"
   end
 
   create_table "scheduler_shift_assignments", force: true do |t|
-    t.integer   "person_id"
-    t.integer   "shift_id"
-    t.date      "date"
-    t.boolean   "email_invite_sent",   default: false
-    t.boolean   "email_reminder_sent", default: false
-    t.boolean   "sms_reminder_sent",   default: false
-    t.boolean   "available_for_swap",  default: false
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.boolean   "synced",              default: false
+    t.integer  "person_id"
+    t.integer  "shift_id"
+    t.date     "date"
+    t.boolean  "email_invite_sent",   default: false
+    t.boolean  "email_reminder_sent", default: false
+    t.boolean  "sms_reminder_sent",   default: false
+    t.boolean  "available_for_swap",  default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "synced",              default: false
   end
 
-  add_index "scheduler_shift_assignments", ["person_id"], name: "index_scheduler_shift_assignments_on_person_id"
-  add_index "scheduler_shift_assignments", ["shift_id"], name: "index_scheduler_shift_assignments_on_shift_id"
+  add_index "scheduler_shift_assignments", ["person_id"], name: "index_scheduler_shift_assignments_on_person_id", using: :btree
+  add_index "scheduler_shift_assignments", ["shift_id"], name: "index_scheduler_shift_assignments_on_shift_id", using: :btree
 
   create_table "scheduler_shift_groups", force: true do |t|
-    t.string    "name"
-    t.string    "period"
-    t.integer   "start_offset"
-    t.integer   "end_offset"
-    t.integer   "chapter_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.string   "period"
+    t.integer  "start_offset"
+    t.integer  "end_offset"
+    t.integer  "chapter_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "scheduler_shift_groups", ["chapter_id"], name: "index_scheduler_shift_groups_on_chapter_id"
+  add_index "scheduler_shift_groups", ["chapter_id"], name: "index_scheduler_shift_groups_on_chapter_id", using: :btree
 
   create_table "scheduler_shifts", force: true do |t|
-    t.string    "name"
-    t.string    "abbrev"
-    t.integer   "shift_group_id"
-    t.integer   "max_signups"
-    t.integer   "county_id"
-    t.integer   "ordinal"
-    t.integer   "spreadsheet_ordinal"
-    t.integer   "dispatch_role"
-    t.date      "shift_begins"
-    t.date      "shift_ends"
-    t.date      "signups_frozen_before"
-    t.integer   "max_advance_signup"
-    t.date      "signups_available_before"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.integer   "min_desired_signups"
-    t.boolean   "ignore_county",            default: false
+    t.string   "name"
+    t.string   "abbrev"
+    t.integer  "shift_group_id"
+    t.integer  "max_signups"
+    t.integer  "county_id"
+    t.integer  "ordinal"
+    t.integer  "spreadsheet_ordinal"
+    t.integer  "dispatch_role"
+    t.date     "shift_begins"
+    t.date     "shift_ends"
+    t.date     "signups_frozen_before"
+    t.integer  "max_advance_signup"
+    t.date     "signups_available_before"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "min_desired_signups"
+    t.boolean  "ignore_county",            default: false
   end
 
-  add_index "scheduler_shifts", ["county_id"], name: "index_scheduler_shifts_on_county_id"
-  add_index "scheduler_shifts", ["shift_group_id"], name: "index_scheduler_shifts_on_shift_group_id"
+  add_index "scheduler_shifts", ["county_id"], name: "index_scheduler_shifts_on_county_id", using: :btree
+  add_index "scheduler_shifts", ["shift_group_id"], name: "index_scheduler_shifts_on_shift_group_id", using: :btree
 
   create_table "versions", force: true do |t|
-    t.string    "item_type",      null: false
-    t.integer   "item_id",        null: false
-    t.string    "event",          null: false
-    t.string    "whodunnit"
-    t.text      "object"
-    t.timestamp "created_at"
-    t.text      "object_changes"
+    t.string   "item_type",      null: false
+    t.integer  "item_id",        null: false
+    t.string   "event",          null: false
+    t.string   "whodunnit"
+    t.text     "object"
+    t.datetime "created_at"
+    t.text     "object_changes"
   end
 
-  add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
+  add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
 end

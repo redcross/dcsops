@@ -1,4 +1,5 @@
 class Roster::Chapter < ActiveRecord::Base
+  include SerializedColumns
   has_many :counties
   has_many :positions
   has_many :people
@@ -6,4 +7,8 @@ class Roster::Chapter < ActiveRecord::Base
   def time_zone
     @_tz ||= ActiveSupport::TimeZone[self.time_zone_raw]
   end
+
+  serialized_accessor :config, :incidents_map_center_lat, :decimal
+  serialized_accessor :config, :incidents_map_center_lng, :decimal
+  serialized_accessor :config, :incidents_map_zoom, :integer
 end
