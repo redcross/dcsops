@@ -121,11 +121,13 @@ class Incidents::DatIncidentsController < Incidents::BaseController
              :num_people_injured, :num_people_hospitalized, :num_people_deceased,
              :responder_notified, :responder_arrived, :responder_departed,
              :units_total, :units_affected, :units_minor, :units_major, :units_destroyed,
-             :structure_type, :comfort_kits_used, :blankets_used,
+             :structure_type,
              {vehicle_ids: []},
              {languages: []},
              {services: []}
            ]
+
+      keys = keys + Incidents::DatIncident::TRACKED_RESOURCE_TYPES.map(&:to_sym)
 
       args = params.require(:incidents_dat_incident).permit(*keys)
       #if args[:incident_attributes]

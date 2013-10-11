@@ -145,8 +145,8 @@ describe "DAT Incident Report" do
     fill_in 'Hotel rate*', with: 129.00
     fill_in 'Rooms Booked*', with: 1
 
-    fill_in 'Comfort kits used*', with: 10
-    fill_in 'Blankets used*', with: 20
+    fill_in 'Comfort kits*', with: 10
+    fill_in 'Blankets*', with: 20
 
     select @vehicle.name
     click_button 'Add Vehicle'

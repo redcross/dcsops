@@ -21,14 +21,14 @@ class Incidents::DatIncident < ActiveRecord::Base
   CALL_TYPES = %w(hot cold)
   INCIDENT_TYPES = %w(fire flood police)
   STRUCTURE_TYPES = %w(single_family_home apartment sro mobile_home commercial none)
-  
+  TRACKED_RESOURCE_TYPES = %w(comfort_kits blankets pre-packs toys)
+
   accepts_nested_attributes_for :incident, update_only: true#, reject_if: :cant_update_incident
   validates :address, :city, :state, :zip, presence: true # :cross_street
 
   validates :units_affected, :units_minor, :units_major, :units_destroyed, presence: true, numericality: {:greater_than_or_equal_to => 0}
   validates :num_adults, :num_children, :num_families, presence: true, numericality: {:greater_than_or_equal_to => 0}
   validates :num_people_injured, :num_people_hospitalized, :num_people_deceased, presence: true, numericality: {:greater_than_or_equal_to => 0}
-  validates :comfort_kits_used, :blankets_used, presence: true, numericality: {:greater_than_or_equal_to => 0}
 
   validates :incident_call_type, presence: true, inclusion: {in: CALL_TYPES}
   validates :incident_type, presence: true, inclusion: {in: INCIDENT_TYPES}
@@ -45,6 +45,15 @@ class Incidents::DatIncident < ActiveRecord::Base
   serialize :languages
 
   after_save :update_incident
+
+  include SerializedColumns
+  TRACKED_RESOURCE_TYPES.each do |type_s|
+    type = type_s.to_sym
+    serialized_accessor :resources, type, :integer
+    conditional = ->(obj){ obj.incident.chapter.incidents_resources_tracked_array.include?(type_s)}
+    validates_presence_of type, if: conditional
+    validates_numericality_of type, greater_than_or_equal_to: 0, allow_blank: false, allow_nil: false, if: conditional
+  end
 
   attr_accessor :search_for_address
 

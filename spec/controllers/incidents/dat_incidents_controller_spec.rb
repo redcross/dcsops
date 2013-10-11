@@ -73,6 +73,7 @@ describe Incidents::DatIncidentsController do
 
     let(:create_attrs) {
       attrs = @dat.attributes
+      attrs.merge!({'comfort_kits' => 10, 'blankets' => 50})
       attrs[:incident_attributes] = {id: @incident.id}
       attrs[:incident_attributes][:team_lead_attributes] = {person_id: @lead.id, role: 'team_lead', response: 'available'}
       attrs[:vehicle_ids] = [@vehicle.id]

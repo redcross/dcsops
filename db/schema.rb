@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131010002843) do
+ActiveRecord::Schema.define(version: 20131011010814) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -137,10 +137,9 @@ ActiveRecord::Schema.define(version: 20131010002843) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "structure_type"
-    t.integer  "comfort_kits_used"
-    t.integer  "blankets_used"
     t.integer  "completed_by_id"
     t.text     "languages"
+    t.hstore   "resources"
   end
 
   add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true, using: :btree

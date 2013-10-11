@@ -1,8 +1,8 @@
 module ViewResourceMacros
   def has_resource(name, &block)
     before do
-      # Creates the resource
-      @resource ||= yield
+      # Creates the resource.  Use instance exec so the block can use helpers and lets defined on the example group.
+      @resource ||= self.instance_exec(&block)
       # Assign to the symbol we wanted, so it's available in the view
       assign(name, @resource)
       # Assigns to @name so that we can use that in our assertions
