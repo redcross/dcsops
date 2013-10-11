@@ -101,6 +101,8 @@ GEM
       activesupport (= 4.0.0)
       arel (~> 4.0.0)
     activerecord-deprecated_finders (1.0.3)
+    activerecord-import (0.4.1)
+      activerecord (>= 3.0)
     activerecord-postgresql-adapter (0.0.1)
       pg
     activesupport (4.0.0)
@@ -397,6 +399,7 @@ PLATFORMS
 
 DEPENDENCIES
   activeadmin!
+  activerecord-import
   activerecord-postgresql-adapter
   acts_as_flying_saucer!
   assignable_values

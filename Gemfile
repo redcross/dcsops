@@ -7,6 +7,7 @@ gem 'squeel', github: 'ernie/squeel'
 gem 'puma'
 
 gem 'activerecord-postgresql-adapter'
+gem 'activerecord-import'
 
 gem 'sass-rails',   '~> 4.0.0.rc1'
 gem 'jquery-rails'

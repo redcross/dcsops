@@ -14,14 +14,16 @@ class Roster::VcQueryToolImporter
     {#members: 'Active Members', 
       positions: 'Active Members Positions', 
       qualifications: 'Active Members Qualifications', 
-      usage: 'Active Members Usage'}
+      usage: 'Active Members Usage'
+    }
   end
 
   def importer_mappings
     {#members: MembersImporter, 
       positions: MemberPositionsImporter, 
       qualifications: QualificationsImporter,
-      usage: UsageImporter }
+      #usage: UsageImporter 
+    }
   end
 
   def import(chapter, queries=query_mappings.keys)
@@ -61,8 +63,6 @@ class Importer
   class_attribute :column_mappings
   class_attribute :log_progress_every
 
-  cattr_accessor :loaded_ids
-  self.loaded_ids = Set.new
   attr_accessor :logger
 
   self.log_progress_every = 100
@@ -107,7 +107,7 @@ class Importer
         last_period = now
 
         logger.info "#{self.class.name} Processing row #{row_num}/#{@csv.count} at #{'%.1f' % [total_rate]} rows/sec total #{'%.1f' % [period_rate]} rows/sec now"
-        GC.start
+        #GC.start
       end
 
       identity = Hash[self.class.identity_columns.map{|key, col_name| [key, row[column_index(col_name)]]}]
@@ -165,32 +165,36 @@ class MemberPositionsImporter < Importer
       @num_people += 1
 
       # Adding chapter: to the attrs merge should prevent the validates_presence_of: chapter from doing a db query
-      @person.attributes = attrs.merge({vc_imported_at: Time.now, chapter: @chapter})
+      @person.attributes = attrs.merge({chapter: @chapter})
       @person.save!
 
-      self.class.loaded_ids << @person.id
+      @vc_ids_seen << @person.vc_id
     end
   end
 
   def before_import
-    @people_positions = {}
-    @people_counties = {}
+    @people_positions = Hash.new { |hash, key| hash[key] = Set.new }
+    @people_counties = Hash.new { |hash, key| hash[key] = Set.new }
+    @positions_to_import = []
+    @counties_to_import = []
+    @vc_ids_seen = []
 
     @num_people = 0
     @num_positions = 0
 
     Roster::CountyMembership.joins{person}.where{person.chapter_id == my{@chapter}}.each do |mem|
-      @people_counties[mem.person_id] ||= Set.new
       @people_counties[mem.person_id] << mem.county_id
     end
 
     Roster::PositionMembership.joins{person}.where{person.chapter_id == my{@chapter}}.each do |mem|
-      @people_positions[mem.person_id] ||= Set.new
       @people_positions[mem.person_id] << mem.position_id
     end
   end
 
   def after_import
+    Roster::CountyMembership.import @counties_to_import
+    Roster::PositionMembership.import @positions_to_import
+    Roster::Person.where(vc_id: @vc_ids_seen).update_all :vc_imported_at => Time.now
     logger.info "Processed #{@num_people} active users and #{@num_positions} filtered positions"
   end
 
@@ -219,9 +223,8 @@ class MemberPositionsImporter < Importer
     matched = false
     counties.each do |county|
       if county.vc_regex.match position_name
-        unless @people_counties[@person.id].try(:include?, county.id)
-          @person.counties << county
-          @people_counties[@person.id] ||= Set.new
+        unless @people_counties[@person.id].include? county.id
+          @counties_to_import << @person.county_memberships.build(county: county)
           @people_counties[@person.id] << county.id
           matched=true
           break
@@ -231,9 +234,8 @@ class MemberPositionsImporter < Importer
 
     positions.each do |position|
       if position.vc_regex.match position_name
-        unless @people_positions[@person.id].try(:include?, position.id)
-          @person.positions << position
-          @people_positions[@person.id] ||= Set.new
+        unless @people_positions[@person.id].include? position.id
+          @positions_to_import << @person.position_memberships.build(position: position)
           @people_positions[@person.id] << position.id
           matched=true
           break
@@ -245,7 +247,7 @@ class MemberPositionsImporter < Importer
       logger.debug "Didn't match a record for item #{position_name}"
     end
 
-    @person.save!
+    #@person.save!
   end
 
   def filter_regex
@@ -322,6 +324,7 @@ class UsageImporter < Importer
       logger.debug "Usage for #{identity.inspect} is #{attrs.inspect}"
       attrs[:vc_last_login] = parse_time(attrs[:vc_last_login])
       attrs[:vc_last_profile_update] = parse_time(attrs[:vc_last_profile_update])
+      attrs[:chapter] = @chapter # Satisfies the chapter presence validator so it doesn't make a query
       person.update_attributes attrs
     end
   end

@@ -3,7 +3,7 @@ class VcQuery
 
   base_uri 'https://volunteerconnection.redcross.org'
   headers "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.65 Safari/537.36"
-  debug_output if Rails.env.development?
+  #debug_output if Rails.env.development?
 
   attr_accessor :cookies
   attr_accessor :username, :password
