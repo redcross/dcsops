@@ -85,6 +85,9 @@ County
         %tr
           %th Assistance Provided
           %td=resource.services_description
+        %tr
+          %th Resources Used
+          %td=dat.resources.map{|name, quantity| quantity = quantity.to_i; if quantity > 0; name = name.titleize.singularize; pluralize(quantity, name); end}.compact.to_sentence
         -if resource.evac_partner_use
           %tr
             %th Evac Center

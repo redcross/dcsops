@@ -70,7 +70,7 @@ class window.DatIncidentsFormController
       @da_fields.forEach (el) ->
         console.log(total, $("##{el}").val())
         total += Number($("##{el}").val())
-      $('#total-units').text(total)
+      $('#incidents_dat_incident_units_total').val(total)
 
     $(document).on 'click', '[data-toggle=remote-tab]', (evt) =>
       $target = $(evt.target)

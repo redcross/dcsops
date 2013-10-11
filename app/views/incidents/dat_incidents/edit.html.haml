@@ -1,2 +1,8 @@
-%h1 DAT Incident Report
+- provide :title, "Incident #{resource.incident.incident_number} - ARCBA DAT"
+%h2
+  DAT Incident Report
+  %small.pull-right
+    %a{href:parent_path}
+      %i.icon-chevron-left
+      Back to Incident Summary
 =render 'form', :resource => resource

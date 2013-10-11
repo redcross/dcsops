@@ -8,8 +8,8 @@
         =f.input :incident_number, input_html: {readonly: readonly}
         =f.input :county, as: (readonly ? :string : :select), input_html: {readonly: readonly, value: resource.incident.try(:county).try(:name)}
         =f.input :date, as: (readonly ? :string : :bootstrap_date), input_html: {readonly: readonly}
-      =f.input :incident_type, as: :select, collection: grouped_incident_types, include_blank: false
-      =f.input :incident_call_type, as: :select, collection: Incidents::DatIncident::CALL_TYPES.map{|x| [x.titleize, x]}, include_blank: false
+      =f.input :incident_type, as: :select, collection: options_from_collection_for_select(f.object.humanized_incident_types, :value, :humanized), include_blank: false, required: true
+      =f.input :incident_call_type, as: :select, collection: options_from_collection_for_select(f.object.humanized_incident_call_types, :value, :humanized), include_blank: false, required: true
   .span6
     =f.inputs "Demographics" do
       =f.input :num_adults
@@ -39,15 +39,12 @@
 .row
   .span6
     =f.inputs "Damage Assessment" do
-      =f.input :structure_type, collection: Incidents::DatIncident::STRUCTURE_TYPES.map{|x| [x.titleize, x]}
-      .control-group.address-lookup-group
-        %label.control-label Units Total
-        .controls
-          %strong#total-units 0
-      =f.input :units_affected, hint: 'Units affected is the number of units that were involved but did not receive minor, major, or destroyed damage.  This is NOT the sum of the damage levels below.'
-      =f.input :units_minor
-      =f.input :units_major
+      =f.input :structure_type, collection: options_from_collection_for_select(f.object.humanized_structure_types, :value, :humanized), required: true
       =f.input :units_destroyed
+      =f.input :units_major
+      =f.input :units_minor
+      =f.input :units_affected
+      =f.input :units_total, input_html: {readonly: true}
   .span6
     =f.inputs "Timeline" do
       =f.input :responder_notified, as: :time_field

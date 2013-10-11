@@ -41,14 +41,10 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     params[:incident_id] ? incidents_incident_dat_path(params[:incident_id]) : incidents_dat_incidents_path
   end
 
-  helper_method :grouped_responder_roles, :grouped_incident_types
+  helper_method :grouped_responder_roles
   def grouped_responder_roles
     @_roles ||= [["Did Not Respond", Incidents::ResponderAssignment::RESPONSES_TO_LABELS.invert.to_a],
      ["Responded To Incident", Incidents::ResponderAssignment::ROLES_TO_LABELS.invert.to_a.reject{|a| a.last == 'team_lead'}]]
-  end
-
-  def grouped_incident_types
-    Incidents::DatIncident::INCIDENT_TYPES.map{|x| [x.titleize, x]}
   end
 
   helper_method :scheduled_responders, :flex_responders
@@ -120,7 +116,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
              :incident_type, :incident_description, :narrative_brief, :narrative,
              :num_people_injured, :num_people_hospitalized, :num_people_deceased,
              :responder_notified, :responder_arrived, :responder_departed,
-             :units_total, :units_affected, :units_minor, :units_major, :units_destroyed,
+             :units_affected, :units_minor, :units_major, :units_destroyed,
              :structure_type,
              {vehicle_ids: []},
              {languages: []},

@@ -113,6 +113,8 @@ GEM
     arbre (1.0.1)
       activesupport (>= 3.0.0)
     arel (4.0.0)
+    assignable_values (0.7.2)
+      activerecord
     atomic (1.1.14)
     authlogic (3.3.0)
       activerecord (>= 3.2)
@@ -397,6 +399,7 @@ DEPENDENCIES
   activeadmin!
   activerecord-postgresql-adapter
   acts_as_flying_saucer!
+  assignable_values
   authlogic
   autotest
   bootstrap-x-editable-rails

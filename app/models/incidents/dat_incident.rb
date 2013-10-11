@@ -18,10 +18,19 @@ class Incidents::DatIncident < ActiveRecord::Base
   has_many :vehicle_uses, class_name: 'Incidents::VehicleUse', foreign_key: 'incident_id'
   has_many :vehicles, through: :vehicle_uses, class_name: 'Logistics::Vehicle'
 
-  CALL_TYPES = %w(hot cold)
-  INCIDENT_TYPES = %w(fire flood police)
-  STRUCTURE_TYPES = %w(single_family_home apartment sro mobile_home commercial none)
   TRACKED_RESOURCE_TYPES = %w(comfort_kits blankets pre-packs toys)
+
+  assignable_values_for :incident_call_type do
+    %w(hot cold)
+  end
+
+  assignable_values_for :incident_type do
+    %w(fire flood police)
+  end
+
+  assignable_values_for :structure_type do
+    %w(single_family_home apartment sro mobile_home commercial none)
+  end
 
   accepts_nested_attributes_for :incident, update_only: true#, reject_if: :cant_update_incident
   validates :address, :city, :state, :zip, presence: true # :cross_street
@@ -29,10 +38,6 @@ class Incidents::DatIncident < ActiveRecord::Base
   validates :units_affected, :units_minor, :units_major, :units_destroyed, presence: true, numericality: {:greater_than_or_equal_to => 0}
   validates :num_adults, :num_children, :num_families, presence: true, numericality: {:greater_than_or_equal_to => 0}
   validates :num_people_injured, :num_people_hospitalized, :num_people_deceased, presence: true, numericality: {:greater_than_or_equal_to => 0}
-
-  validates :incident_call_type, presence: true, inclusion: {in: CALL_TYPES}
-  validates :incident_type, presence: true, inclusion: {in: INCIDENT_TYPES}
-  validates :structure_type, presence: true, inclusion: {in: STRUCTURE_TYPES}
 
   validates :responder_notified, :responder_arrived, :responder_departed, presence: true
   validates_with TimesInCorrectOrder
