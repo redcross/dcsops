@@ -1,5 +1,24 @@
 class SerializedColumn < ActiveRecord::ConnectionAdapters::Column
+  def type_cast(val)
+    case type
+    when :array then val.try(:split,',')
+    else super(val)
+    end
+  end
 
+  def type_cast_for_write(value)
+    case value
+    when Array then value.join(',')
+    else super(value)
+    end
+  end
+
+  def simplified_type(field_type)
+    case field_type
+    when 'array' then :array
+    else super(field_type)
+    end
+  end
 end
 
 module SerializedColumns
