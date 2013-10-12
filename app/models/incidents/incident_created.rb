@@ -10,7 +10,7 @@ class Incidents::IncidentCreated
   end
 
   def fire_notifications
-    county = @incident.county_id
+    county = @incident.area_id
 
     subscriptions = Incidents::NotificationSubscription.for_county(county).for_type('new_incident')
     subscriptions.each do |sub|

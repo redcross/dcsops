@@ -49,7 +49,7 @@ class Incidents::IncidentsMailer < ActionMailer::Base
     @incident = incident
 
     tag :incidents, :no_incident_report
-    mail to: format_address(recipient), subject: "Missing Incident Report For #{incident.county_name}"
+    mail to: format_address(recipient), subject: "Missing Incident Report For #{incident.area_name}"
   end
 
   # Subject can be set in your I18n file at config/locales/en.yml
@@ -67,19 +67,19 @@ class Incidents::IncidentsMailer < ActionMailer::Base
   def new_incident(incident, recipient)
     @incident = incident
     tag :incidents, :incidents_notification, :new_incident
-    mail to: format_address(recipient), subject: "New Incident For #{incident.county_name}"
+    mail to: format_address(recipient), subject: "New Incident For #{incident.area_name}"
   end
 
   def incident_dispatched(incident, recipient)
     @incident = incident
     tag :incidents, :incidents_notification, :incident_dispatched
-    mail to: format_address(recipient), subject: "Incident For #{incident.county_name} Dispatched", template_name: 'new_incident'
+    mail to: format_address(recipient), subject: "Incident For #{incident.area_name} Dispatched", template_name: 'new_incident'
   end
 
   def incident_report_filed(incident, recipient, is_new=true)
     @incident = incident
     tag :incidents, :incidents_notification, :incident_report_filed
-    mail to: format_address(recipient), subject: "Incident Report #{is_new ? 'Filed' : 'Updated'} For #{incident.county_name}"
+    mail to: format_address(recipient), subject: "Incident Report #{is_new ? 'Filed' : 'Updated'} For #{incident.area_name}"
   end
 
   def incident_invalid(incident, recipient)

@@ -13,15 +13,15 @@ class Incidents::IncidentMissingReport
   end
 
   def role_scope
-    @incident.county_id
+    @incident.area_id
   end
 
   def notification_scope
-    @incident.county_id
+    @incident.area_id
   end
 
   def additional_notifications
-    county = @incident.county_id
+    county = @incident.area_id
     groups = Scheduler::ShiftGroup.current_groups_for_chapter(@incident.chapter, @incident.created_at)
     assignments = groups.map{|grp| Scheduler::ShiftAssignment.joins{shift}.where{(shift.shift_group_id == grp) & (date == grp.start_date) & (shift.county_id == county) & (shift.dispatch_role != nil)}.to_a }.flatten.compact
     assignments.map(&:person)

@@ -7,7 +7,7 @@ describe Incidents::IncidentMissingReport do
   end
 
   it "should notify someone subscribed to new_incident" do
-    Incidents::NotificationSubscription.create! person: @person, county: @incident.county, notification_type: 'missing_report'
+    Incidents::NotificationSubscription.create! person: @person, county: @incident.area, notification_type: 'missing_report'
 
     Incidents::IncidentsMailer.should_receive(:no_incident_report).with(@incident, @person).and_return(double :deliver => true)
 
@@ -16,7 +16,7 @@ describe Incidents::IncidentMissingReport do
 
   it "should notify someone with a dispatch role for that day" do
     date = @incident.created_at.in_time_zone(@incident.chapter.time_zone).to_date
-    @p2 = FactoryGirl.create :person, chapter: @incident.chapter, counties: [@incident.county]
+    @p2 = FactoryGirl.create :person, chapter: @incident.chapter, counties: [@incident.area]
     @group = FactoryGirl.create :shift_group, period: 'daily', start_offset: 0, end_offset: 86400, chapter: @p2.chapter
     @shift = FactoryGirl.create :shift, shift_group: @group, positions: @p2.positions, county: @p2.counties.first, dispatch_role: 1
     @ass = FactoryGirl.create :shift_assignment, shift: @shift, date: date, person: @p2
@@ -28,7 +28,7 @@ describe Incidents::IncidentMissingReport do
 
   it "should not notify someone without a dispatch role for that day" do
     date = @incident.created_at.in_time_zone(@incident.chapter.time_zone).to_date
-    @p2 = FactoryGirl.create :person, chapter: @incident.chapter, counties: [@incident.county]
+    @p2 = FactoryGirl.create :person, chapter: @incident.chapter, counties: [@incident.area]
     @group = FactoryGirl.create :shift_group, period: 'daily', start_offset: 0, end_offset: 86400, chapter: @p2.chapter
     @shift = FactoryGirl.create :shift, shift_group: @group, positions: @p2.positions, county: @p2.counties.first, dispatch_role: nil
     @ass = FactoryGirl.create :shift_assignment, shift: @shift, date: date, person: @p2

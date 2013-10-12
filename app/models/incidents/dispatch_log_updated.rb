@@ -15,11 +15,11 @@ class Incidents::DispatchLogUpdated
   end
 
   def role_scope
-    @dispatch_log.incident.county_id
+    @dispatch_log.incident.area_id
   end
 
   def notification_scope
-    @dispatch_log.incident.county_id
+    @dispatch_log.incident.area_id
   end
 
   def notification_type

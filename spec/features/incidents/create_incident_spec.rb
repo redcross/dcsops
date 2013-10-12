@@ -13,7 +13,7 @@ describe "Manually create incident" do
     click_link "Submit Incident Report"
     click_link 'Submit New Incident'
 
-    select @person.counties.first.name, from: 'County*'
+    select @person.counties.first.name, from: 'Area*'
     fill_in 'Incident number*', with: @incident_number
     select '2013'
     select Date.today.strftime("%B")

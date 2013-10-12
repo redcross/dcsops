@@ -7,7 +7,7 @@
 %p
   Incident: #{@incident.incident_number}
   %br
-  County: #{@incident.county_name}
+  County: #{@incident.area_name}
   %br
   -if dispatch = @incident.dispatch_log
     Incident Type: #{dispatch.incident_type}

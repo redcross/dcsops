@@ -8,12 +8,11 @@ describe Incidents::DispatchImporter do
   let(:fixture) { File.read fixture_path }
 
   let(:import) do
-    county # load it so it gets created
     subject.import_data chapter, fixture
   end
 
   describe "1.txt" do
-    let(:county) {FactoryGirl.create :county, chapter: chapter, name: 'Contra Costa'}
+    let!(:county) {FactoryGirl.create :county, chapter: chapter, name: 'Contra Costa'}
     it "should parse the incident" do
       import
 
@@ -62,7 +61,7 @@ describe Incidents::DispatchImporter do
 
       inc.incident_number.should == '14-044'
       inc.date.should == Date.civil(2013, 6, 13)
-      inc.county.should == county
+      inc.area.should == county
       inc.chapter.should == chapter
     end
 
@@ -123,7 +122,7 @@ describe Incidents::DispatchImporter do
   end
 
   describe "2.txt" do
-    let(:county) {FactoryGirl.create :county, chapter: chapter, name: 'San Francisco'}
+    let!(:county) {FactoryGirl.create :county, chapter: chapter, name: 'San Francisco'}
     it "should parse the incident" do
       import
 
@@ -171,7 +170,7 @@ describe Incidents::DispatchImporter do
 
       inc.incident_number.should == '14-043'
       inc.date.should == Date.civil(2013, 6, 13)
-      inc.county.should == county
+      inc.area.should == county
       inc.chapter.should == chapter
     end
 
@@ -194,7 +193,7 @@ describe Incidents::DispatchImporter do
   end
 
   describe "4.txt" do
-    let(:county) {FactoryGirl.create :county, chapter: chapter, name: 'San Francisco'}
+    let!(:county) {FactoryGirl.create :county, chapter: chapter, name: 'San Francisco'}
     let(:incident_details) {
       {incident_number: '14-004',
             incident_type: 'Structure Fire',
@@ -212,7 +211,7 @@ describe Incidents::DispatchImporter do
     }
     let(:num_event_logs) {10}
     let(:incident_attributes) {
-      {incident_number: '14-004', date: chapter.time_zone.today, county: county, chapter: chapter}
+      {incident_number: '14-004', date: chapter.time_zone.today, area: county, chapter: chapter}
     }
     it "should parse the incident" do
       import

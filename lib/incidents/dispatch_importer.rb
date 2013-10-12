@@ -75,7 +75,7 @@ class Incidents::DispatchImporter
         log_object.create_incident! incident_number: log_object.incident_number, 
                                             chapter: @chapter,
                                                date: inc_date,
-                                             county: @chapter.counties.where{name == log_object.county_name}.first
+                                               area: @chapter.counties.where{name == log_object.county_name}.first
         log_object.save!
         inc = log_object.incident
         geocode_incident(log_object, inc)

@@ -6,10 +6,10 @@
       =f.semantic_fields_for :incident do |f|
         =f.semantic_errors
         =f.input :incident_number, input_html: {readonly: readonly}
-        =f.input :county, as: (readonly ? :string : :select), input_html: {readonly: readonly, value: resource.incident.try(:county).try(:name)}
+        -#=f.input :county, as: (readonly ? :string : :select), input_html: {readonly: readonly, value: resource.incident.try(:county).try(:name)}
         =f.input :date, as: (readonly ? :string : :bootstrap_date), input_html: {readonly: readonly}
-      =f.input :incident_type, as: :select, collection: options_from_collection_for_select(f.object.humanized_incident_types, :value, :humanized), include_blank: false, required: true
-      =f.input :incident_call_type, as: :select, collection: options_from_collection_for_select(f.object.humanized_incident_call_types, :value, :humanized), include_blank: false, required: true
+      =f.input :incident_type, as: :assignable_select, include_blank: false, required: true
+      =f.input :incident_call_type, as: :assignable_select, include_blank: false, required: true
   .span6
     =f.inputs "Demographics" do
       =f.input :num_adults
@@ -34,12 +34,13 @@
       =f.input :lat, as: :hidden, input_html: {readonly: true}
       =f.input :lng, as: :hidden, input_html: {readonly: true}
       =f.input :neighborhood, input_html: {readonly: true}
+      =f.input :county, input_html: {readonly: true}
     .span6
-      .incident-map{style: "height: 350px"}
+      .incident-map{style: "height: 450px"}
 .row
   .span6
     =f.inputs "Damage Assessment" do
-      =f.input :structure_type, collection: options_from_collection_for_select(f.object.humanized_structure_types, :value, :humanized), required: true
+      =f.input :structure_type, as: :assignable_select, required: true
       =f.input :units_destroyed
       =f.input :units_major
       =f.input :units_minor

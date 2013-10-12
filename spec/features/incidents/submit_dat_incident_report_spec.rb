@@ -16,7 +16,7 @@ describe "DAT Incident Report" do
 
     FactoryGirl.create :flex_schedule, person: @flex_responder
 
-    @incident = FactoryGirl.create :incident, chapter: @person.chapter, county: @person.counties.first
+    @incident = FactoryGirl.create :incident, chapter: @person.chapter, area: @person.counties.first
 
     navigate_to_incident
     #visit "/incidents/incidents/#{@incident.incident_number}/dat/new"

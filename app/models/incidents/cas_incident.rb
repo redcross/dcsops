@@ -53,8 +53,8 @@ class Incidents::CasIncident < ActiveRecord::Base
       else
         return
       end
-      inc.county = Roster::County.find_by_name (county_name || 'Chapter')
-      return unless inc.county
+      inc.area = Roster::County.find_by_name (county_name || 'Chapter')
+      return unless inc.area
 
       #inc.incident_call_type = 'hot'
       #inc.incident_type = 'fire'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131011010814) do
+ActiveRecord::Schema.define(version: 20131012024007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -140,6 +140,7 @@ ActiveRecord::Schema.define(version: 20131011010814) do
     t.integer  "completed_by_id"
     t.text     "languages"
     t.hstore   "resources"
+    t.string   "county"
   end
 
   add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true, using: :btree
@@ -210,7 +211,6 @@ ActiveRecord::Schema.define(version: 20131011010814) do
 
   create_table "incidents_incidents", force: true do |t|
     t.integer  "chapter_id"
-    t.integer  "county_id"
     t.string   "incident_number"
     t.string   "incident_type"
     t.string   "cas_incident_number"
@@ -241,10 +241,11 @@ ActiveRecord::Schema.define(version: 20131011010814) do
     t.boolean  "hotel_partner_used",       default: false
     t.boolean  "shelter_partner_used",     default: false
     t.boolean  "feeding_partner_used",     default: false
+    t.integer  "area_id"
+    t.string   "county"
   end
 
   add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id", using: :btree
-  add_index "incidents_incidents", ["county_id"], name: "index_incidents_incidents_on_county_id", using: :btree
   add_index "incidents_incidents", ["incident_number"], name: "index_incidents_incidents_on_incident_number", unique: true, using: :btree
 
   create_table "incidents_notification_subscriptions", force: true do |t|

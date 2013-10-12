@@ -63,7 +63,7 @@ class window.IncidentLocationController
         @marker.setPosition(pos)
         @marker.setMap(@map)
 
-        ['address', 'lat', 'lng', 'neighborhood', 'city', 'state', 'zip'].forEach (field) =>
+        ['address', 'lat', 'lng', 'neighborhood', 'city', 'state', 'zip', 'county'].forEach (field) =>
           this.setFieldVal field, ''
 
         this.setFieldVal('address', result.formatted_address.split(", ")[0])
@@ -78,6 +78,8 @@ class window.IncidentLocationController
               this.setFieldVal('city', el.long_name)
             else if type == 'administrative_area_level_1'
               this.setFieldVal('state', el.short_name)
+            else if type == 'administrative_area_level_2'
+              this.setFieldVal('county', el.short_name)
             else if type == 'postal_code'
               this.setFieldVal('zip', el.long_name)
       else

@@ -15,11 +15,11 @@ class Incidents::IncidentInvalid
   end
 
   def role_scope
-    @incident.county_id
+    @incident.area_id
   end
 
   def notification_scope
-    @incident.county_id
+    @incident.area_id
   end
 
   def fire_notifications

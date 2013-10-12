@@ -3,7 +3,7 @@ class Incidents::Incident < ActiveRecord::Base
   INVALID_INCIDENT_TYPES = %w(invalid duplicate not_eligible_for_services)
 
   belongs_to :chapter, class_name: 'Roster::Chapter'
-  belongs_to :county, class_name: 'Roster::County'
+  belongs_to :area, class_name: 'Roster::County'
 
   has_one :cas_incident, class_name: 'Incidents::CasIncident'
   has_one :dat_incident, class_name: 'Incidents::DatIncident', inverse_of: :incident
@@ -48,7 +48,7 @@ class Incidents::Incident < ActiveRecord::Base
   accepts_nested_attributes_for :responder_assignments, reject_if: -> hash {(hash[:person_id].blank?)}, allow_destroy: true
 
 
-  validates :chapter, :county, :date, presence: true
+  validates :chapter, :area, :date, presence: true
   validates :incident_number, presence: true, format: /\A1[3-9]-\d+\z/, uniqueness: { scope: :chapter_id }
   validates_associated :team_lead, if: ->(inc) {inc.dat_incident}, allow_nil: false
   validate :ensure_unique_responders
@@ -86,7 +86,7 @@ class Incidents::Incident < ActiveRecord::Base
   end
 
   def update_from_dat_incident
-    address_fields = [:address,  :city, :state, :zip, :lat, :lng, :num_adults, :num_children, :num_families, :incident_type]
+    address_fields = [:address,  :city, :state, :zip, :county, :neighborhood, :lat, :lng, :num_adults, :num_children, :num_families, :incident_type]
     if dat_incident
       address_fields.each do |f|
         self.send "#{f}=", dat_incident.send(f)
@@ -115,8 +115,8 @@ class Incidents::Incident < ActiveRecord::Base
     event && Incidents::EventLog::EVENTS_TO_DESCRIPTIONS[event]
   end
 
-  def county_name
-    county.try :name
+  def area_name
+    area.try :name
   end
 
   def services_description

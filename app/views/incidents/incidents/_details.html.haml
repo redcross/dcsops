@@ -6,7 +6,7 @@
   %br
   #{resource.city}, #{resource.state} #{resource.zip}
   %br
-=resource.county.name
+=resource.county
 County
 
 %h3 
@@ -47,6 +47,9 @@ County
     .span4
       %h4 Damage Assessment
       %table.table.table-bordered.table-condensed
+        %tr
+          %th Structure Type
+          %td=dat.humanized_structure_type
         %tr
           %th Total Units
           %td=dat.units_total
