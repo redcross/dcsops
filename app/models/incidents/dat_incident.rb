@@ -1,18 +1,6 @@
 class Incidents::DatIncident < ActiveRecord::Base
   has_paper_trail
 
-  class TimesInCorrectOrder < ActiveModel::Validator
-    MESSAGE = "%s must come before %s"
-    def validate(record)
-      return false unless record.responder_notified and record.responder_arrived and record.responder_departed
-      [[:responder_notified, :responder_arrived], [:responder_arrived, :responder_departed]].each do |first_evt, second_evt|
-        if record.send( first_evt ) > record.send(second_evt)
-          record.errors[second_evt] = MESSAGE % [first_evt.to_s.titleize, second_evt.to_s.titleize]
-        end
-      end
-    end
-  end
-
   belongs_to :incident, class_name: 'Incidents::Incident', inverse_of: :dat_incident
   belongs_to :completed_by, class_name: 'Roster::Person'
   has_many :vehicle_uses, class_name: 'Incidents::VehicleUse', foreign_key: 'incident_id'
@@ -20,31 +8,25 @@ class Incidents::DatIncident < ActiveRecord::Base
 
   TRACKED_RESOURCE_TYPES = %w(comfort_kits blankets pre-packs toys)
 
-  assignable_values_for :incident_call_type do
+  # We put allow_blank: true here so that the delegated validator can decide if it can be blank
+  assignable_values_for :incident_call_type, allow_blank: true do
     %w(hot cold)
   end
 
-  assignable_values_for :incident_type do
+  assignable_values_for :incident_type, allow_blank: true do
     %w(fire flood police)
   end
 
-  assignable_values_for :structure_type do
+  assignable_values_for :structure_type, allow_blank: true do
     %w(single_family_home apartment sro mobile_home commercial none)
   end
 
+  def run_validations!
+    super
+    Incidents::Validators::CompleteReportValidator.valid?(self, self.validation_context)
+  end
+
   accepts_nested_attributes_for :incident, update_only: true#, reject_if: :cant_update_incident
-  validates :address, :city, :state, :zip, presence: true # :cross_street
-
-  validates :units_affected, :units_minor, :units_major, :units_destroyed, presence: true, numericality: {:greater_than_or_equal_to => 0}
-  validates :num_adults, :num_children, :num_families, presence: true, numericality: {:greater_than_or_equal_to => 0}
-  validates :num_people_injured, :num_people_hospitalized, :num_people_deceased, presence: true, numericality: {:greater_than_or_equal_to => 0}
-
-  validates :responder_notified, :responder_arrived, :responder_departed, presence: true
-  validates_with TimesInCorrectOrder
-
-  validates :completed_by, :vehicle_uses, presence: true
-
-  validates_associated :incident
 
   serialize :services
   serialize :languages
@@ -55,7 +37,7 @@ class Incidents::DatIncident < ActiveRecord::Base
   TRACKED_RESOURCE_TYPES.each do |type_s|
     type = type_s.to_sym
     serialized_accessor :resources, type, :integer
-    conditional = ->(obj){ obj.incident.chapter.incidents_resources_tracked_array.include?(type_s)}
+    conditional = ->(obj){ obj.incident && obj.incident.chapter.incidents_resources_tracked_array.include?(type_s)}
     validates_presence_of type, if: conditional
     validates_numericality_of type, greater_than_or_equal_to: 0, allow_blank: false, allow_nil: false, if: conditional
   end

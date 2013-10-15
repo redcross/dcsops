@@ -1,0 +1,3 @@
+module Incidents::Validators
+
+end
