@@ -7,7 +7,6 @@ FactoryGirl.define do
     completed_by { |f| f.association :person, chapter: f.incident.chapter}
     vehicle_uses { |f| [Incidents::VehicleUse.new( vehicle: f.association(:vehicle))]}
 
-    incident_type 'fire'
     incident_call_type 'hot'
     structure_type 'apartment'
 
@@ -32,13 +31,5 @@ FactoryGirl.define do
     comfort_kits 1
     blankets 10
 
-    address { Faker::Address.street_address }
-    cross_street {Faker::Address.street_name }
-    city {Faker::Address.city}
-    state {Faker::Address.state}
-    zip {Faker::Address.zip}
-    
-    lat {Faker::Address.latitude}
-    lng {Faker::Address.longitude}
   end
 end

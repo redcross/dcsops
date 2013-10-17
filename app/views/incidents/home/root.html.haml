@@ -54,8 +54,7 @@
       .incident-box(data-incident-id="#{inc.id}")
         %strong
           .pull-right
-            -if inc.dat_incident
-              =inc.dat_incident.incident_type.titleize
+            =inc.humanized_incident_type
           %a{href: incidents_incident_path(inc)}
             =inc.date.strftime "%-m/%-d"
             #{inc.city}

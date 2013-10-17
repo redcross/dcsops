@@ -33,14 +33,20 @@ class Incidents::IncidentsController < Incidents::BaseController
   end
 
   def mark_invalid
-    resource.update_attributes(params.require(:incidents_incident).permit(:incident_type))
-    if resource.save
-      flash[:info] = 'The incident has been removed.'
-      Incidents::IncidentInvalid.new(resource).save
-    else
-      flash[:error] = 'There was an error removing the incident.'
+    unless resource.incident_type.blank?
+      flash[:error] = 'This incident has already been completed.'
+      redirect_to needs_report_incidents_incidents_path
+      return
     end
-    redirect_to needs_report_incidents_incidents_path
+
+    if params[:incidents_incident]
+      resource.attributes = (params.require(:incidents_incident).permit(:incident_type, :narrative))
+      if resource.save
+        flash[:info] = 'The incident has been removed.'
+        Incidents::IncidentInvalid.new(resource).save
+        redirect_to needs_report_incidents_incidents_path
+      end
+    end
   end
 
   private

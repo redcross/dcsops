@@ -1,6 +1,6 @@
 class Incidents::Incident < ActiveRecord::Base
+  include HasDelegatedValidators
   has_paper_trail
-  INVALID_INCIDENT_TYPES = %w(invalid duplicate not_eligible_for_services)
 
   belongs_to :chapter, class_name: 'Roster::Chapter'
   belongs_to :area, class_name: 'Roster::County'
@@ -47,11 +47,10 @@ class Incidents::Incident < ActiveRecord::Base
   accepts_nested_attributes_for :team_lead, update_only: true
   accepts_nested_attributes_for :responder_assignments, reject_if: -> hash {(hash[:person_id].blank?)}, allow_destroy: true
 
-
+  # We always want these to be present
   validates :chapter, :area, :date, presence: true
   validates :incident_number, presence: true, format: /\A1[3-9]-\d+\z/, uniqueness: { scope: :chapter_id }
-  validates_associated :team_lead, if: ->(inc) {inc.dat_incident}, allow_nil: false
-  validate :ensure_unique_responders
+
   #validates_associated :responder_assignments
 
   #delegate :address,  :city, :state, :zip, :lat, :lng, :num_adults, :num_children, to: :dat_incident
@@ -63,7 +62,7 @@ class Incidents::Incident < ActiveRecord::Base
     valid.order(nil).select{[count(id).as(:incident_count), sum(num_cases).as(:case_count), sum(num_families).as(:family_count), sum(num_adults + num_children).as(:client_count)]}.first
   }
   scope :valid, lambda {
-    where{incident_type.not_in(INVALID_INCIDENT_TYPES) | (incident_type == nil)}
+    where{incident_type.not_in(my{invalid_incident_types}) | (incident_type == nil)}
   }
   scope :needs_incident_report, lambda {
     valid.joins{dat_incident.outer}.where{(dat_incident.id == nil) & ((ignore_incident_report != true) | (ignore_incident_report == nil))}
@@ -71,6 +70,37 @@ class Incidents::Incident < ActiveRecord::Base
   scope :open_cases, lambda {
     valid.joins{cas_incident.cases.outer}.where{((cas_incident.cases_open > 0) | (cas_incident.last_date_with_open_cases >= 7.days.ago)) & (cas_incident.cases.case_last_updated > 2.months.ago)}
   }
+
+  assignable_values_for :incident_type, allow_blank: true do
+    self.class.valid_incident_types + self.class.invalid_incident_types
+  end
+
+  delegated_validator Incidents::Validators::IncidentValidator, if: :valid_incident?
+  delegated_validator Incidents::Validators::InvalidIncidentValidator, if: :invalid_incident?
+
+  def valid_incident?
+    self.class.valid_incident_types.include?(self.incident_type)
+  end
+
+  def invalid_incident?
+    self.class.invalid_incident_types.include?(self.incident_type)
+  end
+
+  def self.valid_incident_types
+    %w(fire flood police)
+  end
+
+  def humanized_valid_incident_types
+    self.class.valid_incident_types.map{|t| AssignableValues::HumanizedValue.new(t, t.titleize)}
+  end
+
+  def self.invalid_incident_types
+    %w(invalid duplicate not_eligible_for_services)
+  end
+
+  def humanized_invalid_incident_types
+    self.class.invalid_incident_types.map{|t| AssignableValues::HumanizedValue.new(t, t.titleize)}
+  end
 
   def ensure_unique_responders
     # Need this as the uniqueness validation doesn't take into account marked for deletion
@@ -86,7 +116,7 @@ class Incidents::Incident < ActiveRecord::Base
   end
 
   def update_from_dat_incident
-    address_fields = [:address,  :city, :state, :zip, :county, :neighborhood, :lat, :lng, :num_adults, :num_children, :num_families, :incident_type]
+    address_fields = [:num_adults, :num_children, :num_families]
     if dat_incident
       address_fields.each do |f|
         self.send "#{f}=", dat_incident.send(f)
@@ -120,12 +150,11 @@ class Incidents::Incident < ActiveRecord::Base
   end
 
   def services_description
-    dat = dat_incident
-    dat.services && dat.services.map(&:titleize).to_sentence
+    services = dat_incident.try(:services) and services.map(&:titleize).to_sentence
   end
 
   def to_label
-    [incident_number, county.try(:name), date.to_s, dat_incident.try(:incident_type)].compact.join " "
+    [incident_number, county.try(:name), date.to_s, incident_type, address].compact.join " "
   end
 
   def time_to_on_scene

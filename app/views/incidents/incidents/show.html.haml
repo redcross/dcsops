@@ -4,9 +4,9 @@
   #{resource.city}, #{resource.state}
   %small
     =resource.date.to_s :dow_short
-    -if resource.dat_incident
+    -if resource.incident_type
       ==-
-      =resource.dat_incident.incident_type.titleize
+      =resource.humanized_incident_type
 
 .tabbable
   %ul.nav.nav-tabs

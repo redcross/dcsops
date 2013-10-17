@@ -15,7 +15,7 @@
         %td=inc.date.to_s :dow_short
         %td
           %a.btn.btn-primary{href: new_incidents_incident_dat_path(inc)} Submit Incident Information
-          %button.btn.btn-danger#invalid-incident-button{data: {invalid_url: mark_invalid_incidents_incident_path(inc)}} Mark As Invalid
+          %a.btn.btn-danger{href: mark_invalid_resource_path(inc)} Mark Invalid
 
 %h3 Don't see your incident?
 The dispatch call center must assign an incident number in order to submit a report.  If you do not have an incident number, call dispatch and request one.  Then refresh the page and you should see your incident listed.
@@ -23,8 +23,3 @@ The dispatch call center must assign an incident number in order to submit a rep
 -if can? :create, Incidents::Incident
   %h3 Still don't see your incident?
   %a.btn.btn-warning{href: new_incidents_incident_path} Submit New Incident Report
-
-=render 'invalid_modal'
-
-:javascript
-  new window.InvalidIncidentController();

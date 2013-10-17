@@ -1,12 +1,12 @@
 - dat = resource.dat_incident
 
 %strong Type:
-=resource.incident_type.try :titleize
+=resource.humanized_incident_type
 %br
 
 -if dat
   %strong Call Type:
-  =resource.dat_incident.incident_call_type.try :titleize
+  =resource.dat_incident.humanized_incident_call_type
   %br
 
 %strong Date:

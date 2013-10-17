@@ -6,7 +6,7 @@
   - basic_proxy = FormProxy.new(f); basic_html = render 'form_basic', f: basic_proxy
   - services_proxy = FormProxy.new(f); services_html = render 'form_services', f: services_proxy
   - responders_proxy = FormProxy.new(f); responders_html = render 'form_responders', f: responders_proxy
-  - all_errors = f.object.errors.map{|key, err| err.present? && key}.compact
+  - all_errors = error_keys(f.object)
   - basic_has_errors = (all_errors & basic_proxy.keys).present?
   - responders_has_errors = (all_errors & responders_proxy.keys).present?
   - services_has_errors = ((all_errors & services_proxy.keys)).present?
@@ -37,7 +37,7 @@
   = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
   :javascript
     config = #{map_config.to_json};
-    incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json}, config);
+    incidentLocationController = new IncidentLocationController(#{resource.incident.lat.to_json}, #{resource.incident.lng.to_json}, config);
     formController = new DatIncidentsFormController();
     $(function() {
       var hash = window.location.hash;

@@ -1,4 +1,5 @@
 class Incidents::DatIncident < ActiveRecord::Base
+  include HasDelegatedValidators
   has_paper_trail
 
   belongs_to :incident, class_name: 'Incidents::Incident', inverse_of: :dat_incident
@@ -13,18 +14,11 @@ class Incidents::DatIncident < ActiveRecord::Base
     %w(hot cold)
   end
 
-  assignable_values_for :incident_type, allow_blank: true do
-    %w(fire flood police)
-  end
-
   assignable_values_for :structure_type, allow_blank: true do
     %w(single_family_home apartment sro mobile_home commercial none)
   end
 
-  def run_validations!
-    super
-    Incidents::Validators::CompleteReportValidator.valid?(self, self.validation_context)
-  end
+  delegated_validator Incidents::Validators::CompleteReportValidator
 
   accepts_nested_attributes_for :incident, update_only: true#, reject_if: :cant_update_incident
 
@@ -37,12 +31,7 @@ class Incidents::DatIncident < ActiveRecord::Base
   TRACKED_RESOURCE_TYPES.each do |type_s|
     type = type_s.to_sym
     serialized_accessor :resources, type, :integer
-    conditional = ->(obj){ obj.incident && obj.incident.chapter.incidents_resources_tracked_array.include?(type_s)}
-    validates_presence_of type, if: conditional
-    validates_numericality_of type, greater_than_or_equal_to: 0, allow_blank: false, allow_nil: false, if: conditional
   end
-
-  attr_accessor :search_for_address
 
   [:responder_notified=, :responder_arrived=, :responder_departed=].each do |sym|
     define_method sym do |val|

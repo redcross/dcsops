@@ -16,7 +16,7 @@ describe "DAT Incident Report" do
 
     FactoryGirl.create :flex_schedule, person: @flex_responder
 
-    @incident = FactoryGirl.create :incident, chapter: @person.chapter, area: @person.counties.first
+    @incident = FactoryGirl.create :raw_incident, chapter: @person.chapter, area: @person.counties.first
 
     navigate_to_incident
     #visit "/incidents/incidents/#{@incident.incident_number}/dat/new"
@@ -32,7 +32,6 @@ describe "DAT Incident Report" do
     fill_in_services
 
     click_button 'Submit Incident Information'
-
     click_link "Details"
     page.should have_text 'DAT Details'
     page.should have_text 'Demographics'
@@ -125,7 +124,7 @@ describe "DAT Incident Report" do
   end
 
   def fill_in_services
-    fill_in 'Narrative:', with: 'This is my narrative'
+    fill_in 'Narrative*', with: 'This is my narrative'
     check 'Food'
     check 'Translation'
     check 'Spanish'

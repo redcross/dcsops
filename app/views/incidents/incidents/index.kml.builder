@@ -26,7 +26,7 @@ xml.kml ns: 'http://www.opengis.net/kml/2.2' do
 
     collection.each do |resource|
       xml.Placemark id: resource.id do
-        xml.name resource.incident_number + " " + (resource.incident_type.try(:titleize) || "")
+        xml.name resource.incident_number + " " + (resource.humanized_incident_type || "")
         xml.styleUrl "##{resource.incident_type}"
         if resource.lat and resource.lng
           lat,lng = [resource.lat, resource.lng]

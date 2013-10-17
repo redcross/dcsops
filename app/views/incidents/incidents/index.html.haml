@@ -1,24 +1,21 @@
-.row
-  %h1 Listing Incidents
+%h1 Listing Incidents
 
-.row
-  %table.span12
+%table.span12
+  %tr
+    %th County
+    %th Incident number
+    %th Cas incident number
+    %th Date
+    %th City
+    %th Incident type
+
+  - collection.each do |resource|
     %tr
-      %th County
-      %th Incident number
-      %th Cas incident number
-      %th Date
-      %th City
-      %th Incident type
+      %td= resource.county
+      %td= link_to resource.incident_number, resource
+      %td= resource.cas_incident_number
+      %td= resource.date
+      %td= resource.city
+      %td= resource.humanized_incident_type
 
-    - collection.each do |resource|
-      %tr
-        %td= resource.county.name
-        %td= link_to resource.incident_number, resource
-        %td= resource.cas_incident_number
-        %td= resource.date
-        %td= resource.city
-        %td= resource.incident_type
-
-.row
-  = paginate collection
+= paginate collection

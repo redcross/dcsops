@@ -13,11 +13,11 @@
   Notification Received: #{@incident.created_at.to_s :date_time}
 
 %p
-  Incident Type: #{dat.incident_type.titleize}
+  Incident Type: #{@incident.humanized_incident_type}
   %br
-  Incident Call Type: #{dat.incident_call_type.titleize}
+  Incident Call Type: #{dat.humanized_incident_call_type}
   %br
-  Structure Type: #{dat.structure_type.titleize}
+  Structure Type: #{dat.humanized_structure_type}
 
 %p
   Population: #{pluralize dat.num_adults, "adult"}, #{pluralize dat.num_children, 'child'}
@@ -34,7 +34,7 @@
 %p
   Services Provided: #{@incident.services_description}
   %br
-  Narrative: #{dat.narrative}
+  Narrative: #{@incident.narrative}
 
 %p
   Responders:

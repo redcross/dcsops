@@ -7,16 +7,17 @@ describe "Invalid Incident Report" do
     grant_role! 'submit_incident_report'
 
     @chapter = @person.chapter
-    @incident = FactoryGirl.create :incident, chapter: @person.chapter, county: @person.counties.first
+    @incident = FactoryGirl.create :raw_incident, chapter: @person.chapter, area: @person.counties.first
 
     visit "/incidents"
 
     click_link "Submit Incident Report"
     within :xpath, "//td[text()='#{@incident.incident_number}']/ancestor::tr" do
-      click_button "Mark As Invalid"
+      click_link "Mark Invalid"
     end
 
     select 'Not Eligible For Services'
+    fill_in 'Please Explain*', with: 'A message'
 
     click_button 'Remove This Incident'
 

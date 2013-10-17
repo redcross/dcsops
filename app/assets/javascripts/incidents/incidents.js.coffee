@@ -2,16 +2,16 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-class window.InvalidIncidentController
-  constructor: ->
-    $(document).on 'click', '#invalid-incident-button', (evt) =>
-      target = $(evt.target).data('invalid-url')
-      $('#invalid-incident').parents('form').attr('action', target)
-      $('#invalid-incident').modal('show')
+#class window.InvalidIncidentController
+#  constructor: ->
+#    $(document).on 'click', '#invalid-incident-button', (evt) =>
+#      target = $(evt.target).data('invalid-url')
+#      $('#invalid-incident').parents('form').attr('action', target)
+#      $('#invalid-incident').modal('show')
 
 class window.IncidentLocationController
   fields: ['search_for_address']
-  form_base: 'incidents_dat_incident'
+  form_base: 'incidents_dat_incident_incident_attributes'
 
   constructor: (currentLat, currentLng, config) ->
     return unless window.google # if no gmaps js, don't die

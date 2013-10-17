@@ -8,7 +8,7 @@
         =f.input :incident_number, input_html: {readonly: readonly}
         -#=f.input :county, as: (readonly ? :string : :select), input_html: {readonly: readonly, value: resource.incident.try(:county).try(:name)}
         =f.input :date, as: (readonly ? :string : :bootstrap_date), input_html: {readonly: readonly}
-      =f.input :incident_type, as: :assignable_select, include_blank: false, required: true
+        =f.input :incident_type, as: :assignable_select, include_blank: false, required: true, humanized: :humanized_valid_incident_types
       =f.input :incident_call_type, as: :assignable_select, include_blank: false, required: true
   .span6
     =f.inputs "Demographics" do
@@ -23,18 +23,20 @@
   .row
     %br
     .span6
-      =f.input :search_for_address, hint: 'Enter as much information as you have about the address, and then click the "Look Up Address" button below.'
-      .control-group.address-lookup-group
-        .controls
-          %button.btn.btn-block.address-lookup Look Up Address
-      =f.input :address, input_html: {readonly: true}
-      =f.input :city, input_html: {readonly: true}
-      =f.input :state, default: 'CA', input_html: {readonly: true}
-      =f.input :zip, input_html: {readonly: true}
-      =f.input :lat, as: :hidden, input_html: {readonly: true}
-      =f.input :lng, as: :hidden, input_html: {readonly: true}
-      =f.input :neighborhood, input_html: {readonly: true}
-      =f.input :county, input_html: {readonly: true}
+      =f.semantic_fields_for :incident do |f|
+
+        =f.input :search_for_address, hint: 'Enter as much information as you have about the address, and then click the "Look Up Address" button below.', input_html: {value: ''}
+        .control-group.address-lookup-group
+          .controls
+            %button.btn.btn-block.address-lookup Look Up Address
+        =f.input :address, input_html: {readonly: true}
+        =f.input :city, input_html: {readonly: true}
+        =f.input :state, default: 'CA', input_html: {readonly: true}
+        =f.input :zip, input_html: {readonly: true}
+        =f.input :lat, as: :hidden, input_html: {readonly: true}
+        =f.input :lng, as: :hidden, input_html: {readonly: true}
+        =f.input :neighborhood, input_html: {readonly: true}
+        =f.input :county, input_html: {readonly: true}
     .span6
       .incident-map{style: "height: 450px"}
 .row

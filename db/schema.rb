@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131012024007) do
+ActiveRecord::Schema.define(version: 20131017031710) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,8 +107,7 @@ ActiveRecord::Schema.define(version: 20131012024007) do
   add_index "incidents_cas_incidents", ["incident_id"], name: "index_incidents_cas_incidents_on_incident_id", using: :btree
 
   create_table "incidents_dat_incidents", force: true do |t|
-    t.integer  "incident_id"
-    t.string   "incident_type"
+    t.integer  "incident_id",             null: false
     t.string   "incident_call_type"
     t.string   "verified_by"
     t.integer  "num_adults"
@@ -120,19 +119,11 @@ ActiveRecord::Schema.define(version: 20131012024007) do
     t.datetime "responder_notified"
     t.datetime "responder_arrived"
     t.datetime "responder_departed"
-    t.string   "address"
     t.string   "cross_street"
-    t.string   "neighborhood"
-    t.string   "city"
-    t.string   "state"
-    t.string   "zip"
-    t.decimal  "lat"
-    t.decimal  "lng"
     t.integer  "units_affected"
     t.integer  "units_minor"
     t.integer  "units_major"
     t.integer  "units_destroyed"
-    t.text     "narrative"
     t.text     "services"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -140,7 +131,6 @@ ActiveRecord::Schema.define(version: 20131012024007) do
     t.integer  "completed_by_id"
     t.text     "languages"
     t.hstore   "resources"
-    t.string   "county"
   end
 
   add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true, using: :btree

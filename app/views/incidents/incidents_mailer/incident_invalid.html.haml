@@ -9,4 +9,6 @@
   %br
   Date and Time Created: #{@incident.created_at.to_s}
   %br
-  Reason: #{@incident.incident_type.titleize}
+  Invalid Type: #{@incident.humanized_incident_type}
+  %br
+  Reason: #{@incident.narrative}

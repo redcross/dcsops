@@ -7,7 +7,7 @@ describe Incidents::IncidentInvalid do
   end
 
   it "should notify someone subscribed to incident_report" do
-    Incidents::NotificationSubscription.create! person: @person, county: @incident.county, notification_type: 'incident_report'
+    Incidents::NotificationSubscription.create! person: @person, county: @incident.area, notification_type: 'incident_report'
 
     Incidents::IncidentsMailer.should_receive(:incident_invalid).with(@incident, @person).and_return(double :deliver => true)
 

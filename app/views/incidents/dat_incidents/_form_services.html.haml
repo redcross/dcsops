@@ -1,7 +1,8 @@
 .row
   .span6
     =f.inputs "Narrative" do
-      =f.input :narrative, label: 'Narrative:', input_html: {rows: 12, style: "width: 100%"}
+      =f.semantic_fields_for :incident do |f|
+        =f.input :narrative, input_html: {rows: 12, style: "width: 100%"}
   .span6
     =f.inputs "Services" do
       - services = f.object.services || []

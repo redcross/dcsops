@@ -7,15 +7,14 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
   menu parent: 'Roster'
 
   index do
+    column("CID") {|p| p.chapter_id }
     column :name_last_first, sortable: "last_name"
     column :username
     column :last_login
 
     actions do |person|
-      link_to "Impersonate", impersonate_scheduler_admin_person_path(person)
+      link_to "Impersonate", impersonate_scheduler_admin_person_path(person) if authorized?(:impersonate, person)
     end
-
-    default_actions
   end
 
   form do |f|

@@ -19,7 +19,6 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     unless parent? and parent.dat_incident
       redirect_to action: :new and return
     end
-    #resource.build_team_lead role: 'team_lead' unless resource.team_lead
     edit!
   end
 
@@ -111,7 +110,6 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       return [] if request.get?
 
       keys = [:incident_call_type, :team_lead_id,
-             :date, :city, :address, :state, :cross_street, :zip, :lat, :lng, :neighborhood,
              :num_adults, :num_children, :num_families, :num_cases, 
              :incident_type, :incident_description, :narrative_brief, :narrative,
              :num_people_injured, :num_people_hospitalized, :num_people_deceased,
@@ -142,6 +140,8 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       base = params.require(:incidents_dat_incident)[:incident_attributes]
       if base
         @_incident_params ||= base.permit([
+          :incident_type, :narrative,
+          :address, :city, :state, :zip, :lat, :lng, :county, :neighborhood,
           {:team_lead_attributes => [:id, :person_id, :role, :response]},
           {:responder_assignments_attributes => [:id, :person_id, :role, :response, :_destroy, :was_flex]},
           :evac_partner_used,
