@@ -7,8 +7,8 @@
     %a.btn.btn-primary(data-dismiss="modal") Close
 
 =form_tag '', method: :get, class: 'form-inline' do
-  =label_tag :county_id_eq, 'In County'
-  =select_tag :county_id_eq, "<option></option>".html_safe+options_from_collection_for_select(current_chapter.counties, :id, :name, params[:county_id_eq])
+  =label_tag :area_id_eq, 'In County'
+  =select_tag :area_id_eq, "<option></option>".html_safe+options_from_collection_for_select(current_chapter.counties, :id, :name, params[:area_id_eq])
   =submit_tag 'Search', class: 'btn'
 
 %table.table.table-condensed

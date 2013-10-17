@@ -57,7 +57,7 @@ class Incidents::Incident < ActiveRecord::Base
   #delegate :units_affected, to: :dat_incident
 
   scope :for_chapter, -> chapter { where{chapter_id==chapter}}
-  scope :in_county, -> county {where{county_id == county}}
+  scope :in_area, -> area {where{area_id == area}}
   scope :incident_stats, lambda {
     valid.order(nil).select{[count(id).as(:incident_count), sum(num_cases).as(:case_count), sum(num_families).as(:family_count), sum(num_adults + num_children).as(:client_count)]}.first
   }
