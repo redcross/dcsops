@@ -24,14 +24,24 @@ end
 module SerializedColumns
   extend ActiveSupport::Concern
 
+  # ActiveRecord redefines this for names that are in the columns hash (as we override), to
+  # search in the @attributes list.  But obviously, that won't be there for this type of property.
+  def has_attribute?(attr)
+    if config = self.class.serialized_columns[attr.to_sym]
+      super(config.first)
+    else
+      super(attr)
+    end
+  end
+
   module ClassMethods
 
     def serialized_columns
-      @serialized_columns ||= []
+      @serialized_columns ||= {}
     end
 
     def store_attribute_columns
-      @store_attribute_columns ||= []
+      serialized_columns.values.map(&:first)
     end
 
     def content_columns
@@ -39,15 +49,14 @@ module SerializedColumns
     end
 
     def columns
-      super + serialized_columns
+      super + serialized_columns.values.map(&:last)
     end
 
     def serialized_accessor store_attribute, name, type, default: nil
 
       column = SerializedColumn.new name.to_s, default, type.to_s
 
-      serialized_columns << column
-      store_attribute_columns << store_attribute.to_s
+      serialized_columns[name] = [store_attribute, column]
 
       define_method name do
         raw = read_store_attribute store_attribute, name
