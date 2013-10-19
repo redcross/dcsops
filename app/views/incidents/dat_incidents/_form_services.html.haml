@@ -99,8 +99,7 @@
 .row
   .span6
     =f.inputs "Resources Used" do
-      - types = f.object.incident.chapter.incidents_resources_tracked_array
-      - types.each do |type|
+      - f.object.resource_types_to_track.each do |type|
         =f.input type.to_sym
   .span6
     =f.inputs "Vehicles" do

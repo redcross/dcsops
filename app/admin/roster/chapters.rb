@@ -22,7 +22,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
       f.input :vc_position_filter
 
       # For some reason AA cares about the return value of this block, reduce is a shortcut for that
-      f.object.class.serialized_columns.map{|c| c.name.to_sym }.reduce(nil) do |_, c|
+      f.object.class.serialized_columns.key.map(&:to_sym).reduce(nil) do |_, c|
         f.input c
       end
     end
