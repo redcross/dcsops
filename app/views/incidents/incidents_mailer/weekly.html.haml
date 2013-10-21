@@ -128,7 +128,7 @@
                     =inc.date.to_s :dow_short
                     ==-
                     #{inc.city}, #{inc.state}
-                    %small (#{inc.county.name})
+                    %small (#{inc.county})
                 - dat = inc.dat_incident
                 - if dat
                   - adults = inc.num_adults; children = inc.num_children; units = dat.units_affected
