@@ -33,7 +33,7 @@ class Incidents::DatIncident < ActiveRecord::Base
     serialized_accessor :resources, type, :integer
   end
   def resource_types_to_track
-    TRACKED_RESOURCE_TYPES & (incident.try(:chapter).try(:incident_resource_tracked_array) || [])
+    TRACKED_RESOURCE_TYPES & (incident.try(:chapter).try(:incidents_resources_tracked_array) || [])
   end
 
   [:responder_notified=, :responder_arrived=, :responder_departed=].each do |sym|
