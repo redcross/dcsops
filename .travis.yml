@@ -4,6 +4,7 @@ rvm:
 bundler_args: --without development
 before_script:
 - cp config/database.tmpl.yml config/database.yml
+- bundle exec rake db:create db:schema:load
 - bin/sauce_connect_setup.sh
 env:
   global:
