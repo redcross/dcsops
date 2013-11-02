@@ -6,7 +6,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
   controller do
     def resource_params
       keys = [:name, :short_name, :code, :time_zone_raw, :vc_username, :vc_password, :vc_position_filter]
-      keys = keys + resource_class.serialized_columns.map{|c| c.name.to_sym }
+      keys = keys + resource_class.serialized_columns.values.map{|c| c.last.name.to_sym }
       request.get? ? [] : [params.require(:chapter).permit(*keys)]
     end
   end
@@ -22,7 +22,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
       f.input :vc_position_filter
 
       # For some reason AA cares about the return value of this block, reduce is a shortcut for that
-      f.object.class.serialized_columns.key.map(&:to_sym).reduce(nil) do |_, c|
+      f.object.class.serialized_columns.keys.map(&:to_sym).reduce(nil) do |_, c|
         f.input c
       end
     end

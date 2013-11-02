@@ -13,6 +13,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_map_zoom, :integer
   serialized_accessor :config, :incidents_geocode_bounds, :string
   serialized_accessor :config, :incidents_resources_tracked, :string
+  serialized_accessor :config, :idat_database, :string
   def incidents_resources_tracked_array
     self.incidents_resources_tracked.try(:split, ',')
   end

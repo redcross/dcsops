@@ -15,6 +15,22 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     end
   end
 
+  def new
+    build_resource
+
+    begin
+      idat_db = current_chapter.idat_database
+      if idat_db.present?
+        importer = Idat::IncidentImporter.new(idat_db)
+        importer.get_incident(params[:incident_id], resource)
+      end
+    rescue => e
+      Raven.capture e
+    end
+
+    new!
+  end
+
   def edit
     unless parent? and parent.dat_incident
       redirect_to action: :new and return

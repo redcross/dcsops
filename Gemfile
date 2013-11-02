@@ -48,6 +48,7 @@ gem 'sentry-raven'
 gem 'newrelic_rpm'
 
 gem 'httparty'
+gem 'couchrest'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 # gem 'turbolinks'
