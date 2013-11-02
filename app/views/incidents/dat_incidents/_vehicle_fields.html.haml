@@ -1,5 +1,5 @@
 .control-group
-  %label.control-label
+  %label.control-label Vehicle
   .controls
     %span.vehicle-name=veh.try(:name)
     =hidden_field_tag 'incidents_dat_incident[vehicle_ids][]', veh.try(:id)

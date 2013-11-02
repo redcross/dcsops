@@ -140,9 +140,9 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       keys = keys + Incidents::DatIncident::TRACKED_RESOURCE_TYPES.map(&:to_sym)
 
       args = params.require(:incidents_dat_incident).permit(*keys)
-      #if args[:incident_attributes]
-      #  args[:incident_attributes][:chapter_id] = current_chapter.id
-      #end
+      if args[:vehicle_ids]
+        args[:vehicle_ids] = Array(args[:vehicle_ids]).select(&:present?).uniq
+      end
 
       [args]
     end

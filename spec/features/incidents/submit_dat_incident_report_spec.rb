@@ -148,6 +148,6 @@ describe "DAT Incident Report" do
     fill_in 'Blankets*', with: 20
 
     select @vehicle.name
-    click_button 'Add Vehicle'
+    click_button 'Add Another Vehicle'
   end
 end

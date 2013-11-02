@@ -105,13 +105,14 @@
     =f.inputs "Vehicles" do
       =f.semantic_errors :vehicle_uses
 
-      - f.object.vehicles.each do |veh|
+      - f.object.vehicles[0..-2].each do |veh|
         =render 'vehicle_fields', veh: veh, f: f
       .control-group.select
-        %label.control-label Add Vehicle
+        %label.control-label(for="vehicles") Vehicle
         .controls
-          =select_tag 'vehicles', grouped_options_for_select(Logistics::Vehicle.where{chapter_id == my{current_chapter.id}}.order{[category, name]}.map{|veh| [veh.name, veh.category, veh.id]}.group_by{|arr| arr[1].titleize})
-          %button.btn.btn-primary.btn-mini.add-vehicle{data: {template: render( 'vehicle_fields', veh: nil, f: f)}} Add Vehicle
+          =select_tag 'incidents_dat_incident[vehicle_ids][]', grouped_options_for_select(Logistics::Vehicle.where{chapter_id == my{current_chapter.id}}.order{[category, name]}.map{|veh| [veh.name, veh.category, veh.id]}.group_by{|arr| arr[1].titleize}, f.object.vehicles.last.try(:id)), prompt: 'Choose a Vehicle…', id: 'vehicles'
+          %br
+          %button.btn.btn-primary.btn-mini.add-vehicle{data: {template: render( 'vehicle_fields', veh: nil, f: f)}} Add Another Vehicle
       =hidden_field_tag 'incidents_dat_incident[vehicle_ids][]', ''
 =f.actions do
   =f.action :submit, label: 'Submit Incident Information', button_html: {class: 'btn btn-primary'}

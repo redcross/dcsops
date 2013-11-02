@@ -7,6 +7,7 @@ class window.DatIncidentsFormController
     $(document).on 'click', '.add-vehicle', (evt) =>
       evt.preventDefault()
       id = $('#vehicles').val()
+      return if id==''
       name = $('#vehicles :selected').text()
       tmpl = $(evt.target).data('template')
       dom = $.parseHTML(tmpl)
@@ -15,6 +16,7 @@ class window.DatIncidentsFormController
       $(dom).find('input').val(id)
 
       $(evt.target).parents('.control-group').before(dom)
+      $("#vehicles").val('')
 
     $(document).on 'click', '.remove-vehicle', (evt) =>
       evt.preventDefault()
