@@ -14,7 +14,7 @@ CONNECT_URL="http://saucelabs.com/downloads/Sauce-Connect-latest.zip"
 CONNECT_DIR="/tmp/sauce-connect-$RANDOM"
 CONNECT_DOWNLOAD="Sauce_Connect.zip"
 READY_FILE="connect-ready-$RANDOM"
-DIRECT_DOMAINS="googleapis.com,mts.googleapis.com,mts0.googleapis.com,mts1.googleapis.com,csi.gstatic.com,maps.gstatic.com,fonts.googleapis.com,themes.googleusercontent.com,maps.googleapis.com,maps.google.com,googleusercontent.com"
+DIRECT_DOMAINS="googleapis.com,mts.googleapis.com,mts0.googleapis.com,mts1.googleapis.com,csi.gstatic.com,maps.gstatic.com,fonts.googleapis.com,themes.googleusercontent.com,maps.googleapis.com,maps.google.com,googleusercontent.com,clients1.google.com"
 
 # Get Connect and start it
 mkdir -p $CONNECT_DIR
