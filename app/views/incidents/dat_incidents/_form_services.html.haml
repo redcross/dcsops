@@ -110,7 +110,7 @@
       .control-group.select
         %label.control-label(for="vehicles") Vehicle
         .controls
-          =select_tag 'incidents_dat_incident[vehicle_ids][]', grouped_options_for_select(Logistics::Vehicle.where{chapter_id == my{current_chapter.id}}.order{[category, name]}.map{|veh| [veh.name, veh.category, veh.id]}.group_by{|arr| arr[1].titleize}, f.object.vehicles.last.try(:id)), prompt: 'Choose a Vehicle…', id: 'vehicles'
+          =select_tag 'incidents_dat_incident[vehicle_ids][]', grouped_options_for_select(Logistics::Vehicle.for_chapter(f.object.incident.chapter || current_chapter).order{[category, name]}.map{|veh| [veh.name, veh.humanized_category, veh.id]}.group_by{|arr| arr[1]}, f.object.vehicles.last.try(:id)), prompt: 'Choose a Vehicle…', id: 'vehicles'
           %br
           %button.btn.btn-primary.btn-mini.add-vehicle{data: {template: render( 'vehicle_fields', veh: nil, f: f)}} Add Another Vehicle
       =hidden_field_tag 'incidents_dat_incident[vehicle_ids][]', ''
