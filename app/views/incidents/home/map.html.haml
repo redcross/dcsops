@@ -10,7 +10,7 @@
         =f.text_field :incident_number_cont
       .field
         %h5 County:
-        =f.select :county_id_eq, options_from_collection_for_select(current_chapter.counties, :id, :name, params[:q].try(:[], :county_id_eq)), include_blank: true
+        =f.select :area_id_eq, options_from_collection_for_select(current_chapter.counties, :id, :name, params[:q].try(:[], :area_id_eq)), include_blank: true
       .field
         City:
         =f.text_field :city_cont

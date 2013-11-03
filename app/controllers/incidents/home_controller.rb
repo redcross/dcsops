@@ -9,6 +9,7 @@ class Incidents::HomeController < Incidents::BaseController
   end
 
   def map
+    params[:q] ||= {date_gteq: '2012-07-01'}
     @search = Incidents::Incident.search(params[:q])
     @incidents = @search.result.for_chapter(current_chapter).valid.where{(lat != nil) & (lng != nil) & (lat.in 37.165368468295085..38.251787162859415) & (lng.in(-123.84274052031253..-121.45321415312503))}
   end
