@@ -4,7 +4,7 @@ require "sauce"
 require 'sauce/capybara'
 
 module SauceConfig
-  def self.use_sauce?; (ENV['TRAVIS'] || ENV['USE_SAUCE']); end
+  def self.use_sauce?; false and (ENV['TRAVIS'] || ENV['USE_SAUCE']); end
 end
 
 Sauce.config do |config|
