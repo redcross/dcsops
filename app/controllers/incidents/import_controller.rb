@@ -1,7 +1,7 @@
 class Incidents::ImportController < ApplicationController
   include ActionController::Live
   include MailImportController
-  newrelic_ignore_apdex
+  newrelic_ignore
 
   skip_before_filter :require_valid_user!, only: [:import_cas, :import_deployment, :import_dispatch]
   #protect_from_forgery except: [:import_cas]

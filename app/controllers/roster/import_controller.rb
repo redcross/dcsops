@@ -3,7 +3,7 @@ require 'digest/md5'
 class Roster::ImportController < ApplicationController
   include ActionController::Live
   include MailImportController
-  newrelic_ignore_apdex
+  newrelic_ignore
 
   skip_before_filter :require_valid_user!, only: :import_vc
 
