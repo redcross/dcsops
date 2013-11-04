@@ -39,7 +39,7 @@ class Roster::VcQueryToolImporter
 
       importer_mappings.slice(*queries).each do |name, klass|
         logger.info "Processing import for #{name}"
-        if Rails.env.development? and false
+        if Rails.env.development? and true
           csv = Rails.cache.fetch "vc-query-#{name}-#{chapter.id}" do
             xls = client.execute_query query_mappings[name]
             XlsToCsv.convert xls
@@ -94,28 +94,36 @@ class Importer
     logger.info "#{self.class.name} Have #{@csv.count} rows"
     last_period = start_time = Time.now
 
-    (1..@csv.count).each do |row_num|
-      row = @csv[row_num]
-      next unless row.present?
+    batch_size = 100
 
-      if (row_num % self.class.log_progress_every) == 0 and row_num > 0
-        now = Time.now
-        total_elapsed = now- start_time
-        total_rate = row_num / total_elapsed
-        period_elapsed = now - last_period
-        period_rate = self.class.log_progress_every / period_elapsed
-        last_period = now
+    (1..(@csv.count-1)).to_a.each_slice(batch_size) do |row_nums|
+      identities = row_nums.map{|r| row = @csv[r]; Hash[self.class.identity_columns.map{|key, col_name| [key, row[column_index(col_name)]]}] }
 
-        logger.info "#{self.class.name} Processing row #{row_num}/#{@csv.count} at #{'%.1f' % [total_rate]} rows/sec total #{'%.1f' % [period_rate]} rows/sec now"
-        #GC.start
+      preload_identities(identities)
+
+      row_nums.each do |row_num|
+        row = @csv[row_num]
+        next unless row.present?
+
+        if (row_num % self.class.log_progress_every) == 0 and row_num > 0
+          now = Time.now
+          total_elapsed = now- start_time
+          total_rate = row_num / total_elapsed
+          period_elapsed = now - last_period
+          period_rate = self.class.log_progress_every / period_elapsed
+          last_period = now
+
+          logger.info "#{self.class.name} Processing row #{row_num}/#{@csv.count} at #{'%.1f' % [total_rate]} rows/sec total #{'%.1f' % [period_rate]} rows/sec now"
+          #GC.start
+        end
+
+        identity = Hash[self.class.identity_columns.map{|key, col_name| [key, row[column_index(col_name)]]}]
+
+        attrs = Hash[self.class.column_mappings.map{|key, col_name| [key, row[column_index(col_name)]]}.map{|key, val| [key, val.present? ? val : nil]}]
+
+        handle_row(identity, attrs) if identity.all?{|k, v| v.present? }
+        yield if block_given?
       end
-
-      identity = Hash[self.class.identity_columns.map{|key, col_name| [key, row[column_index(col_name)]]}]
-
-      attrs = Hash[self.class.column_mappings.map{|key, col_name| [key, row[column_index(col_name)]]}.map{|key, val| [key, val.present? ? val : nil]}]
-
-      handle_row(identity, attrs) if identity.all?{|k, v| v.present? }
-      yield if block_given?
     end
 
     after_import
@@ -132,6 +140,14 @@ class Importer
   def is_active_status(status_name)
     ['General Volunteer', 'Employee'].include? status_name
   end
+
+  def preload_identities(identities)
+    ids = identities.map{|i| i[:vc_id].to_i }
+    @people = Roster::Person.where({chapter_id: @chapter}).where(vc_id: ids).group_by(&:vc_id)
+    ids.each do |id|
+      @people[id] ||= [Roster::Person.new(chapter: @chapter, vc_id: id)]
+    end
+  end
 end
 
 class MemberPositionsImporter < Importer
@@ -143,7 +159,7 @@ class MemberPositionsImporter < Importer
     email: 'email', secondary_email: 'second_email',
     work_phone: 'work_phone', cell_phone: 'cell_phone', home_phone: 'home_phone', alternate_phone: 'alternate_phone',
     gap_primary: 'primary_gap', gap_secondary: 'secondary_gap', gap_tertiary: 'tertiary_gap',
-    vc_is_active: 'status_name'}
+    vc_is_active: 'status_name', second_lang: 'second_language', third_lang: 'third_language'}
 
   def positions
     @_positions ||= @chapter.positions.select(&:vc_regex)
@@ -153,10 +169,13 @@ class MemberPositionsImporter < Importer
     @_counties ||= @chapter.counties.select(&:vc_regex)
   end
 
+
+
   def get_person(identity, attrs, all_attrs)
-    unless @person and @person.vc_id == identity[:vc_id].to_i
+    vc_id = identity[:vc_id].to_i
+    unless @person and @person.vc_id == vc_id
       attrs[:vc_is_active] = is_active_status(attrs[:vc_is_active])
-      @person = Roster::Person.where({chapter_id: @chapter}.merge(identity)).first_or_initialize
+      @person = @people[vc_id].first #Roster::Person.where({chapter_id: @chapter}.merge(identity)).first_or_initialize
       if @person.new_record? and !attrs[:vc_is_active]
         #logger.debug "Skipping because inactive and new: #{attrs.inspect}"
         @person = nil
@@ -289,7 +308,11 @@ class QualificationsImporter < MemberPositionsImporter
       @person = nil
       return
     end
-    @person = Roster::Person.where({chapter_id: @chapter}.merge(identity)).first
+    vc_id = identity[:vc_id].to_i
+    unless @person and @person.vc_id == vc_id
+      attrs[:vc_is_active] = is_active_status(attrs[:vc_is_active])
+      @person = @people[vc_id].first
+    end
   end
 
   def process_row?(attrs)
