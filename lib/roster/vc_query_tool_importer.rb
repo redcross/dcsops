@@ -207,6 +207,8 @@ class MemberPositionsImporter < Importer
     position_start = person_attrs.delete :position_start
     position_end = person_attrs.delete :position_end
 
+    second_lang = person_attrs.delete :second_lang
+    third_lang = person_attrs.delete :third_lang
 
     get_person(identity, person_attrs, attrs)
     return unless @person
@@ -220,6 +222,16 @@ class MemberPositionsImporter < Importer
     logger.debug "Matching #{self.class.name.underscore.split("_").first} #{position_name} for #{identity.inspect}"
     @num_positions += 1
 
+    match_position position_name
+    match_position second_lang if second_lang.present?
+    match_position third_lang if third_lang.present?
+
+
+
+    #@person.save!
+  end
+
+  def match_position position_name
     matched = false
     counties.each do |county|
       if county.vc_regex.match position_name
@@ -246,8 +258,6 @@ class MemberPositionsImporter < Importer
     unless matched
       logger.debug "Didn't match a record for item #{position_name}"
     end
-
-    #@person.save!
   end
 
   def filter_regex
