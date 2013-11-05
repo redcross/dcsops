@@ -26,6 +26,9 @@ class ::PersonTypeaheadInput
 
   def script_html
     id = input_html_options[:id]
-    "<script>$('##{id}_text').attr('autocomplete', 'off'); #{id}_typeahead = new PersonTypeaheadController($('##{id}_text'), function(sel_id) {$('##{id}').val(sel_id)})</script>".html_safe
+
+    filter = options[:filter] || {}
+
+    "<script>$('##{id}_text').attr('autocomplete', 'off'); #{id}_typeahead = new PersonTypeaheadController($('##{id}_text'), function(sel_id) {$('##{id}').val(sel_id)}, #{{q: filter}.to_json})</script>".html_safe
   end
 end

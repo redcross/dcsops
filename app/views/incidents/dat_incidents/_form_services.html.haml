@@ -113,6 +113,6 @@
           =select_tag 'incidents_dat_incident[vehicle_ids][]', grouped_options_for_select(Logistics::Vehicle.for_chapter(f.object.incident.chapter || current_chapter).order{[category, name]}.map{|veh| [veh.name, veh.humanized_category, veh.id]}.group_by{|arr| arr[1]}, f.object.vehicles.last.try(:id)), prompt: 'Choose a Vehicle…', id: 'vehicles'
           %br
           %button.btn.btn-primary.btn-mini.add-vehicle{data: {template: render( 'vehicle_fields', veh: nil, f: f)}} Add Another Vehicle
-      =hidden_field_tag 'incidents_dat_incident[vehicle_ids][]', ''
+      -#=hidden_field_tag 'incidents_dat_incident[vehicle_ids][]', '' 
 =f.actions do
   =f.action :submit, label: 'Submit Incident Information', button_html: {class: 'btn btn-primary'}

@@ -2,6 +2,12 @@ class window.PersonTypeaheadController
   constructor: (dom, callback, filter={}) ->
     @callback = callback
 
+    # This ensures that if you select out of the typeahead without choosing
+    # an item, the text box always represents the current data value, rather
+    # than whatever random text the user had typed in.
+    $(dom).blur (evt) =>
+      $(dom).val @selected
+
     $(dom).typeahead
       source: (query, process) =>
         if query.length <= 2
@@ -31,4 +37,5 @@ class window.PersonTypeaheadController
             process(processed)
       updater: (item) =>
         @callback(@people[item].id, @people[item])
+        @selected = item
         item
