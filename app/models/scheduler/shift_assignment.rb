@@ -6,10 +6,10 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
         allowed_positions = record.person.positions & record.shift.positions
 
         if allowed_positions.blank?
-          record.errors[:shift] = "You are not allowed to take this shift."
+          record.errors[:shift] = "You are not allowed to take this shift. (Position)"
         end
       else
-        record.errors[:shift] = "You are not allowed to take this shift."
+        record.errors[:shift] = "You are not allowed to take this shift. (County)"
       end
     end
   end
@@ -126,6 +126,10 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
 
   scope :available_for_swap, -> (chapter) {
     where{(available_for_swap==true) & (date >= chapter.time_zone.today)}
+  }
+
+  scope :includes_person_carriers, -> {
+    includes{[person.home_phone_carrier, person.cell_phone_carrier, person.work_phone_carrier, person.alternate_phone_carrier, person.sms_phone_carrier]}
   }
 
   def local_start_time
