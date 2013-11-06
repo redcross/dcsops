@@ -57,7 +57,10 @@ describe Scheduler::ShiftAssignmentsController do
       end
 
       it 'should show all shifts I am a county admin for' do
-        (0..2).map { |i| pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties; FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+6+i) }
+        (0..2).map { |i| 
+          pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties
+          shift = FactoryGirl.create :shift, shift_group: @shift.shift_group, county: pers.counties.first, positions: pers.positions
+          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+6+i), shift: shift }
 
         grant_role! 'county_dat_admin', @person.county_ids
 
@@ -68,7 +71,11 @@ describe Scheduler::ShiftAssignmentsController do
       end
 
       it "should merge other shifts into the same event" do
-        (1..3).map { |i| pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties; FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+i) }
+        county = @person.counties.first
+        (1..3).map { |i| 
+          pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties
+          shift = FactoryGirl.create :shift, shift_group: @shift.shift_group, county: pers.counties.first, positions: pers.positions
+          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+i), shift: shift }
 
         grant_role! 'county_dat_admin', @person.county_ids
 

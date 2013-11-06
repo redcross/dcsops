@@ -1,6 +1,6 @@
 class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   inherit_resources
-  load_and_authorize_resource class_name: 'Scheduler::ShiftAssignment'
+  authorize_resource class_name: 'Scheduler::ShiftAssignment'
 
   respond_to :html, :json
   respond_to :ics, only: [:index]
@@ -16,14 +16,16 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
       end
     when 'all'
       controller.authorize! :read_all_shifts, Scheduler::ShiftAssignment
-      scope
+      county_ids = controller.current_user.county_ids
+      county_ids.present? ? scope.joins{shift}.where{shift.county_id.in county_ids} : scope
     end
   end
 
   has_scope :time_period, default: 'future', only: [:index] do |controller, scope, arg|
     case arg
     when 'future'
-      scope.where{date >= my{controller.current_chapter.time_zone.today.yesterday}}
+      yesterday = controller.current_chapter.time_zone.today.yesterday
+      scope.where{date.in(yesterday..(yesterday+60))}
     else
       scope
     end
@@ -110,29 +112,49 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
     end
   end
 
-
   def api_user
-    if token = params[:api_token] and @person_id=Scheduler::NotificationSetting.where(calendar_api_token: token).first.try(:person)
-      @api_user ||= Roster::Person.find(@person_id)
+    return @api_user if @api_user
+    if token = params[:api_token]
+      @setting = Scheduler::NotificationSetting.where(calendar_api_token: token).first
+      @api_user = @setting.try(:person)
     end
   end
- 
-  #def collection
-  #  authorize! :read, Scheduler::ShiftAssignment
-#
-  #  return @_collection if @_collection
-#
-  #  coll = super.includes(:person => [:counties, :positions])
-  #  if params[:person_id]
-  #    coll = coll.where(person_id: params[:person_id])
-  #  else
-  #    coll = coll.where(person_id: current_user).where('date >= ?', Date.yesterday)
-  #  end
-  #  @_collection = coll.order('date asc')
-  #end
 
   def collection
-    apply_scopes(super).order(:date).includes{[person, shift.shift_group, shift.county]}.uniq
+    @shift_assignments ||= apply_scopes(super).order(:date).includes{[person, shift.shift_group.chapter, shift.county, person.counties, person.chapter]}.uniq
+  end
+
+  helper_method :grouped_collection
+  # For each date/shift group, return only the "most important" (ranked by ordinal) shift.  This is
+  # only useful when querying all, as we'll get multiple assignments per shift and should only have
+  # one event on the calendar.  The associated shifts query will get all the rest [again... should look into that].
+  def grouped_collection
+    @grouped_collection ||= collection.sort_by{|s| s.shift.ordinal}.group_by{|s| [s.date, s.shift.shift_group_id, s.shift.county_id]}.values.map(&:first)
+  end
+
+  # This builds a query with pairs of shift group/date
+  def other_shifts
+    return @other_shifts if @other_shifts
+
+    @other_shifts = Scheduler::ShiftAssignment.where do
+      my{collection}.map do |my_shift|
+        (date == my_shift.date) & (shift.shift_group_id == my_shift.shift.shift_group_id)
+      end.reduce{|a, b| (a | b)}
+    end.includes{[person, shift.county]}.includes_person_carriers.group_by{|s| [s.date, s.shift_id]}
+  end
+
+  def assignments_for(shift, item)
+    other_shifts[[item.date, shift.id]]
+  end
+
+  helper_method :associated_shifts
+  def associated_shifts(item)
+    @shifts_by_shift_group ||= begin
+      groups = collection.map{|s| s.shift.shift_group}.uniq
+      shifts = Scheduler::Shift.where{shift_group_id.in groups}.order{ordinal}.active_on_day(item.date)
+    end.group_by(&:shift_group_id)
+
+    @shifts_by_shift_group[item.shift.shift_group_id].select{|s| s.county_id == item.shift.county_id}.map{|s| [s, assignments_for(s, item)]}
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

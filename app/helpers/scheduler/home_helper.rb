@@ -20,7 +20,7 @@ module Scheduler::HomeHelper
 
       running_pred ? (running_pred | pred) : pred
     end#
-    Scheduler::ShiftAssignment.includes{person}.includes{[person.home_phone_carrier, person.cell_phone_carrier, person.work_phone_carrier, person.alternate_phone_carrier, person.sms_phone_carrier]}.where(query)
+    Scheduler::ShiftAssignment.includes_person_carriers.where(query)
   end
 
   def current_shifts_tree(counties, groups=nil)

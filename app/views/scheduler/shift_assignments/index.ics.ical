@@ -1,4 +1,5 @@
-collection_by_date.each do |item|
+helper = self
+grouped_collection.each do |item|
   cal.event do
     description item.shift.name
     if item.shift.shift_group.period == 'daily'
@@ -9,14 +10,7 @@ collection_by_date.each do |item|
       dtend (item.local_end_time.to_date)
     end
     location item.shift.county.name
-    summary("#{item.shift.name}\n\n" + item.shift.shift_group.shifts.where(county_id: item.shift.county).map{|shift|
-      assignments = shift.shift_assignments.for_day(item.date)
-      shift.abbrev + " - " + if assignments.blank?
-        "OPEN"
-      else 
-        assignments.map{|ass| "#{ass.person.full_name} (#{ass.person.primary_phone})"}.join " "
-      end
-    }.join("\n"))
+    summary helper.shift_summary(item)
     alarm do
       description "DAT Time!"
       trigger "-PT1H"
