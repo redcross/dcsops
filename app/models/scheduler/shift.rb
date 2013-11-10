@@ -62,7 +62,7 @@ class Scheduler::Shift < ActiveRecord::Base
   }
 
   def can_be_taken_by?(person)
-    if ignore_county or person.counties.include?(county)
+    if ignore_county or person.counties.to_a.include?(county)
       (positions & person.positions).present?
     else
       false
