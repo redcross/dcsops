@@ -55,11 +55,15 @@ class Roster::Person < ActiveRecord::Base
   accepts_nested_attributes_for :county_memberships, :position_memberships, allow_destroy: true
 
   def has_role(grant_name)
-    roles.select{|p| p.grant_name == grant_name}.present?
+    roles_with_scopes.select{|p| p.grant_name == grant_name}.present?
   end
 
   def scope_for_role(grant_name)
-    roles.select{|p| p.grant_name == grant_name}.map{|r| r.role_scopes.map(&:scope) }.flatten.map{ |scope| scope == 'county_ids' ? county_ids : scope}.flatten.compact.uniq
+    roles_with_scopes.select{|p| p.grant_name == grant_name}.flat_map{|r| r.role_scopes.map(&:scope) }.flat_map{ |scope| scope == 'county_ids' ? county_ids : scope}.compact.uniq
+  end
+
+  def roles_with_scopes
+    @roles_with_scopes ||= roles.includes{role_scopes}.joins{role_scopes.outer}
   end
 
   def primary_county

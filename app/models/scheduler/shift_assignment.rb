@@ -127,7 +127,8 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   }
 
   scope :starts_after, ->(time){
-    joins(:shift => :shift_group).references(:shift => :shift_group).where('date > ? or (date=? AND scheduler_shift_groups.end_offset > ?)', time.to_date, time.to_date, time.in_time_zone.seconds_since_midnight)
+    start_date = time.to_date
+    joins{shift.shift_group}.where{(date > start_date) | ((date == start_date) & (shift.shift_group.end_offset > time.in_time_zone.seconds_since_midnight))}
   }
 
   scope :available_for_swap, -> (chapter) {

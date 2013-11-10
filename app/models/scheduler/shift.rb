@@ -57,10 +57,13 @@ class Scheduler::Shift < ActiveRecord::Base
     where{county_id == county}
   }
 
+  scope :can_be_taken_by, -> person {
+    where{((ignore_county == true) | county_id.in(person.county_ids))}.joins{positions}.where{positions.id.in(person.position_ids)}.uniq
+  }
+
   def can_be_taken_by?(person)
-    if ignore_county or person.counties.to_a.include?(county)
-      pos = positions & person.positions
-      !pos.blank?
+    if ignore_county or person.counties.include?(county)
+      (positions & person.positions).present?
     else
       false
     end
@@ -79,10 +82,10 @@ class Scheduler::Shift < ActiveRecord::Base
       hash
     end
 
-    groups_by_id = Scheduler::ShiftGroup.where{id.in(shifts_by_id.values.map(&:shift_group_id))}.reduce({}){|hash, group| hash[group.id] = group; hash }
-    groups_by_shift_id = shifts_by_id.values.reduce({}) {|hash, shift| hash[shift.id] = groups_by_id[shift.shift_group_id]; hash}
+    groups_by_id = shifts.map(&:shift_group).reduce({}){|hash, group| hash[group.id] = group; hash }
+    groups_by_shift_id = shifts.reduce({}) {|hash, shift| hash[shift.id] = groups_by_id[shift.shift_group_id]; hash}
 
-    starter_hash = shifts_by_id.values.reduce({}) do |hash, shift|
+    starter_hash = shifts.reduce({}) do |hash, shift|
       hash[shift] = empties[groups_by_shift_id[shift.id].period].dup
       hash
     end

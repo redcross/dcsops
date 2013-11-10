@@ -3,7 +3,7 @@ class Scheduler::Ability
 
   def initialize(person)
 
-    county_ids = person.county_ids.to_a
+    county_ids = person.county_ids
 
     #can :read, Roster::Person, id: person.id
     #can :read, Scheduler::ShiftAssignment, shift: {county_id: county_ids}
