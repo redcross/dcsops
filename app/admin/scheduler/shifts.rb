@@ -30,7 +30,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
 
   controller do
     def resource_params
-      request.get? ? [] : [params.require(:shift).permit(:name, :abbrev, :shift_group_id, :max_signups, :county_id, :ordinal, :spreadsheet_ordinal, :dispatch_role, :shift_begins, :shift_ends, :signups_frozen_before, :position_ids => [])]
+      request.get? ? [] : [params.require(:shift).permit(:name, :abbrev, :shift_group_id, :max_signups, :county_id, :ordinal, :spreadsheet_ordinal, :dispatch_role, :shift_begins, :shift_ends, :signups_frozen_before, :min_desired_signups, :position_ids => [])]
     end
   end
 end
