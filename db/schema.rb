@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131103014004) do
+ActiveRecord::Schema.define(version: 20131110151022) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -326,6 +326,8 @@ ActiveRecord::Schema.define(version: 20131103014004) do
     t.datetime "updated_at"
   end
 
+  add_index "named_queries", ["name", "token"], name: "index_named_queries_on_name_and_token", using: :btree
+
   create_table "partners_partners", force: true do |t|
     t.string   "name"
     t.string   "address1"
@@ -437,6 +439,8 @@ ActiveRecord::Schema.define(version: 20131103014004) do
     t.boolean "persistent"
   end
 
+  add_index "roster_position_memberships", ["person_id"], name: "index_roster_position_memberships_on_person_id", using: :btree
+
   create_table "roster_positions", force: true do |t|
     t.integer  "chapter_id"
     t.string   "name"
@@ -539,6 +543,8 @@ ActiveRecord::Schema.define(version: 20131103014004) do
     t.boolean  "email_all_swaps_daily"
   end
 
+  add_index "scheduler_notification_settings", ["calendar_api_token"], name: "index_scheduler_notification_settings_on_calendar_api_token", unique: true, using: :btree
+
   create_table "scheduler_shift_assignments", force: true do |t|
     t.integer  "person_id"
     t.integer  "shift_id"
@@ -552,6 +558,7 @@ ActiveRecord::Schema.define(version: 20131103014004) do
     t.boolean  "synced",              default: false
   end
 
+  add_index "scheduler_shift_assignments", ["date", "person_id", "shift_id"], name: "index_scheduler_shift_assignment_fields", unique: true, using: :btree
   add_index "scheduler_shift_assignments", ["person_id"], name: "index_scheduler_shift_assignments_on_person_id", using: :btree
   add_index "scheduler_shift_assignments", ["shift_id"], name: "index_scheduler_shift_assignments_on_shift_id", using: :btree
 
