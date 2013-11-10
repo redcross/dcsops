@@ -95,16 +95,16 @@ describe "DAT Incident Report" do
   end
 
   def fill_in_responders
-    fill_in 'incidents_dat_incident_incident_attributes_team_lead_attributes_person_id_text', with: @team_lead.first_name
+    fill_in 'incidents_dat_incident_incident_attributes_team_lead_attributes_person_id_text', with: @team_lead.first_name[0..3]
     click_link @team_lead.full_name
 
     # Add the flex person
     within :xpath, "//td[text()='#{@flex_responder.full_name}']/.." do
-      click_link "Add Responder"
+      click_button "Add Responder"
     end
 
     within "#responder-table tbody" do
-      within :xpath, "//input[@value='#{@flex_responder.full_name}']/ancestor::tr" do
+      within "tr:last-child" do
         find(:xpath, ".//input[@type='checkbox']").should be_checked
         select 'Responder'
       end

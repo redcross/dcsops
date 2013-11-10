@@ -1,5 +1,5 @@
 class window.PersonTypeaheadController
-  constructor: (dom, callback, filter={}) ->
+  constructor: (dom, callback, filter={}, @selected=null) ->
     @callback = callback
 
     # This ensures that if you select out of the typeahead without choosing

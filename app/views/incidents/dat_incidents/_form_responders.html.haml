@@ -3,7 +3,10 @@
     =f.inputs "Responders" do
       =f.semantic_fields_for :incident do |f|
         =f.semantic_errors :responder_assignments
-        %table.table.form-table#responder-table
+        - template = nil
+        - f.semantic_fields_for :responder_assignments, Incidents::ResponderAssignment.new(incident: f.object), child_index: 'new_responder_assignment' do |r|
+          - template = render('responder_assignment_fields', f: r)
+        %table.table.form-table#responder-table{data: {template: template}}
           %thead
             %tr
               %th Name
@@ -34,13 +37,15 @@
               %tr
                 %td=shift.person.full_name
                 %td=shift.shift.name
-                %td=link_to_add_association 'Add Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary", wrap_object: ->(assoc){assoc.person = shift.person; assoc}
+                %td
+                  %button.btn.btn-primary.add-responder{data: {person_text: shift.person.full_name, person_id: shift.person_id, was_flex: false}} Add Responder
                 %td(colspan=2)
             - flex_responders(resource, sched).each do |flex|
               %tr
                 %td=flex.person.full_name
                 %td Flex
-                %td=link_to_add_association 'Add Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary", wrap_object: ->(assoc){assoc.person = flex.person; assoc.was_flex = true; assoc}
+                %td
+                  %button.btn.btn-primary.add-responder{data: {person_text: flex.person.full_name, person_id: flex.person.id, was_flex: true}} Add Responder
                 %td(colspan=2)
 
         =link_to_add_association 'Add Other Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary"

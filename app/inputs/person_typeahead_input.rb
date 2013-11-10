@@ -15,8 +15,7 @@ class ::PersonTypeaheadInput
   end
 
   def text_value
-    val = options[:text_value]
-    case val
+    @text_value ||= case val = options[:text_value]
     when Symbol then builder.object.send val
     when String then val
     when Proc then val.call builder.object
@@ -28,7 +27,13 @@ class ::PersonTypeaheadInput
     id = input_html_options[:id]
 
     filter = options[:filter] || {}
-
-    "<script>$('##{id}_text').attr('autocomplete', 'off'); #{id}_typeahead = new PersonTypeaheadController($('##{id}_text'), function(sel_id) {$('##{id}').val(sel_id)}, #{{q: filter}.to_json})</script>".html_safe
+    <<-SCRIPT.html_safe
+    <script>
+    #{id}_typeahead = new PersonTypeaheadController($('##{id}_text'), 
+            function(sel_id) {$('##{id}').val(sel_id)}, 
+            #{{q: filter}.to_json}, 
+            #{text_value.to_json})
+    </script>
+    SCRIPT
   end
 end

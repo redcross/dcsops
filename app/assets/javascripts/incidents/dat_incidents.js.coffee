@@ -3,7 +3,31 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 class window.DatIncidentsFormController
+  responderCount: 0
+
   constructor: () ->
+    $(document).on 'click', '.add-responder', (evt) =>
+      evt.preventDefault()
+
+      table = $(evt.target).parents('table')
+
+      id = new Date().getTime() + @responderCount++
+      template_str = $(table).data('template').replace(/_new_responder_assignment/g, "_#{id}").replace(/\[new_responder_assignment\]/g, "[#{id}]")
+      template = $(template_str)
+      $(table).find('tbody').append(template)
+
+      window["incidents_dat_incident_incident_attributes_responder_assignments_attributes_#{id}_person_id_typeahead"].selected = $(evt.target).data('person-text')
+
+      ['person_id', 'person_text'].forEach (field) =>
+        el = $(template).find("[name*=#{field}]")
+        val = $(evt.target).data(field.replace('_', '-'))
+
+        el.val(val)
+
+      $(template).find("[name*=was_flex]").attr('checked', $(evt.target).data('was-flex'))
+
+
+
     $(document).on 'click', '.add-vehicle', (evt) =>
       evt.preventDefault()
       id = $('#vehicles').val()
