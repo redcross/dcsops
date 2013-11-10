@@ -25,7 +25,7 @@ module ApplicationHelper
   end
 
   def current_messages
-    if current_user
+    if current_user and ENV['MOTD_ENABLED']
       @_current_messages ||= MOTD.active(current_chapter).to_a.select{|motd|
         motd.path_regex.nil? or motd.path_regex.match(request.fullpath)
       }
