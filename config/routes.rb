@@ -24,6 +24,8 @@ Scheduler::Application.routes.draw do
   root to: "roster/sessions#new", constraints: filter
   root to: "root#index", constraints: lambda{|req| !filter.call(req)}, as: nil
 
+  get '/health', to: 'root#health'
+
   namespace :scheduler do
     root to: "home#root"
     get :on_call, controller: 'home'
