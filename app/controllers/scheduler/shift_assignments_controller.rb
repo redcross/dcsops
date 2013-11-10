@@ -136,11 +136,9 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   def other_shifts
     return @other_shifts if @other_shifts
 
-    @other_shifts = Scheduler::ShiftAssignment.where do
-      my{collection}.map do |my_shift|
-        (date == my_shift.date) & (shift.shift_group_id == my_shift.shift.shift_group_id)
-      end.reduce{|a, b| (a | b)}
-    end.includes{[person, shift.county]}.includes_person_carriers.group_by{|s| [s.date, s.shift_id]}
+    groups = collection.map{|ass| ass.shift.shift_group.tap{|g| g.start_date = ass.date }}
+
+    @other_shifts = Scheduler::ShiftAssignment.for_active_groups(groups).includes{[person, shift.county]}.includes_person_carriers.group_by{|s| [s.date, s.shift_id]}
   end
 
   def assignments_for(shift, item)

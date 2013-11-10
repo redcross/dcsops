@@ -67,7 +67,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     if obj.incident.area
       time = obj.incident.created_at || current_chapter.time_zone.now
       groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_chapter, time)
-      assignments = groups.map{|grp| Scheduler::ShiftAssignment.joins{shift}.where{(shift.county_id == my{obj.incident.area}) & (shift.shift_group_id == grp) & (date == grp.start_date)}}.flatten
+      assignments = Scheduler::ShiftAssignment.joins{[shift]}.includes{[shift, person]}.where{(shift.county_id == my{obj.incident.area})}.for_active_groups(groups)
                     .select{|ass| !obj.incident.responder_assignments.detect{|resp| resp.person == ass.person }}
     else
       []

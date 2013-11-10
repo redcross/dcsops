@@ -79,6 +79,12 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   attr_accessor :swapping_from_id, :is_swapping_to
 
   scope :for_day, lambda {|day| where(date: day)}
+
+  scope :for_active_groups, -> (groups) {
+    joins{shift}.where{
+      row(date, shift.shift_group_id).in(my{groups}.map{|group| row(group.start_date, group.id) })
+    }
+  }
   
   scope :needs_email_invite, ->(chapter) {
     joins(:notification_setting).readonly(false)
