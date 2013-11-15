@@ -7,12 +7,17 @@ class ApplicationController < ActionController::Base
   helper_method :current_user, :current_user_session, :current_chapter, :impersonating_user
 
   before_filter :require_valid_user!
+  before_filter :annotate_newrelic_user, :if => :current_user
 
   around_filter :user_time_zone, :if => :current_user
 
   def user_time_zone(&block)
     tz = current_user.try(:chapter).try(:time_zone) || Time.zone 
     Time.use_zone(tz, &block)
+  end
+
+  def annotate_newrelic_user
+    ::NewRelic::Agent.add_custom_parameters(user_id: current_user.id, user_name: current_user.full_name, chapter_id: current_chapter.id)
   end
 
   #check_authorization

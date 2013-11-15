@@ -144,7 +144,7 @@ common: &default_settings
     # recorded. The recorder has three modes, "off" which sends no
     # SQL, "raw" which sends the SQL statement in its original form,
     # and "obfuscated", which strips out numeric and string literals
-    record_sql: obfuscated
+    record_sql: raw
 
     # Threshold in seconds for when to collect stack trace for a SQL
     # call. In other words, when SQL statements exceed this threshold,
@@ -231,6 +231,7 @@ development:
 
   # Enable textmate links
   # textmate: true
+  log_level: debug
 
 test:
   <<: *default_settings
