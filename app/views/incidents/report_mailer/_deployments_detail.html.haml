@@ -1,0 +1,21 @@
+%h2.center Deployments
+- deployments = detailed_deployments
+-if deployments.blank?
+  There are no deployments on record at this time.
+-else
+  - deployments.each do |dr_name, deps|
+    %h3=dr_name
+    %table.table
+      - deps.each_slice(2) do |pair|
+        %tr
+          - pair.each do |dep|
+            %td
+              =dep.person.full_name
+              (#{dep.person.primary_county.try(:abbrev)})
+            /%td=dep.dr_name
+            %td=dep.gap
+      %tr
+        %td
+        %td
+%br
+%br

@@ -1,0 +1,59 @@
+%table#incidents(border="0" cellpadding="0" cellspacing="0")
+  %tr
+    %td(colspan=2)
+      %h2.center Local Incident Details
+  %tr
+    %td(colspan=2)
+      %table.counts(valign="top")
+        %tr
+          %td.center
+            %strong This Week
+            %br
+            =pluralize @weekly_stats.incident_count, "Incident"
+            %br
+            =pluralize @weekly_stats.case_count, 'Case'
+            %br
+            =pluralize @weekly_stats.client_count, 'Client'
+          %td.center
+            %strong This Year
+            %br
+            =pluralize @yearly_stats.incident_count, "Incident"
+            %br
+            =pluralize @yearly_stats.case_count, 'Case'
+            %br
+            =pluralize @yearly_stats.client_count, 'Client'
+        %tr
+          %td
+            %br
+  %tr
+    %td.incident-list(style="vertical-align: top; overflow: visible")
+      - @incidents.each do |inc|
+        .incident-header
+          %a{href:incidents_incident_url(inc)}
+            =inc.date.to_s :dow_short
+            ==-
+            #{inc.city}, #{inc.state}
+            %small (#{inc.county})
+        - dat = inc.dat_incident
+        - if dat
+          - adults = inc.num_adults; children = inc.num_children; units = dat.units_affected
+          %p
+            %strong Incident:
+            =inc.humanized_incident_type
+            %strong Impact:
+            =[(adults and adults > 0) ? pluralize(adults, "adult") : nil, (children and children > 0) ? pluralize(children, "child") : nil, (units && units > 0) ? pluralize(units, "unit") : nil].compact.join(", ")
+            
+            %br
+            %strong Responders:
+            =inc.all_responder_assignments.was_available.count
+            %strong Services Provided:
+            =inc.services_description || 'None'
+        -else
+          %strong No Incident Report Filed
+    %td(style="vertical-align: top; overflow: visible")
+      %div.image-cell
+        %img{src: static_maps_url(false), style: "height: #{map_height}px; width: #{map_width}px"}
+  %tr
+    %td
+      / Need this here as Apple mail sometimes won't display the last cell in a table
+    %td

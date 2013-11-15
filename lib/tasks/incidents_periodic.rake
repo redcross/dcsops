@@ -18,7 +18,7 @@ namespace :incidents_periodic do
       if Date.current.wday == 1 or ENV['FORCE_WEEKLY_REPORT'] == '1'
         subscriptions = Incidents::NotificationSubscription.for_type('weekly').includes{person.chapter}
         subscriptions.each do |sub|
-          Incidents::IncidentsMailer.weekly(sub.person.chapter, sub.person).deliver
+          Incidents::ReportMailer.report(sub.person.chapter, sub.person).deliver
         end
       end
     end

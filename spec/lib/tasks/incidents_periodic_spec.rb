@@ -99,7 +99,7 @@ describe "" do
       Delorean.time_travel_to Date.current.at_beginning_of_week.in_time_zone
       Incidents::NotificationSubscription.create! person: @person, county: nil, notification_type: 'weekly'
 
-      Incidents::IncidentsMailer.should_receive(:weekly).with(@person.chapter, @person).and_return(double :deliver => true)
+      Incidents::ReportMailer.should_receive(:report).with(@person.chapter, @person).and_return(double :deliver => true)
       subject.invoke
     end
 
@@ -107,7 +107,7 @@ describe "" do
       Delorean.time_travel_to 'tuesday noon'
       Incidents::NotificationSubscription.create! person: @person, county: nil, notification_type: 'weekly'
 
-      Incidents::IncidentsMailer.should_not_receive(:weekly)
+      Incidents::ReportMailer.should_not_receive(:report)
       subject.invoke
     end
   end

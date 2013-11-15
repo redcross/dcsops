@@ -1,0 +1,13 @@
+%h2.center Deployments
+.center
+  - deployments = summary_deployments
+  -if deployments.blank?
+    There are no deployments on record at this time.
+  -else
+    - deployments.each do |dr_name, count|
+      /%h3
+      =dr_name
+      \- 
+      %strong= pluralize count, 'person'
+      deployed.
+      %br

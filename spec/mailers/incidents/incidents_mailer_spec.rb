@@ -9,24 +9,6 @@ describe Incidents::IncidentsMailer do
     @chapter = FactoryGirl.create :chapter
   end
 
-  describe "weekly" do
-    let(:mail) { Incidents::IncidentsMailer.weekly(@chapter, person) }
-
-    it "renders the headers" do
-      mail.subject.should match("ARCBA Disaster Operations")
-      mail.to.should eq([person.email])
-      mail.from.should eq(from_address)
-    end
-
-    it "renders the body" do
-      mail.body.encoded.should match("ARCBA Disaster Operations")
-    end
-
-    it "is multipart" do
-      mail.parts.count.should == 2
-    end
-  end
-
   describe "no_incident_report" do
     let(:report) { double :incident, incident_number: "12-345", area_name: 'County', created_at: Time.zone.now, dispatch_log: double( delivered_to: "Bob", log_items: log_items)}
     let(:mail) { Incidents::IncidentsMailer.no_incident_report(report, person) }

@@ -1,0 +1,15 @@
+%h2.center Incident Statistics
+%table#incident-statistics
+  %tr
+    %td(style="text-align: right")
+      %strong Responders
+      %br
+      Responders Active: #{responders_summary_count}
+      %br
+      Responder Travel: #{number_with_delimiter responders_distance} miles
+    %td
+      %strong Resources For Clients
+      %br
+      - incident_statistics.each do |stat, val|
+        #{stat.titleize}: #{val}
+        %br
