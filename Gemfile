@@ -13,8 +13,10 @@ gem 'sass-rails',   '~> 4.0.0.rc1'
 gem 'jquery-rails'
 gem 'haml-rails'
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
+
 gem "memcachier"
 gem "dalli"
+gem 'rack-timeout', github: 'kch/rack-timeout'
 
 gem 'inherited_resources'
 gem 'responders'
@@ -100,8 +102,8 @@ group :development do
 
   gem 'capistrano'
   gem 'rvm-capistrano'
+  gem 'ruby-prof'
 end
-
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

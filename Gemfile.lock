@@ -27,7 +27,7 @@ GIT
 
 GIT
   remote: git://github.com/ernie/squeel.git
-  revision: 74cca8bae7fa33f3d4d88694207a30d4a2d29984
+  revision: d37122201707ba7b2b882dea79b026b664b149b6
   specs:
     squeel (1.1.1)
       activerecord (>= 3.0)
@@ -65,6 +65,12 @@ GIT
   revision: 0ca3749869af1b5e154f81fca35d4199666ac2f8
   specs:
     cancan (1.6.10)
+
+GIT
+  remote: git://github.com/kch/rack-timeout.git
+  revision: 83ca9f5141c1fdcb626820b1601c406e3a3a560a
+  specs:
+    rack-timeout (0.1.0beta2)
 
 GIT
   remote: git://github.com/mikefarmer/geokit.git
@@ -114,7 +120,7 @@ GEM
     addressable (2.3.5)
     arbre (1.0.1)
       activesupport (>= 3.0.0)
-    arel (4.0.0)
+    arel (4.0.1)
     assignable_values (0.7.2)
       activerecord
     atomic (1.1.14)
@@ -246,7 +252,7 @@ GEM
     mime-types (1.25)
     mini_portile (0.5.1)
     minitest (4.7.5)
-    multi_json (1.8.0)
+    multi_json (1.8.2)
     multi_xml (0.5.5)
     multipart-post (1.2.0)
     net-http-persistent (2.9)
@@ -318,6 +324,7 @@ GEM
       rspec-mocks (~> 2.14.0)
     ruby-ole (1.2.11.7)
     ruby-openid (2.2.3)
+    ruby-prof (0.13.0)
     rubyzip (0.9.9)
     rvm-capistrano (1.5.0)
       capistrano (>= 2.15.4)
@@ -382,7 +389,7 @@ GEM
       execjs
       rails (>= 3.1)
       railties (>= 3.1)
-    tzinfo (0.3.37)
+    tzinfo (0.3.38)
     uglifier (2.2.1)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
@@ -442,6 +449,7 @@ DEPENDENCIES
   parallel_tests
   puma
   quiet_assets
+  rack-timeout!
   rails (~> 4.0.0)
   rails_12factor
   ransack!
@@ -451,6 +459,7 @@ DEPENDENCIES
   rspec
   rspec-rails
   ruby-openid
+  ruby-prof
   rvm-capistrano
   sass-rails (~> 4.0.0.rc1)
   sauce (~> 3.0.4)

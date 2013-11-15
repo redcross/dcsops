@@ -30,6 +30,8 @@ class Roster::ImportController < ApplicationController
         puts msg
         self.import_log << msg
         self.import_log << "\n"
+
+        extend_timeout
       end
     end
 
