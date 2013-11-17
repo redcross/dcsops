@@ -1,7 +1,13 @@
 ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
   menu parent: 'Incidents'
 
+  filter :notification_type
+
   controller do
+    def collection
+      @_collection ||= super.includes{person}
+    end
+
     def resource_params
       request.get? ? [] : [params.require(:notification).permit(:person_id, :county_id, :notification_type)]
     end
