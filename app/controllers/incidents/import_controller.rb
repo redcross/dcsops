@@ -30,8 +30,6 @@ class Incidents::ImportController < ApplicationController
 
           puts msg
           self.import_log << msg + "\n"
-
-          extend_timeout
         end
       end
     else
@@ -58,8 +56,6 @@ class Incidents::ImportController < ApplicationController
 
           puts msg
           self.import_log << msg + "\n"
-
-          extend_timeout
         end
       end
     else

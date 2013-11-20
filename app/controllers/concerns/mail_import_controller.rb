@@ -9,13 +9,6 @@ module MailImportController
     end
   end
 
-  def extend_timeout
-    if info = env[Rack::Timeout::ENV_INFO_KEY]
-      info.timeout = info.duration + 10
-      puts "source=rack-timeout request_id=#{info.id} duration=#{info.duration} timeout=#{info.timeout} extending timeout"
-    end
-  end
-
   module ClassMethods
     def import_handler(*methods)
       protect_from_forgery except: methods
