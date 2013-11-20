@@ -98,7 +98,8 @@ class Scheduler::Shift < ActiveRecord::Base
       end
 
       if hash[shift][ass.date].nil?
-        raise "Got unknown date back from query #{ass.date} #{shift.shift_group.period} #{hash.inspect}"
+        logger.warn "Got unknown date back from query #{ass.date} #{shift.shift_group.period} #{hash.inspect}"
+        next hash
       end
 
       hash[shift][ass.date] += 1
