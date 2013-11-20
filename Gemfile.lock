@@ -67,12 +67,6 @@ GIT
     cancan (1.6.10)
 
 GIT
-  remote: git://github.com/kch/rack-timeout.git
-  revision: 83ca9f5141c1fdcb626820b1601c406e3a3a560a
-  specs:
-    rack-timeout (0.1.0beta2)
-
-GIT
   remote: git://github.com/mikefarmer/geokit.git
   revision: bd2c3050eaa9cf07d64f1d4cf80072eb8e75d5f1
   specs:
@@ -449,7 +443,6 @@ DEPENDENCIES
   parallel_tests
   puma
   quiet_assets
-  rack-timeout!
   rails (~> 4.0.0)
   rails_12factor
   ransack!

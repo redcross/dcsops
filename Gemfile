@@ -16,7 +16,6 @@ gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) support
 
 gem "memcachier"
 gem "dalli"
-gem 'rack-timeout', github: 'kch/rack-timeout'
 
 gem 'inherited_resources'
 gem 'responders'
