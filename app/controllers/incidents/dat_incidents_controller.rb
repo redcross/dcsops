@@ -1,5 +1,6 @@
 class Incidents::DatIncidentsController < Incidents::BaseController
   inherit_resources
+  respond_to :html, :json
   #load_and_authorize_resource :incident, find_by: :find_by_incident_number!
   load_and_authorize_resource :dat_incident, class: Incidents::DatIncident
   defaults singleton: true

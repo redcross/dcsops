@@ -3,41 +3,28 @@
     .span12
       =f.semantic_errors
 
-  - basic_proxy = FormProxy.new(f); basic_html = render 'form_basic', f: basic_proxy
-  - services_proxy = FormProxy.new(f); services_html = render 'form_services', f: services_proxy
-  - responders_proxy = FormProxy.new(f); responders_html = render 'form_responders', f: responders_proxy
+  - tabs = {'form_basic' => 'Basic', 'form_responders' => 'Responders', 'form_services' => 'Services'}
   - all_errors = error_keys(f.object)
-  - basic_has_errors = (all_errors & basic_proxy.keys).present?
-  - responders_has_errors = (all_errors & responders_proxy.keys).present?
-  - services_has_errors = ((all_errors & services_proxy.keys)).present?
+  - components = tabs.map{|name, title| p = FormProxy.new(f); html = render(name, f: p); {name => {proxy: p, html: html, errors: (all_errors & p.keys).present?}}}.reduce(&:merge)
+  - first_error = tabs.keys.detect{|name| components[name][:errors] }
 
   .tabbable
     %ul.nav.nav-tabs
-      %li{class: (!responders_has_errors && !services_has_errors || basic_has_errors) && 'active'}
-        %a{href: "#details", "data-toggle"=>"tab", class: (basic_has_errors && 'error')} 
-          Details
-          %span.error-message
-      %li{class: (!basic_has_errors && responders_has_errors) && 'active'}
-        %a{href: "#responders", "data-toggle"=>"tab", class: (responders_has_errors && 'error')} 
-          Responders
-          %span.error-message 
-      %li{class: (!responders_has_errors && !basic_has_errors && services_has_errors) && 'active'}
-        %a{href: "#services", "data-toggle"=>"tab", class: (services_has_errors && 'error')} 
-          Services
-          %span.error-message
+      - tabs.each do |name, title|
+        %li{class: (first_error == name && 'active')}
+          %a{href: '#' + name, data: {toggle: 'tab'}, class: (components[name][:errors] && 'error')}
+            =title
+            %span.error-message
 
   .tab-content
-    .tab-pane#details{class: (!responders_has_errors && !services_has_errors || basic_has_errors) && 'active'}=basic_html
-
-    .tab-pane#services{class: (!responders_has_errors && !basic_has_errors && services_has_errors) && 'active'}=services_html
-      
-    .tab-pane#responders{class: (!basic_has_errors && responders_has_errors) && 'active'}=responders_html
+    - tabs.each_with_index do |(name, title), idx|
+      .tab-pane{id: name, class: (first_error == name || (idx == 0 && first_error.nil?)) && 'active'}=components[name][:html]
 
 - content_for :footer_js do
   = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
   :javascript
     config = #{map_config.to_json};
-    incidentLocationController = new IncidentLocationController(#{resource.incident.lat.to_json}, #{resource.incident.lng.to_json}, config);
+    //incidentLocationController = new IncidentLocationController(#{resource.incident.lat.to_json}, #{resource.incident.lng.to_json}, config);
     formController = new DatIncidentsFormController();
     $(function() {
       var hash = window.location.hash;
@@ -46,4 +33,8 @@
       $('a[data-toggle=tab]').on('shown', function(evt) {
         window.location.hash = $(evt.target).attr('href')
       })
+
+      $.fn.editable.defaults.mode = 'inline';
+      $('[data-editme]').editable()
     });
+

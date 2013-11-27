@@ -2,7 +2,7 @@
   .span6
     =f.inputs "Basic" do
       - readonly = resource.incident && !resource.incident.new_record?
-      =f.input :completed_by, as: :string, input_html: {value: resource.completed_by.try(:full_name), readonly: true}
+      -#=f.input :completed_by, as: :string, input_html: {value: resource.completed_by.try(:full_name), readonly: true}
       =f.semantic_fields_for :incident do |f|
         =f.semantic_errors
         =f.input :incident_number, input_html: {readonly: readonly}
@@ -25,18 +25,18 @@
     .span6
       =f.semantic_fields_for :incident do |f|
 
-        =f.input :search_for_address, hint: 'Enter as much information as you have about the address, and then click the "Look Up Address" button below.', input_html: {value: ''}
+        =f.input :search_for_address, hint: 'Enter as much information as you have about the address, and then click the "Look Up Address" button below.', input_html: {value: '', editable: false}
         .control-group.address-lookup-group
           .controls
             %button.btn.btn-block.address-lookup Look Up Address
-        =f.input :address, input_html: {readonly: true}
-        =f.input :city, input_html: {readonly: true}
-        =f.input :state, default: 'CA', input_html: {readonly: true}
-        =f.input :zip, input_html: {readonly: true}
-        =f.input :lat, as: :hidden, input_html: {readonly: true}
-        =f.input :lng, as: :hidden, input_html: {readonly: true}
-        =f.input :neighborhood, input_html: {readonly: true}
-        =f.input :county, input_html: {readonly: true}
+        =f.input :address, input_html: {readonly: true, editable: false}
+        =f.input :city, input_html: {readonly: true, editable: false}
+        =f.input :state, default: 'CA', input_html: {readonly: true, editable: false}
+        =f.input :zip, input_html: {readonly: true, editable: false}
+        =f.input :lat, as: :hidden, input_html: {readonly: true, editable: false}
+        =f.input :lng, as: :hidden, input_html: {readonly: true, editable: false}
+        =f.input :neighborhood, input_html: {readonly: true, editable: false}
+        =f.input :county, input_html: {readonly: true, editable: false}
     .span6
       .incident-map{style: "height: 450px"}
 .row
@@ -47,7 +47,7 @@
       =f.input :units_major
       =f.input :units_minor
       =f.input :units_affected
-      =f.input :units_total, input_html: {readonly: true}
+      =f.input :units_total, input_html: {readonly: true, editable: false}
   .span6
     =f.inputs "Timeline" do
       =f.input :responder_notified, as: :time_field
