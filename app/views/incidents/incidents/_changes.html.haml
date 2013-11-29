@@ -1,2 +1,29 @@
+-#%table.table.table-bordered
+-#  %thead
+-#    %tr
+-#      %th Who
+-#      %th When
+-#      %th What
+-#      %th Old
+-#      %th New
+-#  %tbody
+-#    - resource_changes.each do |version|
+-#      - who = Roster::Person.where(id: version.whodunnit).first.try(:full_name) || version.whodunnit
+-#      - changeset = YAML.load(version.object_changes)
+-#      - ignore_incident_fields = %w(lat lng updated_at num_adults num_children num_families address cross_street neighboorhood city state zip incident_type)
+-#      - changeset = changeset.select{|k, v| !ignore_incident_fields.include?(k)}
+-#      - next if changeset.blank?
+-#      %tr
+-#        %td{rowspan: changeset.count}=who
+-#        %td{rowspan: changeset.count}= version.created_at.in_time_zone.to_s :date_time
+-#        - change = changeset.first
+-#        %td=change.first.titleize
+-#        %td=change.last.first
+-#        %td=change.last.last
+-#      - changeset.to_a[1..-1].each do |change|
+-#        %tr
+-#          %td=change.first.titleize
+-#          %td=change.last.first
+-#          %td=change.last.last
 - resource_changes.each do |version|
   =render 'version', version: version

@@ -1,0 +1,10 @@
+=f.inputs "Basic" do
+  - readonly = resource.incident && !resource.incident.new_record?
+  =f.input :completed_by, as: :string, input_html: {value: resource.completed_by.try(:full_name), readonly: true}
+  =f.semantic_fields_for :incident do |f|
+    =f.semantic_errors
+    =f.input :incident_number, input_html: {readonly: readonly}
+    -#=f.input :county, as: (readonly ? :string : :select), input_html: {readonly: readonly, value: resource.incident.try(:county).try(:name)}
+    =f.input :date, as: (readonly ? :string : :bootstrap_date), input_html: {readonly: readonly}
+    =f.input :incident_type, as: :assignable_select, include_blank: false, required: true, humanized: :humanized_valid_incident_types
+  =f.input :incident_call_type, as: :assignable_select, include_blank: false, required: true

@@ -9,7 +9,7 @@ class Incidents::Incident < ActiveRecord::Base
   has_one :dat_incident, class_name: 'Incidents::DatIncident', inverse_of: :incident
   has_one :dispatch_log, class_name: 'Incidents::DispatchLog'
   
-  has_many :event_logs, ->{ order{event_time} }, class_name: 'Incidents::EventLog'
+  has_many :event_logs, ->{ order{event_time.desc} }, class_name: 'Incidents::EventLog'
   has_one :latest_event_log, ->{ order{event_time.desc}.where{event != 'note'} }, class_name: 'Incidents::EventLog'
 
   has_many :responder_assignments, lambda { where{role != 'team_lead'}}, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id, inverse_of: :incident

@@ -28,3 +28,17 @@
     }
   }
 }
+
+.webkit.mobile {
+  input, select, textarea {
+    font-size: 16px;
+  }
+}
+
+.modal { position: absolute; } 
+.modal-body { max-height: none; }
+@media (max-width: 767px) {   
+  .modal {
+    position: absolute;
+  }
+}

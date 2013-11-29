@@ -1,0 +1,11 @@
+=f.inputs "Vehicles" do
+  =f.semantic_errors :vehicle_uses
+
+  - f.object.vehicles[0..-2].each do |veh|
+    =render 'vehicle_fields', veh: veh, f: f
+  .control-group.select
+    %label.control-label(for="vehicles") Vehicle
+    .controls
+      =select_tag 'incidents_dat_incident[vehicle_ids][]', grouped_options_for_select(Logistics::Vehicle.for_chapter(f.object.incident.chapter || current_chapter).order{[category, name]}.map{|veh| [veh.name, veh.humanized_category, veh.id]}.group_by{|arr| arr[1]}, f.object.vehicles.last.try(:id)), prompt: 'Choose a Vehicle…', id: 'vehicles'
+      %br
+      %button.btn.btn-primary.btn-mini.add-vehicle{data: {template: render( 'vehicle_fields', veh: nil, f: f)}} Add Another Vehicle

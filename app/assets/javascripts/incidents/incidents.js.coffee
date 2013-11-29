@@ -40,7 +40,8 @@ class window.IncidentLocationController
       @marker.setMap @map
 
     @fields.forEach (fname) =>
-      $('#' + @form_base + '_' + fname).on 'change', (evt) =>
+      field = '#' + @form_base + '_' + fname
+      $(document).on 'change', field, (evt) =>
         this.updateMap()
 
   setFieldVal: (fname, val) ->
@@ -163,3 +164,48 @@ class window.IncidentEventLogsController
   constructor: () ->
     $('#add-log-button').on "click", (evt) =>
       $("#create-event-modal").modal('show')
+
+class window.IncidentEditPanelController
+  updateMapping:
+    demographics: 'details'
+    damage_assessment: 'details'
+    location: 'details'
+
+  constructor: (edit_url) ->
+    $(document).on 'click', '[data-toggle=tab]', (evt) =>
+      console.log 'got click!'
+      evt.preventDefault()
+      evt.stopPropagation()
+      false
+
+    $(document).on 'click', '[data-edit-panel]', (evt) =>
+      evt.preventDefault()
+
+      panel = $(evt.target).data('edit-panel')
+      modal = $('#edit-modal')
+
+      modal.modal('show')
+      modal.html('<div class="modal-body">Loading</div>')
+      $.ajax
+        url: edit_url
+        data: {panel_name: panel}
+        success: (data, status, xhr) =>
+          modal.html(data)
+          modal.find('legend').remove()
+
+    $(document).on 'edit-panel:success', (evt, panel) =>
+      console.log(panel);
+      $('#edit-modal').modal('hide');
+
+      this.updateTab(@updateMapping[panel])
+
+
+  updateTab: (tabName) ->
+    tabName = 'details'
+    return unless tabName
+    $.ajax
+      url: window.location.href
+      data:
+        partial: tabName
+      success: (data, status, xhr) =>
+        $("#inc-#{tabName}").html(data)

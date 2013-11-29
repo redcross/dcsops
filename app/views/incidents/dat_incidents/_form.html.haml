@@ -24,8 +24,8 @@
   = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
   :javascript
     config = #{map_config.to_json};
-    //incidentLocationController = new IncidentLocationController(#{resource.incident.lat.to_json}, #{resource.incident.lng.to_json}, config);
-    formController = new DatIncidentsFormController();
+    window.incidentLocationController = new IncidentLocationController(#{resource.incident.lat.to_json}, #{resource.incident.lng.to_json}, config);
+    window.formController = new DatIncidentsFormController();
     $(function() {
       var hash = window.location.hash;
       hash && $('ul.nav a[href="' + hash + '"]').tab('show');

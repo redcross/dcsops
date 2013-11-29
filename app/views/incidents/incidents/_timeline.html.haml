@@ -1,6 +1,11 @@
 
 %h3 
   Timeline
+  %button.btn.btn-primary(data-target="#create-event" data-toggle="collapse") Add Log
+
+.collapse#create-event
+  - new_log = Incidents::EventLog.new incident: resource, event_time: current_chapter.time_zone.now
+  =render '/incidents/event_logs/form', incident: resource, resource: new_log
 
 - resource.event_logs.each do |evt|
   %h5
@@ -19,7 +24,4 @@
   -else
     =simple_format evt.message
 %hr
-%button.btn.btn-primary(data-target="#create-event" data-toggle="collapse") Add Log
-.collapse#create-event
-  - new_log = Incidents::EventLog.new incident: resource, event_time: current_chapter.time_zone.now
-  =render '/incidents/event_logs/form', incident: resource, resource: new_log
+

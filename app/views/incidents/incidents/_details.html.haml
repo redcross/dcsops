@@ -1,6 +1,8 @@
 - dat = resource.dat_incident
 
-%h3 Location
+%h3 
+  Location
+  %small=edit_link 'location'
 -if resource.address
   =resource.address
   %br
@@ -24,7 +26,9 @@ County
 -if dat
   .row
     .span4
-      %h4 Demographics
+      %h4 
+        Demographics
+        %small=edit_link 'demographics'
       %table.table.table-bordered.table-condensed
         %tr
           %th Num. Adults
@@ -45,7 +49,9 @@ County
           %th People Deceased
           %td=dat.num_people_deceased
     .span4
-      %h4 Damage Assessment
+      %h4 
+        Damage Assessment
+        %small=edit_link 'damage_assessment'
       %table.table.table-bordered.table-condensed
         %tr
           %th Structure Type
@@ -82,14 +88,13 @@ County
             -if resource.time_to_on_scene
               =distance_of_time_in_words resource.time_to_on_scene
         %tr
-          %th Type of Call
-          %td
-            =dat.incident_call_type.titleize
+          %th=passthrough_edit_link 'basic', 'Type of Call'
+          %td=dat.incident_call_type.titleize
         %tr
-          %th Assistance Provided
+          %th=passthrough_edit_link 'services', 'Assistance Provided'
           %td=resource.services_description
         %tr
-          %th Resources Used
+          %th=passthrough_edit_link 'resources', 'Resources Used'
           %td=dat.resources.map{|name, quantity| quantity = quantity.to_i; if quantity > 0; name = name.titleize.singularize; pluralize(quantity, name); end}.compact.to_sentence
         -if resource.evac_partner_use
           %tr
@@ -114,14 +119,16 @@ County
             %th Shelter Opened
             %td=resource.shelter_partner_use.partner_name
         %tr
-          %th Vehicles
+          %th=passthrough_edit_link 'vehicles', 'Vehicles'
           %td= dat.vehicles.map(&:name).to_sentence
   .row
     .span4
       %h4 Description
       = resource.narrative_brief
     .offset1.span7
-      %h4 Narrative
+      %h4 
+        Narrative
+        %small=edit_link 'narrative'
       = resource.narrative
 %h3 
   Casework

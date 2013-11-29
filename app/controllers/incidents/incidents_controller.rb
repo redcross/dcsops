@@ -11,6 +11,14 @@ class Incidents::IncidentsController < Incidents::BaseController
 
   has_scope :in_area, as: :area_id_eq
 
+  def show
+    if partial = params[:partial] and tab_authorized?(partial)
+      render partial: partial
+    else
+      show!
+    end
+  end
+
   def create
     create! { new_incidents_incident_dat_path(resource) }
   end
@@ -50,6 +58,17 @@ class Incidents::IncidentsController < Incidents::BaseController
   end
 
   private
+
+    helper_method :tab_authorized?
+    def tab_authorized?(name)
+      case name
+      when 'summary' then true
+      when 'details', 'timeline', 'responders', 'photos' then can? :read_details, resource
+      when 'cases' then can? :read_case_details, resource
+      when 'changes' then can? :read_case_details, resource
+      else false
+      end
+    end
 
     def collection
       @_incidents ||= begin

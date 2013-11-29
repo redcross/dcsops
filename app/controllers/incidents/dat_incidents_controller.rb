@@ -36,7 +36,11 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     unless parent? and parent.dat_incident
       redirect_to action: :new and return
     end
-    edit!
+    if params[:panel_name]
+      render action: 'panel', layout: nil
+    else
+      edit!
+    end
   end
 
   def create
@@ -46,8 +50,12 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   end
 
   def update
+    if params[:panel_name]
+    end
     update! do |success, failure|
       success.html { Incidents::IncidentReportFiled.new(resource.incident.reload, false).save; redirect_to resource.incident}
+      success.js { }
+      failure.js { render action: 'panel', layout: nil}
     end
   end
 

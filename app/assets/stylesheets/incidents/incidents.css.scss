@@ -7,4 +7,12 @@ body.incidents {
     font-size: 80%;
     line-height: 1.5;
   }
+
+  .modal form {
+    margin: 0;
+    padding: 0;
+    fieldset legend {
+      display: none;
+    }
+  }
 }
