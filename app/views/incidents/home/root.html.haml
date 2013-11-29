@@ -60,11 +60,14 @@
             #{inc.city}
           %small(style="color: grey")=inc.incident_number
         %br
-        -if inc.dat_incident
-          #{pluralize inc.dat_incident.units_total, "Unit"}, 
-        #{pluralize inc.num_families, "Family"},
-        #{pluralize inc.num_adults, "Adult"},
-        #{pluralize inc.num_children, "Child"}
+        -if inc.valid_incident?
+          -if inc.dat_incident
+            #{pluralize inc.dat_incident.units_total, "Unit"}, 
+          #{pluralize inc.num_families, "Family"},
+          #{pluralize inc.num_adults, "Adult"},
+          #{pluralize inc.num_children, "Child"}
+        -else
+          Open Incident
     -if can? :index, Incidents::Incident
       %h5
         =link_to 'More Incidents&hellip;'.html_safe, incidents_incidents_path

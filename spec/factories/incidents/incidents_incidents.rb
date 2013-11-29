@@ -3,6 +3,7 @@
 FactoryGirl.define do
   factory :raw_incident, :class => 'Incidents::Incident' do
     date "2013-06-05"
+    status 'open'
     area { |i| i.association :county, chapter: i.chapter }
     incident_number {"13-#{SecureRandom.random_number(999)}"}
   end

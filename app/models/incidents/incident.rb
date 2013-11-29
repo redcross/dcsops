@@ -62,10 +62,13 @@ class Incidents::Incident < ActiveRecord::Base
     valid.order(nil).select{[count(id).as(:incident_count), sum(num_cases).as(:case_count), sum(num_families).as(:family_count), sum(num_adults + num_children).as(:client_count)]}.first
   }
   scope :valid, lambda {
-    where{incident_type.not_in(my{invalid_incident_types}) | (incident_type == nil)}
+    where{status != 'invalid'}
+  }
+  scope :with_status, -> filter_status {
+    where{status == filter_status}
   }
   scope :needs_incident_report, lambda {
-    valid.joins{dat_incident.outer}.where{(dat_incident.id == nil) & ((ignore_incident_report != true) | (ignore_incident_report == nil))}
+    with_status 'open'
   }
   scope :open_cases, lambda {
     valid.joins{cas_incident.cases.outer}.where{((cas_incident.cases_open > 0) | (cas_incident.last_date_with_open_cases >= 7.days.ago)) & (cas_incident.cases.case_last_updated > 2.months.ago)}
@@ -75,15 +78,23 @@ class Incidents::Incident < ActiveRecord::Base
     self.class.valid_incident_types + self.class.invalid_incident_types
   end
 
+  assignable_values_for :status do
+    %w(open closed invalid)
+  end
+
   delegated_validator Incidents::Validators::IncidentValidator, if: :valid_incident?
   delegated_validator Incidents::Validators::InvalidIncidentValidator, if: :invalid_incident?
 
   def valid_incident?
-    self.class.valid_incident_types.include?(self.incident_type)
+    status == 'closed'
   end
 
   def invalid_incident?
-    self.class.invalid_incident_types.include?(self.incident_type)
+    status == 'invalid'
+  end
+
+  def open_incident?
+    status == 'open'
   end
 
   def self.valid_incident_types

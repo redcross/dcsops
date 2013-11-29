@@ -89,13 +89,13 @@ County
               =distance_of_time_in_words resource.time_to_on_scene
         %tr
           %th=passthrough_edit_link 'basic', 'Type of Call'
-          %td=dat.incident_call_type.titleize
+          %td=dat.incident_call_type.try :titleize
         %tr
           %th=passthrough_edit_link 'services', 'Assistance Provided'
           %td=resource.services_description
         %tr
           %th=passthrough_edit_link 'resources', 'Resources Used'
-          %td=dat.resources.map{|name, quantity| quantity = quantity.to_i; if quantity > 0; name = name.titleize.singularize; pluralize(quantity, name); end}.compact.to_sentence
+          %td=(dat.resources || []).map{|name, quantity| quantity = quantity.to_i; if quantity > 0; name = name.titleize.singularize; pluralize(quantity, name); end}.compact.to_sentence
         -if resource.evac_partner_use
           %tr
             %th Evac Center

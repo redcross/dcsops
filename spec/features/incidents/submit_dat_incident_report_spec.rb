@@ -41,6 +41,7 @@ describe "DAT Incident Report" do
     @incident.all_responder_assignments.map(&:person).should =~ [@team_lead, @responder, @flex_responder]
 
     @incident.address.should == "1663 Market Street"
+    @incident.status.should == 'closed'
 
   end
 

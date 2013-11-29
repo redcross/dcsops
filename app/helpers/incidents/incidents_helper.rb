@@ -1,7 +1,4 @@
 module Incidents::IncidentsHelper
-  def inline_editable?
-    true
-  end
 
   def edit_link panel, title="(edit)", opts={}
     if inline_editable?

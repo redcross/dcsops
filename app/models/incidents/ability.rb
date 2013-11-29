@@ -13,6 +13,7 @@ class Incidents::Ability
 
     if person.has_role 'create_incident'
         can :create, Incidents::Incident
+        can :reopen, Incidents::Incident
     end
 
     if is_admin or person.has_role 'submit_incident_report'
