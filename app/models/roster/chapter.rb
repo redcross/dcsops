@@ -13,6 +13,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_map_zoom, :integer
   serialized_accessor :config, :incidents_geocode_bounds, :string
   serialized_accessor :config, :incidents_resources_tracked, :string
+  serialized_accessor :config, :incidents_report_editable, :boolean
   serialized_accessor :config, :idat_database, :string
   serialized_accessor :config, :incidents_report_dro_ignore, :string
 

@@ -48,25 +48,21 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     end
   end
 
-  def create
-    create! do |success, failure|
-      success.html { Incidents::IncidentReportFiled.new(resource.incident.reload, true).save; redirect_to resource.incident}
-      success.js { render action: 'update' }
-      failure.js { pp resource.errors, resource.incident.status; render action: 'panel', layout: nil}
-    end
-  end
-
   def update
-    if params[:panel_name]
-    end
-    update! do |success, failure|
-      success.html { Incidents::IncidentReportFiled.new(resource.incident.reload, false).save; redirect_to resource.incident}
-      success.js { }
+    action = params[:action] == 'create' ? :create! : :update!
+    self.send(action) do |success, failure|
+      success.html {notify(true); redirect_to resource.incident}
+      success.js { notify(true); render action: 'update' }
       failure.js { render action: 'panel', layout: nil}
     end
   end
+  alias_method :create, :update
 
   private
+  def notify(is_new=true)
+    Incidents::IncidentReportFiled.new(resource.incident.reload, is_new).save
+  end
+
   helper_method :form_url
   def form_url
     params[:incident_id] ? incidents_incident_dat_path(params[:incident_id]) : incidents_dat_incidents_path
@@ -109,7 +105,6 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     obj.incident.attributes = inc_attrs if inc_attrs
 
     return unless %w(new edit).include? params[:action] 
-    puts 'preparing'
 
     obj.build_incident if obj.incident.nil?
     obj.incident.build_evac_partner_use if obj.incident.evac_partner_use.nil?

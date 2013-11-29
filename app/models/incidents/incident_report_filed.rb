@@ -10,7 +10,9 @@ class Incidents::IncidentReportFiled
   end
 
   def save
-    fire_notifications
+    if incident.valid_incident?
+      fire_notifications
+    end
   end
 
   def role_scope

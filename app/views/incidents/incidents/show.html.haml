@@ -17,19 +17,18 @@
         =link_to 'Reopen', reopen_resource_path, class: 'btn', method: 'post', data: {confirm: 'Really reopen this incident?'}
 
 
-- tabs = %w(details summary cases timeline responders photos changes)
+- tabs = %w(details summary cases timeline responders photos changes).select{|name| tab_authorized? name}
 
 .tabbable
   %ul.nav.nav-tabs
-    - tabs.select{|name| tab_authorized? name}.each_with_index do |name, idx|
+    - tabs.each_with_index do |name, idx|
       %li{class: ((idx==0) && 'active')}
         %a{href: '', data: {target: "#inc-#{name}", toggle: 'tab'}}=name.titleize
   
 .tab-content
   - tabs.each_with_index do |name, idx|
-    -if tab_authorized? name
-      .tab-pane{class: ((idx==0) && 'active'), id: "inc-#{name}"}
-        =render name
+    .tab-pane{class: ((idx==0) && 'active'), id: "inc-#{name}"}
+      =render name
 
 .modal.hide.fade#edit-modal
   .modal-header 

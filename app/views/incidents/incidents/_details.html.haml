@@ -13,16 +13,17 @@ County
 
 %h3 
   DAT Details
-  -if dat && can?( :update, resource.dat_incident)
-    %small
-      =link_to "Edit", edit_incidents_incident_dat_path(resource)
-  -elsif dat.nil? && can?( :create, Incidents::DatIncident)
-    %small
-      =link_to "Submit Report", edit_incidents_incident_dat_path(resource)
-  -if dat
-    %small
-      Submitted By:
-      =dat.completed_by.try(:full_name)
+  -unless inline_editable?
+    -if dat && can?( :update, resource.dat_incident)
+      %small
+        =link_to "Edit", edit_incidents_incident_dat_path(resource)
+    -elsif dat.nil? && can?( :create, Incidents::DatIncident)
+      %small
+        =link_to "Submit Report", edit_incidents_incident_dat_path(resource)
+    -if dat
+      %small
+        Submitted By:
+        =dat.completed_by.try(:full_name)
 -if dat
   .row
     .span4

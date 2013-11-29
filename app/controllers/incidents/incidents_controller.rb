@@ -79,7 +79,8 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     helper_method :inline_editable?
     def inline_editable?
-      resource.open_incident?
+      chapter = resource.chapter
+      chapter && chapter.incidents_report_editable && resource.open_incident? && can?(:update, Incidents::DatIncident.new(incident: resource))
     end
 
     helper_method :tab_authorized?
