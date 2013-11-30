@@ -10,7 +10,7 @@ class Incidents::IncidentReportFiled
   end
 
   def save
-    if incident.valid_incident?
+    if @incident.valid_incident?
       fire_notifications
     end
   end

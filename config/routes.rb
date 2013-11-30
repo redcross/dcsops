@@ -76,6 +76,7 @@ Scheduler::Application.routes.draw do
     resources :incidents do
       resource :dat, controller: :dat_incidents
       resources :event_logs
+      resources :responders
       
       collection do
         get :needs_report

@@ -2,6 +2,11 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+.gmap img {
+  max-width: none;
+  width: auto; display:inline;
+}
+
 body.incidents {
   .all-incidents-map img, .incident-map img {
     max-width: none;

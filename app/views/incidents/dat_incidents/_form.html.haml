@@ -24,7 +24,7 @@
       .tab-pane{id: name, class: components[name][:active] && 'active'}=components[name][:html]
 
 - content_for :footer_js do
-  = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
+  = google_maps_javascript
   :javascript
     config = #{map_config.to_json};
     window.incidentLocationController = new IncidentLocationController(#{resource.incident.lat.to_json}, #{resource.incident.lng.to_json}, config);

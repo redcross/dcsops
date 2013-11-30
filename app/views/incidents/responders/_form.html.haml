@@ -1,0 +1,40 @@
+= form_for resource, url: incidents_incident_responder_path(parent, resource), builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
+  .row
+    .span6
+      %h3 
+        Assign Responder
+        %small=link_to 'Cancel', collection_path
+      =f.input :person_id, as: :hidden
+      -if f.object.person
+        .control-group
+          .control-label Person
+          .controls=f.object.person.full_name
+        - f.object.person.phone_order.each do |ph|
+          .control-group
+            .control-label=ph[:label].to_s.titleize
+            .controls
+              =ph[:number]
+              -if ph[:carrier]
+                (sms)
+      -else
+        =f.input :person, as: :person_typeahead
+      =f.input :role, collection: grouped_options_for_select(grouped_responder_roles, f.object.role), label: 'Response'
+      =f.input :was_flex, label: 'Flex Responder'
+      =f.input :send_assignment_sms, as: :boolean
+      =f.input :send_assignment_email, as: :boolean
+      =f.actions do
+        =f.action :submit, label: "Save Assignment", button_html: {class: 'btn btn-primary'}
+        -unless f.object.new_record?
+          =link_to 'Remove', resource_path, class: 'btn btn-danger', method: 'delete'
+    .span6
+      .assignment-map.gmap(style="height: 300px")
+      .directions.gmap
+
+- content_for :footer_js do
+  = google_maps_javascript
+  :javascript
+    window.assignmentController = new IncidentAssignmentController(#{map_config.to_json}, $('.assignment-map')[0], $('.directions')[0])
+    assignmentController.showAssignment(#{parent.lat.to_f.to_json}, #{parent.lng.to_f.to_json}, #{person.lat.to_f.to_json}, #{person.lng.to_f.to_json})
+
+-if request.xhr?
+  =yield :footer_js

@@ -22,6 +22,7 @@ class Incidents::Ability
         can :create, Incidents::EventLog
         today = person.chapter.time_zone.today
         can :update, Incidents::DatIncident, {incident: {date: ((today-5)..(today+1))}}
+        can :manage, Incidents::ResponderAssignment, {incident: {status: 'open'}}
     end
 
     if is_admin or person.has_role 'cas_admin'

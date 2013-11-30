@@ -44,6 +44,6 @@
     .all-incidents-map(style="width: 100%; height: 500px;")
 
 - content_for :footer_js do
-  = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization"
+  = google_maps_javascript
   :javascript
     allIncidentsMapController = new AllIncidentsHeatmapController(#{map_json_for(@incidents).to_json}, #{(params[:map_marker_type] || 'heatmap').to_json})

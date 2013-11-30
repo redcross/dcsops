@@ -16,3 +16,15 @@ body.incidents {
     }
   }
 }
+
+.responders-table {
+  .travel-short .distance, .travel-short .travel-time {
+    color: green;
+  }
+  .travel-medium .distance, .travel-medium .travel-time {
+    color: #c09853;
+  }
+  .travel-red .distance, .travel-red .travel-time {
+    color: red;
+  }
+}

@@ -29,7 +29,7 @@
       .all-incidents-map{style: "height: 500px"}
 
 - content_for :footer_js do
-  = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
+  = google_maps_javascript
   :javascript
     allIncidentsMapController = new AllIncidentsMapController(#{map_json_for(recent_incidents).to_json}, {show_icons: true})
 

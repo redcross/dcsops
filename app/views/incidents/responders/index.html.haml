@@ -1,0 +1,105 @@
+.app{"ng-app" => ''}
+  .row
+    .span6
+      %h3
+        =link_to parent do
+          %i.icon-chevron-left
+          #{parent.incident_number} #{parent.city}, #{parent.state}
+      %h4 Responders
+      %table.table.table-bordered.table-condensed
+        %tr
+          %th Name
+          %th Role
+          %th Response
+          %th Action
+        - collection.select(&:was_available).each do |assignment|
+          %tr
+            %td=assignment.person.full_name
+            %td=assignment.humanized_role
+            %td
+            %td=link_to 'Edit', edit_resource_path(assignment), class: 'btn btn-mini'
+    .span6
+      %h4
+        Map
+        %small Edit Incident Location
+        .responder-map{style: "height: 300px"}
+  .row
+    .span12
+      %h4 Available Responders
+      %table.table.table-bordered.table-condensed.responders-table
+        %thead
+          %tr 
+            %th Type
+            %th Qualifications
+            %th Name
+            %th City
+            %th Distance
+            %th Travel Time
+            %th Recruit
+            %th Assign
+        %tbody
+          %tr
+            %th(colspan=8) Scheduled
+          - abbrevs = {}
+          - scheduled = scheduled_responders(parent)
+          - scheduled.each do |ass|
+            %tr.person{data: {person: person_json(ass.person, ass), person_id: ass.person_id}}
+              %td=ass.shift.name
+              %td=qualifications(ass.person)
+              %td=link_to ass.person.full_name, ass.person
+              %td #{ass.person.city.titleize}, #{ass.person.state}
+              %td.distance
+              %td.travel-time
+              %td
+                -if ass.person.sms_addresses.present?
+                  =link_to 'Send SMS', '', class: 'btn btn-mini'
+              %td
+                =link_to 'Assign', new_resource_path(person_id: ass.person.id), class: 'btn btn-mini', data: {assign: ass.person.id}
+        %tbody
+          %tr
+            %th(colspan=8) Flex
+          - flex_responders(parent, scheduled).each do |ass|
+            %tr.person{data: {person: person_json(ass.person), person_id: ass.person.id}}
+              %td
+              %td=qualifications(ass.person)
+              %td=link_to ass.person.full_name, ass.person
+              %td #{ass.person.city.try :titleize}, #{ass.person.state}
+              %td.distance
+              %td.travel-time
+              %td
+                -if ass.person.sms_addresses.present?
+                  =link_to 'Send SMS', '', class: 'btn btn-mini'
+              %td
+                =link_to 'Assign', new_resource_path(person_id: ass.person.id), class: 'btn btn-mini', data: {assign: ass.person.id}
+        %tbody
+          %tr
+            %th(colspan=8) Decline
+          - collection.reject(&:was_available).each do |ass|
+            %tr
+              %td=ass.humanized_role
+              %td=qualifications(ass.person)
+              %td=link_to ass.person.full_name, ass.person
+              %td #{ass.person.city.try :titleize}, #{ass.person.state}
+              %td.distance
+              %td.travel-time
+              %td
+              %td=link_to 'Assign', resource_path(ass), class: 'btn btn-mini', data: {assign: ass.person.id}
+
+.modal.hide.fade#edit-modal
+  .modal-header 
+    %button.close(data-dismiss="modal") &times;
+    %h3 Edit
+  .modal-body
+  .modal-footer
+    %a.btn.btn-primary(data-dismiss="modal") Close
+
+- content_for :footer_js do
+  = google_maps_javascript
+  :javascript
+    $(function() {
+      window.respondersController = new IncidentRespondersController();
+      respondersController.initMap(#{map_config.to_json}, $('.responder-map')[0]);
+      respondersController.setIncidentLocation(#{parent.lat.to_json}, #{parent.lng.to_json});
+      respondersController.loadTravelTimes();
+      respondersController.mapResponders();
+    })

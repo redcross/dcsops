@@ -17,7 +17,7 @@
         =link_to 'Reopen', reopen_resource_path, class: 'btn', method: 'post', data: {confirm: 'Really reopen this incident?'}
 
 
-- tabs = %w(details summary cases timeline responders photos changes).select{|name| tab_authorized? name}
+- tabs = %w(details summary cases dispatch timeline responders photos changes).select{|name| tab_authorized? name}
 
 .tabbable
   %ul.nav.nav-tabs
@@ -39,7 +39,7 @@
     %a.btn.btn-primary(data-dismiss="modal") Close
 
 - content_for :footer_js do
-  = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
+  = google_maps_javascript
   :javascript
     config = #{map_config.to_json};
     incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json}, config);
