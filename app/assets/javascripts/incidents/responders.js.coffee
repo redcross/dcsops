@@ -38,6 +38,7 @@ class window.IncidentRespondersController
     @map.fitBounds @bounds
 
   setIncidentLocation: (lat, lng) ->
+    return unless lat? and lng? and lat != 0 and lng != 0
     @incidentLocation = new google.maps.LatLng(lat, lng)
     @incidentMarker.setPosition @incidentLocation
     @incidentMarker.setMap @map
@@ -79,10 +80,14 @@ class window.IncidentRespondersController
     $(element).toggleClass('travel-long', mins >= 90)
 
   processTravelTime: (element, result) ->
+    if result['duration_in_traffic']
+      $('img.traffic-icon').css('display', 'inline')
+    duration = result['duration_in_traffic'] || result['duration']
+
     $(element).find('.distance').text(result['distance']['text'])
-    $(element).find('.travel-time').text(result['duration']['text'])
+    $(element).find('.travel-time').text(duration['text'])
     $(element).data('travel', result).attr('data-travel-lookup', true)
-    this.travelTimeClass(element, result['duration']['value'])
+    this.travelTimeClass(element, duration['value'])
 
 
   mapResponders: () ->

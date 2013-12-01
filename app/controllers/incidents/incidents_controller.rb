@@ -12,6 +12,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   has_scope :in_area, as: :area_id_eq
 
   def show
+    pp resource.dat_incident
     if inline_editable? and resource.dat_incident.nil?
       resource.build_dat_incident
     end
@@ -80,7 +81,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     helper_method :inline_editable?
     def inline_editable?
       chapter = resource.chapter
-      chapter && chapter.incidents_report_editable && resource.open_incident? && can?(:update, Incidents::DatIncident.new(incident: resource))
+      chapter && chapter.incidents_report_editable && resource.open_incident? && can?(:update, resource.dat_incident || Incidents::DatIncident.new(incident: resource))
     end
 
     helper_method :tab_authorized?

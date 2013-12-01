@@ -9,7 +9,7 @@ module Incidents::MapHelper
   def google_maps_javascript
     api_key = ENV['GOOGLE_MAPS_API_KEY']
     if api_key
-      api_key = "&key=#{api_key}"
+      api_key = "&client=#{api_key}"
     else
       api_key = ""
     end

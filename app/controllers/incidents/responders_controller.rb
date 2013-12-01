@@ -9,6 +9,13 @@ class Incidents::RespondersController < Incidents::BaseController
 
   actions :all, :except => :show
 
+  def index
+    unless parent.lat and parent.lng
+      flash.now[:error] = 'No location specified for this incident.  Go to the incident report and add a location in order to see responder distance and map.'
+    end
+    index!
+  end
+
   def new
     if request.xhr?
       render layout: nil

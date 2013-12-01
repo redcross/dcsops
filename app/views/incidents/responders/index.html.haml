@@ -34,7 +34,9 @@
             %th Name
             %th City
             %th Distance
-            %th Travel Time
+            %th 
+              Travel Time
+              =image_tag 'glyphicons_028_cars.png', style: 'height: 1em; margin-bottom: 3px; display: none', class: 'traffic-icon' 
             %th Recruit
             %th Assign
         %tbody
@@ -43,47 +45,17 @@
           - abbrevs = {}
           - scheduled = scheduled_responders(parent)
           - scheduled.each do |ass|
-            %tr.person{data: {person: person_json(ass.person, ass), person_id: ass.person_id}}
-              %td=ass.shift.name
-              %td=qualifications(ass.person)
-              %td=link_to ass.person.full_name, ass.person
-              %td #{ass.person.city.titleize}, #{ass.person.state}
-              %td.distance
-              %td.travel-time
-              %td
-                -if ass.person.sms_addresses.present?
-                  =link_to 'Send SMS', '', class: 'btn btn-mini'
-              %td
-                =link_to 'Assign', new_resource_path(person_id: ass.person.id), class: 'btn btn-mini', data: {assign: ass.person.id}
+            =person_row(ass)
         %tbody
           %tr
             %th(colspan=8) Flex
           - flex_responders(parent, scheduled).each do |ass|
-            %tr.person{data: {person: person_json(ass.person), person_id: ass.person.id}}
-              %td
-              %td=qualifications(ass.person)
-              %td=link_to ass.person.full_name, ass.person
-              %td #{ass.person.city.try :titleize}, #{ass.person.state}
-              %td.distance
-              %td.travel-time
-              %td
-                -if ass.person.sms_addresses.present?
-                  =link_to 'Send SMS', '', class: 'btn btn-mini'
-              %td
-                =link_to 'Assign', new_resource_path(person_id: ass.person.id), class: 'btn btn-mini', data: {assign: ass.person.id}
+            =person_row(ass)
         %tbody
           %tr
             %th(colspan=8) Decline
           - collection.reject(&:was_available).each do |ass|
-            %tr
-              %td=ass.humanized_role
-              %td=qualifications(ass.person)
-              %td=link_to ass.person.full_name, ass.person
-              %td #{ass.person.city.try :titleize}, #{ass.person.state}
-              %td.distance
-              %td.travel-time
-              %td
-              %td=link_to 'Assign', resource_path(ass), class: 'btn btn-mini', data: {assign: ass.person.id}
+            =person_row(ass)
 
 .modal.hide.fade#edit-modal
   .modal-header 

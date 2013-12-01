@@ -24,6 +24,30 @@ module Incidents::RespondersHelper
     end
   end
 
+  def person_row(obj)
+    person = obj.person
+    content_tag :tr, class: 'person', data: {person: person_json(person), person_id: person.id} do
+      content_tag(:td) do
+        case obj
+        when Scheduler::ShiftAssignment then obj.shift.name
+        when Incidents::ResponderAssignment then obj.humanized_role
+        end
+      end <<
+      content_tag( :td, qualifications(person)) <<
+      content_tag(:td, link_to(person.full_name, person)) <<
+      content_tag(:td) do
+        "#{person.city.try(:titleize)}, #{person.state}" if person.city.present? && person.state.present?
+      end <<
+      tag(:td, class: 'distance') <<
+      tag(:td, class: 'travel-time') <<
+      content_tag(:td) do
+        link_to 'Send SMS', '', class: 'btn btn-mini' if person.sms_addresses.present?
+      end <<
+      content_tag(:td, link_to( 'Assign', new_resource_path(person_id: person.id), class: 'btn btn-mini', data: {assign: person.id}))
+    end
+  end
+
+
   def grouped_responder_roles
     @_roles ||= [["Did Not Respond", Incidents::ResponderAssignment::RESPONSES_TO_LABELS.invert.to_a],
      ["Responded To Incident", Incidents::ResponderAssignment::ROLES_TO_LABELS.invert.to_a.reject{|a| a.last == 'team_lead'}]]
