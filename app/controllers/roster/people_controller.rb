@@ -33,5 +33,5 @@ class Roster::PeopleController < Roster::BaseController
 
     expose(:identify_people) { false }
 
-    expose(:cache_key) { "#{request.format}_#{request.query_string}_#{collection.maximum(:updated_at).to_i}" }
+    expose(:cache_key) { "#{request.format}_#{params[:q]}_count#{collection.count}_#{collection.maximum(:updated_at).to_i}" }
 end
