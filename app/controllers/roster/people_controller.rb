@@ -32,4 +32,6 @@ class Roster::PeopleController < Roster::BaseController
     expose(:search) { resource_class.search(params[:q]) }
 
     expose(:identify_people) { false }
+
+    expose(:cache_key) { "#{request.format}_#{request.query_string}_#{collection.maximum(:updated_at).to_i}" }
 end
