@@ -4,8 +4,8 @@
       %h3 
         Assign Responder
         %small=link_to 'Cancel', collection_path
-      =f.input :person_id, as: :hidden
       -if f.object.person
+        =f.input :person_id, as: :hidden
         .control-group
           .control-label Person
           .controls=f.object.person.full_name
@@ -17,11 +17,15 @@
               -if ph[:carrier]
                 (sms)
       -else
-        =f.input :person, as: :person_typeahead
+        =f.input :person, as: :person_typeahead, text_value: f.object.person.try(:full_name), filter: {chapter_id_eq: f.object.incident.chapter_id}
       =f.input :role, collection: grouped_options_for_select(grouped_responder_roles, f.object.role), label: 'Response'
       =f.input :was_flex, label: 'Flex Responder'
-      =f.input :send_assignment_sms, as: :boolean
-      =f.input :send_assignment_email, as: :boolean
+      .control-group
+        .control-label=label_tag :send_assignment_sms
+        .controls=check_box_tag :send_assignment_sms, '1', params[:send_assignment_sms] == '1'
+      .control-group
+        .control-label=label_tag :send_assignment_email
+        .controls=check_box_tag :send_assignment_email, '1', params[:send_assignment_email] == '1'
       =f.actions do
         =f.action :submit, label: "Save Assignment", button_html: {class: 'btn btn-primary'}
         -unless f.object.new_record?
@@ -32,9 +36,10 @@
 
 - content_for :footer_js do
   = google_maps_javascript
-  :javascript
-    window.assignmentController = new IncidentAssignmentController(#{map_config.to_json}, $('.assignment-map')[0], $('.directions')[0])
-    assignmentController.showAssignment(#{parent.lat.to_f.to_json}, #{parent.lng.to_f.to_json}, #{person.lat.to_f.to_json}, #{person.lng.to_f.to_json})
+  -if resource.person
+    :javascript
+      window.assignmentController = new IncidentAssignmentController(#{map_config.to_json}, $('.assignment-map')[0], $('.directions')[0])
+      assignmentController.showAssignment(#{parent.lat.to_f.to_json}, #{parent.lng.to_f.to_json}, #{person.lat.to_f.to_json}, #{person.lng.to_f.to_json})
 
 -if request.xhr?
   =yield :footer_js

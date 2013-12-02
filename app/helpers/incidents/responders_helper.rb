@@ -26,6 +26,7 @@ module Incidents::RespondersHelper
 
   def person_row(obj)
     person = obj.person
+    editable = can?( :create, parent.responder_assignments.build( person: person))
     content_tag :tr, class: 'person', data: {person: person_json(person), person_id: person.id} do
       content_tag(:td) do
         case obj
@@ -40,10 +41,14 @@ module Incidents::RespondersHelper
       end <<
       tag(:td, class: 'distance') <<
       tag(:td, class: 'travel-time') <<
+      #content_tag(:td) do
+      #  link_to 'Send SMS', '', class: 'btn btn-mini' if person.sms_addresses.present? && editable
+      #end <<
       content_tag(:td) do
-        link_to 'Send SMS', '', class: 'btn btn-mini' if person.sms_addresses.present?
-      end <<
-      content_tag(:td, link_to( 'Assign', new_resource_path(person_id: person.id), class: 'btn btn-mini', data: {assign: person.id}))
+        if editable
+          link_to( 'Assign', new_resource_path(person_id: person.id), class: 'btn btn-mini', data: {assign: person.id})
+        end
+      end
     end
   end
 

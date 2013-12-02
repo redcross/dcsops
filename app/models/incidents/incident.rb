@@ -189,4 +189,8 @@ class Incidents::Incident < ActiveRecord::Base
       cas.save!
     end
   end
+
+  def full_address
+    [[address, city, state].compact.join(", "), zip].compact.join "  "
+  end
 end

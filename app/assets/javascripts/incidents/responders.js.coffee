@@ -72,6 +72,7 @@ class window.IncidentRespondersController
           if result['status'] == 'OK'
             this.processTravelTime(elements[idx], result)
         this.loadTravelTimes()
+        this.sortTables()
 
   travelTimeClass: (element, time) ->
     mins = time/60
@@ -88,6 +89,16 @@ class window.IncidentRespondersController
     $(element).find('.travel-time').text(duration['text'])
     $(element).data('travel', result).attr('data-travel-lookup', true)
     this.travelTimeClass(element, duration['value'])
+
+  sortTables: () ->
+    travelTime = (el) ->
+      result = $(el).data('travel')
+      duration = result['duration_in_traffic'] || result['duration']
+      duration['value']
+
+    $('tbody.responders-list').each (idx, body) =>
+      $(body).find('> tr').sortElements (a, b) =>
+        travelTime(a) - travelTime(b)
 
 
   mapResponders: () ->
