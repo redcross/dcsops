@@ -44,7 +44,7 @@ describe Scheduler::RemindersMailer do
     it "renders the headers" do
       mail.subject.should eq(nil)
       mail.to.should eq(assignment.person.sms_addresses)
-      mail.from.should eq(from_address)
+      mail.from.should eq(["sms@arcbadat.org"])
     end
   
     it "renders the body" do
@@ -85,7 +85,7 @@ describe Scheduler::RemindersMailer do
       it "renders the headers" do
         mail.subject.should be_nil
         mail.to.should eq(@admin.sms_addresses)
-        mail.from.should eq(from_address)
+        mail.from.should eq(["sms@arcbadat.org"])
       end
     
       it "renders the body" do

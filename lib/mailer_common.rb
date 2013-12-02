@@ -2,8 +2,8 @@ module MailerCommon
   extend ActiveSupport::Concern
 
   module ClassMethods
-    def use_sms_relay action
-      after_filter :set_sms_delivery, only: action
+    def use_sms_relay *actions
+      after_filter :set_sms_delivery, only: actions
     end
   end
 

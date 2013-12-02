@@ -41,6 +41,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     tag :scheduler, :reminders, :sms_reminder, :sms
     mail to: assignment.person.sms_addresses, subject: ""
   end
+  use_sms_relay :sms_reminder, :daily_sms_reminder
 
   def daily_email_reminder(setting)
     now = setting.person.chapter.time_zone.now
