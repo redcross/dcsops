@@ -12,7 +12,6 @@ class Incidents::IncidentsController < Incidents::BaseController
   has_scope :in_area, as: :area_id_eq
 
   def show
-    pp resource.dat_incident
     if inline_editable? and resource.dat_incident.nil?
       resource.build_dat_incident
     end

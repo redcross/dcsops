@@ -8,6 +8,7 @@
   .span12
     =semantic_form_for resource, builder: FormtasticBootstrap::FormBuilder, html: {class: "form-horizontal"} do |f|
       =f.inputs "Data" do
+        =f.input :status, as: :hidden, input_html: {value: 'open'}
         =f.input :area, collection: current_chapter.counties
         =f.input :incident_number
         =f.input :date
