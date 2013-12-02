@@ -24,6 +24,4 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
 
   scope :on_scene, -> { where{ role.in( %w(responder team_lead health_services mental_health) ) } }
   scope :was_available, -> {where { role.in( my{ROLES}) }}
-
-  
 end

@@ -76,6 +76,7 @@ Scheduler::Application.routes.draw do
     resources :incidents do
       resource :dat, controller: :dat_incidents
       resources :event_logs
+      resources :responders
       
       collection do
         get :needs_report
@@ -84,6 +85,8 @@ Scheduler::Application.routes.draw do
       end
       member do
         match :mark_invalid, via: [:get, :post, :put, :patch]
+        match :close, via: [:post, :put, :patch]
+        match :reopen, via: [:post, :put, :patch]
       end
     end
     resources :cas_incidents do

@@ -1,0 +1,34 @@
+=f.inputs "Services" do
+  - services = f.object.services || []
+  .control-group
+    %label.control-label Client Financial Assistance
+    .controls
+      - {"Emergency Housing" => 'housing', 'Food' => 'food', 'Clothing' => 'clothing', 'Medication' => 'medication'}.each do |label, val|
+        %label.checkbox
+          =check_box_tag "incidents_dat_incident[services][]", val, services.include?( val)
+          =label
+  .control-group
+    %label.control-label Other Assistance
+    .controls
+      - {"Mental Health Support" => 'mental_health', 'Translation' => 'translation', "Snacks for Clients" => 'client_snacks'}.each do |label, val|
+        %label.checkbox
+          - more_classes = (val == 'translation') ? {data: {bind: '.collapse.languages'}} : {}
+          =check_box_tag( "incidents_dat_incident[services][]", val, services.include?( val), {class: "services-other-#{val}"}.merge(more_classes))
+          =label
+
+  .collapse.languages{class: f.object.services.try(:include?, 'translation') && 'in'}
+    .control-group
+      %label.control-label Languages Translated
+      .controls
+        - languages = f.object.languages || []
+        - all_languages = %w(english spanish cantonese mandarin vietnamese russian tagalog)
+        - extra_languages = languages - all_languages
+        - all_languages.each do |val|
+          %label.checkbox
+            =check_box_tag "incidents_dat_incident[languages][]", val, languages.include?( val)
+            =val.titleize
+        - extra_languages.each do |val|
+          Other:
+          = text_field_tag "incidents_dat_incident[languages][]", val
+        Other:
+        = text_field_tag "incidents_dat_incident[languages][]"

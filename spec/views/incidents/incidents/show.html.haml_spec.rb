@@ -9,9 +9,14 @@ describe "incidents/incidents/show" do
     view.stub :current_user => person
     view.stub :current_chapter => person.chapter
     view.stub :resource_changes => []
+    view.stub :close_resource_path => ''
+    view.stub :mark_invalid_resource_path => ''
+    view.stub :reopen_resource_path => ''
+    view.stub :tab_authorized? => true
+    view.stub :inline_editable? => false
   end
 
-  describe "with no linked incidents" do
+  describe "open with no linked incidents" do
     has_resource(:incident) { FactoryGirl.create :incident }
 
     it "should render" do
@@ -22,7 +27,7 @@ describe "incidents/incidents/show" do
     end
   end
 
-  describe "with linked dat incident" do
+  describe "open with linked dat incident" do
     has_resource(:incident) { FactoryGirl.create :incident }
 
     it "should render" do
@@ -33,6 +38,32 @@ describe "incidents/incidents/show" do
 
       rendered.should match(edit_incidents_incident_dat_path(@incident))
       rendered.should match('Demographics')
+    end
+  end
+
+  describe "closed with linked dat incident" do
+    has_resource(:incident) { FactoryGirl.create :closed_incident }
+
+    it "should render" do
+      render
+
+      rendered.should match(edit_incidents_incident_dat_path(@incident))
+      rendered.should match('Demographics')
+
+      rendered.should match('Reopen')
+      rendered.should match('Edit')
+    end
+  end
+
+  describe "open and editable" do
+    has_resource(:incident) { FactoryGirl.create :incident }
+
+    it "should render" do
+      view.stub :inline_editable? => true
+      render
+
+      rendered.should_not match(edit_incidents_incident_dat_path(@incident))
+      rendered.should match('(edit)')
     end
   end
 

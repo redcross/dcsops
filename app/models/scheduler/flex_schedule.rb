@@ -17,6 +17,10 @@ class Scheduler::FlexSchedule < ActiveRecord::Base
 
   scope :with_position, lambda {|county| joins{person.positions}.where{person.positions.id.in(county)}}
 
+  scope :by_distance_from, -> inc {
+    joins{person}.order{_(person.lat.op(:-, inc.lat)).op('^', 2).op(:+, _(person.lng.op(:-, inc.lng)).op('^', 2))}
+  }
+
   def available(day, shift)
     self.send "available_#{day}_#{shift}".to_sym
   end

@@ -1,4 +1,6 @@
 = semantic_form_for resource, url: form_url, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'} do |f|
+  =f.fields_for :incident do |f|
+    =f.input :status, as: :hidden, input_html: {value: 'closed'}
   .row
     .span12
       =f.semantic_errors
@@ -7,25 +9,26 @@
   - all_errors = error_keys(f.object)
   - components = tabs.map{|name, title| p = FormProxy.new(f); html = render(name, f: p); {name => {proxy: p, html: html, errors: (all_errors & p.keys).present?}}}.reduce(&:merge)
   - first_error = tabs.keys.detect{|name| components[name][:errors] }
+  - components.each_with_index { |(name, opts), idx| opts[:active] = (first_error == name || (idx == 0 && first_error.nil?)) }
 
   .tabbable
     %ul.nav.nav-tabs
       - tabs.each do |name, title|
-        %li{class: (first_error == name && 'active')}
-          %a{href: '#' + name, data: {toggle: 'tab'}, class: (components[name][:errors] && 'error')}
+        %li{class: components[name][:active] && 'active'}
+          %a{data: {toggle: 'tab', target: '#' + name, }, class: (components[name][:errors] && 'error')}
             =title
             %span.error-message
 
   .tab-content
     - tabs.each_with_index do |(name, title), idx|
-      .tab-pane{id: name, class: (first_error == name || (idx == 0 && first_error.nil?)) && 'active'}=components[name][:html]
+      .tab-pane{id: name, class: components[name][:active] && 'active'}=components[name][:html]
 
 - content_for :footer_js do
-  = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
+  = google_maps_javascript
   :javascript
     config = #{map_config.to_json};
-    //incidentLocationController = new IncidentLocationController(#{resource.incident.lat.to_json}, #{resource.incident.lng.to_json}, config);
-    formController = new DatIncidentsFormController();
+    window.incidentLocationController = new IncidentLocationController(#{resource.incident.lat.to_json}, #{resource.incident.lng.to_json}, config);
+    window.formController = new DatIncidentsFormController();
     $(function() {
       var hash = window.location.hash;
       hash && $('ul.nav a[href="' + hash + '"]').tab('show');

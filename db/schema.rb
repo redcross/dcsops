@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131117061828) do
+ActiveRecord::Schema.define(version: 20131128051427) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -233,6 +233,7 @@ ActiveRecord::Schema.define(version: 20131117061828) do
     t.boolean  "feeding_partner_used",     default: false
     t.integer  "area_id"
     t.string   "county"
+    t.string   "status",                                   null: false
   end
 
   add_index "incidents_incidents", ["chapter_id", "incident_number"], name: "index_incidents_incidents_on_chapter_id_and_incident_number", unique: true, using: :btree

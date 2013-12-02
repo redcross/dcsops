@@ -7,53 +7,44 @@
     -if resource.incident_type
       ==-
       =resource.humanized_incident_type
+    -if resource.open_incident?
+      -if can? :close, resource
+        =link_to 'Close Incident', close_resource_path, class: 'btn', method: 'post', data: {confirm: 'Really close this incident?'}
+      -if can? :mark_invalid, resource
+        =link_to 'Mark Invalid', mark_invalid_resource_path, class: 'btn btn-danger'
+    -else
+      -if can? :reopen, resource
+        =link_to 'Reopen', reopen_resource_path, class: 'btn', method: 'post', data: {confirm: 'Really reopen this incident?'}
+
+
+- tabs = %w(details summary cases timeline responders photos changes).select{|name| tab_authorized? name}
 
 .tabbable
   %ul.nav.nav-tabs
-    %li.active
-      %a{href: "#inc-summary", "data-toggle"=>"tab"} Summary
-    -if can? :read_details, resource
-      %li
-        %a{href: "#inc-details", "data-toggle"=>"tab"} Details
-    -if can? :read_case_details, resource
-      %li
-        %a{href: "#inc-cases", "data-toggle"=>"tab"} Cases
-    -if can? :read_dat_details, resource
-      %li
-        %a{href: "#inc-dispatch", "data-toggle"=>"tab"} Timeline
-      %li
-        %a{href: "#inc-responders", "data-toggle"=>"tab"} Responders
-      %li
-        %a{href: "#inc-photos", "data-toggle"=>"tab"} Photos
-    -if can? :read_case_details, resource
-      %li
-        %a{href: "#inc-changes", "data-toggle"=>"tab"} Changes
+    - tabs.each_with_index do |name, idx|
+      %li{class: ((idx==0) && 'active')}
+        %a{href: '', data: {target: "#inc-#{name}", toggle: 'tab'}}=name.titleize
   
 .tab-content
-  .tab-pane.active#inc-summary=render 'summary'
+  - tabs.each_with_index do |name, idx|
+    .tab-pane{class: ((idx==0) && 'active'), id: "inc-#{name}"}
+      =render name
 
-  -if can? :read_details, resource
-    .tab-pane#inc-details=render 'details'
-
-  -if can? :read_dat_details, resource
-    .tab-pane#inc-dispatch=render 'timeline'
-
-    .tab-pane#inc-responders=render 'responders'
-
-    .tab-pane#inc-photos
-
-  -if can? :read_case_details, resource
-    .tab-pane#inc-cases=render 'cases'
-
-  -if can? :read_details, resource
-    .tab-pane#inc-changes=render 'changes'
+.modal.hide.fade#edit-modal
+  .modal-header 
+    %button.close(data-dismiss="modal") &times;
+    %h3 Edit
+  .modal-body
+  .modal-footer
+    %a.btn.btn-primary(data-dismiss="modal") Close
 
 - content_for :footer_js do
-  = javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
+  = google_maps_javascript
   :javascript
     config = #{map_config.to_json};
     incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json}, config);
     eventLogsController = new IncidentEventLogsController();
+    editPanelController = new IncidentEditPanelController(#{edit_incidents_incident_dat_path(resource).to_json});
     $(function() {
       var hash = window.location.hash;
       hash && $('ul.nav a[href="' + hash + '"]').tab('show');

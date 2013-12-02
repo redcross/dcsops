@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Incidents::IncidentReportFiled do
   before(:each) do
-    @incident = FactoryGirl.create :incident
+    @incident = FactoryGirl.create :closed_incident
     @person = FactoryGirl.create :person
   end
 

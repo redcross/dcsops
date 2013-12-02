@@ -7,9 +7,20 @@ class Incidents::IncidentsController < Incidents::BaseController
 
   include NamedQuerySupport
 
-  custom_actions collection: [:needs_report, :link_cas, :tracker], resource: :mark_invalid
+  custom_actions collection: [:needs_report, :link_cas, :tracker], resource: [:mark_invalid, :close, :reopen]
 
   has_scope :in_area, as: :area_id_eq
+
+  def show
+    if inline_editable? and resource.dat_incident.nil?
+      resource.build_dat_incident
+    end
+    if partial = params[:partial] and tab_authorized?(partial)
+      render partial: partial
+    else
+      show!
+    end
+  end
 
   def create
     create! { new_incidents_incident_dat_path(resource) }
@@ -33,14 +44,14 @@ class Incidents::IncidentsController < Incidents::BaseController
   end
 
   def mark_invalid
-    unless resource.incident_type.blank?
+    unless resource.open_incident?
       flash[:error] = 'This incident has already been completed.'
       redirect_to needs_report_incidents_incidents_path
       return
     end
 
     if params[:incidents_incident]
-      resource.attributes = (params.require(:incidents_incident).permit(:incident_type, :narrative))
+      resource.attributes = (params.require(:incidents_incident).permit(:incident_type, :narrative)).merge(status: 'invalid')
       if resource.save
         flash[:info] = 'The incident has been removed.'
         Incidents::IncidentInvalid.new(resource).save
@@ -49,7 +60,39 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
   end
 
+  def close
+    dat = resource.dat_incident || resource.build_dat_incident
+    dat.incident.status = 'closed'
+    if dat.save
+      redirect_to resource
+    else
+      redirect_to edit_incidents_incident_dat_path(resource, status: 'closed')
+    end
+  end
+
+  def reopen
+    resource.update_attributes status: 'open', last_no_incident_warning: 1.hour.ago
+    redirect_to resource
+  end
+
   private
+
+    helper_method :inline_editable?
+    def inline_editable?
+      chapter = resource.chapter
+      chapter && chapter.incidents_report_editable && resource.open_incident? && can?(:update, resource.dat_incident || Incidents::DatIncident.new(incident: resource))
+    end
+
+    helper_method :tab_authorized?
+    def tab_authorized?(name)
+      case name
+      when 'summary', 'dispatch' then true
+      when 'details', 'timeline', 'responders', 'photos' then can? :read_details, resource
+      when 'cases' then can? :read_case_details, resource
+      when 'changes' then can? :read_case_details, resource
+      else false
+      end
+    end
 
     def collection
       @_incidents ||= begin
@@ -59,7 +102,7 @@ class Incidents::IncidentsController < Incidents::BaseController
       end
     end
 
-    expose(:needs_report_collection) { end_of_association_chain.needs_incident_report.order{incident_number} }
+    expose(:needs_report_collection) { end_of_association_chain.needs_incident_report.includes{area}.order{incident_number} }
     expose(:tracker_collection) { apply_scopes(end_of_association_chain).open_cases.includes{cas_incident.cases}.uniq }
     expose(:cas_incidents_to_link) { Incidents::CasIncident.where{incident_id == nil}.order{incident_date.desc} }
     expose(:county_names) { current_chapter.counties.map(&:name) }
@@ -91,10 +134,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      keys = [:area_id, :cas_incident_number, :incident_call_type, :team_lead_id,
-             :date, :city, :address, :state, :cross_street, :zip, :lat, :lng,
-             :units_affected, :num_adults, :num_children, :num_families, :num_cases, 
-             :incident_type, :incident_description, :narrative_brief, :narrative]
+      keys = [:area_id, :date, :incident_type, :status]
 
       keys << :incident_number if params[:action] == 'create'
 

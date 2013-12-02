@@ -1,0 +1,29 @@
+=f.inputs "Evac Center/Housing" do
+  /.control-group
+  /  %label.control-label Evacuation Center Opened
+  /  .controls
+  /    .btn-group.single-choice
+  /      %button.btn(data-show=".evac") Yes
+  /      %button.btn.active(data-hide=".evac") No
+  =f.semantic_fields_for :incident do |f|
+    =f.input :evac_partner_used, as: :boolean, input_html: {data: {bind: '.collapse.evac'}}, label: 'Evacuation Center Opened'
+    .collapse.evac.overflow-visible{class: f.object.evac_partner_used && 'in'}
+      /-#=f.semantic_fields_for :evac_partner_use do |f|
+      =f.input :evac_partner_use, as: :partner, label: 'Evac Center Name'
+    /.control-group
+    /  %label.control-label Housing Provided:
+    /  .controls
+    /    .btn-group.btn-group-vertical.btn-block.housing.single-choice
+    /      %button.btn.btn-block.active(data-hide=".housing-collapse .collapse") None
+    /      %button.btn.btn-block(data-hide=".housing-collapse .collapse" data-show='.hotel' ) Hotel/Motel
+    /      %button.btn.btn-block(data-hide=".housing-collapse .collapse" data-show='.shelter') Shelter Opened
+    =f.input :hotel_partner_used, as: :boolean, input_html: {data: {bind: '.collapse.hotel'}}, label: 'Hotel/Motel Provided'
+    .collapse.hotel.overflow-visible{class: f.object.hotel_partner_used && 'in'}
+      =f.input :hotel_partner_use, as: :partner, label: 'Hotel Name'
+      =f.semantic_fields_for :hotel_partner_use do |f|
+        =f.input :hotel_rate
+        =f.input :hotel_rooms, label: 'Rooms Booked'
+
+    =f.input :shelter_partner_used, as: :boolean, input_html: {data: {bind: '.collapse.shelter'}}, label: 'Shelter Opened'
+    .collapse.shelter.overflow-visible{class: f.object.shelter_partner_used && 'in'}
+      =f.input :shelter_partner_use, as: :partner, label: 'Shelter Partner Name'

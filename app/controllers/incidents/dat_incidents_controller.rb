@@ -34,24 +34,35 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
   def edit
     unless parent? and parent.dat_incident
-      redirect_to action: :new and return
+      #redirect_to action: :new and return
+      build_resource
     end
-    edit!
-  end
-
-  def create
-    create! do |success, failure|
-      success.html { Incidents::IncidentReportFiled.new(resource.incident.reload, true).save; redirect_to resource.incident}
+    if params[:status]
+      resource.incident.status = params[:status]
+      resource.valid?
+    end
+    if params[:panel_name]
+      render action: 'panel', layout: nil
+    else
+      edit!
     end
   end
 
   def update
-    update! do |success, failure|
-      success.html { Incidents::IncidentReportFiled.new(resource.incident.reload, false).save; redirect_to resource.incident}
+    action = params[:action] == 'create' ? :create! : :update!
+    self.send(action) do |success, failure|
+      success.html {notify(true); redirect_to resource.incident}
+      success.js { notify(true); render action: 'update' }
+      failure.js { render action: 'panel', layout: nil}
     end
   end
+  alias_method :create, :update
 
   private
+  def notify(is_new=true)
+    Incidents::IncidentReportFiled.new(resource.incident.reload, is_new).save
+  end
+
   helper_method :form_url
   def form_url
     params[:incident_id] ? incidents_incident_dat_path(params[:incident_id]) : incidents_dat_incidents_path
@@ -90,17 +101,18 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   end
 
   def prepare_resource(obj)
+    inc_attrs = incident_params
+    obj.incident.attributes = inc_attrs if inc_attrs
+
+    return unless %w(new edit).include? params[:action] 
+
     obj.build_incident if obj.incident.nil?
     obj.incident.build_evac_partner_use if obj.incident.evac_partner_use.nil?
     obj.incident.build_feeding_partner_use if obj.incident.feeding_partner_use.nil?
     obj.incident.build_hotel_partner_use if obj.incident.hotel_partner_use.nil?
     obj.incident.build_shelter_partner_use if obj.incident.shelter_partner_use.nil?
 
-    inc_attrs = incident_params
-    obj.incident.attributes = inc_attrs if inc_attrs
     obj.incident.build_team_lead role: 'team_lead', response: 'available' unless obj.incident.team_lead
-
-    
   end
 
   def build_resource
@@ -157,7 +169,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       base = params.require(:incidents_dat_incident)[:incident_attributes]
       if base
         @_incident_params ||= base.permit([
-          :incident_type, :narrative,
+          :incident_type, :narrative, :status,
           :address, :city, :state, :zip, :lat, :lng, :county, :neighborhood,
           {:team_lead_attributes => [:id, :person_id, :role, :response]},
           {:responder_assignments_attributes => [:id, :person_id, :role, :response, :_destroy, :was_flex]},

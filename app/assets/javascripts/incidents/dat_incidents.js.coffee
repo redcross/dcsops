@@ -100,8 +100,8 @@ class window.DatIncidentsFormController
 
     $(document).on 'click', '[data-toggle=remote-tab]', (evt) =>
       $target = $(evt.target)
-      href = $target.attr('href')
-      $("[href=#{href}][data-toggle=tab]").tab('show')
+      href = $target.data('target')
+      $("[data-target=#{href}][data-toggle=tab]").tab('show')
 
     $('.collapse').collapse({toggle: false})
 

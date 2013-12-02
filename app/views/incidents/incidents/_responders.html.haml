@@ -1,14 +1,12 @@
-%h3 Responders
+%h3 
+  Responders
+  -if inline_editable?
+    =link_to 'Launch Dispatch Console', incidents_incident_responders_path(resource)
 %table.table
   %tr
     %th Name
     %th Role
-    %th Response
-    %th Action
-  - resource.responder_assignments.each do |assignment|
+  - resource.all_responder_assignments.each do |assignment|
     %tr
       %td=assignment.person.full_name
       %td=assignment.role.titleize
-      %td=assignment.response.try :titleize
-      %td
-        %button.btn (Edit)

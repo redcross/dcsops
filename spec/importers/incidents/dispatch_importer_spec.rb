@@ -63,6 +63,7 @@ describe Incidents::DispatchImporter do
       inc.date.should == Date.civil(2013, 6, 13)
       inc.area.should == county
       inc.chapter.should == chapter
+      inc.status.should == 'open'
     end
 
     it "should create several event logs" do

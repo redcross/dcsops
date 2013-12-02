@@ -18,7 +18,7 @@ class Incidents::DatIncident < ActiveRecord::Base
     %w(single_family_home apartment sro mobile_home commercial none)
   end
 
-  delegated_validator Incidents::Validators::CompleteReportValidator
+  delegated_validator Incidents::Validators::CompleteReportValidator, if: :complete_report?
 
   accepts_nested_attributes_for :incident, update_only: true#, reject_if: :cant_update_incident
 
@@ -51,6 +51,10 @@ class Incidents::DatIncident < ActiveRecord::Base
       incident.update_from_dat_incident
       update_timeline
     end
+  end
+
+  def complete_report?
+    incident.try(:valid_incident?)
   end
 
   [:responder_notified, :responder_arrived, :responder_departed].each do |field|

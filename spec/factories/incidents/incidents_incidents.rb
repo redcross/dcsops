@@ -3,6 +3,7 @@
 FactoryGirl.define do
   factory :raw_incident, :class => 'Incidents::Incident' do
     date "2013-06-05"
+    status 'open'
     area { |i| i.association :county, chapter: i.chapter }
     incident_number {"13-#{SecureRandom.random_number(999)}"}
   end
@@ -30,5 +31,11 @@ FactoryGirl.define do
     
     lat {Faker::Address.latitude}
     lng {Faker::Address.longitude}
+  end
+
+  factory :closed_incident, parent: :incident do
+    status 'closed'
+    association :dat_incident 
+    team_lead {|f| f.association :responder_assignment, person: f.association( :person)}
   end
 end

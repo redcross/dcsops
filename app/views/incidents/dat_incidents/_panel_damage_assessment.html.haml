@@ -1,0 +1,7 @@
+=f.inputs "Damage Assessment" do
+  =f.input :structure_type, as: :assignable_select, required: true
+  =f.input :units_destroyed
+  =f.input :units_major
+  =f.input :units_minor
+  =f.input :units_affected
+  =f.input :units_total, input_html: {readonly: true, editable: false}

@@ -23,6 +23,7 @@ class Incidents::CasIncident < ActiveRecord::Base
 
     self.class.transaction do
       inc = self.build_incident
+      inc.status = 'open'
       inc.incident_number = "19-#{self.id}"
       inc.chapter = Roster::Chapter.first
       inc.num_adults = self.num_clients

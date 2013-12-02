@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require modernizr-latest
 //= require twitter/bootstrap
 //= require bootstrap-datepicker
 //= require bootstrap-datetimepicker

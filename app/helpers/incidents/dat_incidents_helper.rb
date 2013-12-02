@@ -11,4 +11,8 @@ module Incidents::DatIncidentsHelper
   def map_errors(errs)
     errs.map{|key, err| err.present? && key}
   end
+
+  def panel(name, form)
+    render "panel_#{name}", f: form
+  end
 end

@@ -1,0 +1,23 @@
+=f.inputs "Location" do
+  .row
+    %br
+    .span6
+      =f.semantic_fields_for :incident do |f|
+
+        =f.input :search_for_address, hint: 'Enter as much information as you have about the address, and then click the "Look Up Address" button below.', input_html: {value: '', editable: false}
+        .control-group.address-lookup-group
+          .controls
+            %button.btn.btn-block.address-lookup Look Up Address
+        =f.input :address, input_html: {readonly: true, editable: false}
+        =f.input :city, input_html: {readonly: true, editable: false}
+        =f.input :state, default: 'CA', input_html: {readonly: true, editable: false}
+        =f.input :zip, input_html: {readonly: true, editable: false}
+        =f.input :lat, as: :hidden, input_html: {readonly: true, editable: false}
+        =f.input :lng, as: :hidden, input_html: {readonly: true, editable: false}
+        =f.input :neighborhood, input_html: {readonly: true, editable: false}
+        =f.input :county, input_html: {readonly: true, editable: false}
+    .span6
+      .incident-map{style: "height: 450px"}
+:javascript
+  config = #{map_config.to_json};
+  incidentLocationController = new IncidentLocationController(#{resource.incident.lat.to_json}, #{resource.incident.lng.to_json}, config);

@@ -5,7 +5,7 @@
       You have chosen to mark this incident as invalid, and it will be removed from the ARCBA DAT system.
       This action can only be undone by a DAT Administrator.
       Are you sure you want to continue?
-    =f.input :incident_type, label: 'Reason', as: :assignable_select, humanized: :humanized_invalid_incident_types, include_blank: false
+    =f.input :incident_type, label: 'Reason', as: :assignable_select, humanized: :humanized_invalid_incident_types, include_blank: true
     =f.input :narrative, label: 'Please Explain', as: :text, input_html: { rows: 5}
     =f.actions do
       =f.action :submit, button_html: {class: 'btn btn-danger'}, label: "Remove This Incident"

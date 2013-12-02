@@ -1,0 +1,87 @@
+.app{"ng-app" => ''}
+  .row
+    .span6
+      %h3
+        =link_to parent do
+          %i.icon-chevron-left
+          #{parent.incident_number} #{parent.city}, #{parent.state}
+      %h4 Responders
+      %table.table.table-bordered.table-condensed
+        %tr
+          %th Name
+          %th Role
+          %th Contact
+          %th Action
+        - collection.select(&:was_available).each do |assignment|
+          %tr
+            %td=assignment.person.full_name
+            %td=assignment.humanized_role
+            %td=assignment.person.primary_phone
+            %td=link_to 'Edit', edit_resource_path(assignment), class: 'btn btn-mini'
+    .span6
+      %h4
+        Map
+        %small Edit Incident Location
+        .responder-map{style: "height: 300px"}
+  .row
+    .span12
+      %h4 
+        Available Responders
+        %small=link_to 'Add Other Person', new_resource_path
+        =form_tag '', method: :get, class: 'form-inline', style: 'display: inline' do
+          =label_tag :ignore_area
+          =check_box_tag :ignore_area, '1', ignore_area
+          =submit_tag 'Filter', class: 'btn btn-mini'
+      %table.table.table-bordered.table-condensed.responders-table
+        %thead
+          %tr 
+            %th Type
+            %th Qualifications
+            %th Name
+            %th City
+            %th Distance
+            %th 
+              Travel Time
+              =image_tag 'glyphicons_028_cars.png', style: 'height: 1em; margin-bottom: 3px; display: none', class: 'traffic-icon' 
+            -#%th Recruit
+            %th Assign
+        %tbody
+          %tr
+            %th(colspan=8) Scheduled
+        %tbody.responders-list
+          - abbrevs = {}
+          - scheduled = scheduled_responders(parent)
+          - scheduled.each do |ass|
+            =person_row(ass)
+        %tbody
+          %tr
+            %th(colspan=8) Flex
+        %tbody.responders-list
+          - flex_responders(parent, scheduled).each do |ass|
+            =person_row(ass)
+        %tbody
+          %tr
+            %th(colspan=8) Decline
+        %tbody.responders-list
+          - collection.reject(&:was_available).each do |ass|
+            =person_row(ass)
+
+.modal.hide.fade#edit-modal
+  .modal-header 
+    %button.close(data-dismiss="modal") &times;
+    %h3 Edit
+  .modal-body
+  .modal-footer
+    %a.btn.btn-primary(data-dismiss="modal") Close
+
+- content_for :footer_js do
+  = google_maps_javascript
+  :javascript
+    $(function() {
+      window.respondersController = new IncidentRespondersController();
+      respondersController.initMap(#{map_config.to_json}, $('.responder-map')[0]);
+      respondersController.setIncidentLocation(#{parent.lat.to_json}, #{parent.lng.to_json});
+      respondersController.loadTravelTimes();
+      respondersController.mapResponders();
+      $("[data-toggle=tooltip]").tooltip()
+    })
