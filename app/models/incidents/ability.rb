@@ -19,7 +19,7 @@ class Incidents::Ability
     if is_admin or person.has_role 'submit_incident_report'
         can [:needs_report, :mark_invalid], Incidents::Incident
         can :create, Incidents::DatIncident
-        can :create, Incidents::EventLog
+        can :manage, Incidents::EventLog, {incident: {status: 'open'}}
         today = person.chapter.time_zone.today
         can :update, Incidents::DatIncident, {incident: {date: ((today-5)..(today+1))}}
         can :manage, Incidents::ResponderAssignment, {incident: {status: 'open'}}

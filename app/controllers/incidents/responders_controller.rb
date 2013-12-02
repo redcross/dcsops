@@ -97,7 +97,7 @@ class Incidents::RespondersController < Incidents::BaseController
     dow = time.strftime("%A").downcase
     hour = time.hour
     period = (hour >= 7 && hour < 19) ? 'day' : 'night'
-    schedules = Scheduler::FlexSchedule.available_at(dow, period).includes{person}.limit(10).by_distance_from(parent)
+    schedules = Scheduler::FlexSchedule.available_at(dow, period).includes{person}.limit(10).by_distance_from(parent).where{person.chapter_id == my{current_chapter}}
     if obj.area and !ignore_area
       schedules = schedules.for_county(obj.area)
     end

@@ -1,4 +1,4 @@
-- who = Roster::Person.where(id: version.whodunnit).first.try(:full_name) || version.whodunnit
+- who = resource_change_people[version.whodunnit.to_i].try(:full_name) || version.whodunnit
 - changeset = YAML.load version.object_changes
 - is_incident = (version.item_type == 'Incidents::Incident')
 

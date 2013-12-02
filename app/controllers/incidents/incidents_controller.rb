@@ -111,6 +111,10 @@ class Incidents::IncidentsController < Incidents::BaseController
       changes += resource.dat_incident.versions if resource.dat_incident 
       changes.sort_by!(&:created_at).reverse!
     }
+    expose(:resource_change_people) {
+      ids = resource_changes.map(&:whodunnit).select(&:present?).uniq
+      people = Roster::Person.where{id.in(ids)}.map{|p| {p.id => p}}.reduce(&:merge)
+    }
 
     expose(:search) { resource_class.search(params[:q]) }
     expose(:should_paginate) { params[:page] != 'all' }

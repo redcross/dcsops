@@ -1,17 +1,13 @@
 
 %h3 
   Timeline
-  %button.btn.btn-primary(data-target="#create-event" data-toggle="collapse") Add Log
-
-.collapse#create-event
-  - new_log = Incidents::EventLog.new incident: resource, event_time: current_chapter.time_zone.now
-  =render '/incidents/event_logs/form', incident: resource, resource: new_log
+  %button.btn.btn-primary{data: {edit_panel: new_incidents_incident_event_log_path(resource)}} Add Log
 
 - resource.event_logs.each do |evt|
   %h5
     =evt.event_time.to_s :time
     \-
-    =Incidents::EventLog::EVENTS_TO_DESCRIPTIONS[evt.event]
+    =evt.humanized_event
     -if evt.event == 'note'
       %small
         =evt.person.full_name
@@ -19,6 +15,8 @@
     -else
       %small
         =evt.event_time.to_s :date_time
+    -if can? :update, evt
+      %small=link_to '(edit)', new_incidents_incident_event_log_path(resource, evt), data: {edit_panel: edit_incidents_incident_event_log_path(resource, evt)}
   -if evt.event =~ /dispatch_/
     %pre=evt.message
   -else

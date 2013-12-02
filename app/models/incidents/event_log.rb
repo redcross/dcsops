@@ -1,8 +1,8 @@
 class Incidents::EventLog < ActiveRecord::Base
-  belongs_to :incident, class_name: 'Incidents::Incident'
+  belongs_to :incident, class_name: 'Incidents::Incident', inverse_of: :event_logs
   belongs_to :person, class_name: 'Roster::Person'
 
-  validates :event, :event_time, :incident, presence: {allow_blank: false}
+  validates :event_time, :incident, presence: {allow_blank: false}
   validates :person, presence: {unless: ->(log){log.event =~ /(dispatch_|dat_)/}}
   validates :message, presence: {if: ->(log){log.event == 'note'}, allow_blank: false}
   validates :event, uniqueness: {scope: :incident_id, if: ->(log){!%w(note dispatch_note).include? log.event}}
@@ -23,5 +23,7 @@ class Incidents::EventLog < ActiveRecord::Base
     "Incident Closed" => 'incident_closed',
   }
 
-  EVENTS_TO_DESCRIPTIONS = EVENT_TYPES.invert
+  assignable_values_for :event do
+    EVENT_TYPES.invert
+  end
 end

@@ -171,7 +171,7 @@ class window.IncidentEditPanelController
     damage_assessment: 'details'
     location: 'details'
 
-  constructor: (edit_url) ->
+  constructor: () ->
     $(document).on 'click', '[data-toggle=tab]', (evt) =>
       console.log 'got click!'
       evt.preventDefault()
@@ -187,8 +187,8 @@ class window.IncidentEditPanelController
       modal.modal('show')
       modal.html('<div class="modal-body">Loading</div>')
       $.ajax
-        url: edit_url
-        data: {panel_name: panel}
+        url: panel
+        dataType: 'html'
         success: (data, status, xhr) =>
           modal.html(data)
           modal.find('legend').remove()
@@ -197,11 +197,11 @@ class window.IncidentEditPanelController
       console.log(panel);
       $('#edit-modal').modal('hide');
 
-      this.updateTab(@updateMapping[panel])
+      this.updateTab(panel)
 
 
   updateTab: (tabName) ->
-    tabName = 'details'
+    #tabName = 'details'
     return unless tabName
     $.ajax
       url: window.location.href

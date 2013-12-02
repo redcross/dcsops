@@ -44,7 +44,7 @@
     config = #{map_config.to_json};
     incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json}, config);
     eventLogsController = new IncidentEventLogsController();
-    editPanelController = new IncidentEditPanelController(#{edit_incidents_incident_dat_path(resource).to_json});
+    editPanelController = new IncidentEditPanelController();
     $(function() {
       var hash = window.location.hash;
       hash && $('ul.nav a[href="' + hash + '"]').tab('show');
