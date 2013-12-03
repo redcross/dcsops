@@ -1,19 +1,9 @@
 - dat = resource.dat_incident
 
-%h3 
-  Location
-  %small=edit_link 'location'
--if resource.address
-  =resource.address
-  %br
-  #{resource.city}, #{resource.state} #{resource.zip}
-  %br
-=resource.county
-County
-
-%h3 
-  DAT Details
-  -unless inline_editable?
+-unless inline_editable?
+  %h3 
+    DAT Details
+  
     -if dat && can?( :update, resource.dat_incident)
       %small
         =link_to "Edit", edit_incidents_incident_dat_path(resource)
@@ -24,9 +14,28 @@ County
       %small
         Submitted By:
         =dat.completed_by.try(:full_name)
+
+.row
+  .span6
+    %h3 
+      Location
+      %small=edit_link 'location'
+    -if resource.address
+      =resource.address
+      %br
+      #{resource.city}, #{resource.state} #{resource.zip}
+      %br
+      =resource.county
+      County
+  .span6
+    %h4 
+      Narrative
+      %small=edit_link 'narrative'
+    = simple_format resource.narrative
+
 -if dat
   .row
-    .span4
+    .span5
       %h4 
         Demographics
         %small=edit_link 'demographics'
@@ -49,7 +58,6 @@ County
         %tr
           %th People Deceased
           %td=dat.num_people_deceased
-    .span4
       %h4 
         Damage Assessment
         %small=edit_link 'damage_assessment'
@@ -72,7 +80,7 @@ County
         %tr
           %th Units Destroyed
           %td=dat.units_destroyed
-    .span4
+    .span7
       %h4 Response
       %table.table.table-bordered.table-condensed
         %tr
@@ -97,40 +105,40 @@ County
         %tr
           %th=passthrough_edit_link 'resources', 'Resources Used'
           %td=(dat.resources || []).map{|name, quantity| quantity = quantity.to_i; if quantity > 0; name = name.titleize.singularize; pluralize(quantity, name); end}.compact.to_sentence
-        -if resource.evac_partner_use
-          %tr
-            %th Evac Center
-            %td=resource.evac_partner_use.partner_name
-        -if resource.feeding_partner_use
-          %tr
-            %th Feeding Vendor
-            %td=resource.feeding_partner_use.partner_name
-          %tr
-            %th Meals Served
-            %td=resource.feeding_partner_use.meals_served
-        -if resource.hotel_partner_use
-          %tr
-            %th Hotel
-            %td=resource.hotel_partner_use.partner_name
-          %tr
-            %th Rooms Booked
-            %td=resource.hotel_partner_use.hotel_rooms
-        -if resource.shelter_partner_use
-          %tr
-            %th Shelter Opened
-            %td=resource.shelter_partner_use.partner_name
         %tr
           %th=passthrough_edit_link 'vehicles', 'Vehicles'
           %td= dat.vehicles.map(&:name).to_sentence
-  .row
-    .span4
-      %h4 Description
-      = resource.narrative_brief
-    .offset1.span7
-      %h4 
-        Narrative
-        %small=edit_link 'narrative'
-      = resource.narrative
+      -if resource.feeding_partner_use || inline_editable?
+        %h4 
+          Feeding
+          %small=edit_link 'feeding'
+        %table.table.table-bordered.table-condensed
+          %tr
+            %th Meal Vendor
+            %td=resource.feeding_partner_use.try(:partner_name)
+          %tr
+            %th # Meals Served
+            %td=resource.feeding_partner_use.try :meals_served
+      -if inline_editable?
+        %h4 
+          Shelter/Housing
+          %small=edit_link 'housing'
+        %table.table.table-bordered.table-condensed
+          -if resource.hotel_partner_use || inline_editable?
+            %tr
+              %th Hotel
+              %td=resource.hotel_partner_use.try :partner_name
+            %tr
+              %th Rooms Booked
+              %td=resource.hotel_partner_use.try :hotel_rooms
+          -if resource.shelter_partner_use || inline_editable?
+            %tr
+              %th Shelter Opened
+              %td=resource.shelter_partner_use.try :partner_name
+          -if resource.evac_partner_use || inline_editable?
+            %tr
+              %th Evac Center
+              %td=resource.evac_partner_use.try :partner_name
 %h3 
   Casework
   %small
