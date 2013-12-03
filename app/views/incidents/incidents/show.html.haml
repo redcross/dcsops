@@ -1,5 +1,5 @@
 - provide :title, "Incident #{resource.incident_number} - ARCBA DAT"
-%h1
+%h2
   =resource.incident_number
   #{resource.city}, #{resource.state}
   %small
@@ -47,9 +47,10 @@
     editPanelController = new IncidentEditPanelController();
     $(function() {
       var hash = window.location.hash;
-      hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+      hash && $('ul.nav a[data-target="' + hash + '"]').tab('show');
 
       $('a[data-toggle=tab]').on('shown', function(evt) {
-        window.location.hash = $(evt.target).attr('href')
+        //window.location.hash = $(evt.target).attr('href')
+        window.history.replaceState({}, '', $(evt.target).attr('data-target'))
       })
     });

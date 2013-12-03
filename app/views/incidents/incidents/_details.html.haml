@@ -16,8 +16,8 @@
         =dat.completed_by.try(:full_name)
 
 .row
-  .span6
-    %h3 
+  .span5
+    %h4
       Location
       %small=edit_link 'location'
     -if resource.address
@@ -27,7 +27,7 @@
       %br
       =resource.county
       County
-  .span6
+  .span7
     %h4 
       Narrative
       %small=edit_link 'narrative'

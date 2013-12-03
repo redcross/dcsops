@@ -1,6 +1,6 @@
 %h3 
   Responders
-  -if inline_editable?
+  -if can? :read, (resource.responder_assignments.first || resource.responder_assignments.build)
     =link_to 'Launch Dispatch Console', incidents_incident_responders_path(resource)
 %table.table
   %tr

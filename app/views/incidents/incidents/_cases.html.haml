@@ -1,8 +1,9 @@
 %h3 
   Cases
-  %button.btn.btn-primary{data: {edit_panel: new_incidents_incident_case_path(resource)}} Add Case
+  -if can? :create, resource.cases.build
+    %button.btn.btn-primary{data: {edit_panel: new_incidents_incident_case_path(resource)}} Add Case
 
-- resource.cases.each do |kase|
+- resource.cases(true).each do |kase|
   .row
     .span8
       %table.table.table-bordered

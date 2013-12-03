@@ -1,9 +1,10 @@
 
 %h3 
   Timeline
-  %button.btn.btn-primary{data: {edit_panel: new_incidents_incident_event_log_path(resource)}} Add Log
+  -if can? :create, resource.event_logs.build
+    %button.btn.btn-primary{data: {edit_panel: new_incidents_incident_event_log_path(resource)}} Add Log
 
-- resource.event_logs.each do |evt|
+- resource.event_logs(true).each do |evt|
   %h5
     =evt.event_time.to_s :time
     \-
