@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131128051427) do
+ActiveRecord::Schema.define(version: 20131203022859) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,6 +105,43 @@ ActiveRecord::Schema.define(version: 20131128051427) do
   end
 
   add_index "incidents_cas_incidents", ["incident_id"], name: "index_incidents_cas_incidents_on_incident_id", using: :btree
+
+  create_table "incidents_case_assistance_items", force: true do |t|
+    t.integer  "price_list_item_id"
+    t.integer  "case_id"
+    t.integer  "quantity"
+    t.decimal  "total_price"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_case_assistance_items", ["case_id"], name: "index_incidents_case_assistance_items_on_case_id", using: :btree
+  add_index "incidents_case_assistance_items", ["price_list_item_id"], name: "index_incidents_case_assistance_items_on_price_list_item_id", using: :btree
+
+  create_table "incidents_cases", force: true do |t|
+    t.integer  "incident_id"
+    t.string   "cas_incident_number"
+    t.string   "form_901_number"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "address"
+    t.string   "unit"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.decimal  "lat"
+    t.decimal  "lng"
+    t.string   "phone_number"
+    t.integer  "num_adults"
+    t.integer  "num_children"
+    t.string   "cac_number"
+    t.decimal  "total_amount"
+    t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_cases", ["incident_id"], name: "index_incidents_cases_on_incident_id", using: :btree
 
   create_table "incidents_dat_incidents", force: true do |t|
     t.integer  "incident_id",             null: false
@@ -264,6 +301,16 @@ ActiveRecord::Schema.define(version: 20131128051427) do
 
   add_index "incidents_partner_uses", ["incident_id"], name: "index_incidents_partner_uses_on_incident_id", using: :btree
   add_index "incidents_partner_uses", ["partner_id"], name: "index_incidents_partner_uses_on_partner_id", using: :btree
+
+  create_table "incidents_price_list_items", force: true do |t|
+    t.integer  "item_class"
+    t.string   "name"
+    t.string   "type"
+    t.decimal  "unit_price"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "incidents_responder_assignments", force: true do |t|
     t.integer  "person_id"

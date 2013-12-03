@@ -1,0 +1,55 @@
+  
+=semantic_form_for [parent, resource], url: incidents_incident_case_path(parent, resource), builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
+  .modal-header 
+    %button.close(data-dismiss="modal") &times;
+    %h3 Add Case
+  .modal-body
+    .control-group{class: (f.object.errors[:first_name].present? || f.object.errors[:last_name].present?) && 'error'}
+      .control-label Name
+      .controls
+        =f.text_field :first_name, placeholder: 'First', class: 'name-field'
+        =f.text_field :last_name, placeholder: 'Last', class: 'name-field'
+    =f.input :num_adults
+    =f.input :num_children
+    =f.input :unit
+    .address-collapse.in
+      .control-group
+        .control-label 
+          Address 
+          =link_to '(edit)', '#', data: {toggle: 'collapse', target: '.address-collapse'}
+        .controls
+          =f.object.address
+          %br
+          #{f.object.city}, #{f.object.state} #{f.object.zip}
+    .collapse.address-collapse
+      =f.input :address
+      =f.input :city
+      =f.input :state
+      =f.input :zip
+    =f.input :cac_number, as: :credit_card
+    %table.table.table-bordered#case-assistance-items
+      %thead
+        %tr
+          %th Item
+          %th Quantity
+          %th Subtotal
+          %th Actions
+      %tbody
+        = f.fields_for :case_assistance_items do |item|
+          =render 'case_assistance_item_fields', f: item
+      %tfoot
+        %tr
+          %td(colspan=2) 
+            =link_to_add_association 'Add Assistance Item', f, :case_assistance_items, "data-association-insertion-node" => "#case-assistance-items tbody", "data-association-insertion-method" => "append", class: "btn btn-primary"
+            .pull-right Total:
+          %td(colspan=2)
+            =f.text_field :total_amount, readonly: true, class: 'total'
+    =f.input :notes, input_html: {rows: 5}
+    
+  .modal-footer
+    -if f.object.persisted? and can? :destroy, resource
+      =link_to 'Delete', incidents_incident_case_path(parent, resource), method: 'delete', data: {confirm: 'Really delete this case?'}, class: 'btn btn-danger', remote: request.xhr?
+    =f.action :submit, button_html: {class: "btn btn-primary"}
+
+  :javascript
+    window.caseController = window.caseController || new IncidentCaseController()

@@ -16,7 +16,7 @@
       %small
         =evt.event_time.to_s :date_time
     -if can? :update, evt
-      %small=link_to '(edit)', new_incidents_incident_event_log_path(resource, evt), data: {edit_panel: edit_incidents_incident_event_log_path(resource, evt)}
+      %small=link_to '(edit)', edit_incidents_incident_event_log_path(resource, evt), data: {edit_panel: edit_incidents_incident_event_log_path(resource, evt)}
   -if evt.event =~ /dispatch_/
     %pre=evt.message
   -else

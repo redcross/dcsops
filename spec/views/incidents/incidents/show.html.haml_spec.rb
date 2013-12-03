@@ -62,7 +62,6 @@ describe "incidents/incidents/show" do
       view.stub :inline_editable? => true
       render
 
-      rendered.should_not match(edit_incidents_incident_dat_path(@incident))
       rendered.should match('(edit)')
     end
   end

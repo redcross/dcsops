@@ -18,6 +18,7 @@ class AdminAbility
       can :manage, Scheduler::ShiftGroup
 
       can :manage, Incidents::NotificationSubscription
+      can :manage, Incidents::PriceListItem
 
       can :manage, Logistics::Vehicle
 

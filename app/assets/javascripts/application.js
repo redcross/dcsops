@@ -19,6 +19,7 @@
 //= require bootstrap-editable
 //= require cocoon
 //= require jquery.countdown
+//= require jquery.creditCardValidator
 //= require_tree .
 //= stub es5-shim
 

@@ -1,4 +1,50 @@
-%h3 Cases
+%h3 
+  Cases
+  %button.btn.btn-primary{data: {edit_panel: new_incidents_incident_case_path(resource)}} Add Case
+
+- resource.cases.each do |kase|
+  .row
+    .span8
+      %table.table.table-bordered
+        -if can? :update, kase
+          %tr
+            %th(colspan=2)=link_to 'Edit this Case', edit_incidents_incident_case_path(resource, kase), data: {edit_panel: edit_incidents_incident_case_path(resource, kase)}
+        %tr
+          %th Name
+          %td #{kase.first_name} #{kase.last_name}
+        %tr
+          %th # Clients
+          %td #{pluralize kase.num_adults, 'adult'}, #{pluralize kase.num_children, 'child'}
+        %tr
+          %th Unit
+          %td=kase.unit
+        %tr
+          %th Case Number
+          %td=kase.form_901_number
+        %tr
+          %th Financial Assistance
+          %td(style="padding: 0; margin: 0")
+            %table.table.table-condensed(style="padding: 0; margin: 0; border-collapse: collapse")
+              %tr
+                %th Item
+                %th Quantity
+                %th Subtotal
+              -kase.case_assistance_items.each do |item|
+                %tr
+                  %td=item.price_list_item.name
+                  %td=item.quantity
+                  %td=number_to_currency item.total_price
+              %tr
+                %td(colspan=2 style="text-align: right")
+                  Total: 
+                %td #{number_to_currency kase.total_amount}
+        %tr
+          %th CAC Number
+          %td=kase.obfuscated_cac
+        %tr
+          %th Notes
+          %td=simple_format kase.notes
+
 
 - (resource.cas_incident.try(:cases)||[]).each do |kase|
   %h4

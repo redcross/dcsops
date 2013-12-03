@@ -32,6 +32,7 @@ gem "roadie", github: 'Mange/roadie'
 gem "kaminari"
 gem "paper_trail", github: 'airblade/paper_trail'
 gem "assignable_values"
+gem 'credit_card_validator'
 
 gem 'geokit', github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 

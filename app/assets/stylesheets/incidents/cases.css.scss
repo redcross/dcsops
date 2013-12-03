@@ -1,0 +1,19 @@
+// Place all the styles related to the Incidents::Cases controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#case-assistance-items {
+  input {
+    width: 3em;
+  }
+  input, select {
+    &.error {
+      color: #b94a48;
+      border-color: #b94a48;
+    }
+  }
+}
+
+input.name-field {
+  width: 8em;
+}
