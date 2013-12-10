@@ -36,7 +36,7 @@
             %small (#{inc.county})
         - dat = inc.dat_incident
         - if dat
-          - adults = inc.num_adults; children = inc.num_children; units = dat.units_affected
+          - adults = inc.num_adults; children = inc.num_children; units = dat.units_total
           %p
             %strong Incident:
             =inc.humanized_incident_type
