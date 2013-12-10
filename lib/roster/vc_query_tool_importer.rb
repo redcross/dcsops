@@ -159,7 +159,8 @@ class MemberPositionsImporter < Importer
     email: 'email', secondary_email: 'second_email',
     work_phone: 'work_phone', cell_phone: 'cell_phone', home_phone: 'home_phone', alternate_phone: 'alternate_phone',
     gap_primary: 'primary_gap', gap_secondary: 'secondary_gap', gap_tertiary: 'tertiary_gap',
-    vc_is_active: 'status_name', second_lang: 'second_language', third_lang: 'third_language'}
+    vc_is_active: 'status_name', second_lang: 'second_language', third_lang: 'third_language',
+    vc_last_login: 'last_login', vc_last_profile_update: 'profile_last_updated'}
 
   def positions
     @_positions ||= @chapter.positions.select(&:vc_regex)
@@ -177,10 +178,11 @@ class MemberPositionsImporter < Importer
       attrs[:vc_is_active] = is_active_status(attrs[:vc_is_active])
       @person = @people[vc_id].first #Roster::Person.where({chapter_id: @chapter}.merge(identity)).first_or_initialize
       if @person.new_record? and !attrs[:vc_is_active]
-        #logger.debug "Skipping because inactive and new: #{attrs.inspect}"
+        #logger.warn "Skipping because inactive and new: #{attrs.inspect}"
         @person = nil
         return
       end
+
       @num_people += 1
 
       # Adding chapter: to the attrs merge should prevent the validates_presence_of: chapter from doing a db query
@@ -214,10 +216,16 @@ class MemberPositionsImporter < Importer
     Roster::CountyMembership.import @counties_to_import
     Roster::PositionMembership.import @positions_to_import
     Roster::Person.where(vc_id: @vc_ids_seen).update_all :vc_imported_at => Time.now
+    deactivated = Roster::Person.for_chapter(@chapter).where{vc_id.not_in(my{@vc_ids_seen})}.update_all(:vc_is_active => false) if @vc_ids_seen.present?
     logger.info "Processed #{@num_people} active users and #{@num_positions} filtered positions"
+    logger.info "Deactivated #{deactivated} accounts not received in update"
   end
 
   def handle_row(identity, attrs)
+    # Parse out the date from VC's weird days-since-1900 epoch
+    attrs[:vc_last_login] = parse_time attrs[:vc_last_login] if attrs[:vc_last_login]
+    attrs[:vc_last_profile_update] = parse_time attrs[:vc_last_profile_update] if attrs[:vc_last_profile_update]
+
     # Delete these here so get_person doesn't try to assign these attrs
     # to the person model.  But we want them there so process_row can use above.
     person_attrs = attrs.dup
@@ -244,10 +252,6 @@ class MemberPositionsImporter < Importer
     match_position position_name
     match_position second_lang if second_lang.present?
     match_position third_lang if third_lang.present?
-
-
-
-    #@person.save!
   end
 
   def match_position position_name
@@ -318,50 +322,4 @@ class QualificationsImporter < MemberPositionsImporter
   def process_row?(attrs)
     attrs[:position_name].present?
   end
-end
-
-class MembersImporter < Importer
-  def handle_row(identity, attrs)
-    # Massage the attributes a bit
-    attrs[:vc_is_active] = ['General Volunteer', 'Employee'].include?(attrs[:vc_is_active])
-
-    logger.debug "Importing member data for: #{identity.inspect} with #{attrs.inspect}"
-
-    person = Roster::Person.where({chapter_id: @chapter}.merge(identity)).first_or_initialize
-    if person.new_record? and !attrs[:vc_is_active]
-      logger.debug "Skipping because inactive and new: #{attrs.inspect}"
-      return
-    end
-
-    # Adding chapter: to the attrs merge should prevent the validates_presence_of: chapter from doing a db query
-    person.attributes = attrs.merge({vc_imported_at: Time.now, chapter: @chapter})
-    person.save!
-  end
-
-  self.column_mappings = {
-    vc_member_number: 'member_number', first_name: 'first_name', last_name: 'last_name', 
-    email: 'email', secondary_email: 'second_email',
-    work_phone: 'work_phone', cell_phone: 'cell_phone', home_phone: 'home_phone', alternate_phone: 'alternate_phone',
-    gap_primary: 'primary_gap', gap_secondary: 'secondary_gap', gap_tertiary: 'tertiary_gap',
-    vc_is_active: 'status_name'
-  }
-end
-
-class UsageImporter < Importer
-  def handle_row(identity, attrs)
-    #return unless self.class.loaded_ids.include?(attrs[:vc_id])
-    status = attrs.delete(:status_name)
-    return unless is_active_status(status)
-    person = Roster::Person.where({chapter_id: @chapter}.merge(identity)).first
-    if person
-      logger.debug "Usage for #{identity.inspect} is #{attrs.inspect}"
-      attrs[:vc_last_login] = parse_time(attrs[:vc_last_login])
-      attrs[:vc_last_profile_update] = parse_time(attrs[:vc_last_profile_update])
-      attrs[:chapter] = @chapter # Satisfies the chapter presence validator so it doesn't make a query
-      person.update_attributes attrs
-    end
-  end
-
-  self.column_mappings = {status_name: 'status_name', :vc_last_login => 'last_login', :vc_last_profile_update => 'profile_last_updated',
-                          address1: 'address1', address2: 'address2', city: 'address3', state: 'address4', zip: 'address5'}
 end

@@ -30,11 +30,14 @@ class Roster::VcImporter
     (1..(sheet.last_row_index-1)).each do |row|
       break if sheet[row, 0].blank?
       id = sheet[row,23].to_i
-      person = Roster::Person.where(chapter_id: @chapter, vc_id: id).first_or_initialize
-      cols = [:vc_member_number, nil, :first_name, nil, :last_name, nil, :email, :secondary_email, 
-        :work_phone, :home_phone, :cell_phone, nil, nil, :alternate_phone,
-        :address1, :address2, nil, nil, nil, :city, :state, :zip, nil, nil,
-        :phone_1_preference, :phone_2_preference, :phone_3_preference, :phone_4_preference]
+      person = Roster::Person.where(chapter_id: @chapter, vc_id: id).first
+      next unless person
+      #cols = [:vc_member_number, nil, :first_name, nil, :last_name, nil, :email, :secondary_email, 
+      #  :work_phone, :home_phone, :cell_phone, nil, nil, :alternate_phone,
+      #  :address1, :address2, nil, nil, nil, :city, :state, :zip, nil, nil,
+      #  :phone_1_preference, :phone_2_preference, :phone_3_preference, :phone_4_preference]
+
+      cols = [nil] * 24 + [:phone_1_preference, :phone_2_preference, :phone_3_preference, :phone_4_preference]
 
       cols.each_with_index do |col_name, idx|
         next unless col_name
