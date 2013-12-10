@@ -8,5 +8,6 @@ before_script:
 - bin/sauce_connect_setup.sh
 env:
   global:
+  - SKIP_FEATURES: 1
   - secure: "RQjcEYGShb2H5bd319PcqEQsSOSkHzeE5gB9j473CQzZ+pkuj5ovB4rxjFEWMn+isaHc1TRG8ha09RZMAgMM63x03wN/2b/HMmUIg3L1t/Bih5x0DelktSJHWUtyisaOt4hL8XS4QxevrhwPYZfCz7WxB389E+dTSTREXbEXmCk="
   - secure: "lL1b4I/Cr33b14VeB2c8HFcwiET0ZepBcRZUHIK09v7txHOApQrU2zLb1LJEYPVGVLQrbIbiOB3w5wrVzXbOHvijuU3Zz6FN1FMBU4booVKVPFKW7PcrArebeKDqWAHLjI3PmUe0aDLoXYUnEBFohCPx2TsOPsf/u6V5uW2uPuw="
