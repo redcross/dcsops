@@ -20,6 +20,7 @@ require 'spec_helper'
 
 describe Incidents::RespondersController do
   include LoggedIn
+  before(:each) {@person.chapter.incidents_enable_dispatch_console = true; @person.chapter.save!;}
 
   # This should return the minimal set of attributes required to create a valid
   # Incidents::Responder. As you add validations to Incidents::Responder, be sure to
