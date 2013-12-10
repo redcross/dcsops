@@ -269,6 +269,20 @@ describe Scheduler::CalendarController do
         response.should be_success
         response.body.should_not match(/class=['"]open/)
       end
+
+      if partial_name != 'week'
+        it "should render the shift group name" do
+          xhr :get, :day, date: values[:date].to_s, period: partial_name
+          response.body.should match(@group.name)
+        end
+      end
+
+      it "should not render an empty group's name" do
+        @empty_group = FactoryGirl.create :shift_group, name: "EmptyGroup", chapter: @ch, period: values[:shift_period], start_offset: values[:shift_start_offset], end_offset: values[:shift_end_offset]
+        @old_shift = FactoryGirl.create :shift, shift_group: @empty_group, county: @person.counties.first, positions: @person.positions, shift_ends: values[:date]-5
+        xhr :get, :day, date: values[:date].to_s, period: partial_name
+        response.body.should_not match(@empty_group.name)
+      end
     end
 
   end

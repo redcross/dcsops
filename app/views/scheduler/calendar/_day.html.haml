@@ -3,11 +3,12 @@
     %th.date-header(colspan=2)=date.day
   - first_group = false
   - daily_groups.each_with_index do |(group, shifts), group_idx|
+    - shifts = shifts.select{|sh|sh.active_on_day?(date)}
+    - next if shifts.blank?
     - my_shift = nil
     -if person
       - my_shift = my_shift_for_group_on_day(group.id, date)
     - group_class = my_shift ? 'my-shift' : ''
-    - shifts = shifts.select{|sh|sh.active_on_day?(date)}
     %tr
       %th.shift-header-normal.shift-side{class: [group_class, group_idx==(daily_groups.count-1) && 'last-group'], rowspan: shifts.count+1}=group.name
       %th.shift-header-normal.shift-top{class: group_class}=group.name
