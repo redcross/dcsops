@@ -20,8 +20,8 @@ describe Incidents::IncidentsController do
   describe "#link_cas" do
     before(:each) { grant_role! 'cas_admin' }
     it "displays the list" do
-      cas = FactoryGirl.create :cas_incident
-      cas2 = FactoryGirl.create :cas_incident
+      cas = FactoryGirl.create :cas_incident, chapter: @person.chapter
+      cas2 = FactoryGirl.create :cas_incident, chapter: @person.chapter
       inc = FactoryGirl.create :incident, chapter: @person.chapter
       inc2 = FactoryGirl.create :incident, chapter: @person.chapter
 

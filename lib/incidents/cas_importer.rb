@@ -1,6 +1,6 @@
 class Incidents::CasImporter
   def import_data(chapter, file)
-    @chapter = chapter
+    @chapters = Roster::Chapter.all
     workbook = Spreadsheet.open(file)
 
     inc_errors = []
@@ -30,7 +30,7 @@ class Incidents::CasImporter
       puts id
       incident = Incidents::CasIncident.where(cas_incident_number: id).first_or_initialize
       cols = [:dr_number, nil, :cas_name, :incident_date, nil, nil, nil, :county_name,
-              :cases_with_assistance, :cases_service_only, :cases_opened, :num_clients, :cases_closed, :cases_open]
+              :cases_with_assistance, :cases_service_only, :cases_opened, :num_clients, :cases_closed, :cases_open, :chapter_code]
 
       cols.each_with_index do |col_name, idx|
         next unless col_name
@@ -38,6 +38,9 @@ class Incidents::CasImporter
       end
       incident.last_import = Time.now
       incident.last_date_with_open_cases = Date.today if incident.cases_open and incident.cases_open > 0
+      if incident.chapter_code.present?
+        incident.chapter = @chapters.detect{|ch| ch.cas_chapter_code_array.include? incident.chapter_code }
+      end      
       if !incident.save
         errors << incident
       end

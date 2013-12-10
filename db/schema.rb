@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131203022859) do
+ActiveRecord::Schema.define(version: 20131210011218) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -102,6 +102,8 @@ ActiveRecord::Schema.define(version: 20131203022859) do
     t.datetime "last_import"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "chapter_id"
+    t.string   "chapter_code"
   end
 
   add_index "incidents_cas_incidents", ["incident_id"], name: "index_incidents_cas_incidents_on_incident_id", using: :btree
@@ -136,9 +138,9 @@ ActiveRecord::Schema.define(version: 20131203022859) do
     t.integer  "num_children"
     t.string   "cac_number"
     t.decimal  "total_amount"
-    t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "notes"
   end
 
   add_index "incidents_cases", ["incident_id"], name: "index_incidents_cases_on_incident_id", using: :btree
@@ -307,9 +309,9 @@ ActiveRecord::Schema.define(version: 20131203022859) do
     t.string   "name"
     t.string   "type"
     t.decimal  "unit_price"
-    t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "description"
   end
 
   create_table "incidents_responder_assignments", force: true do |t|

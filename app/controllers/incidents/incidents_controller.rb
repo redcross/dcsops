@@ -104,7 +104,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     expose(:needs_report_collection) { end_of_association_chain.needs_incident_report.includes{area}.order{incident_number} }
     expose(:tracker_collection) { apply_scopes(end_of_association_chain).open_cases.includes{cas_incident.cases}.uniq }
-    expose(:cas_incidents_to_link) { Incidents::CasIncident.where{incident_id == nil}.order{incident_date.desc} }
+    expose(:cas_incidents_to_link) { Incidents::CasIncident.to_link_for_chapter(current_chapter) }
     expose(:county_names) { current_chapter.counties.map(&:name) }
     expose(:resource_changes) {
       changes = resource.versions
@@ -113,7 +113,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     }
     expose(:resource_change_people) {
       ids = resource_changes.map(&:whodunnit).select(&:present?).uniq
-      people = Roster::Person.where{id.in(ids)}.map{|p| {p.id => p}}.reduce(&:merge)
+      people = Hash[Roster::Person.where{id.in(ids)}.map{|p| [p.id, p]}]
     }
 
     expose(:search) { resource_class.search(params[:q]) }
