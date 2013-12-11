@@ -41,16 +41,16 @@
 - content_for :footer_js do
   = google_maps_javascript
   :javascript
-    config = #{map_config.to_json};
-    incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json}, config);
-    eventLogsController = new IncidentEventLogsController();
-    editPanelController = new IncidentEditPanelController();
+    var hash = window.location.hash;
+    hash && $('ul.nav a[data-target="' + hash + '"]').tab('show');
     $(function() {
-      var hash = window.location.hash;
-      hash && $('ul.nav a[data-target="' + hash + '"]').tab('show');
 
       $('a[data-toggle=tab]').on('shown', function(evt) {
         //window.location.hash = $(evt.target).attr('href')
         window.history.replaceState({}, '', $(evt.target).attr('data-target'))
-      })
+      });
+
+      config = #{map_config.to_json};
+      incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json}, config);
+      editPanelController = new IncidentEditPanelController();
     });
