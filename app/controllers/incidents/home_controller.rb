@@ -21,7 +21,7 @@ class Incidents::HomeController < Incidents::BaseController
 
   def map_json_for(incidents)
     incidents.map do |inc|
-      {id: inc.incident_number, lat: inc.lat, lng: inc.lng, clients: [inc.num_adults, inc.num_children].compact.sum, status: inc.incident_status}
+      {id: inc.incident_number, lat: inc.lat, lng: inc.lng, clients: [inc.num_adults, inc.num_children].compact.sum, status: inc.status}
     end
   end
 

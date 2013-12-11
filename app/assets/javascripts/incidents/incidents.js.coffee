@@ -13,36 +13,52 @@ class window.IncidentLocationController
   fields: ['search_for_address']
   form_base: 'incidents_dat_incident_incident_attributes'
 
-  constructor: (currentLat, currentLng, config) ->
-    return unless window.google # if no gmaps js, don't die
+  constructor: (@currentLat, @currentLng, @config) ->
+    @dom = $('.incident-map')[0]
 
-    @centerPoint = new google.maps.LatLng(config.lat, config.lng)
-
-    dom = $('.incident-map')[0]
-    google.maps.visualRefresh = true
-    opts =
-      zoom: config.zoom
-      center: @centerPoint
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-      scrollwheel: false
-      draggable: false
-      disableDefaultUI: true
-    @map = new google.maps.Map(dom, opts)
-    @coder = new google.maps.Geocoder()
-    @marker = new google.maps.Marker
-    @bounds = new google.maps.LatLngBounds new google.maps.LatLng(config.geocode_bounds[0], config.geocode_bounds[1]), new google.maps.LatLng(config.geocode_bounds[2], config.geocode_bounds[3])
-
-    if currentLng? and currentLng?
-      pos = new google.maps.LatLng(currentLat, currentLng)
-      @map.setCenter pos
-      @map.setZoom 12
-      @marker.setPosition pos
-      @marker.setMap @map
+    unless this.maybeInitMap()
+      id = $(@dom).closest('.tab-pane').attr('id')
+      sel = "a[data-target=##{id}]"
+      $(document).on 'shown', sel, (evt) =>
+        this.maybeInitMap()
 
     @fields.forEach (fname) =>
       field = '#' + @form_base + '_' + fname
       $(document).on 'change', field, (evt) =>
         this.updateMap()
+
+  maybeInitMap: () ->
+    if ($(@dom).is(':visible'))
+      this.initMap()
+      true
+    else
+      false
+
+  initMap: () ->
+    return unless window.google # if no gmaps js, don't die
+    return if @map?
+
+    @centerPoint = new google.maps.LatLng(@config.lat, @config.lng)
+
+    google.maps.visualRefresh = true
+    opts =
+      zoom: @config.zoom
+      center: @centerPoint
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+      scrollwheel: false
+      draggable: false
+      disableDefaultUI: true
+    @map = new google.maps.Map(@dom, opts)
+    @coder = new google.maps.Geocoder()
+    @marker = new google.maps.Marker
+    @bounds = new google.maps.LatLngBounds new google.maps.LatLng(@config.geocode_bounds[0], @config.geocode_bounds[1]), new google.maps.LatLng(@config.geocode_bounds[2], @config.geocode_bounds[3])
+
+    if @currentLng? and @currentLng?
+      pos = new google.maps.LatLng(@currentLat, @currentLng)
+      @map.setCenter pos
+      @map.setZoom 12
+      @marker.setPosition pos
+      @marker.setMap @map
 
   setFieldVal: (fname, val) ->
     $('#' + @form_base + '_' + fname).val(val)
@@ -80,7 +96,7 @@ class window.IncidentLocationController
             else if type == 'administrative_area_level_1'
               this.setFieldVal('state', el.short_name)
             else if type == 'administrative_area_level_2'
-              this.setFieldVal('county', el.short_name)
+              this.setFieldVal('county', el.short_name.replace(' County', ''))
             else if type == 'postal_code'
               this.setFieldVal('zip', el.long_name)
       else
@@ -160,11 +176,6 @@ class window.IncidentsTrackerController
           $("#narrative-modal .modal-body").html(data)
           setTimeout ( () -> $("#narrative-modal .modal-body").scrollTop(0) ), 100
 
-class window.IncidentEventLogsController
-  constructor: () ->
-    $('#add-log-button').on "click", (evt) =>
-      $("#create-event-modal").modal('show')
-
 class window.IncidentEditPanelController
   updateMapping:
     demographics: 'details'
@@ -173,7 +184,6 @@ class window.IncidentEditPanelController
 
   constructor: () ->
     $(document).on 'click', '[data-toggle=tab]', (evt) =>
-      console.log 'got click!'
       evt.preventDefault()
       evt.stopPropagation()
       false
