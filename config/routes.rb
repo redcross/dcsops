@@ -107,5 +107,5 @@ Scheduler::Application.routes.draw do
     resources :partners
   end
 
-  match 'import/:import_secret/:provider/dispatch-v:version', via: [:head, :post], to: 'incidents/import#import_dispatch', version: /\d+/
+  match 'import/dispatch', via: [:head, :post], to: 'incidents/import#import_dispatch'
 end
