@@ -3,6 +3,7 @@ class Roster::Chapter < ActiveRecord::Base
   has_many :counties
   has_many :positions
   has_many :people
+  has_many :roles
 
   def time_zone
     @_tz ||= ActiveSupport::TimeZone[self.time_zone_raw]

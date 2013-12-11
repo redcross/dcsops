@@ -2,6 +2,12 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   menu parent: 'Scheduling'
 
   actions :all, except: [:destroy]
+
+  filter :shift_group
+  filter :county
+  filter :name
+  filter :abbrev
+  filter :dispatch_role
   
   scope :all, default: true do |shifts|
     shifts.includes([:shift_group, :county]).order(:county_id, :shift_group_id, :ordinal)

@@ -37,12 +37,13 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     f.actions
   end
 
-  show do
-    #attributes_table do
-    #  row :first_name
-    #  row :vc_id
-    #  row :vc_member_number
-    #end
+  show do |person|
+    attributes_table do
+      attrs = %i(id chapter primary_county full_name email last_login vc_imported_at vc_is_active gap_primary gap_secondary gap_tertiary vc_last_login vc_last_profile_update)
+      attrs.each do |a|
+        row a
+      end
+    end
     
     columns do
       column do

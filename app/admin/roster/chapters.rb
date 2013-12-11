@@ -1,6 +1,9 @@
 ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
   menu parent: 'Roster'
 
+  filter :name
+  filter :code
+
   actions :all, except: [:destroy]
 
   controller do
