@@ -16,6 +16,8 @@ class window.IncidentLocationController
   constructor: (@currentLat, @currentLng, @config) ->
     @dom = $('.incident-map')[0]
 
+    this.initGeocoder()
+
     unless this.maybeInitMap()
       id = $(@dom).closest('.tab-pane').attr('id')
       sel = "a[data-target=##{id}]"
@@ -49,16 +51,19 @@ class window.IncidentLocationController
       draggable: false
       disableDefaultUI: true
     @map = new google.maps.Map(@dom, opts)
-    @coder = new google.maps.Geocoder()
-    @marker = new google.maps.Marker
-    @bounds = new google.maps.LatLngBounds new google.maps.LatLng(@config.geocode_bounds[0], @config.geocode_bounds[1]), new google.maps.LatLng(@config.geocode_bounds[2], @config.geocode_bounds[3])
-
+    
     if @currentLng? and @currentLng?
       pos = new google.maps.LatLng(@currentLat, @currentLng)
       @map.setCenter pos
       @map.setZoom 12
       @marker.setPosition pos
       @marker.setMap @map
+
+  initGeocoder: () ->
+    return unless window.google
+    @coder = new google.maps.Geocoder()
+    @marker = new google.maps.Marker
+    @bounds = new google.maps.LatLngBounds new google.maps.LatLng(@config.geocode_bounds[0], @config.geocode_bounds[1]), new google.maps.LatLng(@config.geocode_bounds[2], @config.geocode_bounds[3])
 
   setFieldVal: (fname, val) ->
     $('#' + @form_base + '_' + fname).val(val)
@@ -75,10 +80,13 @@ class window.IncidentLocationController
       if (status == google.maps.GeocoderStatus.OK)
         result = results[0]
         pos = result.geometry.location
-        @map.setCenter pos
-        @map.setZoom 12
-        @marker.setPosition(pos)
-        @marker.setMap(@map)
+        @currentLng = pos.lng()
+        @currentLat = pos.lat()
+        if @map
+          @map.setCenter pos
+          @map.setZoom 12
+          @marker.setPosition(pos)
+          @marker.setMap(@map)
 
         ['address', 'lat', 'lng', 'neighborhood', 'city', 'state', 'zip', 'county'].forEach (field) =>
           this.setFieldVal field, ''

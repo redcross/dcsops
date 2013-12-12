@@ -16,8 +16,14 @@
         =f.input :lng, as: :hidden, input_html: {readonly: true, editable: false}
         =f.input :neighborhood, input_html: {readonly: true, editable: false}
         =f.input :county, input_html: {readonly: true, editable: false}
-    .span6
-      .incident-map{style: "height: 450px"}
-:javascript
-  config = #{map_config.to_json};
-  incidentLocationController = new IncidentLocationController(#{resource.incident.lat.to_json}, #{resource.incident.lng.to_json}, config);
+    - unless request.xhr?
+      .span6
+        .incident-map{style: "height: 450px"}
+- unless request.xhr?
+  - content_for :footer_js do
+    = google_maps_javascript
+    :javascript
+      $(function() {
+        config = #{map_config.to_json};
+        window.incidentLocationController = window.incidentLocationController || new IncidentLocationController(#{resource.incident.lat.to_json}, #{resource.incident.lng.to_json}, config);
+      });
