@@ -42,6 +42,7 @@ describe Scheduler::DirectlineMailer do
     end
 
     it "Should not run with force=false and all assignments synced" do
+      @leadass.update_attribute :synced, true
       Scheduler::DirectlineMailer.any_instance.should_not_receive(:export)
       Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter, false)
     end
@@ -50,12 +51,14 @@ describe Scheduler::DirectlineMailer do
       @leadass.update_attribute :date, @chapter.time_zone.today+7
       Scheduler::DirectlineMailer.any_instance.should_not_receive(:export)
       Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter, false)
+      @leadass.reload.synced.should == false
     end
 
     it "Should run with force=false and an unsynced assignment today" do
       @leadass.update_attribute :date, @chapter.time_zone.today
       Scheduler::DirectlineMailer.any_instance.should_receive(:export).and_return(double deliver: true)
-      Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter)
+      Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter, false)
+      @leadass.reload.synced.should == true
     end
   end
 

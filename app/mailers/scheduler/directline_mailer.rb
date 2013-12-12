@@ -13,7 +13,7 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   def self.run_for_chapter_if_needed(chapter, force=true, window=2)
     end_window = chapter.time_zone.now.advance days: window
     Scheduler::ShiftAssignment.transaction do
-      if force or Scheduler::ShiftAssignment.joins{shift}.where{(shift.dispatch_role != nil) & (date <= end_window.to_date) & (not(synced))}.exists?
+      if force or Scheduler::ShiftAssignment.joins{shift}.where{(shift.dispatch_role != nil) & (date <= end_window.to_date) & (synced != true)}.exists?
         self.run_for_chapter(chapter)
         Scheduler::ShiftAssignment.joins{shift.shift_group}.where{shift.shift_group.chapter_id==chapter}.update_all synced: true
       end
@@ -21,21 +21,10 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   end
 
   def self.run_for_chapter(chapter)
-    log = ImportLog.create! controller: self.to_s, name: "DirectlineExport", start_time: Time.now
-
-    day = chapter.time_zone.today
-    self.export(chapter, day - 1, day + 60).deliver
-
-    log.result = 'success'
-    log.runtime = (Time.now - log.start_time)
-    log.save!
-  rescue => e
-    log.result = 'exception'
-    log.update_from_exception(e)
-    log.runtime = (Time.now - log.start_time)
-    log.save!
-
-    raise e
+    ImportLog.capture(self.to_s, "DirectlineExport") do |logger, import_log|
+      day = chapter.time_zone.today
+      self.export(chapter, day - 1, day + 60).deliver
+    end
   end
 
   class << self
