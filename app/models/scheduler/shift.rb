@@ -43,7 +43,8 @@ class Scheduler::Shift < ActiveRecord::Base
 
   def can_remove_on_day(date)
     today = normalize_date shift_group.chapter.time_zone.today
-    (date >= today) and (signups_frozen_before.nil? || (date >= signups_frozen_before))
+    advance = date - today
+    (date >= today) and (signups_frozen_before.nil? || (date >= signups_frozen_before)) and (advance >= min_advance_signup)
   end
 
   def active_on_day?(date)

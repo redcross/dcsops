@@ -113,6 +113,12 @@ describe Scheduler::Shift do
       shift.update_attribute :signups_available_before, date-1
       shift.can_sign_up_on_day(date).should be_false
     end
+
+    it "should be false if the min_advance_signup has passed" do
+      shift.update_attribute :min_advance_signup, 1
+      shift.can_remove_on_day(date).should be_false
+      shift.can_remove_on_day(date+1).should be_true
+    end
   end
 
   describe "allow_signup_in_past" do

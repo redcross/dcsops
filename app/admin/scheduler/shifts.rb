@@ -29,14 +29,14 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   form do |f|
     f.inputs 'Details'
     f.inputs 'Position and County' do
-      f.input :positions, as: :check_boxes
+      f.input :positions, as: :check_boxes, collection: f.object.shift_group.try(:chapter).try(:positions)
       f.actions
     end
   end
 
   controller do
     def resource_params
-      request.get? ? [] : [params.require(:shift).permit(:name, :abbrev, :shift_group_id, :max_signups, :county_id, :ordinal, :spreadsheet_ordinal, :dispatch_role, :shift_begins, :shift_ends, :signups_frozen_before, :min_desired_signups, :position_ids => [])]
+      request.get? ? [] : [params.require(:shift).permit(:name, :abbrev, :shift_group_id, :max_signups, :county_id, :ordinal, :spreadsheet_ordinal, :dispatch_role, :shift_begins, :shift_ends, :signups_frozen_before, :min_desired_signups, :max_advance_signup, :min_advance_signup, :position_ids => [])]
     end
   end
 end
