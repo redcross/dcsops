@@ -24,8 +24,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   has_scope :time_period, default: 'future', only: [:index] do |controller, scope, arg|
     case arg
     when 'future'
-      yesterday = controller.current_chapter.time_zone.today.yesterday
-      scope.where{date.in(yesterday..(yesterday+60))}
+      scope.normalized_date_on_or_after(controller.current_chapter.time_zone.today)
     else
       scope
     end

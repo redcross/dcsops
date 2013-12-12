@@ -126,13 +126,25 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     }
   }
 
+  scope :normalized_date_on_or_after, ->(time) {
+    in_date = time.to_date
+    joins{shift.shift_group}.where(<<-SQL)
+    scheduler_shift_assignments.date >= (CASE scheduler_shift_groups.period
+    WHEN 'daily' THEN '#{in_date}'::date
+    WHEN 'weekly' THEN date_trunc('week', '#{in_date}'::date) - '7 days'::interval
+    WHEN 'monthly' THEN date_trunc('month', '#{in_date}'::date) - '1 month'::interval
+    ELSE NULL
+    END)
+    SQL
+  }
+
   scope :starts_after, ->(time){
     start_date = time.to_date
     joins{shift.shift_group}.where{(date > start_date) | ((date == start_date) & (shift.shift_group.end_offset > time.in_time_zone.seconds_since_midnight))}
   }
 
   scope :available_for_swap, -> (chapter) {
-    where{(available_for_swap==true) & (date >= chapter.time_zone.today)}
+    where{(available_for_swap==true)}.normalized_date_on_or_after(chapter.time_zone.today)
   }
 
   scope :includes_person_carriers, -> {
