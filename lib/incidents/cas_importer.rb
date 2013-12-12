@@ -1,4 +1,6 @@
 class Incidents::CasImporter
+  include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+
   def import_data(chapter, file)
     @chapters = Roster::Chapter.all
     workbook = Spreadsheet.open(file)
@@ -20,6 +22,7 @@ class Incidents::CasImporter
 
     [inc_errors, case_errors]
   end
+  add_transaction_tracer :import_data, category: :task
 
   def import_incident_data(sheet)
     errors = []

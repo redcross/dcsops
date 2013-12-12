@@ -1,4 +1,6 @@
 class Roster::VcImporter
+  include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+
   def import_data(chapter, file)
     @chapter = chapter
     workbook = Spreadsheet.open(file)
@@ -25,6 +27,8 @@ class Roster::VcImporter
     end
     {data_errs: data_errs, pos_errs: pos_errs, qual_errs: qual_errs}
   end
+  add_transaction_tracer :import_data, category: :task
+
   private
   def import_member_data(sheet)
     (1..(sheet.last_row_index-1)).each do |row|

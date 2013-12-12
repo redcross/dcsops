@@ -1,6 +1,7 @@
 require 'csv'
 
 class Roster::VcQueryToolImporter
+  include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
   attr_accessor :logger
   attr_accessor :row_counter
@@ -56,6 +57,7 @@ class Roster::VcQueryToolImporter
       end
     end
   end
+  add_transaction_tracer :import, category: :task
 end
 
 class Importer

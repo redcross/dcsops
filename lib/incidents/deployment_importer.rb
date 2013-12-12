@@ -1,4 +1,5 @@
 class Incidents::DeploymentImporter
+  include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
   def import_data(chapter, io)
     @chapter = chapter
     workbook = Spreadsheet.open(io)
@@ -12,6 +13,7 @@ class Incidents::DeploymentImporter
     end
     errs
   end
+  add_transaction_tracer :import_data, category: :task
 
   def import_people(sheet)
     errors = []
