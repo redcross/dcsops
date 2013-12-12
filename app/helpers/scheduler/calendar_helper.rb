@@ -3,10 +3,10 @@ module Scheduler::CalendarHelper
     can_take = person && shift.can_be_taken_by?(person)
     can_sign_up = shift.can_sign_up_on_day(date, assignments.count)
     can_remove = shift.can_remove_on_day(date)
-    s = ""
+    s = ActiveSupport::SafeBuffer.new
 
     if show_county_name
-      s << shift.county.abbrev + " "
+      s << shift.county.abbrev << " "
     end
 
     s << shift.name + ": "
@@ -26,19 +26,20 @@ module Scheduler::CalendarHelper
         "#{assignments.count} registered"
       end
     end
-
-    s.html_safe
+    s
   end
 
   def view_as_links
     current = params[:display] || ""
-    {"Calendar" => "", "Spreadsheet" => 'spreadsheet', 'Grid' => 'grid'}.map do |name, val|
+    links = {"Calendar" => "", "Spreadsheet" => 'spreadsheet', 'Grid' => 'grid'}.map do |name, val|
       if val != current
         link_to name, url_for(display: val, counties: show_counties)
       else
         name
       end
-    end.join(" | ").html_safe + "<br />".html_safe + link_to( "Download PDF", url_for(format: :pdf, counties: show_counties, show_shifts: params[:show_shifts]))
+    end
+
+    safe_join(links, " | ") + tag(:br) + link_to( "Download PDF", url_for(format: :pdf, counties: show_counties, show_shifts: params[:show_shifts]))
   end
 
 end
