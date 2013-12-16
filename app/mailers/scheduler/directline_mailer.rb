@@ -29,7 +29,7 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
 
   class << self
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-    add_transaction_tracer :run_for_chapter
+    add_transaction_tracer :run_for_chapter, category: :task
   end
 
   def export(chapter, start_date, end_date)
