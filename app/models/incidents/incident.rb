@@ -10,7 +10,7 @@ class Incidents::Incident < ActiveRecord::Base
   has_one :dispatch_log, class_name: 'Incidents::DispatchLog'
   
   has_many :event_logs, ->{ order{event_time.desc} }, class_name: 'Incidents::EventLog', inverse_of: :incident
-  has_one :latest_event_log, ->{ order{event_time.desc}.where{event != 'note'} }, class_name: 'Incidents::EventLog'
+  #has_one :latest_event_log, ->{ order{event_time.desc}.where{event != 'note'} }, class_name: 'Incidents::EventLog'
 
   has_many :cases, class_name: 'Incidents::Case', inverse_of: :incident
 
@@ -194,5 +194,9 @@ class Incidents::Incident < ActiveRecord::Base
 
   def full_address
     [[address, city, state].compact.join(", "), zip].compact.join "  "
+  end
+
+  def latest_event_log
+    event_logs.first
   end
 end

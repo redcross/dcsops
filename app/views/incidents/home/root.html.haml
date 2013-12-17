@@ -67,7 +67,10 @@
           #{pluralize inc.num_adults, "Adult"},
           #{pluralize inc.num_children, "Child"}
         -else
-          Open Incident
+          /Open Incident -
+          =inc.latest_event_log.try(:humanized_event)
+          at
+          =inc.latest_event_log.try(:event_time).try(:to_s, :time)
     -if can? :index, Incidents::Incident
       %h5
         =link_to 'More Incidents&hellip;'.html_safe, incidents_incidents_path
