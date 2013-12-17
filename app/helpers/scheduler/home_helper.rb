@@ -8,19 +8,17 @@ module Scheduler::HomeHelper
     groups_by_id = groups.group_by(&:id)
     shifts_by_group = shifts.group_by(&:shift_group_id)
 
-    shifts_by_start_date = shifts.group_by{|sh| groups_by_id[sh.shift_group_id].first.start_date}
+    if groups.present? and shifts.present?
+      shifts_by_start_date = shifts.group_by{|sh| groups_by_id[sh.shift_group_id].first.start_date}
 
-    date_stub = Squeel::Nodes::Stub.new(:date)
-    shift_stub = Squeel::Nodes::Stub.new(:shift_id)
-    query = shifts_by_start_date.reduce(nil) do |running_pred, (start_date, shifts_for_date)|
-
-      date_pred = Squeel::Nodes::Predicate.new(date_stub, :eq, start_date)
-      group_pred = Squeel::Nodes::Predicate.new(shift_stub, :in, shifts_for_date)
-      pred = date_pred & group_pred
-
-      running_pred ? (running_pred | pred) : pred
-    end#
-    Scheduler::ShiftAssignment.includes_person_carriers.where(query)
+      Scheduler::ShiftAssignment.includes_person_carriers.where do
+        shifts_by_start_date.map do |start_date, shifts_for_date|
+          ((date == start_date) & (shift_id.in(shifts_for_date)))
+        end.reduce(&:|)
+      end
+    else
+      Scheduler::ShiftAssignment.none
+    end
   end
 
   def current_shifts_tree(counties, groups=nil)
