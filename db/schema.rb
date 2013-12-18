@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131212181924) do
+ActiveRecord::Schema.define(version: 20131218190512) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,8 @@ ActiveRecord::Schema.define(version: 20131212181924) do
     t.datetime "last_import"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "lat"
+    t.decimal  "lng"
   end
 
   add_index "incidents_cas_cases", ["cas_incident_id"], name: "index_incidents_cas_cases_on_cas_incident_id", using: :btree
@@ -138,9 +140,9 @@ ActiveRecord::Schema.define(version: 20131212181924) do
     t.integer  "num_children"
     t.string   "cac_number"
     t.decimal  "total_amount"
+    t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "notes"
   end
 
   add_index "incidents_cases", ["incident_id"], name: "index_incidents_cases_on_incident_id", using: :btree
@@ -275,8 +277,9 @@ ActiveRecord::Schema.define(version: 20131212181924) do
     t.string   "status",                                   null: false
   end
 
-  add_index "incidents_incidents", ["chapter_id", "incident_number"], name: "index_incidents_incidents_on_chapter_id_and_incident_number", unique: true, using: :btree
+  add_index "incidents_incidents", ["chapter_id", "incident_number"], name: "index_incidents_incidents_on_chapter_id_incident_number", unique: true, using: :btree
   add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id", using: :btree
+  add_index "incidents_incidents", ["incident_number"], name: "index_incidents_incidents_on_incident_number", using: :btree
 
   create_table "incidents_notification_subscriptions", force: true do |t|
     t.integer  "person_id"
@@ -309,9 +312,9 @@ ActiveRecord::Schema.define(version: 20131212181924) do
     t.string   "name"
     t.string   "type"
     t.decimal  "unit_price"
+    t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "description"
   end
 
   create_table "incidents_responder_assignments", force: true do |t|
