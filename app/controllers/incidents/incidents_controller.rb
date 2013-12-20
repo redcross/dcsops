@@ -23,7 +23,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   end
 
   def create
-    create! { new_incidents_incident_dat_path(resource) }
+    create! { current_chapter.incidents_report_editable ? resource_path(resource) : new_incidents_incident_dat_path(resource) }
   end
 
   def link_cas
