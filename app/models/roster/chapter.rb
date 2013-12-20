@@ -20,6 +20,8 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :idat_database, :string
   serialized_accessor :config, :incidents_report_dro_ignore, :string
   serialized_accessor :config, :cas_chapter_codes, :string
+  serialized_accessor :config, :incidents_timeline_collect, :string
+  serialized_accessor :config, :incidents_timeline_mandatory, :string
 
   def incidents_resources_tracked_array
     self.incidents_resources_tracked.try(:split, ',')
@@ -27,5 +29,13 @@ class Roster::Chapter < ActiveRecord::Base
 
   def cas_chapter_code_array
     (self.cas_chapter_codes || '').split( ',').select(&:present?)
+  end
+
+  def incidents_timeline_collect_array
+    (self.incidents_timeline_collect || '').split( ',').select(&:present?)
+  end
+
+  def incidents_timeline_mandatory_array
+    (self.incidents_timeline_mandatory || '').split( ',').select(&:present?)
   end
 end

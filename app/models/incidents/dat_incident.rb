@@ -36,50 +36,14 @@ class Incidents::DatIncident < ActiveRecord::Base
     TRACKED_RESOURCE_TYPES & (incident.try(:chapter).try(:incidents_resources_tracked_array) || [])
   end
 
-  [:responder_notified=, :responder_arrived=, :responder_departed=].each do |sym|
-    define_method sym do |val|
-      if val.is_a? String
-        super Chronic.parse(val)
-      else
-        super(val)
-      end
-    end
-  end
-
   def update_incident
     if incident(true)
       incident.update_from_dat_incident
-      update_timeline
     end
   end
 
   def complete_report?
     incident.try(:valid_incident?)
-  end
-
-  [:responder_notified, :responder_arrived, :responder_departed].each do |field|
-    define_method :"#{field}=" do |val|
-      if val.is_a? String
-        time = nil
-        begin
-          time = Time.zone.parse(val)
-        rescue ArgumentError
-          errors[field] << "Invalid time format for #{field.to_s.titleize}: #{val}."
-        end
-        super(time)
-      else
-        super(val)
-      end
-    end
-  end
-
-  def update_timeline
-    {'dat_received' => :responder_notified, 'dat_on_scene' => :responder_arrived, 'dat_departed_scene' => :responder_departed}.each do |event, attr|
-      val = self.send(attr)
-      if val
-        incident.event_logs.where(event: event).first_or_initialize.update_attributes event_time: val
-      end
-    end
   end
 
   def units_total

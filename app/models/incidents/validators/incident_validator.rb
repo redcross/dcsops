@@ -7,5 +7,6 @@ class Incidents::Validators::IncidentValidator < DelegatedValidator
   validates_associated :responder_assignments, if: ->(inc) {inc.valid_incident?}, allow_nil: false
   validate :ensure_unique_responders
   validates :address, :city, :state, :zip, presence: true
+  validates_associated :timeline
 
 end

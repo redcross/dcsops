@@ -48,6 +48,7 @@ class Incidents::Incident < ActiveRecord::Base
 
   accepts_nested_attributes_for :team_lead, update_only: true
   accepts_nested_attributes_for :responder_assignments, reject_if: -> hash {(hash[:person_id].blank?)}, allow_destroy: true
+  accepts_nested_attributes_for :event_logs
 
   # We always want these to be present
   validates :chapter, :area, :date, presence: true
@@ -192,11 +193,28 @@ class Incidents::Incident < ActiveRecord::Base
     end
   end
 
+  def timeline_collect_keys
+    Incidents::TimelineProxy::EVENT_TYPES & (chapter.try(:incidents_timeline_collect_array) || [])
+  end
+
+  def timeline_mandatory_keys
+    Incidents::TimelineProxy::EVENT_TYPES & (chapter.try(:incidents_timeline_mandatory_array) || [])
+  end
+
   def full_address
     [[address, city, state].compact.join(", "), zip].compact.join "  "
   end
 
   def latest_event_log
-    event_logs.first
+    event_logs.detect{|l| !%w(note dispatch_note).include?(l.event)}
   end
+
+  def timeline
+    @timeline ||= Incidents::TimelineProxy.new(self, timeline_mandatory_keys)
+  end
+
+  def timeline_attributes=(attrs)
+    timeline.attributes = attrs
+  end
+
 end
