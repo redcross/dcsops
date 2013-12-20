@@ -103,6 +103,7 @@ class Incidents::DispatchImporter
     if res
       incident.lat = res.lat
       incident.lng = res.lng
+      incident.city = res.city
     end
   rescue Geokit::TooManyQueriesError
     # Not the end of the world
