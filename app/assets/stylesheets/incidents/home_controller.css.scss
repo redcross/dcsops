@@ -28,6 +28,27 @@ body.incidents.home.root {
   }
 }
 
+.all-incidents-map.fixed-map {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -20;
+}
+
+.map-filter-wrapper {
+  width: 200px;
+  position: absolute;
+  left: 10px;
+  top: 50px;
+  border: 3px solid white;
+  border-radius: 5px;
+  .well {
+    margin: 0;
+  }
+}
+
 body.incidents.home.map {
   form {
     input,select {

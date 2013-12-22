@@ -1,9 +1,8 @@
-.row
-  .span2.well.sidebar-nav
+.all-incidents-map.fixed-map
+.map-filter-wrapper
+  .well.sidebar-nav
     Showing 
     =pluralize @incidents.count, 'Incident'
-
-    %h4 Filter
     =search_form_for @search, html: {class: 'form-inline'}, url: '' do |f|
       .field
         %h5 Incident Number:
@@ -29,19 +28,16 @@
           =f.text_field :date_lteq, "data-provide" => "datepicker", "data-date-format" => "yyyy-mm-dd"
       .field
         %h5 Display As:
-        %br
         %label.radio
-          =radio_button_tag :map_marker_type, 'marker', (params[:map_marker_type] == 'marker')
-          Marker
+          =radio_button_tag :map_marker_type, 'marker', (params[:map_marker_type] == 'marker'), id: "map_marker_type_marker"
+          =label 'map_marker_type_marker', 'Marker'
         %label.radio
-          =radio_button_tag :map_marker_type, 'heatmap', (params[:map_marker_type] != 'marker')
-          Heatmap
+          =radio_button_tag :map_marker_type, 'heatmap', (params[:map_marker_type] != 'marker'), id: "map_marker_type_heatmap"
+          =label 'map_marker_type_heatmap', 'Heatmap'
       
       .field
         %br
         =f.submit 'Search', class: "btn"
-  .span9
-    .all-incidents-map(style="width: 100%; height: 500px;")
 
 - content_for :footer_js do
   = google_maps_javascript('visualization')
