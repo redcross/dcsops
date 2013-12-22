@@ -1,21 +1,57 @@
-%h1 Listing Incidents
+%h1 Listing #{pluralize collection.total_count, 'Incident'}
+
+.well#filter-form
+  =search_form_for search, class: "form form-inline", style: "margin-bottom: 0" do |f|
+    - proto = Incidents::Incident.new chapter: current_chapter
+    /%table
+    /  %tr
+    .row.collapse
+      .span2=f.label :address_cont
+      .span2=f.label :city_cont
+      .span2=f.label :county_cont
+      .span2=f.label :date_gteq, 'After'
+      .span2=f.label :date_lteq, 'Before'
+    /%tr
+    .controls-row
+      =f.text_field :address_cont, class: 'input-medium span2', placeholder: 'Address'
+      =f.text_field :city_cont,    class: 'input-medium span2', placeholder: 'City'
+      =f.text_field :county_cont,  class: 'input-medium span2', placeholder: 'County'
+      =f.date_field :date_gteq,    class: 'input-medium span2', placeholder: 'After YYYY-MM-DD'
+      =f.date_field :date_lteq,    class: 'input-medium span3', placeholder: 'Before YYYY-MM-DD'
+    .row(style="margin-top: 15px")
+      .span5
+        =f.label :incident_type_in
+        =f.select :incident_type_in, options_from_collection_for_select(proto.humanized_incident_types, :value, :humanized, search.incident_type_in), include_blank: true, class: 'input-medium'
+      .span4
+        =f.label :status_in
+        - proto.humanized_statuses.each do |status|
+          - id="q_status_in_#{status.value}"
+          =check_box_tag 'q[status_in][]', status.value, search.status_in.try(:include?, status.value), {id: id}
+          =label_tag id, status.humanized
+      .span2
+        =f.submit class: 'btn'
 
 %table.span12
   %tr
-    %th County
-    %th Incident number
-    %th Cas incident number
+    %th
+    %th Incident
     %th Date
+    %th Address
     %th City
-    %th Incident type
+    %th County
+    %th Type
 
   - collection.each do |resource|
     %tr
-      %td= resource.county
-      %td= link_to resource.incident_number, resource
-      %td= resource.cas_incident_number
+      %td
+        =link_to resource do
+          %span.label{class: (case resource.status; when 'open' then 'label-success'; when 'closed' then 'label-info'; when 'invalid' then 'label-important'; end)}=resource.humanized_status
+      %td{class: "incident-number-#{resource.status}"}
+        = link_to resource.incident_number, resource
       %td= resource.date
+      %td= resource.address
       %td= resource.city
+      %td= resource.county
       %td= resource.humanized_incident_type
 
 = paginate collection

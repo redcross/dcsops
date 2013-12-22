@@ -8,13 +8,17 @@ body.incidents {
     line-height: 1.5;
   }
 
-  .modal form {
+  .modal form, .well form {
     margin: 0;
     padding: 0;
     fieldset legend {
       display: none;
     }
   }
+}
+
+.incident-number-invalid {
+  text-decoration: line-through;
 }
 
 .responders-table {

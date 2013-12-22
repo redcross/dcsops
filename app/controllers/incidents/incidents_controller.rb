@@ -96,7 +96,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     def collection
       @_incidents ||= begin
-        scope = apply_scopes(super).merge(search.result).valid.order{date.desc}.includes{[area, dat_incident, team_lead.person]}
+        scope = apply_scopes(super).merge(search.result).order{date.desc}.includes{[area, dat_incident, team_lead.person]}
         scope = scope.page(params[:page]) if should_paginate
         scope
       end
@@ -116,7 +116,7 @@ class Incidents::IncidentsController < Incidents::BaseController
       people = Hash[Roster::Person.where{id.in(ids)}.map{|p| [p.id, p]}]
     }
 
-    expose(:search) { resource_class.search(params[:q]) }
+    expose(:search) { search_params = {status_in: ['open', 'closed']}.merge(params[:q] || {}); resource_class.search(search_params) }
     expose(:should_paginate) { params[:page] != 'all' }
 
     helper_method :incidents_for_cas
