@@ -42,6 +42,10 @@ module ApplicationHelper
     request.env['HTTP_HOST'] =~ /arcbadat/i ? arcbadat_branding(classes) : dcsops_branding(classes)
   end
 
+  def page_title
+    request.env['HTTP_HOST'] =~ /arcbadat/i ? 'ARCBA DAT' : 'DCSOps'
+  end
+
   def arcbadat_branding(classes=[])
     s = ActiveSupport::SafeBuffer.new
     s << "ARCBA"
