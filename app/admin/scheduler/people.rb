@@ -92,8 +92,8 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
 
   filter :first_name
   filter :last_name
-  filter :counties_id, :as => :check_boxes, :collection => proc {Roster::County.all}
-  filter :positions_id, as: :check_boxes, collection: proc {Roster::Position.all}
+  filter :counties_id, :as => :check_boxes, :collection => proc {current_chapter.counties}
+  filter :positions_id, as: :check_boxes, collection: proc {current_chapter.positions.sort_by{|i| [i.hidden ? 1 : 0, i.name]}}
   filter :last_login, as: :date_range
 
   def date_ranges

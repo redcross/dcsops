@@ -13,6 +13,14 @@ ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
     end
   end
 
+  action_item :only => :index do
+    link_to('Send Test Report', {action: :test_report}, {method: :post})
+  end
+  collection_action :test_report, :method => :post do
+    Incidents::ReportMailer.report(current_chapter, current_user).deliver
+    redirect_to({:action => :index}, {:notice => "Incident report sent to #{current_user.email}"})
+  end
+
   index do
     column :person
     column :notification_type
