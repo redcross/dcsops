@@ -31,6 +31,8 @@
       .span2
         =f.submit class: 'btn'
 
+= paginate collection, :theme => 'twitter-bootstrap', pagination_class: 'pagination pagination-centered'
+
 %table.span12
   %tr
     %th
@@ -54,4 +56,4 @@
       %td= resource.county
       %td= resource.humanized_incident_type
 
-= paginate collection
+= paginate collection, :theme => 'twitter-bootstrap', pagination_class: 'pagination pagination-centered'
