@@ -29,8 +29,7 @@ class Incidents::HomeController < Incidents::BaseController
     Incidents::NotificationSetting.where{(person_id==my{current_user}) & (notification_type == 'weekly')}.exists?
   end
 
-  helper_method :incident_stats_boxes
-  def incident_stats_boxes
+  expose :incident_stats_boxes do
     month_begin = current_chapter.time_zone.today.at_beginning_of_month
     last_month = month_begin.last_month
 

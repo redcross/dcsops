@@ -23,10 +23,6 @@ FactoryGirl.define do
     num_people_hospitalized 5
     num_people_deceased 5
 
-    responder_notified 2.hours.ago
-    responder_arrived 1.hour.ago
-    responder_departed Time.zone.now
-
     #resources( {'comfort_kits' => 1, 'blankets' => 10})
     comfort_kits 1
     blankets 10

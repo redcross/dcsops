@@ -28,12 +28,14 @@
           %a{href: incidents_responders_path}
             Show Responder Info
             %i.icon-chevron-right
-  .span9
-    %h2.center
-      #{current_chapter.short_name} DAT Incidents
-    .row
+  %table.span9
+    %tr
+      %td{colspan: incident_stats_boxes.count}
+        %h2.center
+          #{current_chapter.short_name} DAT Incidents
+    %tr
       - incident_stats_boxes.each_with_index do |(title, stats), idx|
-        %div{class: idx==0 ? 'span3' : 'span2'}
+        %td
           %h3.center=title
           %p.center.lead
             %small
