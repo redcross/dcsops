@@ -1,5 +1,5 @@
 class Scheduler::Shift < ActiveRecord::Base
-  belongs_to :shift_group
+  belongs_to :shift_group, class_name: 'Scheduler::ShiftGroup'
   belongs_to :county, class_name: 'Roster::County'
 
 
