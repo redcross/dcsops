@@ -37,4 +37,20 @@ module ApplicationHelper
   def asset_url(*args)
     "#{request.protocol}#{request.host_with_port}#{asset_path(*args)}"
   end
+
+  def branding(classes=[])
+    request.env['HTTP_HOST'] =~ /arcbadat/i ? arcbadat_branding(classes) : dcsops_branding(classes)
+  end
+
+  def arcbadat_branding(classes=[])
+    s = ActiveSupport::SafeBuffer.new
+    s << "ARCBA"
+    s << content_tag(:strong, "DAT", class: classes)
+  end
+
+  def dcsops_branding(classes=[])
+    s = ActiveSupport::SafeBuffer.new
+    s << "DCS"
+    s << content_tag(:strong, "Ops", class: classes)
+  end
 end
