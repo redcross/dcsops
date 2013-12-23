@@ -61,14 +61,20 @@ describe Incidents::IncidentsController do
 
   describe "#show" do
     before(:each) { grant_role! 'incidents_admin' }
+    let(:inc) {FactoryGirl.create :incident, chapter: @person.chapter}
     it "should succeed with no cas or dat" do
       inc = FactoryGirl.create :incident, chapter: @person.chapter
       get :show, id: inc.to_param
       response.should be_success
     end
 
+    it "should succeed in editable mode" do
+      @person.chapter.update_attributes incidents_report_editable: true
+      get :show, id: inc.to_param
+      response.should be_success
+    end
+
     it "should succeed with cas" do
-      inc = FactoryGirl.create :incident, chapter: @person.chapter
       cas = FactoryGirl.create :cas_incident
       inc.link_to_cas_incident cas
 
@@ -77,11 +83,98 @@ describe Incidents::IncidentsController do
     end
 
     it "should succeed with dat" do
-      inc = FactoryGirl.create :incident, chapter: @person.chapter
       dat = FactoryGirl.create :dat_incident, incident: inc
       get :show, id: inc.to_param
       response.should be_success
     end
+
+    it "should succeed rendering a partial" do
+      get :show, id: inc.to_param, partial: 'details'
+      response.should render_template(partial: '_details', layout: nil)
+    end
   end
+
+  describe '#mark_invalid' do
+    before(:each) { grant_role! 'submit_incident_report' }
+    let!(:inc) {FactoryGirl.create :raw_incident, chapter: @person.chapter}
+
+    it "should succeed as get" do
+      get :mark_invalid, id: inc.to_param
+      response.should be_success
+    end
+
+    it "should succeed as post with valid params" do
+      post :mark_invalid, id: inc.to_param, incidents_incident: {incident_type: 'invalid', narrative: 'Test'}
+      response.should redirect_to('/incidents/incidents/needs_report')
+      inc.reload
+      inc.status.should == 'invalid'
+      inc.narrative.should == 'Test'
+    end
+
+    it "should not succeed as post without valid params" do
+      expect {
+        post :mark_invalid, id: inc.to_param, incidents_incident: {incident_type: 'duplicate'}
+        response.should be_success
+      }.to_not change{inc.reload.status}
+    end
+  end
+
+  describe "#close" do
+    before(:each) { grant_role! 'submit_incident_report' }
+    let(:raw_incident) {FactoryGirl.create :raw_incident, chapter: @person.chapter}
+    let(:complete_incident) {FactoryGirl.create :closed_incident, chapter: @person.chapter, status: 'open'}
+
+    it "should succeed with a complete incident" do
+      expect {
+        post :close, id: complete_incident.to_param
+        response.should redirect_to("/incidents/incidents/#{complete_incident.to_param}")
+      }.to change{complete_incident.reload.status}.to('closed')
+    end
+
+    it "should not succeed with an incomplete incident" do
+      expect {
+        post :close, id: raw_incident.to_param
+        response.should redirect_to("/incidents/incidents/#{raw_incident.to_param}/dat/edit?status=closed")
+      }.to_not change{raw_incident.reload.status}
+    end
+  end
+
+  describe "#reopen" do
+    before(:each) { grant_role! 'create_incident' }
+    let(:complete_incident) {FactoryGirl.create :closed_incident, chapter: @person.chapter}
+
+    it "should succeed" do
+      expect {
+        post :reopen, id: complete_incident.to_param
+        response.should redirect_to("/incidents/incidents/#{complete_incident.to_param}")
+      }.to change{complete_incident.reload.status}.to('open')
+    end
+  end
+
+  describe "#create" do
+    before(:each) { grant_role! 'create_incident' }
+    let(:area) {
+      @person.chapter.counties.first
+    }
+    let(:params) {
+      {incident_number: '14-123', area_id: area.id, date: Date.current.to_s}
+    }
+
+    it "should succeed with valid params in editable mode" do
+      @person.chapter.update_attributes incidents_report_editable: true
+      expect {
+        post :create, incidents_incident: params
+        response.should redirect_to("/incidents/incidents/#{params[:incident_number]}")
+      }.to change(Incidents::Incident, :count).by(1)
+    end
+
+    it "should succeed with valid params in normal mode" do
+      expect {
+        post :create, incidents_incident: params
+        response.should redirect_to("/incidents/incidents/#{params[:incident_number]}/dat/new")
+      }.to change(Incidents::Incident, :count).by(1)
+    end
+  end
+
 
 end

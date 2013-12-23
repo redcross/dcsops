@@ -138,11 +138,14 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
+      return [] if request.get?
+
       keys = [:area_id, :date, :incident_type, :status]
 
       keys << :incident_number if params[:action] == 'create'
 
+      attrs = params.require(:incidents_incident).permit(*keys).merge!({chapter_id: current_chapter.id, status: 'open'})
 
-      request.get? ? [] : [params.require(:incidents_incident).permit(*keys).merge!({chapter_id: current_chapter.id})]
+      [attrs]
     end
 end

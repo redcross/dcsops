@@ -17,7 +17,7 @@ class Incidents::Ability
     end
 
     if is_admin or person.has_role 'submit_incident_report'
-        can [:needs_report, :mark_invalid], Incidents::Incident
+        can [:needs_report, :mark_invalid, :close], Incidents::Incident
         can :create, Incidents::DatIncident
         can :manage, Incidents::EventLog, {incident: {status: 'open'}}
         today = person.chapter.time_zone.today
