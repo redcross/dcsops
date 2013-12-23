@@ -74,31 +74,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
      ["Responded To Incident", Incidents::ResponderAssignment::ROLES_TO_LABELS.invert.to_a.reject{|a| a.last == 'team_lead'}]]
   end
 
-  helper_method :scheduled_responders, :flex_responders
-  def scheduled_responders(obj=@dat_incident)
-    if obj.incident.area
-      time = obj.incident.created_at || current_chapter.time_zone.now
-      groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_chapter, time)
-      assignments = Scheduler::ShiftAssignment.joins{[shift]}.includes{[shift, person]}.where{(shift.county_id == my{obj.incident.area})}.for_active_groups(groups)
-                    .select{|ass| !obj.incident.responder_assignments.detect{|resp| resp.person == ass.person }}
-    else
-      []
-    end
-  end
-
-  def flex_responders(obj=@dat_incident, scheduled_responders)
-    if obj.incident.area
-      time = obj.incident.created_at.in_time_zone(current_chapter.time_zone) || current_chapter.time_zone.now
-      dow = time.strftime("%A").downcase
-      hour = time.hour
-      period = (hour >= 7 && hour < 19) ? 'day' : 'night'
-      schedules = Scheduler::FlexSchedule.for_county(obj.incident.area).available_at(dow, period).includes{person}
-      assignments = schedules.select{|sched| !obj.incident.responder_assignments.detect{|resp| resp.person == sched.person }}
-                    .select{|sched| !scheduled_responders.detect{|resp| resp.person == sched.person }}
-    else
-      []
-    end
-  end
+  expose(:scheduler_service) { Scheduler::SchedulerService.new(current_chapter) }
 
   def prepare_resource(obj)
     inc_attrs = incident_params

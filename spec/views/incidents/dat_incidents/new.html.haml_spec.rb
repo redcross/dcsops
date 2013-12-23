@@ -9,7 +9,7 @@ describe "incidents/dat_incidents/new" do
     view.stub(:current_user => person)
     view.stub :current_chapter => person.chapter
     view.stub(:grouped_incident_types => [], :grouped_responder_roles => [])
-    view.stub(:scheduled_responders => [], :flex_responders => [])
+    view.stub(:scheduler_service => double(:service, :scheduled_responders => [], :flex_responders => []))
     @dat_incident.completed_by = view.current_user
 
     render

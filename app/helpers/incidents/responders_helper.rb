@@ -46,7 +46,12 @@ module Incidents::RespondersHelper
       #end <<
       content_tag(:td) do
         if editable
-          link_to( 'Assign', new_resource_path(person_id: person.id), class: 'btn btn-mini', data: {assign: person.id})
+          if obj.is_a?(Incidents::ResponderAssignment) && obj.persisted?
+            path = edit_resource_path(obj)
+          else
+            path = new_resource_path(person_id: person.id)
+          end
+          link_to( 'Assign', path, class: 'btn btn-mini', data: {assign: person.id})
         end
       end
     end

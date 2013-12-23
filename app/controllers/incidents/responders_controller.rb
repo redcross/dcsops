@@ -79,29 +79,6 @@ class Incidents::RespondersController < Incidents::BaseController
 
 
   expose(:ignore_area) { params[:ignore_area] == '1'}
+  expose(:scheduler_service) { Scheduler::SchedulerService.new(current_chapter) }
 
-  helper_method :scheduled_responders, :flex_responders
-  def scheduled_responders(obj=resource)
-    time = obj.created_at || current_chapter.time_zone.now
-    groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_chapter, time)
-    assignments = Scheduler::ShiftAssignment.joins{[shift]}.includes{[shift, person]}.for_active_groups(groups)
-                  .where{person_id.not_in(my{collection.map(&:person_id)})}.limit(10)
-    if obj.area and !ignore_area or true
-      assignments = assignments.where{(shift.county_id == my{obj.area})}
-    end
-    assignments
-  end
-
-  def flex_responders(obj=resource, scheduled_responders)
-    time = obj.created_at.in_time_zone(current_chapter.time_zone) || current_chapter.time_zone.now
-    dow = time.strftime("%A").downcase
-    hour = time.hour
-    period = (hour >= 7 && hour < 19) ? 'day' : 'night'
-    schedules = Scheduler::FlexSchedule.available_at(dow, period).includes{person}.limit(10).by_distance_from(parent).where{person.chapter_id == my{current_chapter}}
-    if obj.area and !ignore_area
-      schedules = schedules.for_county(obj.area)
-    end
-    assignments = schedules.where{person.id.not_in(my{collection.map(&:person_id)})}
-                  .select{|sched| !scheduled_responders.detect{|resp| resp.person == sched.person }}
-  end
 end

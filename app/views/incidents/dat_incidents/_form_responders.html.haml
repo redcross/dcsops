@@ -33,14 +33,15 @@
             %tr
               %th Name
               %th Shift Position
-            - (sched = scheduled_responders).each do |shift|
+            - (sched = scheduler_service.scheduled_responders(time: f.object.created_at, area: f.object.area)).each do |shift|
               %tr
                 %td=shift.person.full_name
                 %td=shift.shift.name
                 %td
                   %button.btn.btn-primary.add-responder{data: {person_text: shift.person.full_name, person_id: shift.person_id, was_flex: false}} Add Responder
                 %td(colspan=2)
-            - flex_responders(resource, sched).each do |flex|
+            - sched_people = sched.map(&:person_id)
+            - scheduler_service.flex_responders(time: f.object.created_at, area: f.object.area, exclude: sched_people).each do |flex|
               %tr
                 %td=flex.person.full_name
                 %td Flex

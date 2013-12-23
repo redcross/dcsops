@@ -50,15 +50,19 @@
             %th(colspan=8) Scheduled
         %tbody.responders-list
           - abbrevs = {}
-          - scheduled = scheduled_responders(parent)
-          - scheduled.each do |ass|
-            =person_row(ass)
+          - area = (ignore_area ? nil : parent.area)
+          - exclude = collection.map(&:person_id)
+          - scheduled = scheduler_service.scheduled_responders(area: area, exclude: exclude)
+          - scheduled.each do |schedule|
+            =person_row(schedule)
         %tbody
           %tr
             %th(colspan=8) Flex
         %tbody.responders-list
-          - flex_responders(parent, scheduled).each do |ass|
-            =person_row(ass)
+          - exclude += scheduled.map(&:person_id)
+          - flex_people = scheduler_service.flex_responders(area: area, exclude: exclude)
+          - flex_people.each do |flex|
+            =person_row(flex)
         %tbody
           %tr
             %th(colspan=8) Decline
