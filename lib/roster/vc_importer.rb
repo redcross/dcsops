@@ -47,7 +47,6 @@ class Roster::VcImporter
         next unless col_name
         person.send "#{col_name}=".to_sym, sheet[row, idx]
       end
-      person.vc_imported_at = Time.now
       person.save!
 
       yield "Member Data"

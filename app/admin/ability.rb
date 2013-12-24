@@ -29,6 +29,7 @@ class AdminAbility
 
       can :manage, ApiClient
       can :manage, NamedQuery
+      can :manage, DataFilter
     end
 
   end

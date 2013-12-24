@@ -42,7 +42,11 @@
                 %li= link_to "Impersonating #{impersonating_user.full_name}", impersonate_scheduler_admin_person_path(impersonating_user), method: :delete
               -if current_user_session
                 - person = current_user_session.person
-                %li= link_to "Logged in as #{person.full_name}", roster_person_path(person)
+                %li
+                  = link_to roster_person_path(person) do
+                    Logged in as #{person.full_name}
+                    - unless person.profile_complete?
+                      %i.icon-exclamation-sign.text-error
                 %li= link_to "Logout", roster_session_path, method: :delete
 
     .container

@@ -169,5 +169,7 @@ class Roster::Person < ActiveRecord::Base
     end
   end
 
-
+  def profile_complete?
+    [:lat, :lng, :address1, :email].all?{|f| self[f].present?}
+  end
 end

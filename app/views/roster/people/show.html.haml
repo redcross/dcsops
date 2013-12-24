@@ -27,23 +27,37 @@
         Details and contact information are synchronized from Volunteer Connection.  
         To change your information,
         %a{href: "https://volunteerconnection.redcross.org/?nd=profile_edit"} edit your profile in Volunteer Connection
-        or contact your county staffing or CDV team.  Changes may take 48 hours to take effect.
+        or contact your county staffing or CDV team.  Changes take 24-48 hours to take effect.
 
   .span6
     %h3 Contact Info
     %p
       %strong= model_class.human_attribute_name(:email) + ':'
-      = resource.email
+      -if resource.email.present?
+        = resource.email
+      -else
+        %span.text-error
+          %strong
+            No Email Address.
+          Please complete your
+          =link_to 'volunteer connection profile.', "https://volunteerconnection.redcross.org/?nd=profile_edit"
     %p
       %strong Address:
       %br
-      = resource.address1
-      %br
-      = resource.address2
-      %br
-      = "#{resource.city},"
-      = resource.state
-      = resource.zip
+      -if resource.lat and resource.lng and resource.address1
+        = resource.address1
+        %br
+        = resource.address2
+        %br
+        = "#{resource.city},"
+        = resource.state
+        = resource.zip
+      -else
+        %span.text-error
+          %strong
+            Incomplete Address
+          Please complete your
+          =link_to 'volunteer connection profile.', "https://volunteerconnection.redcross.org/?nd=profile_edit"
     %p
       %strong Preferred Contact Order:
       %br
@@ -80,15 +94,6 @@
             %td.form-inline
               -key="#{phone}_disable"
               %a{:class=>"call-editable", :"data-type" => 'select', :"data-name" => key, :"data-value" => resource.send(key) ? 1 : 0}
-            
-
-
-/.form-actions
-/  = link_to t('.back', :default => t("helpers.links.back")), roster_people_path, :class => 'btn'
-/  = link_to t('.edit', :default => t("helpers.links.edit")), edit_roster_person_path(resource), :class => 'btn'
-/  = link_to t('.destroy', :default => t("helpers.links.destroy")), roster_person_path(resource), :method => "delete", :data => { :confirm => t/('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'
-
-
 
 - content_for :footer_js do
   - carriers = [{value: "nil", text: "Don't send SMS to this number"}] + Roster::CellCarrier.all.map{|c| {text: c.name, value: c.id}}

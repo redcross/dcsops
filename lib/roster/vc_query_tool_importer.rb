@@ -23,7 +23,7 @@ class Roster::VcQueryToolImporter
     {#members: MembersImporter, 
       positions: MemberPositionsImporter, 
       qualifications: QualificationsImporter,
-      #usage: UsageImporter 
+      usage: UsageImporter
     }
   end
 
@@ -67,7 +67,7 @@ class Importer
 
   attr_accessor :logger
 
-  self.log_progress_every = 100
+  self.log_progress_every = 200
   self.identity_columns = {:vc_id => 'account_id'}
 
   def initialize(file, chapter)
@@ -189,6 +189,13 @@ class MemberPositionsImporter < Importer
 
       # Adding chapter: to the attrs merge should prevent the validates_presence_of: chapter from doing a db query
       @person.attributes = attrs.merge({chapter: @chapter})
+
+      if (@filters['email'] || []).any? {|f| f.pattern.match @person.email }
+        logger.debug "Filtering email '#{@person.email}' for #{@person.id}:#{@person.full_name}"
+        @filter_hits['email'] += 1
+        @person.email = nil
+      end
+
       @person.save!
 
       @vc_ids_seen << @person.vc_id
@@ -201,6 +208,8 @@ class MemberPositionsImporter < Importer
     @positions_to_import = []
     @counties_to_import = []
     @vc_ids_seen = []
+    @filters = DataFilter.where{model == 'Roster::Person'}.group_by(&:field)
+    @filter_hits = Hash.new{|h, k| h[k] = 0}
 
     @num_people = 0
     @num_positions = 0
@@ -221,6 +230,7 @@ class MemberPositionsImporter < Importer
     deactivated = Roster::Person.for_chapter(@chapter).where{vc_id.not_in(my{@vc_ids_seen})}.update_all(:vc_is_active => false) if @vc_ids_seen.present?
     logger.info "Processed #{@num_people} active users and #{@num_positions} filtered positions"
     logger.info "Deactivated #{deactivated} accounts not received in update"
+    logger.info "Filter hits: #{@filter_hits.inspect}"
   end
 
   def handle_row(identity, attrs)
@@ -248,7 +258,7 @@ class MemberPositionsImporter < Importer
       return unless position_start.nil? or parse_time(position_start) < Time.now
     end
 
-    logger.debug "Matching #{self.class.name.underscore.split("_").first} #{position_name} for #{identity.inspect}"
+    #logger.debug "Matching #{self.class.name.underscore.split("_").first} #{position_name} for #{identity.inspect}"
     @num_positions += 1
 
     match_position position_name
@@ -324,4 +334,39 @@ class QualificationsImporter < MemberPositionsImporter
   def process_row?(attrs)
     attrs[:position_name].present?
   end
+end
+
+class UsageImporter < Importer
+  def before_import
+    @filters = DataFilter.where{model == 'Roster::Person'}.group_by(&:field)
+    @filter_hits = Hash.new{|h, k| h[k] = 0}
+  end
+
+  def handle_row(identity, attrs)
+    #return unless self.class.loaded_ids.include?(attrs[:vc_id])
+    #status = attrs.delete(:status_name)
+    #return unless is_active_status(status)
+    vc_id = identity[:vc_id].to_i
+    person = @people[vc_id].first
+    if person && person.persisted? # Don't be creating anything
+      #logger.debug "Usage for #{identity.inspect} is #{attrs.inspect}"
+      person.attributes = attrs.merge({chapter: @chapter})
+
+            # Check this against any/all filters
+      addr = [:address1, :address2, :city, :state, :zip].map{|f| person[f]}.compact.join " "
+      if (@filters['address'] || []).any? { |f| f.pattern.match addr  }
+        logger.debug "Filtering address '#{addr}' for #{person.id}:#{person.full_name}"
+        @filter_hits['address'] += 1
+        person.attributes = {address1: nil, address2: nil, city: nil, state: nil, zip: nil, lat: nil, lng: nil}
+      end
+
+      person.save!
+    end
+  end
+
+  def after_import
+    logger.info "Filter hits: #{@filter_hits.inspect}"
+  end
+
+  self.column_mappings = {address1: 'address1', address2: 'address2', city: 'address3', state: 'address4', zip: 'address5'}
 end
