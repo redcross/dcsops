@@ -1,6 +1,6 @@
 class Incidents::DatIncident < ActiveRecord::Base
   include HasDelegatedValidators
-  has_paper_trail meta: {root_type: 'Incidents::Incident', root_id: :incident_id, chapter_id: ->(obj){obj.incident.chapter_id }}
+  has_paper_trail meta: {root_type: 'Incidents::Incident', root_id:  ->(obj){obj.incident_id }, chapter_id: ->(obj){obj.incident.chapter_id }}
 
   belongs_to :incident, class_name: 'Incidents::Incident', inverse_of: :dat_incident
   belongs_to :completed_by, class_name: 'Roster::Person'
