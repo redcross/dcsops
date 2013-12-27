@@ -1,7 +1,7 @@
   
 =semantic_form_for [parent, resource], url: incidents_incident_event_log_path(parent, resource), builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
   .modal-header 
-    %button.close(data-dismiss="modal") &times;
+    %a.close(data-dismiss="modal") &times;
     %h3 Add Event
   .modal-body
     =f.input :event, as: :assignable_select

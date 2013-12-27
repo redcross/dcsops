@@ -7,7 +7,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
   include NamedQuerySupport
 
-  custom_actions collection: [:needs_report, :link_cas, :tracker], resource: [:mark_invalid, :close, :reopen]
+  custom_actions collection: [:needs_report, :link_cas, :tracker, :activity], resource: [:mark_invalid, :close, :reopen]
 
   has_scope :in_area, as: :area_id_eq
 
@@ -75,6 +75,10 @@ class Incidents::IncidentsController < Incidents::BaseController
     redirect_to resource
   end
 
+  def activity
+    authorize! :read_case_details, resource_class
+  end
+
   private
 
     helper_method :inline_editable?
@@ -96,7 +100,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     def collection
       @_incidents ||= begin
-        scope = apply_scopes(super).merge(search.result).order{date.desc}.includes{[area, dat_incident, team_lead.person]}
+        scope = apply_scopes(super).merge(search.result).order{[date.desc, incident_number.desc]}.includes{[area, dat_incident, team_lead.person]}
         scope = scope.page(params[:page]) if should_paginate
         scope
       end
@@ -107,14 +111,19 @@ class Incidents::IncidentsController < Incidents::BaseController
     expose(:cas_incidents_to_link) { Incidents::CasIncident.to_link_for_chapter(current_chapter) }
     expose(:county_names) { current_chapter.counties.map(&:name) }
     expose(:resource_changes) {
-      changes = resource.versions
-      changes += resource.dat_incident.versions if resource.dat_incident 
-      changes.sort_by!(&:created_at).reverse!
+      changes = PaperTrail::Version.scoped.order{created_at.desc}
+      if params[:id] # we have a single resource
+        changes = changes.where{ ((item_type == my{resource_class.to_s}) & (item_id == my{resource.id})) | ((root_type == my{resource_class.to_s}) & (root_id == my{resource.id}))}
+      else
+        changes = changes.where{ ((item_type == my{resource_class.to_s}) | (root_type == my{resource_class.to_s})) }.where{chapter_id==my{current_chapter}}.includes{[root, item]}.limit(50)
+      end
+      changes.to_a
     }
     expose(:resource_change_people) {
       ids = resource_changes.map(&:whodunnit).select(&:present?).uniq
       people = Hash[Roster::Person.where{id.in(ids)}.map{|p| [p.id, p]}]
     }
+    expose(:show_version_root) { params[:action] == 'activity' }
 
     expose(:search) { search_params = {status_in: ['open', 'closed']}.merge(params[:q] || {}); resource_class.search(search_params) }
     expose(:should_paginate) { params[:page] != 'all' }

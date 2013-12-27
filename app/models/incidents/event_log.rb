@@ -1,4 +1,6 @@
 class Incidents::EventLog < ActiveRecord::Base
+  has_paper_trail meta: {root_type: 'Incidents::Incident', root_id: ->(obj){obj.incident_id}, chapter_id: ->(obj){obj.incident.chapter_id} }
+
   belongs_to :incident, class_name: 'Incidents::Incident', inverse_of: :event_logs
   belongs_to :person, class_name: 'Roster::Person'
 

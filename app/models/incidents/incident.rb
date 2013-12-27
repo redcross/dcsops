@@ -1,6 +1,6 @@
 class Incidents::Incident < ActiveRecord::Base
   include HasDelegatedValidators
-  has_paper_trail
+  has_paper_trail meta: {chapter_id: ->(inc){inc.chapter_id}}
 
   belongs_to :chapter, class_name: 'Roster::Chapter'
   belongs_to :area, class_name: 'Roster::County'

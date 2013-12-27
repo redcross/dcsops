@@ -82,6 +82,7 @@ Scheduler::Application.routes.draw do
       collection do
         get :needs_report
         get :tracker
+        get :activity
         match :link_cas, via: [:get, :post], as: :link_cas
       end
       member do

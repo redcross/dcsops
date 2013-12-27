@@ -202,7 +202,7 @@ class window.IncidentEditPanelController
       panel = $(evt.target).data('edit-panel')
       modal = $('#edit-modal')
 
-      modal.modal('show')
+      modal.modal({show: true, keyboard: false})
       modal.html('<div class="modal-body">Loading</div>')
       $.ajax
         url: panel
@@ -216,6 +216,8 @@ class window.IncidentEditPanelController
       $('#edit-modal').modal('hide');
 
       this.updateTab(panel)
+      if $('#inc-changes').length > 0
+        this.updateTab('changes')
 
 
   updateTab: (tabName) ->

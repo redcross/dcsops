@@ -82,6 +82,9 @@
     -if can? :index, Incidents::Incident
       %h5
         =link_to 'More Incidents&hellip;'.html_safe, incidents_incidents_path
+    -if can? :read_case_Details, Incidents::Incident and current_chapter.incidents_report_editable
+      %h5
+        =link_to 'Current Activity&hellip;'.html_safe, activity_incidents_incidents_path
 
   .span8
     .map-container

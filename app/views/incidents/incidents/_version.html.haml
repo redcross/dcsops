@@ -1,24 +1,33 @@
 - who = resource_change_people[version.whodunnit.to_i].try(:full_name) || version.whodunnit
-- changeset = YAML.load version.object_changes
-- is_incident = (version.item_type == 'Incidents::Incident')
-
-- ignore_incident_fields = %w(lat lng updated_at num_adults num_children num_families address cross_street neighboorhood city state zip incident_type)
-- unless changeset.all?{|key, vals| ignore_incident_fields.include?(key)}
-  %h4
-    = version.event.titleize + 'd'
+- changeset = if version.object_changes then YAML.load version.object_changes else {} end
+- object = YAML.load version.object if version.object
+- always_show_fields(version).each {|f| changeset[f] ||= ([object[f], object[f]])}
+- ignore_fields = version_ignore_fields(version)
+- unless changeset.all?{|key, vals| ignore_fields.include?(key)}
+  .version-title
+    - if show_version_root
+      - inc = version.root || version.item
+      %strong
+        = inc.incident_number
+      = inc.address
+      = inc.city
+    %strong
+      = version.item_type.split(/::/).last.underscore.titleize
+      = case version.event; when 'create' then 'Created'; when 'update' then 'Updated'; when 'destroy' then 'Destroyed'; end
     by
     = who
     at
     = version.created_at.in_time_zone.to_s :date_time
-  %table.table.table-bordered
+  %table.table.table-bordered.table-condensed
     %tr
       %th Field
-      %th Old
+      -if version.event != 'create'
+        %th Old
       %th New
     - changeset.each do |key, vals|
-      - next if %w(lat lng updated_at).include? key
-      - next if is_incident and ignore_incident_fields.include? key
+      - next if ignore_fields.include? key
       %tr
         %td=key.titleize
-        %td=vals.first
-        %td=vals.last
+        -if version.event != 'create'
+          %td=format_change_value version, key, vals.first
+        %td=format_change_value version, key, vals.last
