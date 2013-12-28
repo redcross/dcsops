@@ -5,27 +5,10 @@ class Roster::VcImporter
     @chapter = chapter
     workbook = Spreadsheet.open(file)
     data_errs = nil
-    pos_errs = nil
-    qual_errs = nil
-
-    pos = Roster::VcPositionsImporter.new
-    pos.chapter = chapter
-
     Roster::Person.transaction do
       data_errs = import_member_data( workbook.worksheet("Contact")) { |str| yield str if block_given? }
-      # First Delete all the existing qualification data
-
-      if !Rails.env.production? and workbook.worksheet("Positions") and workbook.worksheet("Qualifications")
-      
-        Roster::PositionMembership.destroy_all_for_chapter(chapter)
-        Roster::CountyMembership.destroy_all_for_chapter(chapter)
-      
-        pos_errs = pos.import_qualification_data( workbook.worksheet("Positions"), 2, 3)  { |str| yield str if block_given? }
-        qual_errs = pos.import_qualification_data( workbook.worksheet("Qualifications"), 1, 3) { |str| yield str if block_given? }
-      
-      end
     end
-    {data_errs: data_errs, pos_errs: pos_errs, qual_errs: qual_errs}
+    {data_errs: data_errs}
   end
   add_transaction_tracer :import_data, category: :task
 
