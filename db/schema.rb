@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131226195646) do
+ActiveRecord::Schema.define(version: 20131228054410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,30 @@ ActiveRecord::Schema.define(version: 20131226195646) do
     t.string   "pattern_raw"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "homepage_links", force: true do |t|
+    t.integer  "chapter_id"
+    t.string   "name"
+    t.text     "description"
+    t.string   "icon"
+    t.string   "url"
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+    t.integer  "ordinal"
+    t.string   "group"
+    t.integer  "group_ordinal"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "homepage_links", ["chapter_id"], name: "index_homepage_links_on_chapter_id", using: :btree
+
+  create_table "homepage_links_roster_roles", id: false, force: true do |t|
+    t.integer "role_id"
+    t.integer "homepage_link_id"
   end
 
   create_table "import_logs", force: true do |t|

@@ -18,59 +18,13 @@
         %a{href: incidents_root_path}
           %i.icon-fire.icon-2x
           %h4 Incidents
-    .row
-      %h4.center Other Tools
-    .row
-      .app
-        %a{href: "https://volunteerconnection.redcross.org/"}
-          %i.icon-home.icon-2x
-          %h4 Volunteer Connection
-    -#.row
-    -#  .app
-    -#    %a{href: "https://watchfire.instedd.org/"}
-    -#      %i.icon-bullhorn.icon-2x
-    -#      %h4 Watchfire
-    -#.row
-    -#  .app
-    -#    %a{href: "#"}
-    -#      %i.icon-map-marker.icon-2x
-    -#      %h4 SitCell
-    -#.row
-    -#  .app
-    -#    %a{href: "#"}
-    -#      %i.icon-desktop.icon-2x
-    -#      %h4 iDAT
-    
-    -#.row
-    -#  .app
-    -#    %a{href: "#"}
-    -#      %i.icon-truck.icon-2x
-    -#      %h4 Logistics
-    -#.row
-    -#  .app
-    -#    %a{href: "#"}
-    -#      %i.icon-dashboard.icon-2x
-    -#      %h4 Analytics
-    -#.row
-    -#  .app
-    -#    %a{href: "#"}
-    -#      %i.icon-cog.icon-2x
-    -#      %h4 Administration
-    .row
-      %h4.center Help
-    .row
-      .app
-        %a{href: current_chapter.id == 2 ? "/ARCBADAT-QuickStart-Chicago.pdf" : "/ARCBADAT-QuickStart.pdf"}
-          %i.icon-question-sign.icon-2x
-          %h4 Quick Start Guide
-    .row
-      .app
-        %a{href: "/ARCBADAT-SetupGuide.pdf"}
-          %i.icon-question-sign.icon-2x
-          %h4 Setup Guide
-    -if current_user and (current_user.has_role 'county_dat_admin' or current_user.has_role 'chapter_dat_admin')
+    - homepage_links.each do |group, links|
       .row
-        .app
-          %a{href: "/ARCBADAT-AdminGuide.pdf"}
-            %i.icon-question-sign.icon-2x
-            %h4 DAT Administrator's Guide
+        %h4.center=group
+      - links.each do |link|
+        .row
+          .app
+            =link_to link.link do
+              -if link.icon.present?
+                %i.icon-2x{class: "icon-#{link.icon}"}
+              %h4=link.name

@@ -1,9 +1,9 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :roster_role, :class => 'Roster::Role' do
+  factory :role, :class => 'Roster::Role' do
+    association :chapter
     name "MyString"
-    code "MyString"
-    role_scope "MyText"
+    grant_name "MyString"
   end
 end

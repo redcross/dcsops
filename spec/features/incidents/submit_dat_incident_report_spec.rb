@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "DAT Incident Report" do
+describe "DAT Incident Report", versions: true do
   #self.use_transactional_fixtures = false
 
   it "Should be submittable" do
