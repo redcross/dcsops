@@ -1,17 +1,4 @@
 module Incidents::RespondersHelper
-  def scheduled_people_json
-    Jbuilder.encode do |json|
-      json.array!(scheduled_responders) do |ass|
-        person = ass.person
-        json.extract! person, :lat, :lng, :id, :full_name
-        json.city person.city.titleize
-
-        if assignment
-          json.role assignment.shift.name
-        end
-      end
-    end
-  end
 
   def person_json(person, assignment=nil)
     Jbuilder.encode do |json|
@@ -24,9 +11,9 @@ module Incidents::RespondersHelper
     end
   end
 
-  def person_row(obj)
+  def person_row(obj, editable = nil)
     person = obj.person
-    editable = can?( :create, parent.responder_assignments.build( person: person))
+    editable = can?( :create, parent.responder_assignments.build( person: person)) if editable == nil
     content_tag :tr, class: 'person', data: {person: person_json(person), person_id: person.id} do
       content_tag(:td) do
         case obj

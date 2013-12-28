@@ -16,14 +16,6 @@ class Incidents::RespondersController < Incidents::BaseController
     index!
   end
 
-  def new
-    if request.xhr?
-      render layout: nil
-    else
-      super
-    end
-  end
-
   def update
     action = params[:action] == 'create' ? :create! : :update!
     self.send(action) do |success, failure|

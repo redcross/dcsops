@@ -66,6 +66,39 @@ describe Incidents::RespondersController do
     end
   end
 
+  describe "GET index" do
+    it "should succeed" do
+      get :index, {incident_id: incident.to_param}
+      response.should be_success
+    end
+
+    it "should set the flash if incident doesn't have a location" do
+      incident.update_attributes lat: nil, lng: nil
+      get :index, {incident_id: incident.to_param}
+      response.should be_success
+      flash.now[:error].should_not be_empty
+    end
+  end
+
+  describe "GET new" do
+    it "should succeed" do
+      get :new, {incident_id: incident.to_param}
+      response.should be_success
+
+      controller.send(:person).should == nil
+    end
+
+    it "should assign the person if given" do
+      person = FactoryGirl.create :person
+      get :new, {incident_id: incident.to_param, person_id: person.id}
+      response.should be_success
+
+      controller.send(:person).should == person
+      controller.send(:resource).person_id.should == person.id
+    end
+  end
+
+
   it "should not allow records for duplicate people to be created"
 
 end
