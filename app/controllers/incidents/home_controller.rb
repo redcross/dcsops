@@ -33,7 +33,7 @@ class Incidents::HomeController < Incidents::BaseController
     month_begin = current_chapter.time_zone.today.at_beginning_of_month
     last_month = month_begin.last_month
 
-    fy_begin = month_begin.advance months: (month_begin.month >= 7) ? -(month_begin.month - 7) : -(month_begin.month + 6)
+    fy_begin = FiscalYear.current.start_date
 
     five_fy_begin = fy_begin.advance years: -4
 

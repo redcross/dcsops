@@ -2,6 +2,8 @@ class Incidents::Incident < ActiveRecord::Base
   include HasDelegatedValidators
   has_paper_trail meta: {chapter_id: ->(inc){inc.chapter_id}}
 
+  before_validation :set_incident_number, on: :create
+
   belongs_to :chapter, class_name: 'Roster::Chapter'
   belongs_to :area, class_name: 'Roster::County'
 
@@ -215,6 +217,14 @@ class Incidents::Incident < ActiveRecord::Base
 
   def timeline_attributes=(attrs)
     timeline.attributes = attrs
+  end
+
+  def set_incident_number
+    if chapter.incidents_sequence_enabled
+      seq = Incidents::IncidentNumberSequence.new(chapter)
+      self.incident_number = seq.next_sequence!
+    end
+    true
   end
 
 end

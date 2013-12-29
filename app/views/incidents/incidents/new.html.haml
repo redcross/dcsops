@@ -10,6 +10,7 @@
       =f.inputs "Data" do
         =f.input :status, as: :hidden, input_html: {value: 'open'}
         =f.input :area, collection: current_chapter.counties
-        =f.input :incident_number
+        - unless current_chapter.incidents_sequence_enabled
+          =f.input :incident_number
         =f.input :date
       =f.actions

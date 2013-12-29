@@ -174,6 +174,39 @@ describe Incidents::IncidentsController do
         response.should redirect_to("/incidents/incidents/#{params[:incident_number]}/dat/new")
       }.to change(Incidents::Incident, :count).by(1)
     end
+
+    describe "with incident number sequence" do
+
+      before(:each) do
+         @person.chapter.update_attributes incidents_sequence_enabled: true, 
+                                         incidents_sequence_number: 333,
+                                         incidents_sequence_format: '%<fy_short>02d-%<number>03d', 
+                                         incidents_sequence_year: FiscalYear.current.year
+        params.delete :incident_number
+      end
+
+      it "should succeed with valid params with sequence number generator" do
+        expect {
+          post :create, incidents_incident: params
+        }.to(change(Incidents::Incident, :count).by(1))
+        inc = Incidents::Incident.last
+        inc.incident_number.should == '14-334'
+        @person.chapter.reload.incidents_sequence_number.should == 334
+      end
+
+      it "should not change incident sequence if the create is rejected" do
+        params.delete :area_id
+
+        expect {
+          expect {
+            post :create, incidents_incident: params
+            response.should be_success # Re-renders the create page rather than redirecting to the incident
+          }.to_not(change(Incidents::Incident, :count))
+        }.to_not(change{@person.chapter.reload.incidents_sequence_number})
+      end
+
+    end
+
   end
 
 

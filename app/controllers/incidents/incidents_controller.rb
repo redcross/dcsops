@@ -153,7 +153,8 @@ class Incidents::IncidentsController < Incidents::BaseController
 
       keys << :incident_number if params[:action] == 'create'
 
-      attrs = params.require(:incidents_incident).permit(*keys).merge!({chapter_id: current_chapter.id, status: 'open'})
+      attrs = params.require(:incidents_incident).permit(*keys)
+      attrs.merge!({chapter_id: current_chapter.id, status: 'open'})
 
       [attrs]
     end

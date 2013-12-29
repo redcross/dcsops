@@ -22,6 +22,10 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :cas_chapter_codes, :string
   serialized_accessor :config, :incidents_timeline_collect, :string
   serialized_accessor :config, :incidents_timeline_mandatory, :string
+  serialized_accessor :config, :incidents_sequence_year, :integer
+  serialized_accessor :config, :incidents_sequence_number, :integer
+  serialized_accessor :config, :incidents_sequence_format, :string
+  serialized_accessor :config, :incidents_sequence_enabled, :boolean
 
   def incidents_resources_tracked_array
     self.incidents_resources_tracked.try(:split, ',')
