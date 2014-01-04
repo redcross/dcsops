@@ -2,7 +2,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   inherit_resources
   respond_to :html, :kml
   defaults finder: :find_by_incident_number!
-  load_and_authorize_resource except: [:link_cas, :needs_report]
+  load_and_authorize_resource except: [:link_cas, :needs_report, :activity]
   helper Incidents::MapHelper
 
   include NamedQuerySupport
@@ -127,15 +127,6 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     expose(:search) { search_params = {status_in: ['open', 'closed']}.merge(params[:q] || {}); resource_class.search(search_params) }
     expose(:should_paginate) { params[:page] != 'all' }
-
-    helper_method :incidents_for_cas
-    def incidents_for_cas(cas)
-      scope = Incidents::Incident.joins{cas_incident.outer}.where{(cas_incident.id == nil) & date.in((cas.incident_date - 7)..(cas.incident_date + 7))}
-      if county_names.include? cas.county_name
-        scope = scope.joins{area}.where{area.name == cas.county_name}
-      end
-      scope
-    end
 
     def end_of_association_chain
       named_query ? super : super.where{chapter_id == my{current_chapter}}

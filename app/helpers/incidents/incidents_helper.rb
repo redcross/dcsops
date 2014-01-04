@@ -31,7 +31,7 @@ module Incidents::IncidentsHelper
   def format_change_value(base, name, val)
     case val
     when DateTime, Time, ActiveSupport::TimeWithZone
-      val.in_time_zone # An ApplicationController filter automatically sets the current time zone for each request
+      val.in_time_zone.to_s :date_time # An ApplicationController filter automatically sets the current time zone for each request
     when String
       if name == 'cac_number' and val.present?
         "xxxx-xxxx-xxxx-" + val[-4..-1]
@@ -53,5 +53,13 @@ module Incidents::IncidentsHelper
     else
       []
     end
+  end
+
+  def incidents_for_cas(cas)
+    scope = Incidents::Incident.joins{cas_incident.outer}.where{(cas_incident.id == nil) & date.in((cas.incident_date - 7)..(cas.incident_date + 7))}
+    if county_names.include? cas.county_name
+      scope = scope.joins{area}.where{area.name == cas.county_name}
+    end
+    scope.to_a
   end
 end

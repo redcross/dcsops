@@ -3,6 +3,8 @@ module AutoGeocode
 
   mattr_accessor :enabled_in_test
   self.enabled_in_test = false
+  mattr_accessor :enabled
+  self.enabled = true
 
   included do
     before_save :geocode_address
@@ -12,9 +14,11 @@ module AutoGeocode
   end
 
   def geocode_address(force=false)
-    cols = self.class.geocode_columns
+    return unless AutoGeocode.enabled
     return if Rails.env.test? && !AutoGeocode.enabled_in_test
-    return if self[cols.first] == 'Address' and city == 'City'
+
+    cols = self.class.geocode_columns
+    return if cols.any?{|c| %w(Address City).include? self[c] }
     
     if force or lat.nil? or lng.nil? or (changed & cols).present?
       address = cols.map{|c| self[c] }.compact.join " "

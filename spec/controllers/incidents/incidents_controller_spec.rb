@@ -117,6 +117,15 @@ describe Incidents::IncidentsController do
         response.should be_success
       }.to_not change{inc.reload.status}
     end
+
+    it "should not succeed when the incident is closed" do
+      inc.update_attribute :status, 'closed'
+      expect {
+        post :mark_invalid, id: inc.to_param, incidents_incident: {incident_type: 'duplicate', narrative: 'Test'}
+        response.should redirect_to('/incidents/incidents/needs_report')
+        flash[:error].should_not be_empty
+      }.to_not change{inc.reload.status}
+    end
   end
 
   describe "#close" do
@@ -209,5 +218,50 @@ describe Incidents::IncidentsController do
 
   end
 
+  describe '#activity' do
+    before(:each) { grant_role! 'cas_details'; PaperTrail.whodunnit = @person.id }
+
+    it "should succeed" do
+      get :activity
+      response.should be_success
+    end
+
+  end
+
+  describe '#resource_changes', versioning: true do
+    before(:each) { PaperTrail.whodunnit = @person.id }
+
+    it "should provide list of changes to incidents" do
+      i = FactoryGirl.create :incident, chapter: @person.chapter
+      i.update_attributes narrative: 'test'
+      i.versions.should_not be_blank
+      
+      controller.resource_changes.should =~ i.versions
+      controller.resource_change_people.keys.should =~ [@person.id]
+    end
+
+    it "should not list changes for other chapters" do
+      chapter = FactoryGirl.create :chapter
+      i = FactoryGirl.create :incident, chapter: chapter
+      i.update_attributes narrative: 'test'
+      i.versions.should_not be_blank
+      
+      controller.resource_changes.should =~ []
+    end
+
+    it "should show only the changes for the given incident if specified" do
+      i3 = FactoryGirl.create :incident, chapter: @person.chapter
+      i3.update_attributes narrative: 'test123'
+
+      i = FactoryGirl.create :incident, chapter: @person.chapter
+      i.update_attributes narrative: 'test'
+      i.versions.should_not be_blank
+
+      get :show, {id: i.to_param}
+      
+      controller.resource_changes.should =~ i.versions
+      controller.resource_change_people.keys.should =~ [@person.id]
+    end
+  end
 
 end
