@@ -19,14 +19,14 @@ class Incidents::CasIncident < ActiveRecord::Base
   end
 
   # For Debug Purposes
-  def create_incident_from_cas!
+  def create_incident_from_cas!(chapter=nil)
     return if incident_id
 
     self.class.transaction do
       inc = self.build_incident
       inc.status = 'open'
       inc.incident_number = "19-#{self.id}"
-      inc.chapter = Roster::Chapter.first
+      inc.chapter = chapter || Roster::Chapter.all.detect{|ch| ch.cas_chapter_code_array.include? self.chapter_code}
       inc.num_adults = self.num_clients
       inc.num_children = 0
       inc.num_families = self.cases.count

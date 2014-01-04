@@ -143,9 +143,8 @@ class Incidents::Incident < ActiveRecord::Base
 
   def update_from_cas
     if cas_incident
-      self.num_cases = cas_incident.cases.count
+      update_attribute :num_cases, cas_incident.cases.count
     end
-    save
   end
 
   def to_param

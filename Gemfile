@@ -35,6 +35,7 @@ gem "assignable_values"
 gem 'credit_card_validator'
 gem 'bootstrap-kaminari-views'
 gem 'paperclip'
+gem 'threach'
 
 gem 'geokit', github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 
