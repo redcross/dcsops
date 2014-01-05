@@ -1,15 +1,17 @@
 module Incidents::DatIncidentsHelper
   def error_keys(resource)
     map_errors(resource.errors).flat_map do |key|
-      if key and assoc = resource.class.reflect_on_association( key)
-        errs = resource.send(key).try(:errors)
-        errs && map_errors(errs).map{|k| :"#{key}.#{k}"}
+      if assoc = resource.class.reflect_on_association(key)
+        val = resource.send(key)
+        val && error_keys(val).map{|k| :"#{key}.#{k}"}
+      else
+        key
       end
     end.compact
   end
 
   def map_errors(errs)
-    errs.map{|key, err| err.present? && key}
+    errs.map{|key, err| err.present? && key}.compact
   end
 
   def panel(name, form)
