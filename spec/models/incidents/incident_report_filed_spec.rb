@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Incidents::IncidentReportFiled do
   before(:each) do
-    @incident = FactoryGirl.create :closed_incident
     @person = FactoryGirl.create :person
+    @incident = FactoryGirl.create :closed_incident, chapter: @person.chapter
   end
 
   it "should notify someone subscribed to incident_report" do

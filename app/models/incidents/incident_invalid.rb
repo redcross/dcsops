@@ -22,6 +22,10 @@ class Incidents::IncidentInvalid
     @incident.area_id
   end
 
+  def chapter
+    @incident.chapter
+  end
+
   def fire_notifications
     notify do |person|
       Incidents::IncidentsMailer.incident_invalid(@incident, person).deliver

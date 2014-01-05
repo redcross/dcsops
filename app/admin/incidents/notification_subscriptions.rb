@@ -22,6 +22,9 @@ ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
   end
 
   index do
+    column 'CID' do |sub|
+      sub.person.chapter_id
+    end
     column :person
     column :notification_type
     column :county

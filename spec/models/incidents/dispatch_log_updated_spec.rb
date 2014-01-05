@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe Incidents::DispatchLogUpdated do
   before(:each) do
+    @person = FactoryGirl.create :person
     FactoryGirl.create :dispatch_log
     @log = Incidents::DispatchLog.last
-    @incident = FactoryGirl.create :incident, dispatch_log: @log
-    @person = FactoryGirl.create :person
+    @incident = FactoryGirl.create :incident, dispatch_log: @log, chapter: @person.chapter
   end
 
   it "should notify someone subscribed to incident_dispatch" do

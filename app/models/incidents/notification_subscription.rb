@@ -6,6 +6,10 @@ class Incidents::NotificationSubscription < ActiveRecord::Base
 
   validates :notification_type, inclusion: {in: TYPES}, presence: true, uniqueness: {scope: [:person_id, :county_id]}
 
+  scope :for_chapter, -> (chapter) {
+    joins{person}.where{person.chapter_id == chapter}
+  }
+
   scope :for_county, ->(county) {
     where{(county_id == nil) | (county_id == county)}
   }

@@ -20,6 +20,10 @@ class Incidents::IncidentMissingReport
     @incident.area_id
   end
 
+  def chapter
+    @incident.chapter
+  end
+
   def additional_notifications
     county = @incident.area_id
     assignments = Scheduler::SchedulerService.new(@incident.chapter).dispatch_assignments(time: @incident.created_at, area: county)

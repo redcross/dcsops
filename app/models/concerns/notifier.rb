@@ -6,11 +6,11 @@ module Notifier
   end
 
   def notification_subscribers
-    self.notification_type && Incidents::NotificationSubscription.for_county(self.notification_scope).for_type(self.notification_type).includes{person}.map(&:person) || []
+    self.notification_type && Incidents::NotificationSubscription.for_chapter(self.chapter).for_county(self.notification_scope).for_type(self.notification_type).includes{person}.map(&:person) || []
   end
 
   def role_subscribers
-    self.role_grant_name && Roster::Person.has_role_for_scope(self.role_grant_name, self.role_scope) || []
+    self.role_grant_name && Roster::Person.for_chapter(self.chapter).has_role_for_scope(self.role_grant_name, self.role_scope) || []
   end
 
   def notify

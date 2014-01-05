@@ -30,6 +30,10 @@ class Incidents::DispatchLogUpdated
     "receive_#{notification_type}"
   end
 
+  def chapter
+    @dispatch_log.incident.chapter
+  end
+
   def fire_notifications
     notify do |person|
       Incidents::IncidentsMailer.incident_dispatched(@dispatch_log.incident, person).deliver

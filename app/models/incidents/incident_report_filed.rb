@@ -23,6 +23,10 @@ class Incidents::IncidentReportFiled
     @incident.area_id
   end
 
+  def chapter
+    @incident.chapter
+  end
+
   def fire_notifications
     notify do |person|
       Incidents::IncidentsMailer.incident_report_filed(@incident, person, @is_new).deliver
