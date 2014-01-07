@@ -97,8 +97,11 @@
             -if resource.time_to_on_scene
               =distance_of_time_in_words resource.time_to_on_scene
         %tr
+          %th=passthrough_edit_link 'basic', 'Type of Incident'
+          %td=resource.humanized_incident_type
+        %tr
           %th=passthrough_edit_link 'basic', 'Type of Call'
-          %td=dat.incident_call_type.try :titleize
+          %td=dat.humanized_incident_call_type
         %tr
           %th=passthrough_edit_link 'services', 'Assistance Provided'
           %td=resource.services_description

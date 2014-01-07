@@ -17,7 +17,7 @@
         =link_to 'Reopen', reopen_resource_path, class: 'btn', method: 'post', data: {confirm: 'Really reopen this incident?'}
 
 
-- tabs = %w(details summary cases timeline responders attachments changes).select{|name| tab_authorized? name}
+- tabs = %w(details timeline responders cases attachments changes summary).select{|name| tab_authorized? name}
 
 .tabbable
   %ul.nav.nav-tabs
