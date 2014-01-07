@@ -14,4 +14,10 @@ class Incidents::EditPanelController < Incidents::BaseController
   class_attribute :panel_name
 
   expose(:panel_name) { self.class.panel_name }
+
+  def update
+    action = params[:action] == 'create' ? :create! : :update!
+    self.send(action) { polymorphic_url(parent, {anchor: "inc-"+self.class.panel_name}) }
+  end
+  alias_method :create, :update
 end

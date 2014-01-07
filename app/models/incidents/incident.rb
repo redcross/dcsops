@@ -13,7 +13,7 @@ class Incidents::Incident < ActiveRecord::Base
   
   has_many :event_logs, ->{ order{event_time.desc} }, class_name: 'Incidents::EventLog', inverse_of: :incident
   #has_one :latest_event_log, ->{ order{event_time.desc}.where{event != 'note'} }, class_name: 'Incidents::EventLog'
-
+  has_many :attachments, class_name: 'Incidents::Attachment', inverse_of: :incident
   has_many :cases, class_name: 'Incidents::Case', inverse_of: :incident
 
   has_many :responder_assignments, lambda { where{role != 'team_lead'}}, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id, inverse_of: :incident

@@ -1,0 +1,15 @@
+  
+=semantic_form_for [parent, resource], url: incidents_incident_attachment_path(parent, resource), builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr?, multipart: true, authenticity_token: true do |f|
+  .modal-header 
+    %a.close(data-dismiss="modal") &times;
+    %h3 Add Attachment
+  .modal-body
+    - if !f.object.persisted?
+      =f.input :file, as: :file
+    =f.input :attachment_type, as: :assignable_select
+    =f.input :name
+    =f.input :description, input_html: {rows: 4}
+  .modal-footer
+    -if f.object.persisted?
+      =link_to 'Delete', incidents_incident_attachment_path(parent, resource), method: 'delete', data: {confirm: 'Really delete this attachment?', remote: true}, class: 'btn btn-danger'
+    =f.action :submit, button_html: {class: "btn btn-primary"}

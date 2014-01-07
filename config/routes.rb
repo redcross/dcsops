@@ -78,6 +78,7 @@ Scheduler::Application.routes.draw do
       resources :event_logs
       resources :responders
       resources :cases
+      resources :attachments
       
       collection do
         get :needs_report
