@@ -24,7 +24,7 @@ class Incidents::CasIncident < ActiveRecord::Base
 
     self.class.transaction do
       inc = self.build_incident
-      inc.status = 'open'
+      inc.status = 'closed'
       inc.incident_number = "19-#{self.id}"
       inc.chapter = chapter || Roster::Chapter.all.detect{|ch| ch.cas_chapter_code_array.include? self.chapter_code}
       inc.num_adults = self.num_clients
@@ -40,22 +40,23 @@ class Incidents::CasIncident < ActiveRecord::Base
         inc.address = kase.address
         inc.city = kase.city
         inc.state = kase.state
-        inc.cross_street = "_"
-        inc.zip = "_"
 
         res = Geokit::Geocoders::GoogleGeocoder3.geocode( [inc.address, inc.city, inc.state].join(", "))
         if res
           (inc.lat, inc.lng) = res.lat, res.lng
+          inc.county = res.district.gsub(' County', '') if res.district
+          inc.zip = res.zip
         end
       elsif county_name
         res = Geokit::Geocoders::GoogleGeocoder3.geocode "#{county_name}, CA, USA"
         if res
           (inc.lat, inc.lng) = res.lat, res.lng
+          inc.county = county_name
         end
       else
         return
       end
-      inc.area = Roster::County.find_by_name (county_name || 'Chapter')
+      inc.area = Roster::County.find_by_name(county_name || 'Chapter') || Roster::County.find_by_name('Chapter')
       return unless inc.area
 
       #inc.incident_call_type = 'hot'
@@ -63,8 +64,8 @@ class Incidents::CasIncident < ActiveRecord::Base
       #inc.team_lead_id = Roster::Person.where(last_name: 'Laxson').first.id
       inc.date = incident_date
 
-      if inc.save
-        self.save
+      if inc.save validate: false
+        self.save validate: false
       end
     end
   end
