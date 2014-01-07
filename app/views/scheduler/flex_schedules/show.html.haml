@@ -15,7 +15,9 @@
           %th=dow.titleize
       - shift_times.each do |time|
         %tr
-          %th=time.titleize
+          %th
+            =time.titleize
+            =flex_time_range(time)
           - days_of_week.each do |dow|
             %th
               =editable_select resource, "available_#{dow}_#{time}", [{value: 0, text: "No"},{value: 1, text: "Yes"}], is_boolean: true

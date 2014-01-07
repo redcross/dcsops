@@ -18,8 +18,8 @@ class Scheduler::SchedulerService
 
   def flex_responders(time: chapter.time_zone.now, limit: nil, area: nil, exclude: [])
     dow = time.strftime("%A").downcase
-    hour = time.hour
-    period = (hour >= 7 && hour < 19) ? 'day' : 'night'
+    offset = time.seconds_since_midnight
+    period = (offset >= chapter.scheduler_flex_day_start && offset < chapter.scheduler_flex_night_start) ? 'day' : 'night'
 
     schedules = Scheduler::FlexSchedule.available_at(dow, period).joins{person}.where{person.chapter_id == my{chapter}}.includes{person}
     if area

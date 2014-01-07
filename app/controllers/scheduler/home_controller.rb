@@ -1,4 +1,5 @@
 class Scheduler::HomeController < Scheduler::BaseController
+  helper Scheduler::FlexSchedulesHelper
 
   def root
 

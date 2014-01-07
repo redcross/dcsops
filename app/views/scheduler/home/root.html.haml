@@ -47,7 +47,7 @@
       - shift_times.each do |time|
         %tr
           %th
-            %span{"data-toggle" => 'tooltip', title: time=='day' ? '7am to 7pm' : '7pm to 7am'}
+            %span{"data-toggle" => 'tooltip', title: flex_time_range(time, current_person.chapter) }
               =time.titleize
           - days_of_week.each do |dow|
             -avail = sched.send("available_#{dow}_#{time}")

@@ -27,6 +27,9 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_sequence_format, :string
   serialized_accessor :config, :incidents_sequence_enabled, :boolean
 
+  serialized_accessor :config, :scheduler_flex_day_start, :integer
+  serialized_accessor :config, :scheduler_flex_night_start, :integer
+
   def incidents_resources_tracked_array
     self.incidents_resources_tracked.try(:split, ',')
   end
