@@ -3,10 +3,16 @@ module Incidents::DatIncidentsHelper
     map_errors(resource.errors).flat_map do |key|
       if assoc = resource.class.reflect_on_association(key)
         val = resource.send(key)
-        val && error_keys(val).map{|k| :"#{key}.#{k}"}
+        case val.try(:to_a) || val
+        when Enumerable
+          val.flat_map{|o| error_keys(o).map{|k| :"#{key}.#{k}"}}
+        when nil then []
+        else
+          val && error_keys(val).map{|k| :"#{key}.#{k}"}
+        end
       else
-        key
-      end
+        [key]
+      end + [key]
     end.compact
   end
 
