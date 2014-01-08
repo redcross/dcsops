@@ -101,7 +101,7 @@ Scheduler::Application.routes.draw do
       root to: :responders, as: 'responders'
     end
     scope "notification_subscriptions", as: :notification_subscription do
-      resources :weekly, controller: 'notification_subscriptions', notification_type: 'weekly'
+      resources :report, controller: 'notification_subscriptions', notification_type: 'report'
     end
   end
 

@@ -26,6 +26,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_sequence_number, :integer
   serialized_accessor :config, :incidents_sequence_format, :string
   serialized_accessor :config, :incidents_sequence_enabled, :boolean
+  serialized_accessor :config, :incidents_enabled_report_frequencies, :string
 
   serialized_accessor :config, :scheduler_flex_day_start, :integer
   serialized_accessor :config, :scheduler_flex_night_start, :integer
@@ -44,5 +45,9 @@ class Roster::Chapter < ActiveRecord::Base
 
   def incidents_timeline_mandatory_array
     (self.incidents_timeline_mandatory || '').split( ',').select(&:present?)
+  end
+
+  def incidents_enabled_report_frequencies_array
+    (self.incidents_enabled_report_frequencies || '').split( ',').select(&:present?)
   end
 end

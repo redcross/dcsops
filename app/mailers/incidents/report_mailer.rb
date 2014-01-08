@@ -16,11 +16,13 @@ class Incidents::ReportMailer < ActionMailer::Base
     @start_date = start_date
     @end_date = end_date
 
+    fiscal = FiscalYear.for_date(@start_date)
+
     scope = Incidents::Incident.valid.joins{self.chapter}.where{chapter_id == chapter}
     
     @incidents = scope.where{date.in(my{@start_date..@end_date})}.order{date}.includes{responder_assignments.person}
     @weekly_stats = scope.where{date.in(my{@start_date..@end_date})}.incident_stats
-    @yearly_stats = scope.where{(date >= '2013-07-01') & (date <= my{@end_date})}.incident_stats
+    @yearly_stats = scope.where{(date >= fiscal.start_date) & (date <= my{@end_date})}.incident_stats
 
     tag :incidents, :weekly_report
     mail to: format_address(recipient), subject: [title, subtitle].join(" - "), template_name: 'report'

@@ -1,5 +1,6 @@
 class Incidents::NotificationSubscriptionsController < Incidents::BaseController
   inherit_resources
+  respond_to :html, :json
   load_and_authorize_resource
 
   rescue_from ActiveRecord::RecordNotFound do |ex|
@@ -7,11 +8,11 @@ class Incidents::NotificationSubscriptionsController < Incidents::BaseController
   end
 
   def create
-    create! { incidents_notification_subscription_weekly_path(build_resource.person_id) }
+    create! { incidents_notification_subscription_report_path(build_resource.person_id) }
   end
 
   def destroy
-    destroy! { new_incidents_notification_subscription_weekly_path }
+    destroy! { incidents_notification_subscription_report_path(resource.person_id) }
   end
 
   private
@@ -24,8 +25,11 @@ class Incidents::NotificationSubscriptionsController < Incidents::BaseController
     @notification_subscription ||= Incidents::NotificationSubscription.find_by! person_id: params[:id], notification_type: params[:notification_type]
   end
 
-  helper_method :formatted_narrative
-  def formatted_narrative
-    (resource.narrative || 'No Narrative Provided').gsub(/^(\[[^\]]+\])/, "\n\n#{'\1'}\n")
+  def resource_params
+    request.get? ? [] : [params.require(:incidents_notification_subscription).permit(:frequency)]
   end
+
+  expose(:show_select_frequency) {
+    resource.assignable_frequencies.length > 1
+  }
 end

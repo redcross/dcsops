@@ -18,9 +18,9 @@
           %a{href: tracker_incidents_incidents_path}
             Incident Tracker
             %i.icon-chevron-right
-      -if can? :create, Incidents::NotificationSubscription.new(person: current_user, notification_type: 'weekly')
+      -if can? :create, Incidents::NotificationSubscription.new(person: current_user, notification_type: 'report')
         %li
-          %a{href: incidents_notification_subscription_weekly_path(current_user)}
+          %a{href: incidents_notification_subscription_report_path(current_user)}
             Manage Subscription
             %i.icon-chevron-right
       -if can? :show, :responders
