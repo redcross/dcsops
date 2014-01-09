@@ -16,9 +16,13 @@ namespace :incidents_periodic do
   task :send_weekly_report => :environment do
     Raven.capture do
       if Date.current.wday == 1 or ENV['FORCE_WEEKLY_REPORT'] == '1'
-        subscriptions = Incidents::NotificationSubscription.for_type('weekly').includes{person.chapter}
-        subscriptions.each do |sub|
-          Incidents::ReportMailer.report(sub.person.chapter, sub.person).deliver
+        Roster::Chapter.with_incidents_report_send_automatically_value(true).each do |chapter|
+          today = chapter.time_zone.today
+          subscriptions = Incidents::NotificationSubscription.for_type('report').for_chapter(chapter).to_send_on(today).includes{person.chapter}.with_active_person.readonly(false)
+          subscriptions.each do |sub|
+            Incidents::ReportMailer.report(sub.person.chapter, sub.person).deliver
+            sub.update_attribute :last_sent, today
+          end
         end
       end
     end

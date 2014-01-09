@@ -48,6 +48,10 @@ class Incidents::NotificationSubscription < ActiveRecord::Base
     SQL
   }
 
+  scope :with_active_person, ->{
+    joins{person}.where{person.vc_is_active == true}
+  }
+
   def time_zone
     person.chapter.time_zone
   end

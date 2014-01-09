@@ -27,6 +27,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_sequence_format, :string
   serialized_accessor :config, :incidents_sequence_enabled, :boolean
   serialized_accessor :config, :incidents_enabled_report_frequencies, :string
+  serialized_accessor :config, :incidents_report_send_automatically, :boolean
 
   serialized_accessor :config, :scheduler_flex_day_start, :integer
   serialized_accessor :config, :scheduler_flex_night_start, :integer
@@ -50,4 +51,8 @@ class Roster::Chapter < ActiveRecord::Base
   def incidents_enabled_report_frequencies_array
     (self.incidents_enabled_report_frequencies || '').split( ',').select(&:present?)
   end
+
+  scope :with_config, -> (name, type, val) {
+    where{cast(config.op('->', name).as(type)) == val}
+  }
 end
