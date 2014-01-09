@@ -48,6 +48,15 @@ private
     end
   end
 
+  helper_method :period_name
+  def period_name
+    size = @date_range.last - @date_range.first + 1
+    case size
+    when 7 then 'This Week'
+    else 'This Report'
+    end
+  end
+
   expose(:sections_to_render) {
     ['incident_table', 'incident_statistics', 'deployments_summary']
   }
