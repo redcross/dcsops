@@ -5,7 +5,7 @@ class AdminAbility
 
     is_config = person.has_role 'chapter_config'
 
-    if is_config and false# is site manager
+    if is_config # is site manager
       can [:read, :update], Roster::Chapter
       can :manage, Roster::County
       can :manage, Roster::Position
@@ -34,7 +34,7 @@ class AdminAbility
     end
 
     is_admin = person.has_role 'chapter_admin'
-    if is_admin or true
+    if is_admin
       chapter = person.chapter_id
       can :read, [Roster::Person, Roster::County, Roster::Position], chapter_id: chapter
       can :impersonate, Roster::Person, chapter_id: chapter
