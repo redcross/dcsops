@@ -24,13 +24,13 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     end
     f.actions
     f.has_many :county_memberships do |county_form|
-      county_form.input :county
+      county_form.input :county, collection: (f.object.chapter && f.object.chapter.counties)
       county_form.input :persistent
       county_form.input :_destroy, as: :boolean, label: "Remove"
     end
     f.actions
     f.has_many :position_memberships do |form|
-      form.input :position
+      form.input :position, (f.object.chapter && f.object.chapter.positions)
       form.input :persistent
       form.input :_destroy, as: :boolean, label: "Remove"
     end

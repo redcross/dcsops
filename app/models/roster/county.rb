@@ -5,6 +5,6 @@ class Roster::County < ActiveRecord::Base
   validates_presence_of :chapter
 
   def vc_regex
-    @compiled_regex ||= (vc_regex_raw && Regexp.new(vc_regex_raw))
+    @compiled_regex ||= (vc_regex_raw.present? && Regexp.new(vc_regex_raw))
   end
 end

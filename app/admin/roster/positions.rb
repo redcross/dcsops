@@ -26,7 +26,7 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
   form do |f|
     f.inputs
     f.inputs do
-      f.input :roles, as: :check_boxes, collection: f.object.chapter.roles.sort_by(&:name)
+      f.input :roles, as: :check_boxes, collection: (f.object.chapter && f.object.chapter.roles.sort_by(&:name))
     end
     f.actions
   end
