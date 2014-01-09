@@ -7,22 +7,21 @@ class Incidents::ReportMailer < ActionMailer::Base
   def self.report(chapter, recipient)
     start_date = chapter.time_zone.today.at_beginning_of_week.last_week
     end_date = start_date.next_week.yesterday
-    self.report_for_date_range(chapter, recipient, start_date, end_date)
+    self.report_for_date_range(chapter, recipient, start_date..end_date)
   end
 
-  def report_for_date_range(chapter, recipient, start_date, end_date)
+  def report_for_date_range(chapter, recipient, date_range)
     @chapter = chapter
     @person = recipient
-    @start_date = start_date
-    @end_date = end_date
+    @date_range = date_range
 
-    fiscal = FiscalYear.for_date(@start_date)
+    fiscal = FiscalYear.for_date(@date_range.first)
 
     scope = Incidents::Incident.valid.joins{self.chapter}.where{chapter_id == chapter}
     
-    @incidents = scope.where{date.in(my{@start_date..@end_date})}.order{date}.includes{responder_assignments.person}
-    @weekly_stats = scope.where{date.in(my{@start_date..@end_date})}.incident_stats
-    @yearly_stats = scope.where{(date >= fiscal.start_date) & (date <= my{@end_date})}.incident_stats
+    @incidents = scope.where{date.in(my{date_range})}.order{date}.includes{responder_assignments.person}
+    @weekly_stats = scope.where{date.in(my{date_range})}.incident_stats
+    @yearly_stats = scope.where{date.in(fiscal.range)}.incident_stats
 
     tag :incidents, :weekly_report
     mail to: format_address(recipient), subject: [title, subtitle].join(" - "), template_name: 'report'
@@ -30,16 +29,24 @@ class Incidents::ReportMailer < ActionMailer::Base
 
 private
 
-  attr_reader :chapter, :person, :start_date, :end_date
-  helper_method :chapter, :person, :start_date, :end_date
+  attr_reader :chapter, :person
+  helper_method :chapter, :person
 
   expose(:title) {
     "#{chapter.short_name} Disaster Operations Report"
   }
 
-  expose(:subtitle) {
-    "Week of #{start_date.to_s :mdy}"
-  }
+  helper_method :subtitle
+  def subtitle
+    size = @date_range.last - @date_range.first + 1
+    if size == 1
+      @date_range.first.to_s :dow_long
+    elsif size == 7 && @date_range.first.wday == 1
+      "Week of #{@date_range.first.to_s :mdy}"
+    else
+      "#{@date_range.first.to_s :dow_short} to #{@date_range.last.to_s :dow_short}"
+    end
+  end
 
   expose(:sections_to_render) {
     ['incident_table', 'incident_statistics', 'deployments_summary']
@@ -51,7 +58,7 @@ private
 
     Incidents::Deployment.joins{person}.where{person.chapter_id == my{@chapter}}
                           .includes{person.counties}
-                          .where{date_last_seen >= my{@start_date}}
+                          .where{date_last_seen >= my{@date_range.first}}
                           .where{(dr_name.not_like_any(drs_to_ignore))}
                           .uniq.to_a
                           .group_by{|a| [a.person_id, a.dr_name] }.map{|_, deployments| deployments.last}
