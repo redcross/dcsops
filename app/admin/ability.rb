@@ -3,9 +3,9 @@ class AdminAbility
 
   def initialize(person)
 
-    is_config = person.roles.any?{|r| r.grant_name == 'chapter_config' }
+    is_config = person.has_role 'chapter_config'
 
-    if is_config # is site manager
+    if is_config and false# is site manager
       can [:read, :update], Roster::Chapter
       can :manage, Roster::County
       can :manage, Roster::Position
@@ -33,6 +33,14 @@ class AdminAbility
       can :manage, HomepageLink
     end
 
+    is_admin = person.has_role 'chapter_admin'
+    if is_admin or true
+      chapter = person.chapter_id
+      can :read, [Roster::Person, Roster::County, Roster::Position], chapter_id: chapter
+      can :impersonate, Roster::Person, chapter_id: chapter
+      can :manage, Logistics::Vehicle, chapter_id: chapter
+      can :manage, Incidents::NotificationSubscription, person: {chapter_id: chapter}
+    end
   end
 
 end
