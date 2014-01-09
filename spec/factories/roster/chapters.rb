@@ -14,6 +14,9 @@ FactoryGirl.define do
       "incidents_map_center_lng"=>"-122.19014746", 
       "incidents_resources_tracked"=>"blankets,comfort_kits",
       "incidents_timeline_collect"=>"dat_received,dat_on_scene,dat_departed_scene",
-      "incidents_timeline_mandatory"=>"dat_received,dat_on_scene,dat_departed_scene"})
+      "incidents_timeline_mandatory"=>"dat_received,dat_on_scene,dat_departed_scene",
+      "incidents_enabled_report_frequencies"=>"weekly,weekdays,daily",
+      "scheduler_flex_day_start"=>"25200",
+      "scheduler_flex_night_start"=>"68400"})
   end
 end

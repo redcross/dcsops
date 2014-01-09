@@ -69,7 +69,7 @@ describe Incidents::CasesController do
     context "when HTML" do
       it "redirects to the incident when valid" do
         post :create, {incident_id: incident.to_param, :incidents_case => valid_attributes}
-        response.should redirect_to(incident)
+        response.should redirect_to(controller: 'incidents/incidents', id: incident.to_param, action: :show, anchor: "inc-cases")
       end
 
       it "renders new with layout when invalid" do

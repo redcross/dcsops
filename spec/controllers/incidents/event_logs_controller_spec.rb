@@ -65,7 +65,7 @@ describe Incidents::EventLogsController do
     context "when HTML" do
       it "redirects to the incident when valid" do
         post :create, {incident_id: incident.to_param, :incidents_event_log => valid_attributes}
-        response.should redirect_to(incident)
+        response.should redirect_to(controller: 'incidents/incidents', id: incident.to_param, action: :show, anchor: 'inc-timeline')
       end
 
       it "renders new with layout when invalid" do
