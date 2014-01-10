@@ -1,0 +1,1 @@
+require_relative 'assignable_select_input'

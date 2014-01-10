@@ -8,6 +8,6 @@ class Incidents::EventLogsController < Incidents::EditPanelController
   end
 
   def resource_params
-    request.get? ? [] : [params.require(:incidents_event_log).permit(:event, :event_time, :message).merge(person_id: current_user.id)]
+    request.get? ? [] : [params.require(:incidents_event_log).permit(:event, :event_time, :message, :source_id).merge(person_id: current_user.id)]
   end
 end

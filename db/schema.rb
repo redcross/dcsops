@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140108053054) do
+ActiveRecord::Schema.define(version: 20140110180435) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -277,6 +277,7 @@ ActiveRecord::Schema.define(version: 20140108053054) do
     t.text     "message"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "source_id"
   end
 
   add_index "incidents_event_logs", ["incident_id"], name: "index_incidents_event_logs_on_incident_id", using: :btree
@@ -398,6 +399,18 @@ ActiveRecord::Schema.define(version: 20140108053054) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "lookups", force: true do |t|
+    t.integer  "chapter_id"
+    t.string   "scope"
+    t.string   "name",       null: false
+    t.string   "value",      null: false
+    t.integer  "ordinal"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "lookups", ["chapter_id"], name: "index_lookups_on_chapter_id", using: :btree
 
   create_table "motds", force: true do |t|
     t.integer  "chapter_id"

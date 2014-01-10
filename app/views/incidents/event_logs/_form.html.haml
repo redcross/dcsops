@@ -4,8 +4,11 @@
     %a.close(data-dismiss="modal") &times;
     %h3 Add Event
   .modal-body
-    =f.input :event, as: :assignable_select
+    =f.input :event, as: :assignable_select, required: true
     =f.input :event_time, as: :time_field
+    -if f.object.source_required?
+      .event-log-source
+        =f.input :source, as: :assignable_select
     =f.input :message, input_html: {rows: 4}
   .modal-footer
     -if f.object.persisted?

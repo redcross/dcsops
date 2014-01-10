@@ -31,6 +31,7 @@ class AdminAbility
       can :manage, NamedQuery
       can :manage, DataFilter
       can :manage, HomepageLink
+      can :manage, Lookup
     end
 
     is_admin = person.has_role 'chapter_admin'
