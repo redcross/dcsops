@@ -1,6 +1,6 @@
 module Incidents::CasesHelper
   def price_list_description(item)
-    "#{item.name} - #{number_to_currency item.unit_price}"
+    [item.item_class, item.name, item.unit_price > 0 ? number_to_currency(item.unit_price) : nil].compact.join " - "
   end
 
   def price_list_options(list, selected)
