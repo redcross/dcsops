@@ -5,7 +5,8 @@ class Roster::SessionsController < ApplicationController
 
   newrelic_ignore only: [:new]
 
-  skip_before_filter :require_valid_user!#, except: [:destroy] #, only: [:new, :create]
+  skip_before_filter :require_valid_user!
+  skip_before_filter :require_active_user!
 
   def logout
     destroy

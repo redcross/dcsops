@@ -1,5 +1,6 @@
 class RootController < ApplicationController
   skip_before_filter :require_valid_user!
+  skip_before_filter :require_active_user!, only: [:health, :inactive]
   skip_before_filter :user_time_zone, only: :health
 
   newrelic_ignore only: :health
@@ -20,6 +21,14 @@ class RootController < ApplicationController
     DESC
     render status: 500, text: str
     Raven.capture e
+  end
+
+  def inactive
+    if request.format == :html
+      render status: 403
+    else
+      head :forbidden
+    end
   end
 
   private

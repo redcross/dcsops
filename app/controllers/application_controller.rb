@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_user, :current_user_session, :current_chapter, :impersonating_user
 
   before_filter :require_valid_user!
+  before_filter :require_active_user!
   before_filter :annotate_newrelic_user, :if => :current_user
 
   around_filter :user_time_zone, :if => :current_user
@@ -87,6 +88,17 @@ class ApplicationController < ActionController::Base
       end
     else 
       true
+    end
+  end
+
+  def require_active_user!
+    person = current_user_session.try(:person) || current_user
+    if person and person.vc_is_active == false
+      if request.format == :html
+        redirect_to inactive_user_path
+      else
+        head :forbidden
+      end
     end
   end
 

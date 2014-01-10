@@ -25,6 +25,7 @@ Scheduler::Application.routes.draw do
   root to: "root#index", constraints: lambda{|req| !filter.call(req)}, as: nil
 
   get '/health', to: 'root#health'
+  get '/inactive', to: 'root#inactive', as: 'inactive_user'
 
   namespace :scheduler do
     root to: "home#root"
