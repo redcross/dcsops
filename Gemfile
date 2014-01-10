@@ -5,6 +5,7 @@ ruby "2.0.0"
 gem 'rails', '~> 4.0.0'
 gem 'squeel', github: 'ernie/squeel'
 gem 'puma'
+gem 'rack-rewrite'
 
 gem 'activerecord-postgresql-adapter'
 gem 'activerecord-import'

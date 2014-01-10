@@ -42,7 +42,7 @@ Scheduler::Application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = true
 
   # Set to :debug to see everything in the log.
   config.log_level = :debug
@@ -81,7 +81,13 @@ Scheduler::Application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
-  config.action_mailer.default_url_options = { host: 'www.arcbadat.org' }
+  config.action_mailer.default_url_options = { host: 'www.dcsops.org' }
 
   config.paperclip_defaults = {storage: :s3, s3_permissions: :private, bucket: 'arcdata-files'}
+
+  config.middleware.insert(0, Rack::Rewrite) do
+    r301 %r{.*}, 'https://www.dcsops.org$&', :if => Proc.new {|rack_env|
+      rack_env['SERVER_NAME'] != 'www.dcsops.org'
+    }
+  end
 end
