@@ -85,10 +85,18 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
       row(date, shift.shift_group_id).in(my{groups}.map{|group| row(group.start_date, group.id) })
     }
   }
+
+  scope :for_chapter, -> (chapter) {
+    joins{person}.where{person.chapter_id == chapter.id}
+  }
+
+  scope :with_active_person, -> {
+    joins{person}.where{person.vc_is_active == true}
+  }
   
   scope :needs_email_invite, ->(chapter) {
     joins(:notification_setting).readonly(false)
-    .joins{person}.where{person.chapter_id == chapter.id}
+    .with_active_person.for_chapter(chapter)
     .where(:email_invite_sent => false, :scheduler_notification_settings => {send_email_invites: true})
     .where('date > ?', chapter.time_zone.today)
   }
@@ -96,7 +104,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   scope :needs_email_reminder, ->(chapter){
     where(:email_reminder_sent => false)
     .joins{notification_setting}.where{notification_setting.email_advance_hours != nil}
-    .joins{person}.where{person.chapter_id == chapter.id}.readonly(false)
+    .with_active_person.for_chapter(chapter).readonly(false)
     .select{|ass|
       now = chapter.time_zone.now
       start = ass.local_start_time
@@ -111,7 +119,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
 
     where(:sms_reminder_sent => false)
     .joins{notification_setting}.where{notification_setting.sms_advance_hours != nil}
-    .joins{person}.where{person.chapter_id == chapter.id}.readonly(false)
+    .with_active_person.for_chapter(chapter).readonly(false)
     .select{|ass|
       ass.person.sms_addresses.present? # Can't send if we don't have any addresses
     }.select{|ass|

@@ -10,7 +10,19 @@ class Scheduler::NotificationSetting < ActiveRecord::Base
     now = chapter.time_zone.now
     midnight = now.at_beginning_of_day
     offset = now.seconds_since_midnight
-    joins{person}.where{(person.chapter_id == chapter.id) & (__send__(:"#{method}_all_shifts_at") != nil) & (__send__(:"#{method}_all_shifts_at") <= offset) & ((__send__(:"last_all_shifts_#{method}") == nil) | (__send__(:"last_all_shifts_#{method}") < midnight))}.readonly(false)
+    for_chapter(chapter).with_active_person.where{(__send__(:"#{method}_all_shifts_at") != nil) & 
+                                                  (__send__(:"#{method}_all_shifts_at") <= offset) & 
+                                                  ( (__send__(:"last_all_shifts_#{method}") == nil) | 
+                                                    (__send__(:"last_all_shifts_#{method}") < midnight)
+                                                  )}.readonly(false)
+  }
+
+  scope :with_active_person, -> {
+    joins{person}.where{person.vc_is_active == true}
+  }
+
+  scope :for_chapter, -> (chapter) {
+    joins{person}.where{person.chapter_id == chapter.id}
   }
 
   before_create :set_calendar_api_token
