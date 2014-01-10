@@ -13,16 +13,17 @@ class Incidents::EventLog < ActiveRecord::Base
     "note"=>"Note",
     "incident_occurred"=>     "Incident Occurred",
     "assistance_requested"=>  "Assistance Requested",
+    "incident_verified"=>     "Incident Verified",
+    "responders_identified"=> "Responders Identified"
     "dispatch_received"=>     "ARC Dispatch Received Call",
     "dispatch_note"=>         "ARC Dispatch",
-    "dispatch_relayed"=>      "ARC Dispatch Relayed Call",
+    "dispatch_relayed"=>      "Incident Dispatched",
     "dat_received"=>          "DAT Received Call",
-    "incident_verified"=>     "Incident Verified",
     "dat_vehicle_pickup"=>    "DAT Picked Up Vehicle",
     "dat_on_scene"=>          "DAT On Scene",
     "dat_departed_scene"=>    "DAT Departed Scene",
-    "incident_reopened"=>     "Incident Reopened",
-    "incident_closed"=>       "Incident Closed"
+    "incident_closed"=>       "Incident Closed",
+    "incident_reopened"=>     "Incident Reopened"
   }
 
   assignable_values_for :event do
