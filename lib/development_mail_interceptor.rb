@@ -1,8 +1,9 @@
 class DevelopmentMailInterceptor
 
   def self.delivering_email(message)
-    message.perform_deliveries = false
+    dest = ENV['MAIL_DESTINATION']
+    message.perform_deliveries = dest.present?
     message.subject = "(#{message.to}) #{message.subject}"
-    message.to = ENV['MAIL_DESTINATION']
+    message.to = dest
   end
 end
