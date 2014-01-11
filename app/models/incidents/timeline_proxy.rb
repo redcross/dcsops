@@ -1,7 +1,7 @@
 class Incidents::TimelineProxy
   include ActiveModel::Validations
 
-  validates_with Incidents::Validators::TimesInCorrectOrderValidator
+  #validates_with Incidents::Validators::TimesInCorrectOrderValidator
 
   attr_accessor :incident, :fields
 
