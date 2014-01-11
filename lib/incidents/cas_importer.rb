@@ -56,7 +56,7 @@ class Incidents::CasImporter
             ids << incident.id
             ids_with_open << incident.id if incident.cases_open and incident.cases_open > 0
             if incident.chapter_code.present?
-              incident.chapter = @chapters.detect{|ch| ch.cas_chapter_code_array.include? incident.chapter_code }
+              incident.chapter = @chapters.detect{|ch| ch.cas_chapter_codes_array.include? incident.chapter_code }
             end      
             if !incident.save
               errors << incident
