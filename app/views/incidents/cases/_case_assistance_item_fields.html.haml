@@ -2,4 +2,6 @@
   %td=f.select :price_list_item_id, price_list_options(f.object.assignable_price_list_items, f.object.price_list_item_id), {include_blank: true}, class: ['price-list-item', f.object.errors[:price_list_item_id].present? && 'error']
   %td=f.number_field :quantity, class: ['quantity', f.object.errors[:quantity].present? && 'error']
   %td=f.text_field :total_price, readonly: true, class: 'subtotal'
-  %td=link_to_remove_association 'Remove', f, class: "btn btn-danger"
+  %td
+    =link_to_remove_association f, class: "btn btn-danger" do
+      %i.icon-trash

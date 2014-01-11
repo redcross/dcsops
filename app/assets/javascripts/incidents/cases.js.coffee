@@ -8,6 +8,8 @@ class window.IncidentCaseController
       $target = $(evt.target)
       this.recalcRow($target.closest('tr.case-assistance-item'))
       this.recalcTotal()
+    $(document).on 'cocoon:after-remove', '#case-assistance-items, #case-assistance-items > tbody', (evt) =>
+      this.recalcTotal()
 
   recalcRow: ($row) ->
     selected = $row.find('select.price-list-item :selected')
