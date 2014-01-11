@@ -19,7 +19,7 @@ module AssignableSelect
   end
 
   def assignable_collection
-    options_from_collection_for_select(object.send("assignable_#{method.to_s.pluralize}"), :id, :humanized, object.send(method))
+    options_from_collection_for_select(object.send("assignable_#{method.to_s.pluralize}"), :id, :humanized, object.send("#{method}_id"))
   end
 
 end

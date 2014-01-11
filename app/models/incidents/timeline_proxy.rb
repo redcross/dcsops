@@ -22,25 +22,16 @@ class Incidents::TimelineProxy
 
   EVENT_TYPES.each do |type|
     define_method type do
-      event_log_for(type).try(:event_time)
+      event_log_for(type, create: true)
     end
 
-    define_method "#{type}=" do |val|
-      parsed_time = case val
-      when "" then nil
-      when String then Time.zone.parse(val)
-      else val
-      end
-      if parsed_time
-        event_log_for(type, create: true).event_time = parsed_time
-      else
-        event_log_for(type).try(:mark_for_destruction)
-      end
+    define_method "#{type}_attributes=" do |attrs|
+      event_log_for(type, create: true).attributes = attrs
     end
   end
 
   def attributes
-    EVENT_TYPES.map{|t| {t: event_log_for(type).try(:event_time)}}.reduce(&:merge)
+    EVENT_TYPES.map{|t| {t => event_log_for(t).try(:attributes)}}.reduce(&:merge)
   end
 
   def attributes=(attrs)
@@ -63,8 +54,7 @@ class Incidents::TimelineProxy
       log = event_log_for(f)
       if !log
         self.errors.add(f, :blank)
-      end
-      if log and log.invalid?
+      elsif log.invalid?
         self.errors.add(f, :invalid)
       end
     end

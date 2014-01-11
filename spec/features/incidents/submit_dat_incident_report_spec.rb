@@ -77,9 +77,9 @@ describe "DAT Incident Report", versions: true do
 
     # Need the times here
     t = @chapter.time_zone.now
-    fill_in_responder_timeline("#incidents_dat_incident_incident_attributes_timeline_attributes_dat_received", t)
-    fill_in_responder_timeline("#incidents_dat_incident_incident_attributes_timeline_attributes_dat_on_scene", t.advance( hours: 1))
-    fill_in_responder_timeline("#incidents_dat_incident_incident_attributes_timeline_attributes_dat_departed_scene", t.advance( hours: 3))
+    fill_in_responder_timeline("#incidents_dat_incident_incident_attributes_timeline_attributes_dat_received_attributes_event_time", t)
+    fill_in_responder_timeline("#incidents_dat_incident_incident_attributes_timeline_attributes_dat_on_scene_attributes_event_time", t.advance( hours: 1))
+    fill_in_responder_timeline("#incidents_dat_incident_incident_attributes_timeline_attributes_dat_departed_scene_attributes_event_time", t.advance( hours: 3))
   end
 
   def fill_in_responder_timeline(element, time)

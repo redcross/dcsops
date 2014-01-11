@@ -6,8 +6,10 @@
       =f.semantic_errors
 
   - tabs = {'form_basic' => 'Basic', 'form_responders' => 'Responders', 'form_services' => 'Services'}
+  - debug_errors = false
   - all_errors = error_keys(f.object)
-  - components = tabs.map{|name, title| p = FormProxy.new(f); html = render(name, f: p); {name => {proxy: p, html: html, errors: (all_errors & p.keys).present?}}}.reduce(&:merge)
+  - pp all_errors if debug_errors
+  - components = tabs.map{|name, title| p = FormProxy.new(f); html = render(name, f: p); pp name, p.keys if debug_errors; {name => {proxy: p, html: html, errors: (all_errors & p.keys).present?}}}.reduce(&:merge)
   - first_error = tabs.keys.detect{|name| components[name][:errors] }
   - components.each_with_index { |(name, opts), idx| opts[:active] = (first_error == name || (idx == 0 && first_error.nil?)) }
 
@@ -28,10 +30,10 @@
     window.formController = new DatIncidentsFormController();
     $(function() {
       var hash = window.location.hash;
-      hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+      hash && $('ul.nav a[data-target="' + hash + '"]').tab('show');
 
       $('a[data-toggle=tab]').on('shown', function(evt) {
-        window.location.hash = $(evt.target).attr('href')
+        window.history.replaceState({}, '', $(evt.target).attr('data-target'))
       })
 
       $.fn.editable.defaults.mode = 'inline';

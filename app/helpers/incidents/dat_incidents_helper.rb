@@ -1,17 +1,18 @@
 module Incidents::DatIncidentsHelper
   def error_keys(resource)
     map_errors(resource.errors).flat_map do |key|
-      if assoc = resource.class.reflect_on_association(key)
-        val = resource.send(key)
-        case val.try(:to_a) || val
-        when Enumerable
-          val.flat_map{|o| error_keys(o).map{|k| :"#{key}.#{k}"}}
-        when nil then []
-        else
-          val && error_keys(val).map{|k| :"#{key}.#{k}"}
-        end
+      val = resource.send(key)
+
+      case val
+      when nil then []
+      when Enumerable, ActiveRecord::Associations::CollectionProxy
+        val.flat_map{|o| error_keys(o).map{|k| :"#{key}.#{k}"}}
       else
-        [key]
+        if val.respond_to? :errors
+          error_keys(val).map{|k| :"#{key}.#{k}"}
+        else
+          [key]
+        end
       end + [key]
     end.compact
   end

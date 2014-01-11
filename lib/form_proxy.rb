@@ -15,7 +15,7 @@ class FormProxy
 
   def semantic_fields_for(*args, &block)
     name = args.first
-    @keys << name
+    #@keys << name
     target.semantic_fields_for *args do |new_builder|
       deep_proxy = FormProxy.new(new_builder)
       ret = block.call(deep_proxy)

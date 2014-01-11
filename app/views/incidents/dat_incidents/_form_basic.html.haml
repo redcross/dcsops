@@ -14,7 +14,10 @@
       =f.semantic_fields_for :incident do |f|
         =f.semantic_fields_for :timeline do |tf|
           - f.object.timeline_collect_keys.each do |key|
-            =tf.input key.to_sym, as: :time_field, label: Incidents::EventLog::EVENT_TYPES[key], required: f.object.timeline_mandatory_keys.include?(key)
+            =tf.semantic_fields_for key, include_id: false do |tl|
+              =tl.input :event_time, as: :time_field, label: Incidents::EventLog::EVENT_TYPES[key], required: f.object.timeline_mandatory_keys.include?(key)
+              -if tl.object.source_required?
+                =tl.input :source, as: :assignable_select
 
 .row
   .span12

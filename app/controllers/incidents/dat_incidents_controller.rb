@@ -158,7 +158,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
           {:shelter_partner_use_attributes => partner_use_params},
           :hotel_partner_used,
           {:hotel_partner_use_attributes => partner_use_params},
-          {:timeline_attributes => Incidents::TimelineProxy::EVENT_TYPES}
+          {:timeline_attributes => Incidents::TimelineProxy::EVENT_TYPES.map{|key| {"#{key}_attributes" => [:event_time, :source_id]}}}
         ])
       else
         {}

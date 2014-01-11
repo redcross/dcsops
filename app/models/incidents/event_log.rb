@@ -37,7 +37,8 @@ class Incidents::EventLog < ActiveRecord::Base
   end
 
   def source_required?
-    %w(incident_occurred assistance_requested).include? event
+    chapter = incident && incident.chapter
+    chapter && chapter.incidents_timeline_collect_source_array.include?(event)
   end
 
   def is_note?
