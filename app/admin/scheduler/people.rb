@@ -30,7 +30,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     end
     f.actions
     f.has_many :position_memberships do |form|
-      form.input :position, (f.object.chapter && f.object.chapter.positions)
+      form.input :position, collection: (f.object.chapter && f.object.chapter.positions)
       form.input :persistent
       form.input :_destroy, as: :boolean, label: "Remove"
     end
