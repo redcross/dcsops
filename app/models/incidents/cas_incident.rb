@@ -26,7 +26,7 @@ class Incidents::CasIncident < ActiveRecord::Base
       inc = self.build_incident
       inc.status = 'closed'
       inc.incident_number = "19-#{self.id}"
-      inc.chapter = chapter || Roster::Chapter.all.detect{|ch| ch.cas_chapter_code_array.include? self.chapter_code}
+      inc.chapter = chapter || Roster::Chapter.all.detect{|ch| ch.cas_chapter_codes_array.include? self.chapter_code}
       inc.num_adults = self.num_clients
       inc.num_children = 0
       inc.num_families = self.cases.count
