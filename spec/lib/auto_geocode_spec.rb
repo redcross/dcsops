@@ -39,7 +39,7 @@ describe AutoGeocode do
     double(:geocode_result, lat: Faker::Address.latitude, lng: Faker::Address.longitude)
   }
 
-  let(:geocoder) {Geokit::Geocoders::GoogleGeocoder3}
+  let(:geocoder) {Geokit::Geocoders::GoogleGeocoder}
 
   it "Should install before save handler" do
     TestModel._save_callbacks.should_not be_empty
@@ -74,7 +74,7 @@ describe AutoGeocode do
     model.geocode_address(false)
   end
   it "Should not error if a TooManyQueries error is raised" do
-    geocoder.should_receive(:geocode).and_raise(Geokit::TooManyQueriesError)
+    geocoder.should_receive(:geocode).and_raise(Geokit::Geocoders::TooManyQueriesError)
     model.lat = Faker::Address.latitude
     model.lng = Faker::Address.longitude
     expect {

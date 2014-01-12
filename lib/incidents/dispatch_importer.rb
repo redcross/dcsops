@@ -99,13 +99,13 @@ class Incidents::DispatchImporter
     return if Rails.env.test?
 
     incident.address = log_object.address
-    res = Geokit::Geocoders::GoogleGeocoder3.geocode "#{log_object.address}, #{log_object.county_name} County, CA, USA"
+    res = Geokit::Geocoders::GoogleGeocoder.geocode "#{log_object.address}, #{log_object.county_name} County, CA, USA"
     if res
       incident.lat = res.lat
       incident.lng = res.lng
       incident.city = res.city
     end
-  rescue Geokit::TooManyQueriesError
+  rescue Geokit::Geocoders::TooManyQueriesError
     # Not the end of the world
   rescue => e
     Raven.capture_exception(e)

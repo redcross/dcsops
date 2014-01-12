@@ -26,9 +26,10 @@ require 'capybara/rspec'
 require 'capybara/rails'
 require 'selenium-webdriver'
 require 'database_cleaner'
-require "sauce_helper"
+#require "sauce_helper"
 
-Capybara.default_driver = SauceConfig.use_sauce? ? :sauce : :selenium
+#Capybara.default_driver = SauceConfig.use_sauce? ? :sauce : :selenium
+Capybara.default_driver = :selenium
 Capybara.server_port = ENV['TEST_ENV_NUMBER'] ? (9999+ENV['TEST_ENV_NUMBER'].to_i) : 9999
 
 # Require Formtastic Inputs
@@ -38,9 +39,9 @@ Dir[Rails.root.join("app/inputs/**/*.rb")].each { |f| require f }
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
-if SauceConfig.use_sauce?
-  ::RSpec.configuration.include(Sauce::RSpec::SeleniumExampleGroup, :type => :feature)
-end
+#if SauceConfig.use_sauce?
+#  ::RSpec.configuration.include(Sauce::RSpec::SeleniumExampleGroup, :type => :feature)
+#end
 
 PaperTrail.enabled = false
 

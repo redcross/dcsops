@@ -41,14 +41,14 @@ class Incidents::CasIncident < ActiveRecord::Base
         inc.city = kase.city
         inc.state = kase.state
 
-        res = Geokit::Geocoders::GoogleGeocoder3.geocode( [inc.address, inc.city, inc.state].join(", "))
+        res = Geokit::Geocoders::GoogleGeocoder.geocode( [inc.address, inc.city, inc.state].join(", "))
         if res
           (inc.lat, inc.lng) = res.lat, res.lng
           inc.county = res.district.gsub(' County', '') if res.district
           inc.zip = res.zip
         end
       elsif county_name
-        res = Geokit::Geocoders::GoogleGeocoder3.geocode "#{county_name}, CA, USA"
+        res = Geokit::Geocoders::GoogleGeocoder.geocode "#{county_name}, CA, USA"
         if res
           (inc.lat, inc.lng) = res.lat, res.lng
           inc.county = county_name

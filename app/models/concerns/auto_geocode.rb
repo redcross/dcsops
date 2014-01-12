@@ -22,7 +22,7 @@ module AutoGeocode
     
     if force or lat.nil? or lng.nil? or (changed & cols).present?
       address = cols.map{|c| self[c] }.compact.join " "
-      res = Geokit::Geocoders::GoogleGeocoder3.geocode(address)
+      res = Geokit::Geocoders::GoogleGeocoder.geocode(address)
       if res
         (self.lat, self.lng) = res.lat, res.lng
       else
@@ -32,7 +32,7 @@ module AutoGeocode
     end
 
     return true
-  rescue Geokit::TooManyQueriesError
+  rescue Geokit::Geocoders::TooManyQueriesError
     self.lat = nil
     self.lng = nil
 

@@ -29,22 +29,22 @@ gem "ri_cal" # Ical Rendering
 gem "cancan", github: 'jlaxson/cancan'
 gem "ruby-openid", require: 'openid'
 gem "chronic"
-gem "roadie", github: 'Mange/roadie'
+gem "roadie", '~> 2.4'
 gem "kaminari"
-gem "paper_trail", github: 'airblade/paper_trail'
+gem "paper_trail", '~> 3.0'
 gem "assignable_values"
 gem 'credit_card_validator'
 gem 'bootstrap-kaminari-views'
 gem 'paperclip'
 gem 'threach'
 
-gem 'geokit', github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
+gem 'geokit'#, github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 
 gem 'formtastic', '>=2.3.0rc2'
 gem 'formtastic-bootstrap'
-gem 'cocoon', github: 'nathanvda/cocoon'
+gem 'cocoon'
 gem 'ransack',             github: 'ernie/ransack',            branch: 'rails-4'
-gem 'activeadmin',       github: 'jlaxson/active_admin', branch: 'rails4' # github: 'akashkamboj/active_admin', branch: 'rails4' # 
+gem 'activeadmin',       github: 'gregbell/active_admin'  
 
 gem 'acts_as_flying_saucer', github: 'jlaxson/acts_as_flying_saucer', branch: 'master'
 gem 'nokogiri'
@@ -62,7 +62,7 @@ gem 'aws-sdk'
 # gem 'turbolinks'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 1.0.1'
+gem 'jbuilder'
 
 gem 'rails_12factor', group: :production
 
@@ -70,7 +70,7 @@ gem 'rails_12factor', group: :production
 # in production environments by default.
 group :assets do
   
-  gem 'coffee-rails', '~> 4.0.0.rc1'
+  gem 'coffee-rails', '~> 4.0'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', platforms: :ruby
@@ -94,7 +94,7 @@ group :development, :test do
   gem 'capybara', require: false
   gem 'selenium-webdriver', require: false
   gem 'database_cleaner', '~> 1.0.1', require: false # Current 1.1.1 version has catastrophic issue that breaks DB adapters.  Can upgrade when fixed
-  gem 'sauce', '~> 3.0.4'
+  #gem 'sauce' # Quite possibly the most annoying, complex, fragile gem in existence
   gem 'parallel_tests'
 end
 

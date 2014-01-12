@@ -6,6 +6,7 @@ module FeatureSpec
 
   included do
     self.use_transactional_fixtures = false
+
     before(:all) do
       DatabaseCleaner.strategy = :truncation
     end
@@ -50,5 +51,6 @@ module FeatureSpec
 end
 
 RSpec.configure do |config|
+  config.include Authlogic::TestCase
   config.include FeatureSpec, type: :feature
 end

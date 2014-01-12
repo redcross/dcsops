@@ -14,6 +14,8 @@ ActiveSupport.on_load :action_controller do
   include Exposure
 end
 
+I18n.config.enforce_available_locales = true
+
 module Scheduler
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -27,6 +29,8 @@ module Scheduler
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+    config.i18n.enforce_available_locales = true
+
     config.autoload_paths << "#{Rails.root}/app/inputs"
     config.autoload_paths << "#{Rails.root}/lib"
 

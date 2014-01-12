@@ -13,4 +13,5 @@
  *= require formtastic-bootstrap
  *= require bootstrap-editable
  *= require datetimepicker
+ *= stub active_admin
  */

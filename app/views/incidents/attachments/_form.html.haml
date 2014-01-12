@@ -1,5 +1,5 @@
   
-=semantic_form_for [parent, resource], url: incidents_incident_attachment_path(parent, resource), builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr?, multipart: true, authenticity_token: true do |f|
+=semantic_form_for [parent, resource], url: form_url, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr?, multipart: true, authenticity_token: true do |f|
   .modal-header 
     %a.close(data-dismiss="modal") &times;
     %h3 Add Attachment

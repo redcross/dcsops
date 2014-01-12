@@ -20,4 +20,9 @@ class Incidents::EditPanelController < Incidents::BaseController
     self.send(action) { polymorphic_url(parent, {anchor: "inc-"+self.class.panel_name}) }
   end
   alias_method :create, :update
+
+  helper_method :form_url
+  def form_url
+    url_for({action: resource.persisted? ? :update : :create})
+  end
 end

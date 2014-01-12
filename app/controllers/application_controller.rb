@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 
   around_filter :user_time_zone, :if => :current_user
 
-  after_action :set_frame_options
+  before_filter :set_frame_options
 
   def user_time_zone(&block)
     tz = current_user.try(:chapter).try(:time_zone) || Time.zone 
@@ -103,7 +103,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_frame_options
-    if params[:embed_key] == ENV['FRAME_EMBED_KEY']
+    if ENV['FRAME_EMBED_KEY'].present? && params[:embed_key] == ENV['FRAME_EMBED_KEY']
       response.headers.delete('X-Frame-Options')
     end
   end
