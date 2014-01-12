@@ -3,17 +3,8 @@ class Scheduler::SwapMailer < ActionMailer::Base
 
   default from: "DAT Scheduling <scheduling@arcbadat.org>"
 
-  def swap_invite(shift, person)
-    @person = person
-    @recipient = person
-    @shift = shift
-
-    tag :scheduler, :swap, :swap_invite
-    mail to: format_address(@recipient), subject: swap_invite_subject
-  end
-
-  def swap_available(shift, recipient)
-    @person = nil
+  def swap_available(shift, invitee, recipient)
+    @person = invitee
     @recipient = recipient
     @shift = shift
 

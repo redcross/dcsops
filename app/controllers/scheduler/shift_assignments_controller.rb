@@ -17,7 +17,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
     when 'all'
       controller.authorize! :read_all_shifts, Scheduler::ShiftAssignment
       county_ids = controller.current_user.county_ids
-      county_ids.present? ? scope.joins{shift}.where{shift.county_id.in county_ids} : scope
+      county_ids.present? ? scope.for_counties(county_ids) : scope
     end
   end
 
@@ -31,51 +31,33 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   end
 
   has_scope :for_county do |controller, scope, arg|
-    joins{shift}.where{shift.county_id.in(arg)}
+    scope.for_counties(Array(arg))
   end
 
   def swap
     if params[:is_swap]
       # Don't want this to fail if shift permissions have changed for some reason
       resource.update_attribute :available_for_swap, true
-      mailed_people = []
+      to_mail = []
 
       if params[:swap_to_id].present?
-        Scheduler::SwapMailer.swap_invite(resource, Roster::Person.find( params[:swap_to_id])).deliver
-        to_mail = []
-      else
-        to_mail = Scheduler::NotificationSetting.people_to_notify_swap(resource)
-        to_mail.each do |recipient|
-          Scheduler::SwapMailer.swap_available(resource, recipient).deliver
-        end
+        invitee = Roster::Person.find(params[:swap_to_id])
       end
-
-      to_mail = Scheduler::NotificationSetting.admins_to_notify_swap(resource, to_mail)
-      to_mail.each do |recipient|
-        Scheduler::SwapMailer.swap_available(resource, recipient).deliver
-      end
-
+      Scheduler::SwapAvailable.new(resource, invitee).save
 
     elsif params[:accept_swap] and resource.available_for_swap
-      if can?(:create, Scheduler::ShiftAssignment.new({person_id: params[:swap_to_id]}))#can_swap_to_others? and params[:swap_to_id].present?
-        person = Roster::Person.find params[:swap_to_id]
-      else
-        person = current_user
-      end
+      swap_id = params[:swap_to_id]
+      person = swap_id ? Roster::Person.find(swap_id) : current_user
+
       new_record = resource.swap_to person
+      
       if can?(:create, new_record) and new_record.save
-        Scheduler::SwapMailer.swap_confirmed(resource, new_record).deliver
-        Scheduler::NotificationSetting.admins_to_notify_swap(resource, to_mail).each do |recipient|
-          Scheduler::SwapMailer.swap_confirmed(resource, new_record, recipient).deliver
-        end
+        Scheduler::SwapConfirmed.new(resource, new_record).save
         redirect_to new_record, action: :swap
         return
       else
         flash.now[:error] = new_record.errors.full_messages.join
-        #pp new_record.errors
-        #resource.errors = new_record.errors # get it to show errors
       end
-
 
     elsif params[:cancel_swap]
       resource.update_attribute :available_for_swap, false
