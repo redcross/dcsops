@@ -44,12 +44,6 @@ module Incidents::RespondersHelper
     end
   end
 
-
-  def grouped_responder_roles
-    @_roles ||= [["Did Not Respond", Incidents::ResponderAssignment::RESPONSES_TO_LABELS.invert.to_a],
-     ["Responded To Incident", Incidents::ResponderAssignment::ROLES_TO_LABELS.invert.to_a.reject{|a| a.last == 'team_lead'}]]
-  end
-
   def qualifications(person, abbrevs={})
     quals = person.positions.select{|p|!p.hidden && p.abbrev.present?}
                             .map{ |pos| content_tag(:span, data: {toggle: 'tooltip'}, title: pos.name) { pos.abbrev }}

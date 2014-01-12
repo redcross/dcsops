@@ -69,12 +69,6 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     params[:incident_id] ? incidents_incident_dat_path(params[:incident_id]) : incidents_dat_incidents_path
   end
 
-  helper_method :grouped_responder_roles
-  def grouped_responder_roles
-    @_roles ||= [["Did Not Respond", Incidents::ResponderAssignment::RESPONSES_TO_LABELS.invert.to_a],
-     ["Responded To Incident", Incidents::ResponderAssignment::ROLES_TO_LABELS.invert.to_a.reject{|a| a.last == 'team_lead'}]]
-  end
-
   expose(:scheduler_service) { Scheduler::SchedulerService.new(current_chapter) }
 
   def prepare_resource(obj)

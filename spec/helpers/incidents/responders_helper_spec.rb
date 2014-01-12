@@ -67,10 +67,4 @@ describe Incidents::RespondersHelper do
     end
   end
 
-  describe '#grouped_responder_roles' do
-    it "should return roles" do
-      helper.grouped_responder_roles.should be_a(Array)
-    end
-  end
-
 end

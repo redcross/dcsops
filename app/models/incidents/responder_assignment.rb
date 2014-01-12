@@ -18,6 +18,13 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
     ROLES_TO_LABELS[role] || RESPONSES_TO_LABELS[role]
   end
 
+  def self.grouped_roles
+    [
+      ["Did Not Respond", Incidents::ResponderAssignment::RESPONSES_TO_LABELS.invert.to_a],
+      ["Responded To Incident", Incidents::ResponderAssignment::ROLES_TO_LABELS.invert.to_a.reject{|a| a.last == 'team_lead'}]
+    ]
+  end
+
   def was_available
     ROLES.include? role
   end

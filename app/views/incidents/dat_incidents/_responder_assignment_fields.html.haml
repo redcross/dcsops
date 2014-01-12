@@ -1,6 +1,6 @@
 %tr.nested-fields
   %td=f.input :person, as: :person_typeahead, text_value: -> obj {obj.person.try :full_name}, filter: {chapter_id_eq: f.object.incident.chapter_id}
-  %td=f.input :role, collection: grouped_options_for_select(grouped_responder_roles, f.object.role)
+  %td=f.input :role, collection: grouped_options_for_select(Incidents::ResponderAssignment.grouped_roles, f.object.role)
   %td=f.input :was_flex, label: 'Flex Responder'
   %td
     =f.input :_destroy, as: :hidden, input_html: {value: '0'}
