@@ -8,10 +8,7 @@ class CreditCardNumberValidator < ActiveModel::EachValidator
   end
 end
 
-class Incidents::Case < ActiveRecord::Base
-  has_paper_trail meta: {root_type: 'Incidents::Incident', root_id: ->(obj){obj.incident_id}, chapter_id: ->(obj){obj.incident.chapter_id} }
-
-  belongs_to :incident, class_name: 'Incidents::Incident'
+class Incidents::Case < Incidents::DataModel
   has_many :case_assistance_items, class_name: 'Incidents::CaseAssistanceItem'
 
   accepts_nested_attributes_for :case_assistance_items, allow_destroy: true
@@ -21,7 +18,7 @@ class Incidents::Case < ActiveRecord::Base
 
   before_validation :calculate_total
   def calculate_total
-    self.total_amount = case_assistance_items.select(&:valid?).select{|item| !item.marked_for_destruction?}.map(&:total_price).sum
+    self.total_amount = case_assistance_items.select{|item| item.valid? && !item.marked_for_destruction?}.map(&:total_price).sum
   end
 
   before_validation :normalize_cac_number

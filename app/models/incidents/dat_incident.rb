@@ -1,8 +1,6 @@
-class Incidents::DatIncident < ActiveRecord::Base
+class Incidents::DatIncident < Incidents::DataModel
   include HasDelegatedValidators
-  has_paper_trail meta: {root_type: 'Incidents::Incident', root_id:  ->(obj){obj.incident_id }, chapter_id: ->(obj){obj.incident.chapter_id }}
 
-  belongs_to :incident, class_name: 'Incidents::Incident', inverse_of: :dat_incident
   belongs_to :completed_by, class_name: 'Roster::Person'
   has_many :vehicle_uses, class_name: 'Incidents::VehicleUse', foreign_key: 'incident_id'
   has_many :vehicles, through: :vehicle_uses, class_name: 'Logistics::Vehicle'

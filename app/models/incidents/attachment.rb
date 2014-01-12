@@ -1,9 +1,6 @@
-class Incidents::Attachment < ActiveRecord::Base
-  has_paper_trail meta: {root_type: 'Incidents::Incident', root_id: ->(obj){obj.incident_id}, chapter_id: ->(obj){obj.incident.chapter_id} }
+class Incidents::Attachment < Incidents::DataModel
   has_attached_file :file, styles: {thumbnail: '60x60#', thumbnail2x: '120x120#', large: '600x600#'}
   before_post_process :skip_convert_unless_image
-
-  belongs_to :incident, class_name: 'Incidents::Incident', inverse_of: :attachments
 
   validates :incident, :name, presence: true
   validates_attachment :file, presence: true, 
