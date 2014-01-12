@@ -13,4 +13,12 @@ module Scheduler::FlexSchedulesHelper
     times.reverse! if day_or_night == 'night'
     times.join joiner
   end
+
+  def days_of_week
+    Scheduler::FlexSchedule.days
+  end
+
+  def shift_times
+    Scheduler::FlexSchedule.shifts
+  end
 end

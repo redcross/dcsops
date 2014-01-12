@@ -18,14 +18,6 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
   has_scope :with_availability, type: :boolean, default: true
 
   private
-  helper_method :days_of_week, :shift_times
-    def days_of_week
-      %w(sunday monday tuesday wednesday thursday friday saturday)
-    end
-
-    def shift_times
-      %w(day night)
-    end
     # Use callbacks to share common setup or constraints between actions.
     def resource
       Scheduler::FlexSchedule.where(id: params[:id]).first_or_create!
@@ -33,13 +25,11 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      shifts = days_of_week.map{|day|
-        shift_times.map{|time|"available_#{day}_#{time}".to_sym}
-      }.flatten
+      shifts = Scheduler::FlexSchedule.available_columns
       [params.require(:scheduler_flex_schedule).permit(*shifts)]
     end
 
     def collection
-      apply_scopes(super).with_availability.uniq
+      @collection ||= apply_scopes(super).includes{[person.positions, person.counties, person.home_phone_carrier, person.work_phone_carrier, person.alternate_phone_carrier, person.cell_phone_carrier, person.sms_phone_carrier]}.uniq
     end
 end
