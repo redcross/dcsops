@@ -5,26 +5,9 @@ describe Scheduler::SwapMailer do
   let(:assignment) {FactoryGirl.create :shift_assignment}
   let(:new_person) {FactoryGirl.create :person, chapter: assignment.person.chapter, counties: assignment.person.counties, positions: assignment.person.positions}
 
-  describe "swap_invite" do
-
-    let(:mail) { Scheduler::SwapMailer.swap_invite(assignment, new_person) }
-  
-    it "renders the headers" do
-      mail.subject.should match("Shift Swap Requested")
-      mail.to.should eq([new_person.email])
-      mail.from.should eq from_address
-      mail.header['X-MC-Tags'].to_s.should eq('scheduler,swap,swap_invite')
-    end
-  
-    it "renders the body" do
-      mail.body.encoded.should match("Hello, #{new_person.first_name}")
-      mail.body.encoded.should match("#{assignment.person.full_name} has asked you to take over their shift:")
-    end
-  end
-
   describe "swap_available" do
 
-    let(:mail) { Scheduler::SwapMailer.swap_available(assignment, new_person) }
+    let(:mail) { Scheduler::SwapMailer.swap_available(assignment, nil, new_person) }
   
     it "renders the headers" do
       mail.subject.should match("Shift Swap Requested")
