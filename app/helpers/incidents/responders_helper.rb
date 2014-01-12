@@ -51,8 +51,8 @@ module Incidents::RespondersHelper
   end
 
   def qualifications(person, abbrevs={})
-    person.positions.select{|p|!p.hidden && p.abbrev.present?}
-                    .map{ |pos|abbrevs[pos.abbrev] = pos.name; "<span data-toggle='tooltip' title='#{h pos.name}'>#{pos.abbrev}</span>".html_safe}
-                    .reduce{|a, b| "#{a}, #{b}".html_safe}
+    quals = person.positions.select{|p|!p.hidden && p.abbrev.present?}
+                            .map{ |pos| content_tag(:span, data: {toggle: 'tooltip'}, title: pos.name) { pos.abbrev }}
+    safe_join quals, ', '
   end
 end

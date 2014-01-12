@@ -1,5 +1,6 @@
 class Incidents::Incident < ActiveRecord::Base
   include HasDelegatedValidators
+  include Incidents::IncidentPartners
   has_paper_trail meta: {chapter_id: ->(inc){inc.chapter_id}}
 
   before_validation :set_incident_number, on: :create
@@ -20,33 +21,6 @@ class Incidents::Incident < ActiveRecord::Base
   has_many :all_responder_assignments, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
   has_many :on_scene_responder_assignments, lambda { on_scene }, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
   has_one :team_lead, lambda{ where(role: 'team_lead')}, class_name: 'Incidents::ResponderAssignment', foreign_key: 'incident_id'
-
-  {evac_partner: 'evac_center', hotel_partner: 'hotel', shelter_partner: 'shelter', feeding_partner: 'feeding'}.each do |attr, role|
-    has_one :"#{attr}_use", -> { where(role: role) }, class_name: 'Incidents::PartnerUse'
-
-    accepts_nested_attributes_for :"#{attr}_use", update_only: true, reject_if: -> attrs { attrs[:partner_id].blank? && attrs[:partner_name].blank? }
-    validates_presence_of :"#{attr}_use", if: :"#{attr}_used"
-    validates_associated :"#{attr}_use", if: :"#{attr}_used"
-    #attr_accessor :"#{attr}_used"
-    #define_method :"#{attr}_used=" do |val|
-    #  coerced = case val
-    #  when TrueClass, FalseClass then val
-    #  when String then val=='1'
-    #  else false
-    #  end
-    #  write_attribute("@#{attr}_used", coerced)
-    #end
-
-    before_validation :"clean_#{attr}_use"
-    define_method :"clean_#{attr}_use" do
-      use = self.send :"#{attr}_use"
-      used = self.send :"#{attr}_used"
-      if !used and use
-        use.destroy
-        self.send(:"#{attr}_use=", nil)
-      end
-    end
-  end
 
   accepts_nested_attributes_for :team_lead, update_only: true
   accepts_nested_attributes_for :responder_assignments, reject_if: -> hash {(hash[:person_id].blank?)}, allow_destroy: true
@@ -195,11 +169,11 @@ class Incidents::Incident < ActiveRecord::Base
   end
 
   def timeline_collect_keys
-    Incidents::TimelineProxy::EVENT_TYPES & (chapter.try(:incidents_timeline_collect_array) || [])
+    chapter.try(:incidents_timeline_collect_array, Incidents::TimelineProxy::EVENT_TYPES) || []
   end
 
   def timeline_mandatory_keys
-    Incidents::TimelineProxy::EVENT_TYPES & (chapter.try(:incidents_timeline_mandatory_array) || [])
+    chapter.try(:incidents_timeline_mandatory_array, Incidents::TimelineProxy::EVENT_TYPES) || []
   end
 
   def full_address
