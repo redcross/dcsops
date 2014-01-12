@@ -54,8 +54,11 @@ class Scheduler::Shift < ActiveRecord::Base
   scope :active_on_day, -> date {
     where{((shift_begins == nil) | (shift_begins <= date) & ((shift_ends == nil) | (shift_ends > date)))}
   }
-  scope :for_county, -> county {
-    where{county_id == county}
+  scope :for_counties, -> counties {
+    where{county_id.in(counties)}
+  }
+  scope :for_groups, -> groups {
+    where{shift_group_id.in(groups)}
   }
 
   scope :can_be_taken_by, -> person {

@@ -90,6 +90,10 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     joins{person}.where{person.chapter_id == chapter.id}
   }
 
+  scope :for_shifts, -> (shifts) {
+    where{shift_id.in(shifts)}
+  }
+
   scope :for_counties, -> (counties) {
     joins{shift}.where{shift.county_id.in(counties)}
   }
