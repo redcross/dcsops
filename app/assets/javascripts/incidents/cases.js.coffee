@@ -19,9 +19,7 @@ class window.IncidentCaseController
     quantity = parseInt($row.find('input.quantity').val())
 
     subtotal = if type == 'Incidents::PriceListItem::Shelter'
-      this.calculateShelter(quantity)
-    else if type == 'Incidents::PriceListItem::ShelterOneNight'
-      this.calculateShelterOneNight(quantity)
+      this.calculateShelter(unit, quantity)
     else if type == 'Incidents::PriceListItem::Food'
       this.calculateFood(quantity)
     else
@@ -44,32 +42,5 @@ class window.IncidentCaseController
     else
       35 + (quantity * 20)
 
-  calculateShelter: (quantity) ->
-    if quantity <= 0
-      0
-    else if quantity <= 4
-      200
-    else if quantity <= 8
-      400
-    else if quantity <= 12
-      800
-    else if quantity <= 16
-      1000
-    else if quantity <= 20
-      1200
-    else 0
-
-  calculateShelterOneNight: (quantity) ->
-    if quantity <= 0
-      0
-    else if quantity <= 4
-      100
-    else if quantity <= 8
-      200
-    else if quantity <= 12
-      300
-    else if quantity <= 16
-      400
-    else if quantity <= 20
-      500
-    else 0
+  calculateShelter: (unit, quantity) ->
+    unit * Math.ceil(quantity / 4)
