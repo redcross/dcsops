@@ -10,6 +10,10 @@ class Incidents::CasIncident < ActiveRecord::Base
     where{(incident_id == nil) & (chapter_id == chapter)}.order{incident_date.desc}
   }
 
+  def self.[] incident_number
+    find_by cas_incident_number: incident_number
+  end
+
   def is_dr
     dr_number != cas_incident_number
   end

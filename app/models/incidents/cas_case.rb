@@ -4,6 +4,10 @@ class Incidents::CasCase < ActiveRecord::Base
   include AutoGeocode
   self.geocode_columns = %w(address city state)
 
+  def self.[] case_number
+    find_by case_number: case_number
+  end
+
   def to_param
     case_number
   end

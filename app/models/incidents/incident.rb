@@ -64,6 +64,10 @@ class Incidents::Incident < ActiveRecord::Base
   delegated_validator Incidents::Validators::IncidentValidator, if: :valid_incident?
   delegated_validator Incidents::Validators::InvalidIncidentValidator, if: :invalid_incident?
 
+  def self.[] incident_number
+    find_by incident_number: incident_number
+  end
+
   def valid_incident?
     status == 'closed'
   end
