@@ -3,7 +3,7 @@
   -if can? :create, resource.cases.build
     %button.btn.btn-primary{data: {edit_panel: new_incidents_incident_case_path(resource)}} Add Case
 
-- resource.cases(true).each do |kase|
+- resource.cases.order{id}.each do |kase|
   .row
     .span8
       %table.table.table-bordered
@@ -18,7 +18,8 @@
           %td #{pluralize kase.num_adults, 'adult'}, #{pluralize kase.num_children, 'child'}
         %tr
           %th Unit
-          %td=kase.unit
+          %td
+            =safe_join [kase.unit, kase.address], '<br />'.html_safe
         %tr
           %th Case Number
           %td=kase.form_901_number

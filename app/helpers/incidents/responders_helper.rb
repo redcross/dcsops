@@ -35,6 +35,8 @@ module Incidents::RespondersHelper
         if editable
           if obj.is_a?(Incidents::ResponderAssignment) && obj.persisted?
             path = edit_resource_path(obj)
+          elsif obj.is_a? Scheduler::FlexSchedule
+            path = new_resource_path(person_id: person.id, flex: '1')
           else
             path = new_resource_path(person_id: person.id)
           end

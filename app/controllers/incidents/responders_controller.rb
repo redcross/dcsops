@@ -56,7 +56,10 @@ class Incidents::RespondersController < Incidents::BaseController
 
   def prepare_resource(assignment)
     if params[:person_id]
-      assignment.person_id = params[:person_id]
+      assignment.person_id ||= params[:person_id]
+    end
+    if params[:flex] == '1'
+      assignment.was_flex = true
     end
   end
 

@@ -1,4 +1,4 @@
-= form_for resource, url: incidents_incident_responder_path(parent, resource), builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
+= form_for resource, url: url_for({action: resource.persisted? ? :update : :create}), builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
   .row
     .span6
       %h3 
