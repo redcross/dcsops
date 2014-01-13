@@ -42,7 +42,7 @@
           - date = date.tomorrow
           -if date.wday == 0
             - break
-    - if weekly_groups.count > 0
+    - if calendar.weekly_groups.count > 0
       / If we get here, we are at the sunday of the week following the one we want to display,
       / or the month has ended.
       -if date == month.next_month

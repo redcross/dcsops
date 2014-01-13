@@ -1,6 +1,6 @@
-- all_shifts = all_groups.values.flatten
+- all_shifts = calendar.all_groups.values.flatten
 - shifts_available = Scheduler::Shift.shifts_available_by_day(all_shifts, month)
-- all_groups.each do |group, shifts|
+- calendar.all_groups.each do |group, shifts|
   %h4=group.name
   - shifts.each do |shift|
     %div

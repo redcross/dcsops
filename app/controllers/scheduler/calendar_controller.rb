@@ -13,16 +13,15 @@ class Scheduler::CalendarController < Scheduler::BaseController
 
     params[:show_shifts] = :county if params[:display]
 
-    load_shifts(@month, @month.next_month)
-    load_my_shifts(@month, @month.next_month)
+    @calendar = Scheduler::Calendar.new(current_chapter, @month, @month.next_month, person: person, filter: show_shifts, counties: show_counties)
 
     view = params[:display] || 'show'
 
     case view
     when 'spreadsheet', 'grid', 'show'
-      respond_with 1, {filename: pdf_file_name, action: view} #
+      respond_with 1, {filename: pdf_file_name, template: "scheduler/calendar/#{view}.html.haml"}
     when 'open_shifts'
-      render partial: 'open_shifts', locals: {month: @month, groups: daily_groups}
+      render partial: 'open_shifts', locals: {month: @month, groups: calendar.daily_groups}
     else
       raise ActiveRecord::RecordNotFound
     end
@@ -42,8 +41,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
 
     raise "Invalid period" unless %w(day week monthly month).include? partial_name
 
-    load_shifts(date, end_date)
-    load_my_shifts(date, end_date)
+    @calendar = Scheduler::Calendar.new(current_chapter, date, end_date, person: person, filter: show_shifts, counties: show_counties)
 
     unless request.xhr? or params[:partial].present?
       redirect_to scheduler_calendar_path(date.year, date.strftime("%B").downcase) and return
@@ -58,42 +56,19 @@ class Scheduler::CalendarController < Scheduler::BaseController
     ["DAT", spreadsheet_county.try(:abbrev), @month.strftime( "%Y"), @month.strftime("%b")].compact.join "-"
   end
 
-  def load_shifts(date_start, date_end)
-    shifts = daily_groups.values.flatten + weekly_groups.values.flatten + monthly_groups.values.flatten
-    @all_assignments = Scheduler::ShiftAssignment.includes{person.counties}.includes{shift.county}.includes{shift.positions}
-        .where{shift_id.in(shifts) & date.in(date_start.at_beginning_of_week.advance(weeks: -1)..date_end)}
-        .order("roster_people.last_name")
-    @all_shifts = @all_assignments.reduce({}) do |hash, assignment|
-      hash[assignment.shift_id] ||= {}
-      hash[assignment.shift_id][assignment.date] ||= []
-      hash[assignment.shift_id][assignment.date] << assignment
-      hash
-    end
-  end
-
-  def load_my_shifts(date_start, date_end)
-    if person
-      group_ids = daily_groups.keys + weekly_groups.keys + monthly_groups.keys
-      pid = person.id
-      @my_shifts = Scheduler::ShiftAssignment.includes{shift}
-          .where{(shift.shift_group_id.in(group_ids)) & (person_id == pid) & date.in(date_start.at_beginning_of_week.advance(weeks: -1)..date_end)}
-          .reduce({}) do |hash, assignment|
-        hash[assignment.shift.shift_group_id] ||= {}
-        hash[assignment.shift.shift_group_id][assignment.date] = assignment
-        hash
-      end
-    else
-      @my_shifts = {}
-    end
-  end
+  
 
 
   def authorize_resource
     #authorize! :read, Scheduler::ShiftAssignment.new(person: person)
   end
 
-  helper_method :person, :assignments_for_shift_on_day, :show_counties, :show_shifts, :daily_groups, :weekly_groups, :monthly_groups, :all_groups, :show_only_available,
-        :can_take_shift?, :show_county_name, :ajax_params, :spreadsheet_groups, :spreadsheet_county, :my_shift_for_group_on_day
+  helper_method :person, :show_counties, :show_shifts, :show_only_available,
+        :can_take_shift?, :show_county_name, :ajax_params, :spreadsheet_groups, :spreadsheet_county
+
+  attr_reader :calendar
+  helper_method :calendar
+
   def person
     return @_person if @_person
 
@@ -108,50 +83,12 @@ class Scheduler::CalendarController < Scheduler::BaseController
     return @_person
   end
 
-  def assignments_for_shift_on_day(shift, date)
-    if @all_shifts
-      @all_shifts[shift.id].try(:[], date) || []
-    else
-      Scheduler::ShiftAssignment.where(shift_id: shift, date: date).includes(:person)
-    end
-  end
-
-  def my_shift_for_group_on_day(group_id, date)
-    if @my_shifts
-      @my_shifts[group_id].try(:[], date)
-    else
-      Scheduler::ShiftAssignment.includes(:shift => :shift_group).where(:shift => {shift_group_id: group_id}, person_id: person).where(date: date).first
-    end
-  end
-
   def show_counties
     @_show_counties ||= ((params[:counties].is_a?(Array) && params[:counties].select(&:present?).map(&:to_i)) || (person ? [person.primary_county_id] : [])).compact
   end
 
   def show_shifts
     params[:show_shifts] && params[:show_shifts].to_sym || :mine
-  end
-
-  def shifts_by_period(period)
-    @_unfiltered_shifts ||= Scheduler::ShiftGroup.includes{[shifts.positions, shifts.county, shifts.shift_group.chapter]}.where(chapter_id: current_chapter).order(:start_offset).to_a
-
-    @_unfiltered_shifts.select{|sh| sh.period == period}
-  end
-
-  def daily_groups
-    @_daily_groups ||= filter_shifts(shifts_by_period 'daily')
-  end
-
-  def weekly_groups
-    @_weekly_groups ||= filter_shifts(shifts_by_period 'weekly')
-  end
-
-  def monthly_groups
-    @_monthly_groups ||= filter_shifts(shifts_by_period 'monthly')
-  end
-
-  def all_groups
-    daily_groups.merge(weekly_groups).merge(monthly_groups)
   end
 
   def spreadsheet_county
@@ -170,7 +107,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def show_county_name
-    daily_groups.map{|_, shifts| shifts.map(&:county_id)}.flatten.uniq.count > 1
+    calendar.all_groups.flat_map{|_, shifts| shifts.map(&:county_id)}.uniq.count > 1
   end
 
   def ajax_params
@@ -178,18 +115,6 @@ class Scheduler::CalendarController < Scheduler::BaseController
       person_id: person.try(:id),
       show_shifts: show_shifts,
       counties: show_counties
-    }
-  end
-
-  def filter_shifts(groups)
-    groups.inject({}){|hash, group|
-      shifts = case show_shifts
-      when :all then group.shifts
-      when :county then group.shifts.select{|s| show_counties.include? s.county_id}
-      when :mine then group.shifts.select{|s| person and s.can_be_taken_by? person}
-      end
-      hash[group] = shifts if shifts.present?
-      hash
     }
   end
 

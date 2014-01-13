@@ -1,10 +1,10 @@
-- monthly_groups.each do |group, shifts|
-  - my_shift = my_shift_for_group_on_day(group.id, date)
+- calendar.monthly_groups.each do |group, shifts|
+  - my_shift = calendar.my_shift_for_group_on_day(group.id, date)
   - shifts = shifts.select{|sh|sh.active_on_day?(date)}
   - next if shifts.blank?
   %div{class: my_shift && 'my-shift'}
     %strong=group.name
     - shifts.each do |shift|
-      - assignments=assignments_for_shift_on_day(shift, date).to_a
+      - assignments=calendar.assignments_for_shift_on_day(shift, date).to_a
       %div{class: assignments.length < shift.min_desired_signups && 'open'}
         = render_shift_assignment_info(editable, person, shift, my_shift, date, assignments, 'monthly')
