@@ -1,11 +1,11 @@
-class Scheduler::CalendarController < Scheduler::BaseController
 
+class Scheduler::CalendarController < Scheduler::BaseController
   before_filter :authorize_resource
   skip_authorization_check
 
-  acts_as_flying_saucer
-
   respond_to :html, :pdf
+
+  responders :pdf
 
   def show
     @month = month_param
@@ -16,50 +16,40 @@ class Scheduler::CalendarController < Scheduler::BaseController
     load_shifts(@month, @month.next_month)
     load_my_shifts(@month, @month.next_month)
 
-    case params[:display]
-    when 'spreadsheet', 'grid'
-      respond_to do |fmt|
-        fmt.pdf { 
-          render_pdf template: "scheduler/calendar/#{params[:display]}.html.haml", send_file: {type: :pdf, filename: pdf_file_name, disposition: 'inline'}
-        }
-        fmt.html { render action: params[:display] }
-      end
+    view = params[:display] || 'show'
+
+    case view
+    when 'spreadsheet', 'grid', 'show'
+      respond_with 1, {filename: pdf_file_name, action: view} #
     when 'open_shifts'
       render partial: 'open_shifts', locals: {month: @month, groups: daily_groups}
     else
-      respond_to do |fmt|
-        fmt.pdf { render_pdf template: "scheduler/calendar/show.html.haml", send_file: {type: :pdf, filename: pdf_file_name, disposition: 'inline'} }
-        fmt.html { render action: 'show' }
-      end
+      raise ActiveRecord::RecordNotFound
     end
   end
 
   def day
     @editable = can? :create, Scheduler::ShiftAssignment.new( person: person)
-    #@daily_groups = Scheduler::ShiftGroup.where(period: 'daily')
 
-    if params[:date] and date = Date.strptime(params[:date], "%Y-%m-%d")
-      unless request.xhr? or params[:partial].present?
-        redirect_to scheduler_calendar_path(date.year, date.strftime("%B").downcase) and return
-      end
-
-      load_shifts(date, date)
-      load_my_shifts(date, date)
-
+    if params[:date]
+      date = end_date = Date.strptime(params[:date], "%Y-%m-%d")
       partial_name = params[:period] || 'day'
-      raise "Invalid period" unless %w(day week monthly).include? partial_name
-
-      render partial: partial_name, locals: {date: date, editable: @editable}
-    elsif params[:month] and date = Date.strptime(params[:month], "%Y-%m")
-      unless request.xhr? or params[:partial].present?
-        redirect_to scheduler_calendar_path(date.year, date.strftime("%B").downcase) and return
-      end
-
-      load_shifts(date, date.next_month)
-      load_my_shifts(date, date.next_month)
-      
-      render partial: 'month', locals: {month: date, editable: @editable}
+    else
+      date = Date.strptime(params[:month], "%Y-%m")
+      end_date = date.next_month
+      partial_name = 'month'
     end
+
+    raise "Invalid period" unless %w(day week monthly month).include? partial_name
+
+    load_shifts(date, end_date)
+    load_my_shifts(date, end_date)
+
+    unless request.xhr? or params[:partial].present?
+      redirect_to scheduler_calendar_path(date.year, date.strftime("%B").downcase) and return
+    end
+
+    render partial: partial_name, locals: {editable: @editable, month: date, date: date}
   end
 
   private
