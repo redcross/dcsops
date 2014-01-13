@@ -17,6 +17,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_report_editable, :boolean
   serialized_accessor :config, :incidents_collect_case_details, :boolean
   serialized_accessor :config, :incidents_enable_dispatch_console, :boolean
+  serialized_accessor :config, :incidents_dispatch_console_ignore_county, :boolean
   serialized_accessor :config, :idat_database, :string
   serialized_accessor :config, :incidents_report_dro_ignore, :string
   serialized_accessor :config, :cas_chapter_codes, :string

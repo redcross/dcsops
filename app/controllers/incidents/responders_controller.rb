@@ -70,7 +70,7 @@ class Incidents::RespondersController < Incidents::BaseController
   end
 
 
-  expose(:ignore_area) { params[:ignore_area] == '1'}
+  expose(:ignore_area) { current_chapter.incidents_dispatch_console_ignore_county || (params[:ignore_area] == '1') }
   expose(:scheduler_service) { Scheduler::SchedulerService.new(current_chapter) }
 
 end
