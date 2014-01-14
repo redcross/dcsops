@@ -1,6 +1,8 @@
 class Incidents::Incident < ActiveRecord::Base
   include HasDelegatedValidators
   include Incidents::IncidentPartners
+  include Geokit::Mappable
+
   has_paper_trail meta: {chapter_id: ->(inc){inc.chapter_id}}
 
   before_validation :set_incident_number, on: :create
@@ -38,7 +40,12 @@ class Incidents::Incident < ActiveRecord::Base
   scope :for_chapter, -> chapter { where{chapter_id==chapter}}
   scope :in_area, -> area {where{area_id == area}}
   scope :incident_stats, lambda {
-    valid.order(nil).select{[count(id).as(:incident_count), sum(num_cases).as(:case_count), sum(num_families).as(:family_count), sum(num_adults + num_children).as(:client_count)]}.first
+    valid.order(nil).select{[
+      count(id).as(:incident_count),
+      sum(num_cases).as(:case_count),
+      sum(num_families).as(:family_count),
+      sum(num_adults + num_children).as(:client_count)
+    ]}.take
   }
   scope :valid, lambda {
     where{status != 'invalid'}
@@ -52,6 +59,14 @@ class Incidents::Incident < ActiveRecord::Base
   scope :open_cases, lambda {
     valid.joins{cas_incident.cases.outer}.where{((cas_incident.cases_open > 0) | (cas_incident.last_date_with_open_cases >= 7.days.ago)) & (cas_incident.cases.case_last_updated > 2.months.ago)}
   }
+
+  def self.count_resources scope, resources
+    joins{dat_incident}.unscope(:order).select do
+      resources.map do |res|
+        sum(coalesce(cast(dat_incident.resources.op('->', res).as(integer)), 0)).as(res)
+      end
+    end.take.attributes.slice(*resources)
+  end
 
   assignable_values_for :incident_type, allow_blank: true do
     self.class.valid_incident_types + self.class.invalid_incident_types

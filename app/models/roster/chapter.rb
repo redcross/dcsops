@@ -49,4 +49,5 @@ class Roster::Chapter < ActiveRecord::Base
   array_accessor :cas_chapter_codes
   array_accessor :incidents_timeline_collect, :incidents_timeline_mandatory, :incidents_timeline_collect_source
   array_accessor :incidents_resources_tracked, :incidents_enabled_report_frequencies
+  array_accessor :incidents_report_dro_ignore
 end

@@ -1,5 +1,6 @@
 class Roster::Person < ActiveRecord::Base
   include AutoGeocode
+  include Geokit::Mappable
 
   PHONE_TYPES = [:home_phone, :cell_phone, :work_phone, :alternate_phone, :sms_phone]
 
@@ -32,6 +33,10 @@ class Roster::Person < ActiveRecord::Base
   scope :include_carriers, -> {
     includes{[home_phone_carrier, cell_phone_carrier, work_phone_carrier, alternate_phone_carrier, sms_phone_carrier]}
   }
+
+  sifter :with_position do
+    (lat != nil) & (lng != nil) & (lat != 0) & (lng != 0)
+  end
 
   def self.for_vc_account(account)
     self.where(vc_id: account).first
