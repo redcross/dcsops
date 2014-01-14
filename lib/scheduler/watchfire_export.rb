@@ -43,7 +43,7 @@ class Scheduler::WatchfireExport
   end
 
   def identity_url(user)
-    Rails.application.routes.url_helpers.roster_openid_user_url(user, host: "www.arcbadat.org")
+    Rails.application.routes.url_helpers.roster_openid_user_url(user, host: "www.dcsops.org")
   end
 
   def upload_for_people_to_organization(scope, org_name)

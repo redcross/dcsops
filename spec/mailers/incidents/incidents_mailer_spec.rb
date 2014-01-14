@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Incidents::IncidentsMailer do
-  let(:from_address) {["incidents@arcbadat.org"]}
+  let(:from_address) {["incidents@dcsops.org"]}
   let(:person) { FactoryGirl.create :person }
   let(:log_items) { [double(:dispatch_log_item, action_at: Time.zone.now, action_type: 'Dial', recipient: '', result: '')] }
 

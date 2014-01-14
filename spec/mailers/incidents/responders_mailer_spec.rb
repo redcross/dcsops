@@ -12,9 +12,9 @@ describe Incidents::RespondersMailer do
     let(:mail) { Incidents::RespondersMailer.assign_email(assignment) }
 
     it "renders the headers" do
-      mail.subject.should eq("ARCBADAT Incident Assignment")
+      mail.subject.should eq("DCSOps Incident Assignment")
       mail.to.should eq([assignment.person.email])
-      mail.from.should eq(["incidents@arcbadat.org"])
+      mail.from.should eq(["incidents@dcsops.org"])
     end
 
     it "renders the body" do
@@ -28,7 +28,7 @@ describe Incidents::RespondersMailer do
     it "renders the headers" do
       mail.subject.should eq(nil)
       mail.to.should eq(assignment.person.sms_addresses)
-      mail.from.should eq(["sms@arcbadat.org"])
+      mail.from.should eq(["sms@dcsops.org"])
     end
 
     it "renders the body" do

@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Scheduler::RemindersMailer do
-  let(:from_address) {["scheduling@arcbadat.org"]}
+  let(:from_address) {["scheduling@dcsops.org"]}
   describe "email_invite" do
     let(:assignment) { FactoryGirl.create :shift_assignment}
     let(:mail) { Scheduler::RemindersMailer.email_invite(assignment) }
@@ -44,7 +44,7 @@ describe Scheduler::RemindersMailer do
     it "renders the headers" do
       mail.subject.should eq(nil)
       mail.to.should eq(assignment.person.sms_addresses)
-      mail.from.should eq(["sms@arcbadat.org"])
+      mail.from.should eq(["sms@dcsops.org"])
     end
   
     it "renders the body" do
@@ -85,7 +85,7 @@ describe Scheduler::RemindersMailer do
       it "renders the headers" do
         mail.subject.should be_nil
         mail.to.should eq(@admin.sms_addresses)
-        mail.from.should eq(["sms@arcbadat.org"])
+        mail.from.should eq(["sms@dcsops.org"])
       end
     
       it "renders the body" do

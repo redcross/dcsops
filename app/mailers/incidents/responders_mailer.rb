@@ -1,13 +1,13 @@
 class Incidents::RespondersMailer < ActionMailer::Base
   include MailerCommon
-  default from: "ARCBA DAT <incidents@arcbadat.org>"
+  default from: "DCSOps <incidents@dcsops.org>"
 
   def assign_email(assignment)
     @assignment = assignment
     @person = assignment.person
     @incident = assignment.incident
 
-    mail to: format_address(assignment.person), subject: 'ARCBADAT Incident Assignment'
+    mail to: format_address(assignment.person), subject: 'DCSOps Incident Assignment'
   end
 
   def assign_sms(assignment)

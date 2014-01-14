@@ -48,13 +48,13 @@ module MailerCommon
       authentication: :login,
       user_name: uri.user,
       password: uri.password,
-      domain: 'arcbadat.org',
+      domain: 'dcsops.org',
       enable_starttls_auto: false
     }
   end
 
   def set_sms_delivery
-    message.from = "sms@arcbadat.org"
+    message.from = "sms@dcsops.org"
     message.subject = ''
     message.delivery_method.settings.merge! sms_configuration
   end

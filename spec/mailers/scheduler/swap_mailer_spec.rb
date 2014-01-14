@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Scheduler::SwapMailer do
-  let(:from_address) {["scheduling@arcbadat.org"]}
+  let(:from_address) {["scheduling@dcsops.org"]}
   let(:assignment) {FactoryGirl.create :shift_assignment}
   let(:new_person) {FactoryGirl.create :person, chapter: assignment.person.chapter, counties: assignment.person.counties, positions: assignment.person.positions}
 

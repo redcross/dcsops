@@ -4,7 +4,7 @@ class Incidents::ReportMailer < ActionMailer::Base
 
   helper Incidents::ReportMailerHelper
 
-  default from: "ARCBA DAT <incidents@arcbadat.org>"
+  default from: "DCSOps <incidents@dcsops.org>"
 
   def self.report(chapter, recipient)
     start_date = chapter.time_zone.today.at_beginning_of_week.last_week

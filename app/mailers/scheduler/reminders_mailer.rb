@@ -2,7 +2,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
   include MailerCommon
   include Exposure
 
-  default from: "DAT Scheduling <scheduling@arcbadat.org>"
+  default from: "DAT Scheduling <scheduling@dcsops.org>"
 
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:

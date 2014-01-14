@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Incidents::ReportMailer do
-  let(:from_address) {["incidents@arcbadat.org"]}
+  let(:from_address) {["incidents@dcsops.org"]}
   let(:chapter) { FactoryGirl.create :chapter }
   let(:person) { FactoryGirl.create :person, chapter: chapter }
 

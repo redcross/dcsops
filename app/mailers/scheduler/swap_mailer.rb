@@ -1,7 +1,7 @@
 class Scheduler::SwapMailer < ActionMailer::Base
   include MailerCommon
 
-  default from: "DAT Scheduling <scheduling@arcbadat.org>"
+  default from: "DAT Scheduling <scheduling@dcsops.org>"
 
   def swap_available(shift, invitee, recipient)
     @person = invitee
