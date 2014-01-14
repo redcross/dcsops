@@ -1,5 +1,7 @@
 class Scheduler::RemindersMailer < ActionMailer::Base
   include MailerCommon
+  include Exposure
+
   default from: "DAT Scheduling <scheduling@arcbadat.org>"
 
   # Subject can be set in your I18n file at config/locales/en.yml
@@ -11,7 +13,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     @assignment = assignment
 
     tag :scheduler, :reminders, :email_invite
-    mail to: format_address(assignment.person), subject: "#{assignment.shift.name} on #{assignment.date.strftime("%b %d")}" do |format|
+    mail to: format_address(assignment.person), subject: shift_subject do |format|
       format.html
       format.ics
     end
@@ -26,7 +28,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     @assignment = assignment
 
     tag :scheduler, :reminders, :email_reminder
-    mail to: format_address(assignment.person), subject: "#{assignment.shift.name} on #{assignment.date.strftime("%b %d")}"
+    mail to: format_address(assignment.person), subject: shift_subject
   end
 
   # Subject can be set in your I18n file at config/locales/en.yml
@@ -72,9 +74,12 @@ class Scheduler::RemindersMailer < ActionMailer::Base
   end
 
   private
+  def shift_subject
+    "#{@assignment.shift.name} on #{@assignment.date.strftime("%b %d")}"
+  end
+
   def prepare_reminders(setting)
     @setting = setting
-    @groups = Scheduler::ShiftGroup.current_groups_for_chapter(setting.person.chapter)
     @groups = Scheduler::ShiftGroup.next_groups(setting.person.chapter)
 
     counties = setting.person.primary_county
@@ -85,33 +90,32 @@ class Scheduler::RemindersMailer < ActionMailer::Base
       }
     end
   end
+
   def prepare_swap_groups(setting)
     @setting = setting
 
     counties = setting.person.primary_county
 
-    @swap_groups = Scheduler::ShiftAssignment.includes{shift.county}.where{(shift.county_id.in(counties))}.available_for_swap(setting.person.chapter).reduce({}) do |hash, ass|
-      hash[ass.shift.county] ||= []
-      hash[ass.shift.county] << ass
-      hash
-    end
-
+    @swap_groups = Scheduler::ShiftAssignment.includes{shift.county}.for_counties(counties)
+                  .available_for_swap(setting.person.chapter).group_by{|ass| ass.shift.county }
   end
+
   def item
     @assignment
   end
+
+  expose(:related_shifts) {Scheduler::ShiftAssignment.for_day(item.date).for_counties(item.shift.county).for_groups(item.shift.shift_group_id).includes{shift}}
+
   def shift_lead
-    @shift_lead ||= Scheduler::ShiftAssignment.includes(:shift)
-        .where(date: item.date)
-        .where{{shift => {shift_group_id => my{item.shift.shift_group_id}, county_id => my{item.shift.county_id}}}}
-        .where{shift.dispatch_role != nil}.order("scheduler_shifts.dispatch_role asc")
-        .first
+    @shift_lead ||= related_shifts.where{shift.dispatch_role != nil}.order{shift.dispatch_role}.first
   end
+
   def other_assignments
-    Scheduler::ShiftAssignment.includes(:shift).joins(:shift).where(date: item.date, shift: {shift_group_id: item.shift.shift_group, county_id: item.shift.county}).references(:shift).order('scheduler_shifts.ordinal')
+    related_shifts.order{shift.ordinal}
   end
-  def assignments_for_date_shift(the_date, shift)
-    Scheduler::ShiftAssignment.where{shift_id.in(shift.id) & (date == the_date)}
+
+  def assignments_for_date_shift(date, shift)
+    Scheduler::ShiftAssignment.for_shifts(shift).for_day(date)
   end
 
   def format_person(person, count=2)

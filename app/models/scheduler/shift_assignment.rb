@@ -98,6 +98,10 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     joins{shift}.where{shift.county_id.in(counties)}
   }
 
+  scope :for_groups, -> (groups) {
+    joins{shift}.where{shift.shift_group_id.in(groups)}
+  }
+
   scope :with_active_person, -> {
     joins{person}.where{person.vc_is_active == true}
   }
