@@ -77,7 +77,7 @@ describe Incidents::NotificationSubscription do
         Incidents::NotificationSubscription.to_send_on(Date.current).should =~ [subscription]
       end
 
-      describe "on a weekday" do
+      describe "on a non-Monday weekday" do
         before(:each) do
           Delorean.time_travel_to Date.current.at_beginning_of_week
         end
@@ -129,16 +129,28 @@ describe Incidents::NotificationSubscription do
     let(:sub) {Incidents::NotificationSubscription.new(notification_type: 'weekly', person: person)}
     let(:today) {chapter.time_zone.today}
 
+    after(:each) do
+      Delorean.back_to_1985
+    end
+
     it "should send yesterday when a daily" do
       sub.frequency = 'daily'
       yesterday = today-1
       sub.range_to_send.should == (yesterday..yesterday)
     end
 
-    it "should send yesterday when a weekday" do
+    it "should send yesterday when weekdays during the week" do
+      Delorean.time_travel_to 'tuesday'
       yesterday = today-1
       sub.frequency = 'weekday'
       sub.range_to_send.should == (yesterday..yesterday)
+    end
+
+    it "should send the weekend when weekdays on Monday" do
+      Delorean.time_travel_to 'monday'
+      yesterday = today-1
+      sub.frequency = 'weekday'
+      sub.range_to_send.should == (yesterday-2..yesterday)
     end
 
     it "should send last week when a weekly subscription" do
