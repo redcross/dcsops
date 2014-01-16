@@ -11,7 +11,7 @@
       -if can? :close, resource
         =link_to 'Close Incident', close_resource_path, class: 'btn', method: 'post', data: {confirm: 'Really close this incident?'}
       -if can? :mark_invalid, resource
-        =link_to 'Mark Invalid', mark_invalid_resource_path, class: 'btn btn-danger'
+        =link_to 'No Response/Mark Invalid', mark_invalid_resource_path, class: 'btn btn-danger'
     -else
       -if can? :reopen, resource
         =link_to 'Reopen', reopen_resource_path, class: 'btn', method: 'post', data: {confirm: 'Really reopen this incident?'}

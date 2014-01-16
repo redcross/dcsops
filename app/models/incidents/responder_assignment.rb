@@ -21,7 +21,7 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   def self.grouped_roles
     [
       ["Did Not Respond", Incidents::ResponderAssignment::RESPONSES_TO_LABELS.invert.to_a],
-      ["Responded To Incident", Incidents::ResponderAssignment::ROLES_TO_LABELS.invert.to_a.reject{|a| a.last == 'team_lead'}]
+      ["Respond To Incident", Incidents::ResponderAssignment::ROLES_TO_LABELS.invert.to_a.reject{|a| a.last == 'team_lead'}]
     ]
   end
 
