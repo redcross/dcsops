@@ -13,7 +13,7 @@ class Incidents::Case < Incidents::DataModel
 
   accepts_nested_attributes_for :case_assistance_items, allow_destroy: true
 
-  validates :first_name, :last_name, :num_adults, :num_children, :unit, presence: true
+  validates :first_name, :last_name, :num_adults, :num_children, :unit, :phone_number, presence: true
   validates :cac_number, presence: {if: ->(obj){obj.have_case_assistance_items?}}, credit_card_number: {allow_blank: true}
 
   before_validation :calculate_total

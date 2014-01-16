@@ -26,6 +26,8 @@
       =f.input :city
       =f.input :state
       =f.input :zip
+    =f.input :phone_number
+    =f.input :notes, input_html: {rows: 5}
     =f.input :cac_number, as: :credit_card
     %table.table.table-bordered#case-assistance-items
       %thead
@@ -44,7 +46,6 @@
             .pull-right Total:
           %td(colspan=2)
             =f.text_field :total_amount, readonly: true, class: 'total'
-    =f.input :notes, input_html: {rows: 5}
     
   .modal-footer
     -if f.object.persisted? and can? :destroy, resource
