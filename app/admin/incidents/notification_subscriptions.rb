@@ -16,10 +16,10 @@ ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
   end
 
   action_item :only => :index do
-    link_to('Send Test Report', {action: :test_report}, {method: :post})
+    link_to('Send Test Report', {action: :test_report}, {method: :post}) if authorized? :test_report, Incidents::NotificationSubscription
   end
   action_item :only => :index do
-    link_to('Send Daily Report', {action: :send_report}, {method: :post, data: {confirm: "This will send all notifications to chapter #{current_chapter.short_name}"}})
+    link_to('Send Daily Report', {action: :send_report}, {method: :post, data: {confirm: "This will send all notifications to chapter #{current_chapter.short_name}"}})  if authorized? :send_report, Incidents::NotificationSubscription
   end
 
   collection_action :test_report, :method => :post do

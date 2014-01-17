@@ -40,7 +40,9 @@ class AdminAbility
       can :read, [Roster::Person, Roster::County, Roster::Position], chapter_id: chapter
       can :impersonate, Roster::Person, chapter_id: chapter
       can :manage, Logistics::Vehicle, chapter_id: chapter
+      can :new, Incidents::NotificationSubscription
       can :manage, Incidents::NotificationSubscription, person: {chapter_id: chapter}
+      can [:test_report, :send_report, :new], Incidents::NotificationSubscription
     end
   end
 

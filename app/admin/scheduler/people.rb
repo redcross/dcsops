@@ -13,7 +13,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     column :last_login
 
     actions do |person|
-      link_to "Impersonate", impersonate_scheduler_admin_person_path(person) if authorized?(:impersonate, person)
+      link_to "Impersonate", impersonate_scheduler_admin_person_path(person), {method: :post} if authorized?(:impersonate, person)
     end
   end
 
@@ -70,11 +70,11 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     scope.uniq
   end
 
-  member_action :impersonate, method: [:get, :delete] do
+  member_action :impersonate, method: [:post, :delete] do
     #p = resource
     #p.reset_persistence_token! if p.persistence_token.blank?
     #sess = Roster::Session.create!(p, true)
-    if request.get?
+    if request.post?
       session[:impersonating_user_id] = resource.id
       redirect_to '/'
     else
@@ -83,7 +83,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     end
   end
   action_item only: :show, if: proc{ authorized? :impersonate, resource} do
-    link_to "Possess", url_for(action: :impersonate, only_path: true)
+    link_to "Possess", url_for(action: :impersonate, only_path: true), {method: :post}
   end
   action_item only: :show do
     link_to "Volunteer Connection", resource.vc_profile_url
