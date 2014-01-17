@@ -150,7 +150,7 @@ class Incidents::CasImporter
 
   def link_cas_data
     Incidents::Incident.joins{cas_incident.outer}.where{(cas_incident_number != nil) & (cas_incident.id == nil)}.each do |incident|
-      cas = Incidents::CasIncident.where(cas_incident_number: incident.cas_incident_number)
+      cas = Incidents::CasIncident.find_by(cas_incident_number: incident.cas_incident_number)
       if cas
         cas.incident = incident
         cas.save!
