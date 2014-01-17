@@ -30,7 +30,7 @@ class Incidents::Incident < ActiveRecord::Base
 
   # We always want these to be present
   validates :chapter, :area, :date, presence: true
-  validates :incident_number, presence: true, format: /\A1[3-9]-\d+\z/, uniqueness: { scope: :chapter_id }
+  validates :incident_number, presence: true, format: /\A\d{2}-\d{3,}\z/, uniqueness: { scope: :chapter_id }
 
   #validates_associated :responder_assignments
 

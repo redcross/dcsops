@@ -56,7 +56,7 @@ module Incidents::IncidentsHelper
   end
 
   def incidents_for_cas(cas)
-    scope = Incidents::Incident.joins{cas_incident.outer}.where{(cas_incident.id == nil) & date.in((cas.incident_date - 7)..(cas.incident_date + 7))}
+    scope = Incidents::Incident.for_chapter(cas.chapter).joins{cas_incident.outer}.where{(cas_incident.id == nil) & date.in((cas.incident_date - 7)..(cas.incident_date + 7))}
     if county_names.include? cas.county_name
       scope = scope.joins{area}.where{area.name == cas.county_name}
     end
