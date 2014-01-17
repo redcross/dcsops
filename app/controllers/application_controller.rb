@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
   end
 
   def can_impersonate(person)
-    AdminAbility.new(current_user_session.person).can?(:impersonate, person)
+    logged_in_user && AdminAbility.new(logged_in_user).can?(:impersonate, person)
   end
 
   def require_valid_user!(return_to=url_for(only_path: false))
