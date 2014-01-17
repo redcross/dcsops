@@ -69,8 +69,7 @@ class window.IncidentRespondersController
 
         resp.rows.forEach (row, idx) =>
           result = row['elements'][0]
-          if result['status'] == 'OK'
-            this.processTravelTime(elements[idx], result)
+          this.processTravelTime(elements[idx], result)
         this.loadTravelTimes()
         this.sortTables()
 
@@ -81,18 +80,25 @@ class window.IncidentRespondersController
     $(element).toggleClass('travel-long', mins >= 90)
 
   processTravelTime: (element, result) ->
+    # Put this before checking result quality to ensure we don't
+    # continually retry addresses where google doesn't return something
+    $(element).attr('data-travel-lookup', true)
+
+    return unless result? and result['status'] == 'OK'
+
     if result['duration_in_traffic']
       $('img.traffic-icon').css('display', 'inline')
     duration = result['duration_in_traffic'] || result['duration']
 
     $(element).find('.distance').text(result['distance']['text'])
     $(element).find('.travel-time').text(duration['text'])
-    $(element).data('travel', result).attr('data-travel-lookup', true)
+    $(element).data('travel', result)
     this.travelTimeClass(element, duration['value'])
 
   sortTables: () ->
     travelTime = (el) ->
       result = $(el).data('travel')
+      return Infinity unless result?
       duration = result['duration_in_traffic'] || result['duration']
       duration['value']
 
