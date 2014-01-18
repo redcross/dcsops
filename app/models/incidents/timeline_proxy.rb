@@ -5,7 +5,7 @@ class Incidents::TimelineProxy
 
   attr_accessor :incident, :fields
 
-  validate :validate_mandatory_fields
+  validate :validate_fields
 
   EVENT_TYPES = Incidents::EventLog::EVENT_TYPES.keys.reject{|v| %w(note dispatch_note).include? v}
 
@@ -26,7 +26,9 @@ class Incidents::TimelineProxy
     end
 
     define_method "#{type}_attributes=" do |attrs|
-      event_log_for(type, create: true).attributes = attrs
+      if attrs.any?{|k, v| v.present? }
+        event_log_for(type, create: true).attributes = attrs
+      end
     end
   end
 
@@ -48,14 +50,23 @@ class Incidents::TimelineProxy
     false
   end
 
-  def validate_mandatory_fields
+  def validate_fields
+    validate_logs
+    validate_mandatory_presence
+  end
+
+  def validate_logs
+    EVENT_TYPES.each do |type|
+      if log = event_log_for(type) and log.invalid?
+        self.errors.add(type.to_sym, :invalid)
+      end
+    end
+  end
+
+  def validate_mandatory_presence
     fields.each do |f|
-      f = f.to_sym
-      log = event_log_for(f)
-      if !log
-        self.errors.add(f, :blank)
-      elsif log.invalid?
-        self.errors.add(f, :invalid)
+      unless event_log_for(f)
+        self.errors.add(f.to_sym, :blank)
       end
     end
   end
