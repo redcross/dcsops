@@ -12,18 +12,19 @@ class VcQuery
 
   def self.get_deployments(chapter)
     ImportLog.capture(self.to_s, "GetDeployments-#{chapter.id}") do |logger|
-      query = self.new chapter.vc_username, chapter.vc_password
-      file = query.get_disaster_query '62797', '2757948', prompt0: [chapter.name].to_json
+      logger.level = 0
+      query = self.new chapter.vc_username, chapter.vc_password, logger
+      file = query.get_disaster_query '38613', {return_jid: 4942232, prompt0: chapter.vc_unit}
       StringIO.open file.body do |io|
         Incidents::DeploymentImporter.new.import_data(chapter, io)
       end
     end
   end
 
-  def initialize(user, pass)
+  def initialize(user, pass, logger=Rails.logger)
     self.username = user
     self.password = pass
-    self.logger = Rails.logger
+    self.logger = logger
   end
 
   def login
@@ -34,12 +35,18 @@ class VcQuery
     resp.headers.get_fields('Set-Cookie').each {|h| self.cookies.add_cookies h}
   end
 
-  def get_disaster_query(query_id, return_jid, params={})
+  def get_disaster_query(query_id, params={})
     login unless self.cookies
-    resp = self.class.post '/', body: {nd: 'clearreports_auth', init: 'xls', return_jid: return_jid, query_id: query_id}.merge(params), cookies: self.cookies
+
+    report_args = {nd: 'clearreports_auth', init: 'xls', query_id: query_id}.merge(params)
+    logger.debug "Report args: #{report_args.inspect}"
+
+    resp = self.class.post '/', body: report_args, cookies: self.cookies
 
     matches = /<a href="([^">]+)">/.match resp.body
     file_path = matches[1]
+
+    logger.debug "Report available at: #{file_path}"
 
     file = self.class.get file_path, cookies: self.cookies
   end

@@ -8,7 +8,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
 
   controller do
     def resource_params
-      keys = [:name, :short_name, :code, :time_zone_raw, :vc_username, :vc_password, :vc_position_filter]
+      keys = [:name, :short_name, :code, :time_zone_raw, :vc_username, :vc_password, :vc_position_filter, :vc_unit]
       keys = keys + resource_class.serialized_columns.values.map{|c| c.last.name.to_sym }
       request.get? ? [] : [params.require(:chapter).permit(*keys)]
     end
@@ -18,6 +18,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
     f.inputs do
       f.input :name
       f.input :code
+      f.input :vc_unit
       f.input :short_name
       f.input :time_zone_raw
       f.input :vc_username

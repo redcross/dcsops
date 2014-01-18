@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140110180435) do
+ActiveRecord::Schema.define(version: 20140118172822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -471,6 +471,7 @@ ActiveRecord::Schema.define(version: 20140110180435) do
     t.string   "vc_password"
     t.string   "vc_position_filter"
     t.hstore   "config"
+    t.integer  "vc_unit"
   end
 
   create_table "roster_counties", force: true do |t|
