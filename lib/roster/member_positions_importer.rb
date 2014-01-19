@@ -98,6 +98,7 @@ class Roster::MemberPositionsImporter < Roster::Importer
     logger.info "Processed #{@num_people} active users and #{@num_positions} filtered positions"
     logger.info "Deactivated #{deactivated} accounts not received in update"
     logger.info "Filter hits: #{@filter_hits.inspect}"
+    logger.info "Geocodes: #{AutoGeocode.geocodes} Failed: #{AutoGeocode.failed}"
   end
 
   def handle_row(identity, attrs)

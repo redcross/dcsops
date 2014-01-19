@@ -6,6 +6,7 @@ class Roster::VcQueryToolImporter
   attr_accessor :logger
   attr_accessor :row_counter
   attr_reader :chapter
+  attr_reader :client
 
   def initialize(logger=nil, row_counter=nil)
     self.logger = logger || Rails.logger
@@ -38,8 +39,8 @@ class Roster::VcQueryToolImporter
   end
 
   def join_positions_and_qualifications
-    positions = get_query('positions')
-    qualifications = get_query('qualifications')
+    positions = get_query(:positions)
+    qualifications = get_query(:qualifications)
 
     pos_header = positions.delete_at(0)
     qual_header = qualifications.delete_at(0)
@@ -81,7 +82,7 @@ class Roster::VcQueryToolImporter
 
   def join_positions_and_usage
     positions = join_positions_and_qualifications
-    usage = get_query('usage')
+    usage = get_query(:usage)
 
     pos_header = positions.delete_at(0)
     usage_header = usage.delete_at(0)
@@ -111,8 +112,8 @@ class Roster::VcQueryToolImporter
 
   def import(chapter, queries=query_mappings.keys)
     @chapter = chapter
-    client = VcQuery.new chapter.vc_username, chapter.vc_password
-    client.logger = self.logger
+    @client = VcQuery.new chapter.vc_username, chapter.vc_password
+    @client.logger = self.logger
 
     positions = join_positions_and_usage
 
