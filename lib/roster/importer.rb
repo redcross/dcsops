@@ -8,10 +8,11 @@ class Roster::Importer
   self.log_progress_every = 200
   self.identity_columns = {:vc_id => 'account_id'}
 
-  def initialize(file, chapter)
-    @csv = CSV.parse file
+  def initialize(file, chapter, logger=Rails.logger)
+    @csv = file
     @chapter = chapter
     @headers = {}
+    @logger = logger
   end
 
   def header_row; @csv[0]; end
@@ -25,6 +26,10 @@ class Roster::Importer
   end
 
   def after_import
+
+  end
+
+  def filter obj
 
   end
 
