@@ -23,6 +23,15 @@ class window.IncidentRespondersController
 
   initMap: (config, dom) ->
     google.maps.visualRefresh = true
+    styles = [
+      {
+        featureType: "poi",
+        elementType: "labels",
+        stylers: [
+              { visibility: "off" }
+        ]
+      }
+    ]
     opts =
       zoom: config.zoom
       center: @centerPoint
@@ -30,12 +39,17 @@ class window.IncidentRespondersController
       scrollwheel: false
       draggable: false
       disableDefaultUI: true
+      styles: styles
     @map = new google.maps.Map(dom, opts)
     @coder = new google.maps.Geocoder()
     @incidentMarker = new google.maps.Marker
     @bounds = new google.maps.LatLngBounds new google.maps.LatLng(config.geocode_bounds[0], config.geocode_bounds[1]), new google.maps.LatLng(config.geocode_bounds[2], config.geocode_bounds[3])
 
     @map.fitBounds @bounds
+
+    @responderIcon =
+      url: 'https://mts.googleapis.com/vt/icon/name=icons/spotlight/spotlight-waypoint-a.png&text=%20&psize=16&font=fonts/Roboto-Regular.ttf&color=ffff3333&ax=44&ay=48&scale=2'
+      scaledSize: new google.maps.Size(22, 40),
 
   setIncidentLocation: (lat, lng) ->
     return unless lat? and lng? and lat != 0 and lng != 0
@@ -115,10 +129,12 @@ class window.IncidentRespondersController
 
     elements.map (idx, el) =>
       data = $(el).data('person')
+      return unless data.lat? and data.lng?
       pos = new google.maps.LatLng parseFloat(data.lat), parseFloat(data.lng)
       marker = new google.maps.Marker
-      marker.setPosition pos
-      marker.setMap @map
+        position: pos
+        map: @map
+        icon: @responderIcon
       extent.extend pos
 
     @map.fitBounds extent
