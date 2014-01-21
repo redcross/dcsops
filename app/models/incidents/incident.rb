@@ -1,7 +1,7 @@
 class Incidents::Incident < ActiveRecord::Base
   include HasDelegatedValidators
   include Incidents::IncidentPartners
-  include Geokit::Mappable
+  include Mappable
 
   has_paper_trail meta: {chapter_id: ->(inc){inc.chapter_id}}
 

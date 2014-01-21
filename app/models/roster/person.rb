@@ -1,6 +1,6 @@
 class Roster::Person < ActiveRecord::Base
   include AutoGeocode
-  include Geokit::Mappable
+  include Mappable
 
   PHONE_TYPES = [:home_phone, :cell_phone, :work_phone, :alternate_phone, :sms_phone]
 
