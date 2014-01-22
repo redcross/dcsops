@@ -61,7 +61,7 @@ class Incidents::Incident < ActiveRecord::Base
   }
 
   def self.count_resources scope, resources
-    joins{dat_incident}.unscope(:order).select do
+    scope.joins{dat_incident}.unscope(:order).select do
       resources.map do |res|
         sum(coalesce(cast(dat_incident.resources.op('->', res).as(integer)), 0)).as(res)
       end
