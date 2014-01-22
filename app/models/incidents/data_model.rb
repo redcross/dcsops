@@ -1,7 +1,7 @@
 class Incidents::DataModel < ActiveRecord::Base
   self.abstract_class = true
 
-  has_paper_trail meta: {root_type: 'Incidents::Incident', root_id: ->(obj){obj.incident_id}, chapter_id: ->(obj){obj.incident.chapter_id} }
+  has_paper_trail skip: [:cac_number], meta: {root_type: 'Incidents::Incident', root_id: ->(obj){obj.incident_id}, chapter_id: ->(obj){obj.incident.chapter_id} }
 
   # Some validations cause an infinite loop if the inverses aren't properly set.  Determine whether
   # the association is plural and use it when defining the belongs_to.  CodeClimate whined about this

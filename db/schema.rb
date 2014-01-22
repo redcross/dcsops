@@ -11,11 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140118172822) do
+ActiveRecord::Schema.define(version: 20140122192338) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
+  enable_extension "tablefunc"
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "resource_id",   null: false
@@ -183,11 +184,12 @@ ActiveRecord::Schema.define(version: 20140118172822) do
     t.string   "phone_number"
     t.integer  "num_adults"
     t.integer  "num_children"
-    t.string   "cac_number"
     t.decimal  "total_amount"
     t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "cac_masked"
+    t.binary   "cac_number"
   end
 
   add_index "incidents_cases", ["incident_id"], name: "index_incidents_cases_on_incident_id", using: :btree

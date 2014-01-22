@@ -28,7 +28,7 @@
       =f.input :zip
     =f.input :phone_number, as: :string
     =f.input :notes, input_html: {rows: 5}
-    =f.input :cac_number, as: :credit_card
+    =f.input :cac_number, as: :credit_card, input_html: {value: f.object.cac_number}
     %table.table.table-bordered#case-assistance-items
       %thead
         %tr

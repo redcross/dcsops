@@ -37,6 +37,7 @@ gem 'credit_card_validator'
 gem 'bootstrap-kaminari-views'
 gem 'paperclip'
 gem 'threach'
+gem 'strongbox'
 
 gem 'geokit'#, github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 

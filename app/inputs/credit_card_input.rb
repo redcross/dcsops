@@ -1,7 +1,6 @@
 class CreditCardInput <  FormtasticBootstrap::Inputs::StringInput
   def initialize(*opts)
     opts.last[:prepend] = "<i class='icon-credit-card'></i>".html_safe
-    #opts.last[:append] = "<button class='btn datepicker-today'>Today</button>".html_safe
     super *opts
   end
 

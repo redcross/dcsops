@@ -14,11 +14,17 @@ class Incidents::Case < Incidents::DataModel
   accepts_nested_attributes_for :case_assistance_items, allow_destroy: true
 
   validates :first_name, :last_name, :num_adults, :num_children, :unit, :phone_number, presence: true
-  validates :cac_number, presence: {if: ->(obj){obj.have_case_assistance_items?}}, credit_card_number: {allow_blank: true}
+  validates :cac_number, presence: {if: :have_case_assistance_items?}, credit_card_number: {allow_blank: true}
+
+  encrypt_with_public_key :cac_number, public_key: :strongbox_public_key, private_key: :strongbox_private_key, symmetric: :never
 
   before_validation :calculate_total
   def calculate_total
     self.total_amount = case_assistance_items.select{|item| item.valid? && !item.marked_for_destruction?}.map(&:total_price).sum
+  end
+
+  def have_case_assistance_items?
+    case_assistance_items.select{|item| !item.marked_for_destruction?}.present?
   end
 
   before_validation :normalize_cac_number
@@ -28,13 +34,27 @@ class Incidents::Case < Incidents::DataModel
     end
   end
 
-  def have_case_assistance_items?
-    case_assistance_items.select{|item| !item.marked_for_destruction?}.present?
+  def cac_number
+    lock_for(:cac_number).decrypt ''
   end
 
-  def obfuscated_cac
+  after_validation :set_masked_cac
+  def set_masked_cac
     if cac_number.present?
-      "xxxx-xxxx-xxxx-" + cac_number[-4..-1]
+      pan_first = cac_number[0..3]
+      pan_second = cac_number[4..5]
+      last_4 = cac_number[-4..-1]
+      self.cac_masked = "#{pan_first}-#{pan_second}xx-xxxx-#{last_4}"
+    else
+      self.cac_masked = nil
     end
+  end
+
+  def strongbox_public_key
+    ENV['CAC_PUBLIC_KEY']
+  end
+
+  def strongbox_private_key
+    ENV['CAC_PRIVATE_KEY']
   end
 end

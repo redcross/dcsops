@@ -367,6 +367,8 @@ GEM
       activesupport (>= 3.0)
       sprockets (~> 2.8)
     sqlite3 (1.3.8)
+    strongbox (0.7.0)
+      activerecord
     term-ansicolor (1.2.2)
       tins (~> 0.8)
     therubyracer (0.12.0)
@@ -470,6 +472,7 @@ DEPENDENCIES
   spreadsheet
   sqlite3
   squeel!
+  strongbox
   therubyracer
   threach
   twitter-bootstrap-rails
