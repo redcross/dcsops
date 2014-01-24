@@ -6,7 +6,8 @@ module Incidents::RespondersHelper
       json.city person.city.try(:titleize)
 
       if assignment
-        json.role assignment.shift.name
+        json.edit_url assignment_url(person, assignment)
+        json.role assignment.shift.name if assignment.is_a?(Incidents::ResponderAssignment)
       end
     end
   end
@@ -33,16 +34,19 @@ module Incidents::RespondersHelper
       #end <<
       content_tag(:td) do
         if editable
-          if obj.is_a?(Incidents::ResponderAssignment) && obj.persisted?
-            path = edit_resource_path(obj)
-          elsif obj.is_a? Scheduler::FlexSchedule
-            path = new_resource_path(person_id: person.id, flex: '1')
-          else
-            path = new_resource_path(person_id: person.id)
-          end
-          link_to( 'Assign', path, class: 'btn btn-mini', data: {assign: person.id})
+          link_to( 'Assign', assignment_url(person, obj), class: 'btn btn-mini', data: {assign: person.id})
         end
       end
+    end
+  end
+
+  def assignment_url(person, obj)
+    if obj.is_a?(Incidents::ResponderAssignment) && obj.persisted?
+      edit_resource_path(obj)
+    elsif obj.is_a? Scheduler::FlexSchedule
+      new_resource_path(person_id: person.id, flex: '1')
+    else
+      new_resource_path(person_id: person.id)
     end
   end
 

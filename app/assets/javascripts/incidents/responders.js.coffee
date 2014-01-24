@@ -49,7 +49,7 @@ class window.IncidentRespondersController
 
     @responderIcon =
       url: 'https://mts.googleapis.com/vt/icon/name=icons/spotlight/spotlight-waypoint-a.png&text=%20&psize=16&font=fonts/Roboto-Regular.ttf&color=ffff3333&ax=44&ay=48&scale=2'
-      scaledSize: new google.maps.Size(22, 40),
+      scaledSize: new google.maps.Size(17, 30),
 
   setIncidentLocation: (lat, lng) ->
     return unless lat? and lng? and lat != 0 and lng != 0
@@ -135,6 +135,7 @@ class window.IncidentRespondersController
         position: pos
         map: @map
         icon: @responderIcon
+        title: data.full_name
       extent.extend pos
 
     @map.fitBounds extent
