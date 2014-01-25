@@ -47,6 +47,7 @@ class Roster::VcQueryToolImporter
 
     pos_id = pos_header.index('account_id')
     pos_name_col = pos_header.index('position_name')
+    pos_blank_cols = %w(position_start_date position_end_date position_group_name).map{|title| pos_header.index(title)}
 
     qual_id = qual_header.index('account_id')
     qual_name_col = qual_header.index('qualification_name')
@@ -68,6 +69,7 @@ class Roster::VcQueryToolImporter
         quals.each do |qual_name|
           new_row = pos_row.dup
           new_row[pos_name_col] = qual_name
+          pos_blank_cols.each{|idx| new_row[idx] = ''}
           output << new_row
         end
       end
