@@ -22,25 +22,7 @@ class window.IncidentRespondersController
       $("tr[data-person-id=#{person}]").remove()
 
   initMap: (config, dom) ->
-    google.maps.visualRefresh = true
-    styles = [
-      {
-        featureType: "poi",
-        elementType: "labels",
-        stylers: [
-              { visibility: "off" }
-        ]
-      }
-    ]
-    opts =
-      zoom: config.zoom
-      center: @centerPoint
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-      scrollwheel: false
-      draggable: false
-      disableDefaultUI: true
-      styles: styles
-    @map = new google.maps.Map(dom, opts)
+    @map = MapFactory.createMap(dom, config)
     @coder = new google.maps.Geocoder()
     @incidentMarker = new google.maps.Marker
     @bounds = new google.maps.LatLngBounds new google.maps.LatLng(config.geocode_bounds[0], config.geocode_bounds[1]), new google.maps.LatLng(config.geocode_bounds[2], config.geocode_bounds[3])
@@ -146,15 +128,7 @@ class window.IncidentAssignmentController
     config = @mapConfig
     dom = @mapDom
 
-    google.maps.visualRefresh = true
-    opts =
-      zoom: config.zoom
-      center: @centerPoint
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-      scrollwheel: false
-      draggable: true
-      disableDefaultUI: false
-    @map = new google.maps.Map(dom, opts)
+    @map = MapFactory.createMap(dom, @mapConfig)
     @coder = new google.maps.Geocoder()
     @incidentMarker = new google.maps.Marker
     @bounds = new google.maps.LatLngBounds new google.maps.LatLng(config.geocode_bounds[0], config.geocode_bounds[1]), new google.maps.LatLng(config.geocode_bounds[2], config.geocode_bounds[3])

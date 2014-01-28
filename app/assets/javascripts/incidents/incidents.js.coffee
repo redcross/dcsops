@@ -40,17 +40,7 @@ class window.IncidentLocationController
     return unless window.google # if no gmaps js, don't die
     return if @map?
 
-    @centerPoint = new google.maps.LatLng(@config.lat, @config.lng)
-
-    google.maps.visualRefresh = true
-    opts =
-      zoom: @config.zoom
-      center: @centerPoint
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-      scrollwheel: false
-      draggable: false
-      disableDefaultUI: true
-    @map = new google.maps.Map(@dom, opts)
+    @map = MapFactory.createMap @dom, @config
     
     if @currentLng? and @currentLng?
       pos = new google.maps.LatLng(@currentLat, @currentLng)
@@ -123,15 +113,8 @@ class window.AllIncidentsMapController
 
   constructor: (objects, config) ->
     dom = $('.all-incidents-map')[0]
-    google.maps.visualRefresh = true
-    opts =
-      zoom: config.zoom
-      center: new google.maps.LatLng(config.lat, config.lng)
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-      scrollwheel: false
+    @map = MapFactory.createMap dom, config,
       draggable: true
-      disableDefaultUI: true
-    @map = new google.maps.Map(dom, opts)
     @coder = new google.maps.Geocoder()
     @markers = objects.map (obj) =>
       new google.maps.Marker
@@ -144,15 +127,8 @@ class window.AllIncidentsHeatmapController
     @config = config
 
     dom = $('.all-incidents-map')[0]
-    google.maps.visualRefresh = true
-    opts =
-      zoom: 9
-      center: new google.maps.LatLng(37.81871654, -122.19014746)
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-      scrollwheel: false
+    @map = MapFactory.createMap dom, config,
       draggable: true
-      disableDefaultUI: true
-    @map = new google.maps.Map(dom, opts)
     @coder = new google.maps.Geocoder()
     @bounds = new google.maps.LatLngBounds
 
