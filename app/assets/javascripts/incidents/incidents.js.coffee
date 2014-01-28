@@ -95,18 +95,27 @@ class window.IncidentLocationController
         this.setFieldVal('lat', pos.lat())
         this.setFieldVal('lng', pos.lng())
 
+        city = null
+        admin3 = null
+
         result.address_components.forEach (el) =>
           el.types.forEach (type) =>
             if type == 'neighborhood'
               this.setFieldVal('neighborhood', el.long_name)
             else if type == 'locality'
-              this.setFieldVal('city', el.long_name)
+              city = el.long_name
+            else if type == 'administrative_area_level_3'
+              admin3 = el.long_name
             else if type == 'administrative_area_level_1'
               this.setFieldVal('state', el.short_name)
             else if type == 'administrative_area_level_2'
               this.setFieldVal('county', el.short_name.replace(' County', ''))
             else if type == 'postal_code'
               this.setFieldVal('zip', el.long_name)
+
+        # In some areas, a county subdivision is returned instead of city.  Take it as the name
+        # if we don't get a city back
+        this.setFieldVal('city', city || admin3)
       else
         @marker.setMap null
 
