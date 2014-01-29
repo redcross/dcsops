@@ -19,8 +19,8 @@ describe Scheduler::DirectlineMailer do
     @leadnight = FactoryGirl.create :shift, shift_group: @night, dispatch_role: 1, positions: [@position], county: @county1
     @othernight = FactoryGirl.create :shift, shift_group: @night, positions: [@position], county: @county1
 
-    @leadass = FactoryGirl.create :shift_assignment, person: @people1.first, date: @chapter.time_zone.today, shift: @leadshift
-    FactoryGirl.create :shift_assignment, person: @people1[1], date: @chapter.time_zone.today, shift: @othershift
+    @leadass = FactoryGirl.create :shift_assignment, person: @people1.first, date: today, shift: @leadshift
+    FactoryGirl.create :shift_assignment, person: @people1[1], date: today, shift: @othershift
 
     @config = Scheduler::DispatchConfig.for_county @county1
     @config.is_active = true
@@ -28,7 +28,8 @@ describe Scheduler::DirectlineMailer do
     @config.save!
   end
 
-  let(:mail) { Scheduler::DirectlineMailer.export(@chapter, @chapter.time_zone.today, @chapter.time_zone.today.tomorrow)}
+  let(:today) { @chapter.time_zone.today }
+  let(:mail) { Scheduler::DirectlineMailer.export(@chapter, today, today.tomorrow)}
   let(:shift_filename) { "shift_data.csv"}
   let(:roster_filename) { "roster.csv"}
 
@@ -48,14 +49,14 @@ describe Scheduler::DirectlineMailer do
     end
 
     it "Should not run with force=false and an unsynced assignment several days away" do
-      @leadass.update_attribute :date, @chapter.time_zone.today+7
+      @leadass.update_attribute :date, today+7
       Scheduler::DirectlineMailer.any_instance.should_not_receive(:export)
       Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter, false)
       @leadass.reload.synced.should == false
     end
 
     it "Should run with force=false and an unsynced assignment today" do
-      @leadass.update_attribute :date, @chapter.time_zone.today
+      @leadass.update_attribute :date, today
       Scheduler::DirectlineMailer.any_instance.should_receive(:export).and_return(double deliver: true)
       Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter, false)
       @leadass.reload.synced.should == true
@@ -89,6 +90,16 @@ describe Scheduler::DirectlineMailer do
       row = csv[3]
       row[1].should eq (@chapter.time_zone.now.at_beginning_of_day.advance(days: 1, seconds: @day.start_offset).iso8601)
       row[3..row.count].should =~ [@config.backup_first.id.to_s]
+    end
+
+    it "Should include a weekly backup shift" do
+      @week = FactoryGirl.create :shift_group, chapter: @chapter, start_offset: 7.hours, end_offset: ((24 * 7) + 7).hours, period: 'weekly'
+      @weekshift = FactoryGirl.create :shift, shift_group: @week, dispatch_role: 3, positions: [@position], county: @county1
+      @weekperson = @people1[3]
+      @weekass = FactoryGirl.create :shift_assignment, person: @weekperson, date: today.at_beginning_of_week, shift: @weekshift
+
+      row = csv[1]
+      row[3..row.count].should =~ [@people1.first.id.to_s, @weekperson.id.to_s, @config.backup_first.id.to_s]
     end
   end
 

@@ -46,10 +46,10 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
   end
 
 
-  def self.current_groups_for_chapter(chapter, current_time=Time.zone.now)
+  def self.current_groups_for_chapter(chapter, current_time=Time.zone.now, scope=scoped)
     now = current_time.in_time_zone(chapter.time_zone)
 
-    self.where(chapter_id: chapter).select{|group|
+    self.where(chapter_id: chapter).merge(scope).select{|group|
       if group.period == 'daily'
         day_offset = now.seconds_since_midnight
         day_plus_offset = (day_offset + 1.day).to_i
