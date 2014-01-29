@@ -23,12 +23,11 @@ describe Scheduler::SwapMailer do
   end
   
   describe "swap_confirmed" do
-    let(:new_shift) {assignment.swap_to(new_person)}
-    let(:mail) { Scheduler::SwapMailer.swap_confirmed(assignment, new_shift) }
+    let(:mail) { Scheduler::SwapMailer.swap_confirmed(assignment, assignment, new_person) }
   
     it "renders the headers" do
       mail.subject.should match("Shift Swap Confirmed")
-      mail.to.should eq([assignment.person.email, new_person.email])
+      mail.to.should eq([new_person.email])
       mail.from.should eq(from_address)
     end
   

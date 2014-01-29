@@ -146,45 +146,6 @@ describe Scheduler::ShiftAssignment do
     item.should_not be_valid
   end
 
-
-  describe "#swap" do
-    it "should be swappable" do
-      @person2 = FactoryGirl.create :person, chapter: @chapter,  positions: [@positions.first], counties: [@counties.first]
-
-      shift = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: zone.today.tomorrow
-      new_record = shift.swap_to(@person2)
-
-      new_record.should be_valid
-      new_record.should_not be_changed
-      shift.should be_destroyed
-    end
-
-    it "should not be swappable to someone who can't take the shift" do
-      @person2 = FactoryGirl.create :person, chapter: @chapter,  positions: [], counties: []
-
-      shift = Scheduler::ShiftAssignment.create person: @person, shift: @shifts.first, date: zone.today.tomorrow
-      new_record = shift.swap_to(@person2)
-
-      new_record.should_not be_valid
-      new_record.should be_new_record
-      shift.should_not be_destroyed
-    end
-
-    it "should allow swaps before the frozen date" do
-      @person2 = FactoryGirl.create :person, chapter: @chapter,  positions: [@positions.first], counties: [@counties.first]
-      shift = @shifts.first
-
-      ass = Scheduler::ShiftAssignment.create person: @person, shift: shift, date: zone.today.tomorrow
-      shift.signups_frozen_before = Date.today + 4; shift.save
-
-      new_record = ass.swap_to(@person2)
-
-      new_record.should be_valid
-      new_record.should_not be_changed
-      ass.should be_destroyed
-    end
-  end
-
   describe "notification scopes" do
     after(:each) {back_to_1985}
 

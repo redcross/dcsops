@@ -9,4 +9,8 @@ FactoryGirl.define do
     min_desired_signups 1
     abbrev 'SH'
   end
+
+  factory :shift_with_positions, parent: :shift do
+    positions { |s| [s.association(:position, chapter: s.county.chapter)] }
+  end
 end

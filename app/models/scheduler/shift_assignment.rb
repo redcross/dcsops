@@ -179,13 +179,6 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     local_offset(date, shift.shift_group.end_offset)
   end
 
-  def swap_to(new_person)
-    new_assignment = Scheduler::ShiftAssignment.new date: self.date, shift: self.shift, person: new_person, swapping_from_id: self.id
-    self.is_swapping_to = true
-    destroy! if new_assignment.save
-    new_assignment
-  end
-
   def check_frozen_shift
     if !is_swapping_to and shift.signups_frozen_before and shift.signups_frozen_before > date
       errors[:shift] = "Signups are frozen and cannot be edited"

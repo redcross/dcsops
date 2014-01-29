@@ -35,32 +35,22 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   end
 
   def swap
-    if params[:is_swap]
-      # Don't want this to fail if shift permissions have changed for some reason
-      resource.update_attribute :available_for_swap, true
-      to_mail = []
+    @swap = Scheduler::ShiftSwap.new resource, self
+    if params[:is_swap] && @swap.can_request?
+      @swap.request_swap!(swap_to_person)
 
-      if params[:swap_to_id].present?
-        invitee = Roster::Person.find(params[:swap_to_id])
-      end
-      Scheduler::SwapAvailable.new(resource, invitee).save
+    elsif params[:accept_swap] && @swap.can_confirm?
+      destination = swap_to_person || current_user
 
-    elsif params[:accept_swap] and resource.available_for_swap
-      swap_id = params[:swap_to_id]
-      person = swap_id ? Roster::Person.find(swap_id) : current_user
-
-      new_record = resource.swap_to person
-      
-      if can?(:create, new_record) and new_record.save
-        Scheduler::SwapConfirmed.new(resource, new_record).save
-        redirect_to new_record, action: :swap
-        return
+      if @swap.confirm_swap! destination
+        flash.now[:info] = 'Shift successfully swapped.'
+        redirect_to @swap.new_assignment, action: :swap and return
       else
-        flash.now[:error] = new_record.errors.full_messages.join
+        flash.now[:error] = @swap.error_message
       end
 
-    elsif params[:cancel_swap]
-      resource.update_attribute :available_for_swap, false
+    elsif params[:cancel_swap] && @swap.can_confirm?
+      @swap.cancel_swap!
     end
     show!
   end
@@ -71,6 +61,10 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   end
 
   private
+
+  def swap_to_person
+    Roster::Person.find_by(id: params[:swap_to_id])
+  end
 
   helper_method :can_swap_to_others?, :collection_by_date
   def can_swap_to_others?
