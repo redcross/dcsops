@@ -17,6 +17,16 @@ class Scheduler::Ability
         can :index, Roster::Person, {county_memberships: {county_id: county_ids}}
     end
 
+    admin_county_ids = person.scope_for_role('county_scheduler')
+    if person.has_role 'chapter_scheduler'
+        admin_county_ids = admin_county_ids + person.chapter.county_ids
+    end
+    admin_county_ids.uniq!
+    if admin_county_ids.present?
+        can :read, Roster::Person, county_memberships: {county_id: admin_county_ids}
+        can :manage, Scheduler::ShiftAssignment, {person: {county_memberships: {county_id: admin_county_ids}}}
+    end
+
     admin_county_ids = person.scope_for_role('county_dat_admin')
     if person.has_role 'chapter_dat_admin'
         admin_county_ids = admin_county_ids + person.chapter.county_ids
