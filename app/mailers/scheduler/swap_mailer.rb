@@ -16,16 +16,14 @@ class Scheduler::SwapMailer < ActionMailer::Base
     people = Roster::Person.in_county(shift_assignment.shift.county).with_position(shift_assignment.shift.positions).joins(:notification_setting).where{notification_setting.email_swap_requested eq true}
   end
 
-  def swap_confirmed(old_shift, new_shift, recipients = nil)
+  def swap_confirmed(old_shift, new_shift, recipient)
     @from = old_shift
     @to = new_shift
 
     subject = "Shift Swap Confirmed for #{new_shift.date.to_s :dow_short} #{new_shift.shift.shift_group.name} #{new_shift.shift.name}"
 
-    recipients ||= [@from.person, @to.person]
-
     tag :scheduler, :swap, :swap_confirmed
-    mail to: recipients.map{|p| format_address p}, subject: subject
+    mail to: format_address(recipient), subject: subject
   end
 
   private
