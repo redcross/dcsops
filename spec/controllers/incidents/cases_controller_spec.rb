@@ -14,7 +14,7 @@ describe Incidents::CasesController do
     valid_object.case_assistance_items.map{|ci| ci.attributes.slice('price_list_item_id', 'quantity')}
   }
   let(:valid_attributes) { 
-    valid_object.attributes.merge(case_assistance_items_attributes: assistance_item_attributes)
+    valid_object.attributes.merge(case_assistance_items_attributes: assistance_item_attributes, 'cac_number' => '4111-1111-1111-1111')
   }
 
   let(:invalid_attributes) {

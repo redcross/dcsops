@@ -4,7 +4,7 @@ describe Incidents::RespondersHelper do
 
   let!(:incident) { double(:incident, id: 1234, responder_assignments: []) }
   let!(:person) { FactoryGirl.build_stubbed :person, city: "MyCity" }
-  let!(:assignment) { double(:assignment, person: person, shift: double(:shift, name: 'Test Shift')) }
+  let!(:assignment) { mock_model(Scheduler::ShiftAssignment, person: person, shift: double(:shift, name: 'Test Shift')) }
 
   before do
     helper.stub parent: incident
@@ -26,13 +26,13 @@ describe Incidents::RespondersHelper do
     it "should return json" do
       obj = JSON.parse helper.person_json(person)
       obj.should be_a(Hash)
-      obj.keys.should =~ %w(lat lng id full_name city)
+      obj.keys.should =~ %w(lat lng id full_name city edit_url assigned)
     end
 
     it "should return json with role when given an assignment" do
       obj = JSON.parse helper.person_json(person, assignment)
       obj.should be_a(Hash)
-      obj.keys.should =~ %w(lat lng id full_name city role)
+      obj.keys.should =~ %w(lat lng id full_name city role edit_url assigned)
       obj['role'].should == assignment.shift.name
     end
   end

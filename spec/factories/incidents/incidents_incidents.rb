@@ -5,7 +5,7 @@ FactoryGirl.define do
     date "2013-06-05"
     status 'open'
     area { |i| i.association :county, chapter: i.chapter }
-    incident_number {"13-#{SecureRandom.random_number(999)}"}
+    incident_number {"13-#{'%03d' % SecureRandom.random_number(999)}"}
   end
 
   factory :incident, parent: :raw_incident do
