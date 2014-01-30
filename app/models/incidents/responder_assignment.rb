@@ -1,5 +1,5 @@
 class Incidents::ResponderAssignment < ActiveRecord::Base
-  ROLES_TO_LABELS = {'team_lead' => 'Team Lead', 'trainee_lead' => 'Trainee Lead',
+  ROLES_TO_LABELS = {'team_lead' => 'Team Lead', 'trainee_lead' => 'Team Lead Trainee',
                      'responder' => 'Responder', 'public_affairs' => 'Public Affairs', 'health_services' => 'Health Services',
                      'mental_health' => 'Mental Health', 'dispatch' => 'Dispatch', 'activator' => 'Activator'}
   ROLES = ROLES_TO_LABELS.keys
@@ -11,8 +11,6 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
 
   validates_presence_of :person
   validates :role, presence: true, inclusion: {in: ROLES + RESPONSES, allow_blank: true}
-  #validates :response, inclusion: {in: RESPONSES}
-  #validates :person_id, uniqueness: {scope: :incident_id}
 
   def humanized_role
     ROLES_TO_LABELS[role] || RESPONSES_TO_LABELS[role]
@@ -30,5 +28,7 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   end
 
   scope :on_scene, -> { where{ role.in( %w(responder team_lead health_services mental_health) ) } }
-  scope :was_available, -> {where { role.in( my{ROLES}) }}
+  scope :was_available, -> { where{ role.in( my{ROLES}) }}
+  scope :with_person_in_counties, ->(counties){ joins{person.county_memberships}.where{person.county_memberships.county_id.in(my{Array(counties)}) } }
+  scope :for_chapter, -> chapter { joins{incident}.where{incident.chapter_id==chapter} }
 end

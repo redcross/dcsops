@@ -1,6 +1,6 @@
 =form_tag '', method: :get, class: 'form-horizontal' do
   Show County:
-  =select_tag :county_id, options_from_collection_for_select(current_chapter.counties, :id, :name, county.try( :id))
+  =select_tag :county_id, options_from_collection_for_select(current_chapter.counties, :id, :name, current_scopes[:county_id])
   =submit_tag 'Show', class: 'btn'
 
 .legend
@@ -25,9 +25,10 @@
 
   %tbody
     - responders.each do |responder, assignments|
+      - recent = assignments.first
       %tr
         %th=link_to responder.full_name, responder
-        %td=assignments.first.incident.try(:date).to_s :mdy
+        %td=recent && recent.incident.date.to_s(:mdy)
         %td=assignments.select(&:was_available).count
         %td=assignments.reject{|r| r.was_available || r.was_flex }.count
         - assignments.first(max_responses).each do |ass|
