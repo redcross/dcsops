@@ -1,12 +1,13 @@
 %p
-  Hello, #{@person.first_name}
+  Hello, #{person.first_name}
 
 %p
-  You have been assigned to incident #{@incident.incident_number} as
+  You have been assigned to incident #{incident.incident_number} as
   #{@assignment.humanized_role}.  If this is in error or your have any
   questions, please contact your dispatcher.
 
 %p
-  The incident is located at: #{@incident.full_address}.
+  The incident is located at: #{incident.full_address}.
+  %br
   To get driving directions or view the location on a map, use this link:
-  =link_to maps_url(@incident), maps_url(@incident)
+  =link_to maps_url(incident), maps_url(incident)

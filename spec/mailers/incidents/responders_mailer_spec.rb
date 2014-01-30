@@ -12,7 +12,7 @@ describe Incidents::RespondersMailer do
     let(:mail) { Incidents::RespondersMailer.assign_email(assignment) }
 
     it "renders the headers" do
-      mail.subject.should eq("DCSOps Incident Assignment")
+      mail.subject.should include("DCSOps Incident Assignment")
       mail.to.should eq([assignment.person.email])
       mail.from.should eq(["incidents@dcsops.org"])
     end

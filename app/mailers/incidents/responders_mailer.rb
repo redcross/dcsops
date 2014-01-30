@@ -4,16 +4,12 @@ class Incidents::RespondersMailer < ActionMailer::Base
 
   def assign_email(assignment)
     @assignment = assignment
-    @person = assignment.person
-    @incident = assignment.incident
-
-    mail to: format_address(assignment.person), subject: 'DCSOps Incident Assignment'
+    subject = "DCSOps Incident Assignment - #{incident.incident_number} as #{assignment.humanized_role}"
+    mail to: format_address(assignment.person), subject: subject
   end
 
   def assign_sms(assignment)
     @assignment = assignment
-    @person = assignment.person
-    @incident = assignment.incident
 
     mail to: assignment.person.sms_addresses, subject: ''
   end
@@ -28,5 +24,16 @@ class Incidents::RespondersMailer < ActionMailer::Base
       url = "https://maps.google.com/maps?q=#{inc.lat}+#{inc.lng}+"
       Bitly.client.shorten(url).short_url
     end
+  end
+
+  attr_reader :assignment
+  helper_method :assignment, :person, :incident
+
+  def person
+    assignment.person
+  end
+
+  def incident
+    assignment.incident
   end
 end
