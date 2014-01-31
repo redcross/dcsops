@@ -33,7 +33,7 @@ ActiveAdmin.register Scheduler::DispatchConfig, as: 'Dispatch Configs' do
 
   controller do
     def resource_params
-      [params.require(:dispatch_config).permit(:is_active, :backup_first_id, :backup_second_id, :backup_third_id, :backup_fourth_id)]
+      [params.require(:dispatch_configs).permit(:is_active, :backup_first_id, :backup_second_id, :backup_third_id, :backup_fourth_id, :name, :county_id)]
     end
   end
 end
