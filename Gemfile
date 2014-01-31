@@ -21,7 +21,7 @@ gem "dalli"
 gem 'inherited_resources'
 gem 'responders'
 gem 'has_scope'
-gem "twitter-bootstrap-rails"
+gem "twitter-bootstrap-rails", '~> 2.2.8'
 gem 'bootstrap-x-editable-rails'
 gem "spreadsheet" # Import from excel
 gem "authlogic"

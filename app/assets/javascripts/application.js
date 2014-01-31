@@ -16,11 +16,13 @@
 //= require twitter/bootstrap
 //= require bootstrap-datepicker
 //= require bootstrap-datetimepicker
-//= require bootstrap-editable
+//= require bootstrap-editable/bootstrap-editable
 //= require cocoon
-//= require jquery.countdown
 //= require jquery.creditCardValidator
-//= require_tree .
-//= stub es5-shim
+//= require jquery.sortElements
 
-// require turbolinks
+//= require_tree ./incidents
+//= require_tree ./roster
+//= require_tree ./scheduler
+//= require_tree ./inputs
+//= require_tree ./misc

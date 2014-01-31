@@ -20,7 +20,7 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
   private
     # Use callbacks to share common setup or constraints between actions.
     def resource
-      Scheduler::FlexSchedule.where(id: params[:id]).first_or_create!
+      @flex_schedule ||= Scheduler::FlexSchedule.where(id: params[:id]).first_or_create!
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
