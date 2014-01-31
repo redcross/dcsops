@@ -92,11 +92,12 @@
     %h5 
       %i.icon-group
       Current On-Call Team:
-    - groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_person.chapter)
+      %small=link_to 'See All', scheduler_on_call_path
+    - groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_chapter)
     - groups.select{|g| g.period == 'daily' }.each do |grp| 
       %strong=grp.start_date.to_s(:dow_long) + " - " + grp.name
     %br
-    = render partial: 'current_shifts', locals: {counties: current_person.counties}
+    = render partial: 'current_shifts', locals: {counties: current_person.counties, groups: groups}
 
 .row
   .span6
