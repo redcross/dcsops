@@ -22,22 +22,22 @@ describe Scheduler::DirectlineMailer do
     @leadass = FactoryGirl.create :shift_assignment, person: @people1.first, date: today, shift: @leadshift
     FactoryGirl.create :shift_assignment, person: @people1[1], date: today, shift: @othershift
 
-    @config = Scheduler::DispatchConfig.for_county @county1
+    @config = Scheduler::DispatchConfig.new county: @county1, name: @county1.name
     @config.is_active = true
     @config.backup_first = @people1.last
     @config.save!
   end
 
   let(:today) { @chapter.time_zone.today }
-  let(:mail) { Scheduler::DirectlineMailer.export(@chapter, today, today.tomorrow)}
+  let(:mail) { Scheduler::DirectlineMailer.export(today, today.tomorrow)}
   let(:shift_filename) { "shift_data.csv"}
   let(:roster_filename) { "roster.csv"}
 
   describe "Support methods" do
     it "Should run when called with force=true" do
-      day = @chapter.time_zone.today
-      Scheduler::DirectlineMailer.any_instance.should_receive(:export).with(@chapter, day-1, day+60).and_return(double deliver: true)
-      Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter)
+      day = Date.current
+      Scheduler::DirectlineMailer.any_instance.should_receive(:export).with(day-1, day+60).and_return(double deliver: true)
+      Scheduler::DirectlineMailer.run_if_needed
 
       @leadass.reload.synced.should == true
     end
@@ -45,20 +45,20 @@ describe Scheduler::DirectlineMailer do
     it "Should not run with force=false and all assignments synced" do
       @leadass.update_attribute :synced, true
       Scheduler::DirectlineMailer.any_instance.should_not_receive(:export)
-      Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter, false)
+      Scheduler::DirectlineMailer.run_if_needed(false)
     end
 
     it "Should not run with force=false and an unsynced assignment several days away" do
       @leadass.update_attribute :date, today+7
       Scheduler::DirectlineMailer.any_instance.should_not_receive(:export)
-      Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter, false)
+      Scheduler::DirectlineMailer.run_if_needed(false)
       @leadass.reload.synced.should == false
     end
 
     it "Should run with force=false and an unsynced assignment today" do
       @leadass.update_attribute :date, today
       Scheduler::DirectlineMailer.any_instance.should_receive(:export).and_return(double deliver: true)
-      Scheduler::DirectlineMailer.run_for_chapter_if_needed(@chapter, false)
+      Scheduler::DirectlineMailer.run_if_needed(false)
       @leadass.reload.synced.should == true
     end
   end

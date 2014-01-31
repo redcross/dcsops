@@ -7,4 +7,8 @@ class Roster::County < ActiveRecord::Base
   def vc_regex
     @compiled_regex ||= (vc_regex_raw.present? && Regexp.new(vc_regex_raw))
   end
+
+  def description
+    "#{chapter.short_name} - #{name}"
+  end
 end

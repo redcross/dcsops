@@ -19,7 +19,7 @@ class ::PersonTypeaheadInput
     when Symbol then builder.object.send val
     when String then val
     when Proc then val.call builder.object
-    else ''
+    else object.send(method).try(:full_name)
     end
   end
 

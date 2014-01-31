@@ -60,10 +60,7 @@ namespace :scheduler_periodic do
 
   task :send_dispatch_roster => [:environment] do
     Raven.capture do
-      Roster::Chapter.all.each do |ch|
-        next unless ch.code == "05503"
-        Scheduler::DirectlineMailer.run_for_chapter_if_needed(ch, ENV['IF_NEEDED']!='true')
-      end
+      Scheduler::DirectlineMailer.run_if_needed(ENV['IF_NEEDED']!='true')
     end
   end
 

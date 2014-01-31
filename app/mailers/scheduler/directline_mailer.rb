@@ -10,71 +10,71 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   #   en.scheduler.reminders_mailer.email_invite.subject
   #
 
-  def self.run_for_chapter_if_needed(chapter, force=true, window=2)
-    end_window = chapter.time_zone.now.advance days: window
+  def self.run_if_needed(force=true, window=2)
+    end_window = Date.current.advance days: window
     Scheduler::ShiftAssignment.transaction do
-      if force or Scheduler::ShiftAssignment.for_chapter(chapter).joins{shift}.where{(shift.dispatch_role != nil) & (date <= end_window.to_date) & (synced != true)}.exists?
-        self.run_for_chapter(chapter)
-        Scheduler::ShiftAssignment.for_chapter(chapter).joins{shift.shift_group}.update_all synced: true
+      if force or Scheduler::ShiftAssignment.joins{shift}.where{(shift.dispatch_role != nil) & (date <= end_window.to_date) & (synced != true)}.exists?
+        self.run
+        Scheduler::ShiftAssignment.joins{shift.shift_group}.update_all synced: true
       end
     end
   end
 
-  def self.run_for_chapter(chapter)
+  def self.run
     ImportLog.capture(self.to_s, "DirectlineExport") do |logger, import_log|
       ImportLog.cache do
-        day = chapter.time_zone.today
-        self.export(chapter, day - 1, day + 60).deliver
+        day = Date.current
+        self.export(day - 1, day + 60).deliver
       end
     end
   end
 
   class << self
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-    add_transaction_tracer :run_for_chapter, category: :task
+    add_transaction_tracer :run, category: :task
   end
 
-  def export(chapter, start_date, end_date)
+  def export(start_date, end_date)
     start_date = start_date.to_date
     end_date = end_date.to_date
-    @chapter = chapter
     @people = []
 
-    attachments["shift_data.csv"] = schedule_csv(chapter, start_date, end_date)
+    attachments["shift_data.csv"] = schedule_csv(start_date, end_date)
     attachments["roster.csv"] = people_csv
 
     tag :export
-    mail to: ENV['DISPATCH_ROSTER_RECIPIENT'], subject: "Red Cross Export - Chapter #{chapter.code}", body: "Export processed at #{Time.zone.now}"
+    mail to: ENV['DISPATCH_ROSTER_RECIPIENT'], subject: "Red Cross Export", body: "Export processed at #{Time.zone.now}"
   end
 
   private
 
-  def schedule_csv(chapter, start_date, end_date)
+  def schedule_csv(start_date, end_date)
     shift_data = CSV.generate(row_sep: "\r\n") do |csv|
       csv << ["County", "Start", "End", "On Call Person IDs"] + (1..20).map{|x| "On Call #{x}"}
-      chapter.counties.each do |county|
-        config = Scheduler::DispatchConfig.for_county county
-        next unless config.is_active
+      Scheduler::DispatchConfig.active.includes{county.chapter}.each do |config|
+        county = config.county
+        chapter = county.chapter
+
         @people = @people + config.backup_list
-        generate_shifts_for_county(csv, chapter, county, start_date, end_date, config.backup_list.map(&:id))
+        generate_shifts_for_county(csv, chapter, county, config.name, start_date, end_date, config.backup_list.map(&:id))
       end
     end
   end
 
-  def generate_shifts_for_county(csv, chapter, county, start_date, end_date, backups)
+  def generate_shifts_for_county(csv, chapter, county, name, start_date, end_date, backups)
     @latest_time = nil
     daily_groups = Scheduler::ShiftGroup.where(chapter_id: chapter, period: 'daily').joins{shifts}.where{shifts.dispatch_role != nil}.order(:start_offset).uniq.to_a
     (start_date..end_date).each do |date|
       daily_groups.each do |daily_group|
-        start_time = local_offset(date, daily_group.start_offset)
-        end_time = local_offset(date, daily_group.end_offset)
+        start_time = local_offset(chapter, date, daily_group.start_offset)
+        end_time = local_offset(chapter, date, daily_group.end_offset)
         check_timing_overlap start_time, end_time
         
         assignments = assignments_for_period(chapter, county, daily_group, start_time)
         @people.concat assignments.map(&:person)
         person_list = assignments.map(&:person_id) + backups
 
-        csv << ([county.name, start_time.iso8601, end_time.iso8601] + person_list)
+        csv << ([name, start_time.iso8601, end_time.iso8601] + person_list)
       end
     end
   end
@@ -122,8 +122,8 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
     (ph && ph[:carrier].try(:pager)) ? 'pager' : 'phone'
   end
 
-  def local_offset(date, offset)
-    beginning_of_day = date.in_time_zone(@chapter.time_zone).at_beginning_of_day
+  def local_offset(chapter, date, offset)
+    beginning_of_day = date.in_time_zone(chapter.time_zone).at_beginning_of_day
     offset_time = beginning_of_day.advance seconds: offset
 
     # advance counts every instant that elapses, not just calendar seconds.  so
