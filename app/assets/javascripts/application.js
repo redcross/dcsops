@@ -12,14 +12,12 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require modernizr-latest
+
 //= require twitter/bootstrap
-//= require bootstrap-datepicker
-//= require bootstrap-datetimepicker
 //= require bootstrap-editable/bootstrap-editable
 //= require cocoon
-//= require jquery.creditCardValidator
-//= require jquery.sortElements
+
+//= require_tree ../../../vendor/assets/javascripts/
 
 //= require_tree ./incidents
 //= require_tree ./roster
