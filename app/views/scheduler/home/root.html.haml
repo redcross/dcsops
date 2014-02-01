@@ -7,7 +7,7 @@
     %p
       = "Welcome, #{current_person.first_name}."
       You have completed 
-      = pluralize(Scheduler::ShiftAssignment.where(person_id: current_person).where('date < ?', Date.today).count, 'shift')
+      = pluralize(Scheduler::ShiftAssignment.where(person_id: current_person).where('date < ?', Date.current).count, 'shift')
       since the new scheduling system was launched.
 
     %p
@@ -57,7 +57,7 @@
     %h5 
       %i.icon-calendar
       Calendar Details
-    - month = Date.today.beginning_of_month
+    - month = Date.current.beginning_of_month
     - 3.times do
       %div
         /%strong= link_to month.strftime("%B"), calendar_month(month)
