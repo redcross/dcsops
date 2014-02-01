@@ -1,11 +1,4 @@
-class Roster::PositionMembership < ActiveRecord::Base
-  belongs_to :person
+class Roster::PositionMembership < Roster::Membership
   belongs_to :position
   has_many :roles, through: :position
-
-  #validates_presence_of :person, :position
-
-  def self.destroy_all_for_chapter(chapter)
-    self.joins{person}.where{(person.chapter_id == chapter.id) & ((persistent == nil) | (persistent == false))}.delete_all
-  end
 end
