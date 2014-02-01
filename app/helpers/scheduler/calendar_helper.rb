@@ -1,8 +1,18 @@
 module Scheduler::CalendarHelper
+  # Renders one line of shift info for the calendar
+  # Editable: must be true to enable the checkbox
+  # Person: Person we're editing
+  # Shift: Shift to display
+  # my_shift: The shift assignment for the given person on the given day (if it exists) - not necessarily for the shift we're rendering
+  # date: Date for this shift instance
+  # assignments: Any shift assignments for the given shift on the given date (may include my_shift if appropriate)
+  # period: day/week/month, so the javascript knows what to reload if the shift is edited
   def render_shift_assignment_info(editable, person, shift, my_shift, date, assignments, period)
     can_take = person && shift.can_be_taken_by?(person)
     can_sign_up = shift.can_sign_up_on_day(date, assignments.count)
     can_remove = shift.can_remove_on_day(date)
+    is_signed_up = my_shift.try(:shift) == shift
+
     s = ActiveSupport::SafeBuffer.new
 
     if show_county_name
@@ -10,23 +20,27 @@ module Scheduler::CalendarHelper
     end
 
     s << shift.name + ": "
-    if editable and person and (my_shift.nil? or my_shift.shift == shift) and ((can_take and can_sign_up) or (my_shift.try(:shift) == shift and can_remove))
+    if editable and person and (my_shift.nil? or is_signed_up) and ((can_take and can_sign_up) or (is_signed_up and can_remove))
       cbid = "#{date.to_s}-#{shift.id}"
-      s << check_box_tag( shift.id.to_s, date.to_s, my_shift.try(:shift) == shift, class: 'shift-checkbox', :"data-assignment" => my_shift.try(:id), id: cbid, :"data-period" => period)
+      s << check_box_tag( shift.id.to_s, date.to_s, is_signed_up, class: 'shift-checkbox', :"data-assignment" => my_shift.try(:id), id: cbid, :"data-period" => period) << " "
     end
-    s << " "
+    s << render_assignments_label(assignments, cbid)
+
+    s
+  end
+
+  def render_assignments_label(assignments, cbid)
     if assignments.blank?
-      s << label_tag( cbid, 'OPEN')
+      label_tag( cbid, 'OPEN')
     elsif assignments.count == 1
       ass = assignments.first
-      s << label_tag( cbid, "#{ass.person.first_initial} #{ass.person.last_name}")
+      label_tag(cbid, "#{ass.person.first_initial} #{ass.person.last_name}")
     else
       title = assignments.map{|a| a.person.full_name}.join(", ")
-      s << content_tag( :span, :"data-toggle" => 'tooltip', title: title, class: 'multiple-assignments') do
+      content_tag(:span, :"data-toggle" => 'tooltip', title: title, class: 'multiple-assignments') do
         "#{assignments.count} registered"
       end
     end
-    s
   end
 
   def view_as_links
@@ -43,19 +57,3 @@ module Scheduler::CalendarHelper
   end
 
 end
-
-
-#          -if show_county_name
-#            =shift.county.abbrev
-#          ="#{shift.name}:"
-#          -if editable and person and (my_shift.nil? or my_shift.shift == shift) and (can_take_shift?(shift) and shift.can_sign_up_on_day(date, assignments.count) or my_shift.try(:shift) == shift) and date >= Date.today
-#            - cbid = "#{date.to_s}-#{shift.id}"
-#            =check_box_tag shift.id.to_s, date.to_s, my_shift.try(:shift) == shift, class: 'shift-checkbox', :"data-assignment" => my_shift.try(:id), id: cbid, :"data-period" => "day"
-#
-#          -if assignments.blank?
-#            %label{for: cbid} OPEN
-#          -elsif assignments.count == 1
-#            -ass = assignments.first
-#            %label{for: cbid}= "#{ass.person.first_initial} #{ass.person.last_name}"
-#          -else
-#            ="#{assignments.count} registered"#
