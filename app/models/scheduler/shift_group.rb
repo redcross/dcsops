@@ -45,51 +45,64 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
     ret
   end
 
-
   def self.current_groups_for_chapter(chapter, current_time=Time.zone.now, scope=scoped)
     now = current_time.in_time_zone(chapter.time_zone)
 
     self.where(chapter_id: chapter).merge(scope).select{|group|
-      if group.period == 'daily'
-        day_offset = now.seconds_since_midnight
-        day_plus_offset = (day_offset + 1.day).to_i
-
-        check_offset(group.start_offset, group.end_offset, day_offset, day_plus_offset) do |is_plus|
-          group.start_date = is_plus ? now.to_date.yesterday : now.to_date
-        end
-      elsif group.period == 'weekly'
-        wday = (now.to_date - now.at_beginning_of_week.to_date).to_i
-
-        week_offset = ((wday * 1.day) + now.seconds_since_midnight).to_i
-        week_plus_offset = (week_offset + 7.days).to_i
-        week_minus_offset = -(7.days-week_offset).to_i
-
-        check_offset(group.start_offset, group.end_offset, week_offset, week_plus_offset, week_minus_offset) do |is_plus, is_minus|
-          group.start_date = is_minus ? now.to_date.at_beginning_of_week.advance(weeks: 1) : (is_plus ? now.to_date.at_beginning_of_week.advance(weeks: -1) : now.to_date.at_beginning_of_week)
-        end
-      elsif group.period == 'monthly'
-        month_offset = now.day
-        month_plus_offset = now.day + now.months_since(1).at_end_of_month.day
-
-        check_offset(group.start_offset, group.end_offset, month_offset, month_plus_offset) do |is_plus|
-          group.start_date = is_plus ? now.months_since(1).at_beginning_of_month.to_date : now.at_beginning_of_month.to_date
-        end
-      end
+      group.check_offsets(now)
     }
   end
 
-  def self.check_offset(start_offset, end_offset, current, current_plus, current_minus=nil)
+  def check_offsets(now)
+    period_offsets(now).detect do |offset, date|
+      check_offset offset, date
+    end
+  end
+
+  def check_offset(current, date)
     if (start_offset <= current and current < end_offset) 
-      yield false, false
-      true
-    elsif (start_offset <= current_plus and current_plus < end_offset)
-      yield true, false
-      true
-    elsif current_minus and (start_offset <= current_minus and current_minus < end_offset) 
-      yield false, true
+      self.start_date = date
       true
     else
       false
     end
+  end
+
+  def period_offsets(now)
+    case period
+    when 'daily' then self.class.daily_offsets(now)
+    when 'weekly' then self.class.weekly_offsets(now)
+    when 'monthly' then self.class.monthly_offsets(now)
+    end
+  end
+
+  def self.daily_offsets(now)
+    day_offset = now.seconds_since_midnight
+    day_plus_offset = (day_offset + 1.day)
+
+    { day_offset => now.to_date,
+      day_plus_offset => now.to_date.yesterday }
+  end
+
+  def self.weekly_offsets(now)
+    begin_of_week = now.to_date.at_beginning_of_week
+    wday = (now.to_date - begin_of_week)
+
+    week_offset = ((wday * 1.day) + now.seconds_since_midnight)
+    week_plus_offset = (week_offset + 7.days)
+    week_minus_offset = -(7.days-week_offset)
+
+    { week_offset => begin_of_week,
+      week_plus_offset => begin_of_week.advance(weeks: -1),
+      week_minus_offset => begin_of_week.advance(weeks: 1) }
+  end
+
+  def self.monthly_offsets(now)
+    begin_of_month = now.at_beginning_of_month.to_date
+    month_offset = now.day
+    month_plus_offset = now.day + now.months_since(1).at_end_of_month.day
+
+    { month_offset => begin_of_month,
+      month_plus_offset => begin_of_month.months_since(1) }
   end
 end
