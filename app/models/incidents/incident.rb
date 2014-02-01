@@ -219,4 +219,12 @@ class Incidents::Incident < ActiveRecord::Base
     true
   end
 
+  def take_location_from geocode
+    return unless geocode.success?
+    self.lat = geocode.lat
+    self.lng = geocode.lng
+    self.city = geocode.city
+    self.county = geocode.district.try(:gsub, ' County', '')
+  end
+
 end
