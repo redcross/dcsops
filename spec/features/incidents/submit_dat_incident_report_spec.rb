@@ -119,7 +119,7 @@ describe "DAT Incident Report", versions: true do
         click_link @responder.full_name
 
         find(:xpath, ".//input[@type='checkbox']").should_not be_checked
-        select 'Trainee Lead'
+        select 'Team Lead Trainee'
       end
     end
   end

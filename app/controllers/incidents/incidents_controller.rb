@@ -15,7 +15,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     if inline_editable? and resource.dat_incident.nil?
       resource.build_dat_incident
     end
-    if partial = params[:partial] and tab_authorized?(partial)
+    if partial = requested_partial_name
       render partial: partial
     else
       show!
@@ -80,6 +80,15 @@ class Incidents::IncidentsController < Incidents::BaseController
   end
 
   private
+
+  def requested_partial_name
+    partial = params[:partial] 
+    if partial and tab_authorized?(partial)
+      partial
+    else
+      nil
+    end
+  end
 
     helper_method :inline_editable?
     def inline_editable?

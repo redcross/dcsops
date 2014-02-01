@@ -24,4 +24,15 @@ module Incidents::DatIncidentsHelper
   def panel(name, form)
     render "panel_#{name}", f: form
   end
+
+  def check_valid_panel panel
+    case panel
+    when 'basic', 'damage_assessment', 'demographics', 'feeding',
+          'housing', 'location', 'narrative', 'resources', 'services',
+          'vehicles'
+      panel
+    else
+      raise ActiveRecord::RecordNotFound, "Unknown panel #{panel}"
+    end
+  end
 end

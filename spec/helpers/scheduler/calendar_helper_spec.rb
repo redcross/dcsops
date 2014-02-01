@@ -7,7 +7,7 @@ describe Scheduler::CalendarHelper do
     let(:date) { Date.current }
     let(:assignment) { double(:shift_assignment, id: SecureRandom.random_number(100000), shift: shift, person: person) }
 
-    before(:each) { helper.stub show_county_name: false}
+    before(:each) { helper.stub show_county_name?: false}
 
     it "should render a checkbox when person can sign up" do
       out = helper.render_shift_assignment_info(true, person, shift, nil, date, [], 'daily')

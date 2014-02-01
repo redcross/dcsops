@@ -26,10 +26,7 @@
   .row
     %hr
 .calendar-container.highlight-my-shifts
-  /- if params[:view] == 'grid'
-  /  =render partial: 'grid', locals: {month: @month, editable: @editable}
-  /- else
-  =render partial: 'month', locals: {month: @month, editable: @editable}
+  =render partial: 'month', locals: {month: @month, editable: editable?}
 
 .open-shifts-container
   %h3 Available Shifts

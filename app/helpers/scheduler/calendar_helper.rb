@@ -12,16 +12,16 @@ module Scheduler::CalendarHelper
     can_sign_up = shift.can_sign_up_on_day(date, assignments.count)
     can_remove = shift.can_remove_on_day(date)
     is_signed_up = my_shift.try(:shift) == shift
+    cbid = "#{date.to_s}-#{shift.id}"
 
     s = ActiveSupport::SafeBuffer.new
 
-    if show_county_name
+    if show_county_name?
       s << shift.county.abbrev << " "
     end
 
     s << shift.name + ": "
     if editable and person and (my_shift.nil? or is_signed_up) and ((can_take and can_sign_up) or (is_signed_up and can_remove))
-      cbid = "#{date.to_s}-#{shift.id}"
       s << check_box_tag( shift.id.to_s, date.to_s, is_signed_up, class: 'shift-checkbox', :"data-assignment" => my_shift.try(:id), id: cbid, :"data-period" => period) << " "
     end
     s << render_assignments_label(assignments, cbid)
@@ -56,4 +56,20 @@ module Scheduler::CalendarHelper
     safe_join(links, " | ") + tag(:br) + link_to( "Download PDF", url_for(format: :pdf, counties: show_counties, show_shifts: params[:show_shifts]))
   end
 
+  def ajax_params
+    {
+      person_id: person.try(:id),
+      show_shifts: show_shifts,
+      counties: show_counties
+    }
+  end
+
+  def show_county_name?
+    calendar.all_groups.flat_map{|_, shifts| shifts.map(&:county_id)}.uniq.count > 1
+  end
+
+  # Possibly unused
+  def show_only_available
+    params[:only_available] == 'true'
+  end
 end

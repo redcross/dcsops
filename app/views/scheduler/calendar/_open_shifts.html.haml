@@ -7,7 +7,7 @@
       / Get a hash of date->number of registrations in one query
       - counts = shifts_available[shift]
       %strong
-        -if show_county_name
+        -if show_county_name?
           =shift.county.name
           ==-
         =shift.name

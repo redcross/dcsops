@@ -36,7 +36,7 @@ describe Scheduler::CalendarController do
 
 
     it "should render the month" do
-      xhr :get, :day, month: "2013-08"
+      xhr :get, :month, month: "2013-08"
       response.should be_success
       response.body.should match(@ds.name)
       response.body.should match(@ws.name)
@@ -79,7 +79,7 @@ describe Scheduler::CalendarController do
 
 
         it "should render the month" do
-          xhr :get, :day, extra_params.merge({month: "2013-08"})
+          xhr :get, :month, extra_params.merge({month: "2013-08"})
           response.should be_success
         end
 
@@ -107,7 +107,7 @@ describe Scheduler::CalendarController do
       end
 
       it "should render the month" do
-        xhr :get, :day, month: "2013-08"
+        xhr :get, :month, month: "2013-08"
         response.should be_success
       end
 

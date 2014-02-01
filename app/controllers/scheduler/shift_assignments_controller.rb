@@ -44,7 +44,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
 
       if @swap.confirm_swap! destination
         flash.now[:info] = 'Shift successfully swapped.'
-        redirect_to @swap.new_assignment, action: :swap and return
+        redirect_to polymorphic_url(@swap.new_assignment, action: :swap) and return
       else
         flash.now[:error] = @swap.error_message
       end

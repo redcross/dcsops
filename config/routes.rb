@@ -40,7 +40,7 @@ Scheduler::Application.routes.draw do
                                   to: 'calendar#show',
                                   as: 'calendar'
     get 'calendar/:date', date: /\d{4}-\d{2}-\d{2}/, to: 'calendar#day', as: 'calendar_day'
-    get 'calendar/:month', month: /\d{4}-\d{2}/, to: 'calendar#day'
+    get 'calendar/:month', month: /\d{4}-\d{2}/, to: 'calendar#month'
 
     resources :shift_assignments do
       match :swap, on: :member, via: [:get, :post]
