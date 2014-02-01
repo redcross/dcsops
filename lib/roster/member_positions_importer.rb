@@ -1,6 +1,9 @@
-class Roster::MemberPositionsImporter < Roster::Importer
+class Roster::MemberPositionsImporter < ImportParser
+  include PersonFiltering
+
   class_attribute :check_dates
   self.check_dates = true
+  self.identity_columns = {:vc_id => 'account_id'}
   self.column_mappings = {position_name: 'position_name', position_start: 'position_start_date', position_end: 'position_end_date',
     vc_member_number: 'member_number', first_name: 'first_name', last_name: 'last_name', 
     email: 'email', secondary_email: 'second_email',
@@ -11,6 +14,8 @@ class Roster::MemberPositionsImporter < Roster::Importer
     address1: 'address1', address2: 'address2', city: 'address3', state: 'address4', zip: 'address5', county_name: 'county'
   }
 
+  POSITION_ATTR_NAMES = [:county_name, :position_name, :position_start, :position_end, :second_lang, :third_lang]
+
   def positions
     @_positions ||= @chapter.positions.select(&:vc_regex)
   end
@@ -19,42 +24,14 @@ class Roster::MemberPositionsImporter < Roster::Importer
     @_counties ||= @chapter.counties.select(&:vc_regex)
   end
 
-  def filter person
-    filter_email person
-    filter_address person
-  end
 
-  def filter_email person
-    if filter_match? 'email', person.email
-      logger.debug "Filtering email '#{person.email}' for #{person.id}:#{person.full_name}"
-      filter_hit! 'email'
-      person.email = nil
-    end
-  end
-
-  def filter_address person
-    addr = [:address1, :address2, :city, :state, :zip].map{|f| person[f]}.compact.join " "
-    if filter_match? 'address', addr
-      logger.debug "Filtering address '#{addr}' for #{person.id}:#{person.full_name}"
-      filter_hit! 'address'
-      person.attributes = {address1: nil, address2: nil, city: nil, state: nil, zip: nil, lat: nil, lng: nil}
-    end
-  end
-
-  def filter_hit! type
-    @filter_hits[type] += 1
-  end
-
-  def filter_match? type, val
-    (@filters[type] || []).any? {|f| f.pattern.match val }
-  end
-
-  def get_person(identity, attrs, all_attrs)
+  def get_person(object, identity, attrs, all_attrs)
     vc_id = identity[:vc_id].to_i
     unless @person and @person.vc_id == vc_id
       attrs[:vc_is_active] = is_active_status(attrs[:vc_is_active])
-      @person = @people[vc_id].first #Roster::Person.where({chapter_id: @chapter}.merge(identity)).first_or_initialize
-      if @person.new_record? and !attrs[:vc_is_active]
+      @person = object 
+      @person ||= Roster::Person.find_or_initialize_by(chapter_id: @chapter, vc_id: vc_id) if attrs[:vc_is_active]
+      if @person.nil? or (@person.new_record? and !attrs[:vc_is_active])
         #logger.warn "Skipping because inactive and new: #{attrs.inspect}"
         @person = nil
         return
@@ -63,7 +40,8 @@ class Roster::MemberPositionsImporter < Roster::Importer
       @num_people += 1
 
       # Adding chapter: to the attrs merge should prevent the validates_presence_of: chapter from doing a db query
-      @person.attributes = attrs.merge({chapter: @chapter})
+      @person.attributes = attrs
+      @person.chapter = @chapter
 
       filter @person
 
@@ -86,12 +64,8 @@ class Roster::MemberPositionsImporter < Roster::Importer
   end
 
   def after_import
-    # Filter out existing counties in the database before we import.
-    @counties_matcher.remove_duplicates Roster::CountyMembership.joins{person}.where{person.chapter_id == my{@chapter}}.pluck(:person_id, :county_id)
-    @positions_matcher.remove_duplicates Roster::PositionMembership.joins{person}.where{person.chapter_id == my{@chapter}}.pluck(:person_id, :position_id)
-
-    Roster::CountyMembership.import [:person_id, :county_id], @counties_matcher.matches.to_a
-    Roster::PositionMembership.import [:person_id, :position_id], @positions_matcher.matches.to_a
+    import_memberships @counties_matcher, Roster::CountyMembership, :county_id
+    import_memberships @positions_matcher, Roster::PositionMembership, :position_id
 
     Roster::Person.where(vc_id: @vc_ids_seen.to_a).update_all :vc_imported_at => Time.now
     deactivated = Roster::Person.for_chapter(@chapter).where{vc_id.not_in(my{@vc_ids_seen.to_a})}.update_all(:vc_is_active => false) if @vc_ids_seen.present?
@@ -101,46 +75,62 @@ class Roster::MemberPositionsImporter < Roster::Importer
     logger.info "Geocodes: #{AutoGeocode.geocodes} Failed: #{AutoGeocode.failed}"
   end
 
-  def handle_row(identity, attrs)
+  def import_memberships matcher, klass, key
+    # Filter out existing counties in the database before we import.
+    matcher.remove_duplicates klass.for_chapter(@chapter).pluck(:person_id, key)
+    klass.import [:person_id, key], matcher.matches.to_a
+  end
+
+  def handle_row(identity, attrs, preloaded=nil)
     # Parse out the date from VC's weird days-since-1900 epoch
     attrs[:vc_last_login] = parse_time attrs[:vc_last_login] if attrs[:vc_last_login]
     attrs[:vc_last_profile_update] = parse_time attrs[:vc_last_profile_update] if attrs[:vc_last_profile_update]
 
     # Delete these here so get_person doesn't try to assign these attrs
-    # to the person model.  But we want them there so process_row can use above.
-    person_attrs = attrs.dup
-    position_name = person_attrs.delete(:position_name)
+    # to the person model.
+    person_attrs = attrs.reject{|k, v| POSITION_ATTR_NAMES.include? k }
+    get_person(preloaded, identity, person_attrs, attrs)
+    return unless @person and process_row?(attrs)
+
+    #logger.debug "Matching #{self.class.name.underscore.split("_").first} #{position_name} for #{identity.inspect}"
+    @num_positions += 1
+    match_positions attrs
+    match_languages attrs
+    match_county attrs
+  end
+
+  def match_county attrs
+    county_name = attrs.delete :county_name
+    match_position_named county_name if county_name.present?
+  end
+
+  def match_positions attrs
+    position_name = attrs.delete(:position_name)
     position_name = position_name.strip if position_name
-    position_start = person_attrs.delete :position_start
-    position_end = person_attrs.delete :position_end
-
-    second_lang = person_attrs.delete :second_lang
-    third_lang = person_attrs.delete :third_lang
-    county_name = person_attrs.delete :county_name
-
-    get_person(identity, person_attrs, attrs)
-    return unless @person
-    return unless process_row?(attrs)
+    position_start = attrs.delete :position_start
+    position_end = attrs.delete :position_end
 
     if check_dates
       return unless position_end.nil? or parse_time(position_end) > Time.now
       return unless position_start.nil? or parse_time(position_start) < Time.now
     end
 
-    #logger.debug "Matching #{self.class.name.underscore.split("_").first} #{position_name} for #{identity.inspect}"
-    @num_positions += 1
-
-    match_position position_name
-    match_position second_lang if second_lang.present?
-    match_position third_lang if third_lang.present?
-    match_position county_name if county_name.present?
+    match_position_named position_name
   end
 
-  def match_position position_name
+  def match_languages attrs
+    second_lang = attrs.delete :second_lang
+    third_lang = attrs.delete :third_lang
+
+    match_position_named second_lang if second_lang.present?
+    match_position_named third_lang if third_lang.present?
+  end
+
+  def match_position_named position_name
     matched_counties = @counties_matcher.match(position_name, @person.id) 
     matched_positions = @positions_matcher.match(position_name, @person.id)
 
-    unless matched_counties || matched_positions
+    unless logger.debug? and matched_counties || matched_positions
       logger.debug "Didn't match a record for item #{position_name}"
     end
   end
@@ -160,6 +150,26 @@ class Roster::MemberPositionsImporter < Roster::Importer
       position_name.present? and (position_name =~ filter_regex)
     else
       position_name.present?
+    end
+  end
+
+  def parse_time(val)
+    if val.present?
+      DateTime.civil(1899,12,30) + val.to_f
+    else
+      nil
+    end
+  end
+
+  def is_active_status(status_name)
+    ['General Volunteer', 'Employee'].include? status_name
+  end
+
+  def preload_identities(identities)
+    ids = identities.group_by{|i| i[:identity][:vc_id].to_i }
+    people = Roster::Person.for_chapter(@chapter).where(vc_id: ids.keys).to_a
+    people.each do |person|
+      ids[person.vc_id].first[:object] = person
     end
   end
 
