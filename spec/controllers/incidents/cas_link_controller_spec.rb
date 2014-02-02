@@ -40,7 +40,18 @@ describe Incidents::CasLinkController do
       post :link, id: cas2.to_param, incident_id: inc2.id
       response.should be_redirect
       flash[:error].should_not be_empty
-    }.to_not change{cas2.reload.incident_id}
+    }.to_not change{inc.reload.cas_incident_number}
+  end
+
+  it "can ignore an incident" do
+    cas = FactoryGirl.create :cas_incident, chapter: @person.chapter
+
+    expect {
+      post :ignore, id: cas.to_param
+    }.to change{cas.reload.ignore_incident}.to(true)
+
+    response.should be_redirect
+    flash[:info].should_not be_empty
   end
 
   it "can promote to an incident" do

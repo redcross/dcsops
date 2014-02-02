@@ -8,7 +8,7 @@
             %i.icon-chevron-right
       -if can? :link_cas, Incidents::Incident
         %li
-          %a{href: link_cas_incidents_incidents_path}
+          %a{href: incidents_cas_link_index_path}
             Link CAS Incidents
             -if num_incidents_to_link > 0
               (#{num_incidents_to_link})

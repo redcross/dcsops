@@ -14,9 +14,6 @@ class Incidents::CasImporter
     case_errors = import_case_data workbook.worksheet("Cases") do |s|
       yield s if block_given?
     end
-    link_cas_data do |s|
-      yield s if block_given?
-    end
 
     [inc_errors, case_errors]
   end
@@ -148,16 +145,4 @@ class Incidents::CasImporter
     errors
   end
 
-  def link_cas_data
-    Incidents::Incident.joins{cas_incident.outer}.where{(cas_incident_number != nil) & (cas_incident.id == nil)}.each do |incident|
-      cas = Incidents::CasIncident.find_by(cas_incident_number: incident.cas_incident_number)
-      if cas
-        cas.incident = incident
-        cas.save!
-      end
-      if block_given?
-        yield "Incident Link"
-      end
-    end
-  end
 end

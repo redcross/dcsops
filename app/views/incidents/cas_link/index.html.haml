@@ -9,16 +9,21 @@
     %th Actions
   - collection.each do |cas|
     %tr
-      %td=cas.cas_incident_number
+      %td
+        =cas.dr_number
       %td=cas.incident_date
       %td=cas.county_name
       %td=cas.cas_name
       %td
-        - options = incidents_for_cas(cas)
-        -if options.blank?
-          No Incidents Available
-        -else
-          =form_tag link_resource_path(cas), method: :post, class: "form-inline", style: 'display: inline' do
-            =select_tag 'incident_id', "<option></option>".html_safe+options_from_collection_for_select(options, :id, :to_label, include_blank: true)
-            =submit_tag 'Link', class: 'btn btn-primary'
-        =link_to 'Promote to Incident', promote_resource_path(cas), method: :post, class: 'btn btn-danger'
+        -if can? :link, cas
+          - options = incidents_for_cas(cas)
+          -if options.blank?
+            No Incidents Available
+          -else
+            =form_tag link_resource_path(cas), method: :post, class: "form-inline", style: 'display: inline' do
+              =select_tag 'incident_id', "<option></option>".html_safe+options_from_collection_for_select(options, :id, :to_label, include_blank: true)
+              =submit_tag 'Link', class: 'btn btn-primary'
+        -if can? :promote, cas
+          =link_to 'Promote to Incident', promote_resource_path(cas), method: :post, class: 'btn btn-danger', data: {confirm: 'Really promote this incident?'}
+        -if can? :ignore, cas
+          =link_to 'Ignore', ignore_resource_path(cas), method: :post, class: 'btn btn-warning', data: {confirm: 'Really ignore this incident?'}

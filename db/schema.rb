@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140131071105) do
+ActiveRecord::Schema.define(version: 20140202022829) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -144,7 +144,6 @@ ActiveRecord::Schema.define(version: 20140131071105) do
     t.integer  "num_clients"
     t.integer  "phantom_cases"
     t.date     "last_date_with_open_cases"
-    t.integer  "incident_id"
     t.date     "incident_date"
     t.text     "notes"
     t.datetime "last_import"
@@ -152,9 +151,10 @@ ActiveRecord::Schema.define(version: 20140131071105) do
     t.datetime "updated_at"
     t.integer  "chapter_id"
     t.string   "chapter_code"
+    t.boolean  "ignore_incident",           default: false, null: false
   end
 
-  add_index "incidents_cas_incidents", ["incident_id"], name: "index_incidents_cas_incidents_on_incident_id", using: :btree
+  add_index "incidents_cas_incidents", ["cas_incident_number"], name: "index_incidents_cas_incidents_on_cas_incident_number", unique: true, using: :btree
 
   create_table "incidents_case_assistance_items", force: true do |t|
     t.integer  "price_list_item_id"
@@ -322,6 +322,7 @@ ActiveRecord::Schema.define(version: 20140131071105) do
     t.string   "status",                                   null: false
   end
 
+  add_index "incidents_incidents", ["cas_incident_number"], name: "index_incidents_incidents_on_cas_incident_number", using: :btree
   add_index "incidents_incidents", ["chapter_id", "incident_number"], name: "index_incidents_incidents_on_chapter_id_incident_number", unique: true, using: :btree
   add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id", using: :btree
   add_index "incidents_incidents", ["incident_number"], name: "index_incidents_incidents_on_incident_number", using: :btree

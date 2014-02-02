@@ -1,5 +1,5 @@
 class Incidents::CasIncident < ActiveRecord::Base
-  belongs_to :incident, class_name: 'Incidents::Incident'
+  has_one :incident, class_name: 'Incidents::Incident', primary_key: 'cas_incident_number', foreign_key: 'cas_incident_number'
   belongs_to :chapter, class_name: 'Roster::Chapter'
   has_many :cases, class_name: 'Incidents::CasCase'
   alias :cas_cases :cases
@@ -11,7 +11,7 @@ class Incidents::CasIncident < ActiveRecord::Base
   }
 
   scope :to_link_for_chapter, -> (chapter) {
-    for_chapter(chapter).where{incident_id == nil}.order{incident_date.desc}
+    for_chapter(chapter).joins{incident.outer}.where{(ignore_incident==false) & (incident.id == nil)}.order{incident_date.desc}
   }
 
   def self.[] incident_number
@@ -28,7 +28,7 @@ class Incidents::CasIncident < ActiveRecord::Base
 
   # For Debug Purposes
   def create_incident_from_cas!(chapter=nil)
-    return if incident_id
+    return if incident.present?
 
     self.class.transaction do
       inc = self.build_incident

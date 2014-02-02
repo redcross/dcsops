@@ -2,16 +2,15 @@ class Incidents::CasLinkController < Incidents::BaseController
   inherit_resources
   defaults resource_class: Incidents::CasIncident, finder: :find_by_cas_incident_number!
   actions only: [:index]
-  custom_actions resource: [:link, :promote]
+  custom_actions resource: [:link, :promote, :ignore]
+  load_and_authorize_resource class: 'Incidents::CasIncident'
 
   before_filter :check_not_linked, only: [:link, :promote]
 
   def index
-    authorize! :read, Incidents::CasIncident
   end
 
   def link
-    authorize! :link, resource
     authorize! :link_cas, incident
 
     incident.link_to_cas_incident resource
@@ -20,9 +19,14 @@ class Incidents::CasLinkController < Incidents::BaseController
   end
 
   def promote
-    authorize! :promote, resource
     resource.create_incident_from_cas!
     flash[:info] = 'Incident Promoted'
+    redirect_to collection_path
+  end
+
+  def ignore
+    resource.update_attributes ignore_incident: true
+    flash[:info] = 'Incident Ignored'
     redirect_to collection_path
   end
 
@@ -56,7 +60,10 @@ class Incidents::CasLinkController < Incidents::BaseController
 
   helper_method :incidents_for_cas
   def incidents_for_cas(cas)
-    scope = Incidents::Incident.for_chapter(cas.chapter).with_date_in(link_date_window(cas.incident_date))
+    scope = Incidents::Incident.for_chapter(cas.chapter_id)
+                               .without_cas
+                               .with_date_in(link_date_window(cas.incident_date))
+                               .valid.order{date.desc}
     if cas.county_name
       scope = scope.with_county_name(cas.county_name)
     end

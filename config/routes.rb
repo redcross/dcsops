@@ -102,6 +102,7 @@ Scheduler::Application.routes.draw do
       member do
         post :link
         post :promote
+        post :ignore
       end
     end
 

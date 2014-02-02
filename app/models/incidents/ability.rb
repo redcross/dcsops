@@ -29,7 +29,7 @@ class Incidents::Ability
 
     if is_admin or person.has_role 'cas_admin'
         can [:link_cas], Incidents::Incident
-        can [:read, :promote, :link], Incidents::CasIncident
+        can [:read, :promote, :link, :ignore], Incidents::CasIncident
         can [:manage], Incidents::CasCase
     end
 

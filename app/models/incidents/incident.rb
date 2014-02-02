@@ -10,7 +10,7 @@ class Incidents::Incident < ActiveRecord::Base
   belongs_to :chapter, class_name: 'Roster::Chapter'
   belongs_to :area, class_name: 'Roster::County'
 
-  has_one :cas_incident, class_name: 'Incidents::CasIncident'
+  belongs_to :cas_incident, class_name: 'Incidents::CasIncident', primary_key: 'cas_incident_number', foreign_key: 'cas_incident_number'
   has_one :dat_incident, class_name: 'Incidents::DatIncident', inverse_of: :incident
   has_one :dispatch_log, class_name: 'Incidents::DispatchLog'
   
