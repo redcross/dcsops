@@ -9,6 +9,10 @@ module Incidents::ReportMailerHelper
     end
   end
 
+  def total_assistance_amount
+    @incidents.map(&:total_assistance_amount).sum
+  end
+
   # Methods for the incidents map
   def static_maps_url(retina=false, width=map_width, height=map_height)
     size = "#{width}x#{height}"

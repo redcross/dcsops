@@ -103,14 +103,23 @@
           %th=passthrough_edit_link 'basic', 'Type of Call'
           %td=dat.humanized_incident_call_type
         %tr
+          %th=passthrough_edit_link 'vehicles', 'Vehicles'
+          %td= dat.vehicles.map(&:name).to_sentence
+      %h4 Assistance
+      %table.table.table-bordered.table-condensed
+        %tr
           %th=passthrough_edit_link 'services', 'Assistance Provided'
           %td=resource.services_description
         %tr
-          %th=passthrough_edit_link 'resources', 'Resources Used'
+          %th=passthrough_edit_link 'resources', 'Resources Provided'
           %td=(dat.resources || []).map{|name, quantity| quantity = quantity.to_i; if quantity > 0; name = name.titleize.singularize; pluralize(quantity, name); end}.compact.to_sentence
-        %tr
-          %th=passthrough_edit_link 'vehicles', 'Vehicles'
-          %td= dat.vehicles.map(&:name).to_sentence
+        -if resource.cases.present?
+          %tr
+            %th Cases Opened
+            %td=resource.cases.count
+          %tr
+            %th Total Assistance
+            %td=number_to_currency resource.total_assistance_amount
       -if resource.feeding_partner_use || inline_editable?
         %h4 
           Feeding

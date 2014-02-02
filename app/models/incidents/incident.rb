@@ -236,4 +236,7 @@ class Incidents::Incident < ActiveRecord::Base
     self.county = geocode.district.try(:gsub, ' County', '')
   end
 
+  def total_assistance_amount
+    cases.map(&:total_amount).compact.sum
+  end
 end
