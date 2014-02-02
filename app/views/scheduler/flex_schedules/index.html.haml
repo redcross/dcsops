@@ -40,6 +40,7 @@
     %tr
       %th Person
       %th Positions
+      %th City
       %th Phone 1
       %th Phone 2
       %th Email
@@ -53,6 +54,7 @@
         %td= sched.person.full_name
         %td
           %small= sched.person.positions.select{|p|!p.hidden}.map{ |pos|abbrevs[pos.abbrev] = pos.name; "<span data-toggle='tooltip' title='#{h pos.name}'>#{pos.abbrev}</span>".html_safe}.reduce{|a, b| "#{a}, #{b}".html_safe}
+        %td=sched.person.city.try :titleize
         - phones = sched.person.phone_order
         %td
           = phones[0] && "#{phones[0][:number]} (#{phones[0][:label][0]})"
