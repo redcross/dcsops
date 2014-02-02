@@ -98,6 +98,13 @@ Scheduler::Application.routes.draw do
         get :narrative, on: :member
       end
     end
+    resources :cas_link, only: [:index], controller: :cas_link do
+      member do
+        post :link
+        post :promote
+      end
+    end
+
     scope "responses", controller: :responses do
       root to: :responders, as: 'responders'
     end

@@ -6,8 +6,12 @@ class Incidents::CasIncident < ActiveRecord::Base
 
   #validates :incident_id, :cas_incident_number, :dr_number, uniqueness: {allow_blank: true, allow_nil: true}
 
+  scope :for_chapter, -> chapter {
+    where{chapter_id == chapter}
+  }
+
   scope :to_link_for_chapter, -> (chapter) {
-    where{(incident_id == nil) & (chapter_id == chapter)}.order{incident_date.desc}
+    for_chapter(chapter).where{incident_id == nil}.order{incident_date.desc}
   }
 
   def self.[] incident_number

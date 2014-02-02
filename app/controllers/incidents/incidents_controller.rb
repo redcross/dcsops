@@ -2,12 +2,12 @@ class Incidents::IncidentsController < Incidents::BaseController
   inherit_resources
   respond_to :html, :kml
   defaults finder: :find_by_incident_number!
-  load_and_authorize_resource except: [:link_cas, :needs_report, :activity]
+  load_and_authorize_resource except: [:needs_report, :activity]
   helper Incidents::MapHelper
 
   include NamedQuerySupport
 
-  custom_actions collection: [:needs_report, :link_cas, :tracker, :activity], resource: [:mark_invalid, :close, :reopen]
+  custom_actions collection: [:needs_report, :tracker, :activity], resource: [:mark_invalid, :close, :reopen]
 
   has_scope :in_area, as: :area_id_eq
 
@@ -24,40 +24,6 @@ class Incidents::IncidentsController < Incidents::BaseController
 
   def create
     create! { current_chapter.incidents_report_editable ? resource_path(resource) : new_incidents_incident_dat_path(resource) }
-  end
-
-  def link_cas
-    authorize! :read, Incidents::CasIncident
-    if request.post? and params[:cas_id] and params[:incident_id]
-      cas = Incidents::CasIncident.find params[:cas_id]
-      incident = Incidents::Incident.find params[:incident_id]
-
-      authorize! :link, cas
-
-      incident.link_to_cas_incident(cas)
-    elsif request.post? and params[:cas_id] and params[:commit] == 'Promote to Incident'
-      cas = Incidents::CasIncident.find params[:cas_id]
-
-      authorize! :promote, cas
-      cas.create_incident_from_cas!
-    end
-  end
-
-  def mark_invalid
-    unless resource.open_incident?
-      flash[:error] = 'This incident has already been completed.'
-      redirect_to needs_report_incidents_incidents_path
-      return
-    end
-
-    if params[:incidents_incident]
-      resource.attributes = (params.require(:incidents_incident).permit(:incident_type, :narrative)).merge(status: 'invalid')
-      if resource.save
-        flash[:info] = 'The incident has been removed.'
-        Incidents::IncidentInvalid.new(resource).save
-        redirect_to needs_report_incidents_incidents_path
-      end
-    end
   end
 
   def close
@@ -79,7 +45,19 @@ class Incidents::IncidentsController < Incidents::BaseController
     authorize! :read_case_details, resource_class
   end
 
+  before_filter :require_open_incident, only: :mark_invalid
+  def mark_invalid
+    if params[:incidents_incident] and resource.update_attributes mark_invalid_params
+      flash[:info] = 'The incident has been removed.'
+      Incidents::IncidentInvalid.new(resource).save
+      redirect_to needs_report_resources_path
+    end
+  end
+
   private
+  def mark_invalid_params
+    params.require(:incidents_incident).permit(:incident_type, :narrative).merge(status: 'invalid')
+  end
 
   def requested_partial_name
     partial = params[:partial] 
@@ -87,6 +65,13 @@ class Incidents::IncidentsController < Incidents::BaseController
       partial
     else
       nil
+    end
+  end
+
+  def require_open_incident    
+    unless resource.open_incident?
+      flash[:error] = 'This incident has already been completed.'
+      redirect_to needs_report_resources_path
     end
   end
 
@@ -117,14 +102,13 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     expose(:needs_report_collection) { end_of_association_chain.needs_incident_report.includes{area}.order{incident_number} }
     expose(:tracker_collection) { apply_scopes(end_of_association_chain).open_cases.includes{cas_incident.cases}.uniq }
-    expose(:cas_incidents_to_link) { Incidents::CasIncident.to_link_for_chapter(current_chapter) }
-    expose(:county_names) { current_chapter.counties.map(&:name) }
+
     expose(:resource_changes) {
-      changes = PaperTrail::Version.scoped.order{created_at.desc}
+      changes = PaperTrail::Version.scoped.order{created_at.desc}.for_chapter(current_chapter).includes{[root, item]}
       if params[:id] # we have a single resource
-        changes = changes.where{ ((item_type == my{resource_class.to_s}) & (item_id == my{resource.id})) | ((root_type == my{resource_class.to_s}) & (root_id == my{resource.id}))}
+        changes = changes.for_root(resource)
       else
-        changes = changes.where{ ((item_type == my{resource_class.to_s}) | (root_type == my{resource_class.to_s})) }.where{chapter_id==my{current_chapter}}.includes{[root, item]}.limit(50)
+        changes = changes.for_type(resource_class.to_s).limit(50)
       end
       changes.to_a
     }

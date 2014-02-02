@@ -7,20 +7,18 @@
     %th County
     %th Name
     %th Actions
-  - cas_incidents_to_link.each do |cas|
+  - collection.each do |cas|
     %tr
       %td=cas.cas_incident_number
       %td=cas.incident_date
       %td=cas.county_name
       %td=cas.cas_name
       %td
-        =form_tag '', method: :post, class: "form-inline" do
-          =hidden_field_tag 'cas_id', cas.id
-          - options = incidents_for_cas(cas)
-          -if options.blank?
-            No Incidents Available
-          -else
+        - options = incidents_for_cas(cas)
+        -if options.blank?
+          No Incidents Available
+        -else
+          =form_tag link_resource_path(cas), method: :post, class: "form-inline", style: 'display: inline' do
             =select_tag 'incident_id', "<option></option>".html_safe+options_from_collection_for_select(options, :id, :to_label, include_blank: true)
             =submit_tag 'Link', class: 'btn btn-primary'
-          -if can? :promote, cas
-            =submit_tag 'Promote to Incident', class: 'btn btn-danger'
+        =link_to 'Promote to Incident', promote_resource_path(cas), method: :post, class: 'btn btn-danger'
