@@ -142,14 +142,14 @@ describe Incidents::NotificationSubscription do
     it "should send yesterday when weekdays during the week" do
       Delorean.time_travel_to 'tuesday'
       yesterday = today-1
-      sub.frequency = 'weekday'
+      sub.frequency = 'weekdays'
       sub.range_to_send.should == (yesterday..yesterday)
     end
 
     it "should send the weekend when weekdays on Monday" do
       Delorean.time_travel_to 'monday'
       yesterday = today-1
-      sub.frequency = 'weekday'
+      sub.frequency = 'weekdays'
       sub.range_to_send.should == (yesterday-2..yesterday)
     end
 

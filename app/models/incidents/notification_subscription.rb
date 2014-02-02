@@ -64,7 +64,7 @@ class Incidents::NotificationSubscription < ActiveRecord::Base
     when 'weekly'
       bow = today.at_beginning_of_week
       (bow-7)..(bow-1)
-    when 'weekday'
+    when 'weekdays'
       if today.wday == 1
         (yesterday-2)..(yesterday)
       else
