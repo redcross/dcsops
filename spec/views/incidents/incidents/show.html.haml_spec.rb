@@ -16,8 +16,12 @@ describe "incidents/incidents/show" do
     view.stub :inline_editable? => false
   end
 
+  def presenter(factory)
+    Incidents::IncidentPresenter.new FactoryGirl.create(factory)
+  end
+
   describe "open with no linked incidents" do
-    has_resource(:incident) { FactoryGirl.create :incident }
+    has_resource(:incident) { presenter :incident  }
 
     it "should render" do
       render
@@ -28,7 +32,7 @@ describe "incidents/incidents/show" do
   end
 
   describe "open with linked dat incident" do
-    has_resource(:incident) { FactoryGirl.create :incident }
+    has_resource(:incident) { presenter :incident }
 
     it "should render" do
       dat = FactoryGirl.create :dat_incident, incident: @incident
@@ -42,7 +46,7 @@ describe "incidents/incidents/show" do
   end
 
   describe "closed with linked dat incident" do
-    has_resource(:incident) { FactoryGirl.create :closed_incident }
+    has_resource(:incident) { presenter :closed_incident }
 
     it "should render" do
       render
@@ -56,7 +60,7 @@ describe "incidents/incidents/show" do
   end
 
   describe "open and editable" do
-    has_resource(:incident) { FactoryGirl.create :incident }
+    has_resource(:incident) { presenter :incident }
 
     it "should render" do
       view.stub :inline_editable? => true
@@ -67,7 +71,7 @@ describe "incidents/incidents/show" do
   end
 
   describe "with linked cas incident" do
-    has_resource(:incident) { FactoryGirl.create :incident }
+    has_resource(:incident) { presenter :incident }
 
     it "should render" do
       cas = FactoryGirl.create :cas_incident
@@ -83,7 +87,7 @@ describe "incidents/incidents/show" do
   end
 
   describe "with cas number but no incident" do
-    has_resource(:incident) { FactoryGirl.create :incident }
+    has_resource(:incident) { presenter :incident }
 
     it "should render" do
       @incident.update_attribute :cas_incident_number, "1-123456"

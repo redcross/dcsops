@@ -3,6 +3,7 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
                      'responder' => 'Responder', 'public_affairs' => 'Public Affairs', 'health_services' => 'Health Services',
                      'mental_health' => 'Mental Health', 'dispatch' => 'Dispatch', 'activator' => 'Activator'}
   ROLES = ROLES_TO_LABELS.keys
+  ON_SCENE_ROLES = %w(responder team_lead trainee_lead public_affairs health_services mental_health)
   RESPONSES = %w(not_available no_answer wrong_number no_longer_active)
   RESPONSES_TO_LABELS = RESPONSES.map{|x| {x => x.titleize}}.inject(:merge)
 
@@ -27,7 +28,11 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
     ROLES.include? role
   end
 
-  scope :on_scene, -> { where{ role.in( %w(responder team_lead health_services mental_health) ) } }
+  def on_scene
+    ON_SCENE_ROLES.include? role
+  end
+
+  scope :on_scene, -> { where{ role.in( ON_SCENE_ROLES ) } }
   scope :was_available, -> { where{ role.in( my{ROLES}) }}
   scope :with_person_in_counties, ->(counties){ joins{person.county_memberships}.where{person.county_memberships.county_id.in(my{Array(counties)}) } }
   scope :for_chapter, -> chapter { joins{incident}.where{incident.chapter_id==chapter} }

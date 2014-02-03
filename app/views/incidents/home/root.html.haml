@@ -53,6 +53,7 @@
   .span4
     %h4 Recent Incidents
     -recent_incidents.first(7).each do |inc|
+      - inc = Incidents::IncidentPresenter.new inc
       .incident-box(data-incident-id="#{inc.id}")
         %strong
           .pull-right
@@ -65,11 +66,7 @@
           %small(style="color: grey")=inc.incident_number
         %br
         -if inc.valid_incident?
-          -if inc.dat_incident
-            #{pluralize inc.dat_incident.units_total, "Unit"}, 
-          #{pluralize inc.num_families, "Family"},
-          #{pluralize inc.num_adults, "Adult"},
-          #{pluralize inc.num_children, "Child"}
+          =inc.demographics_description.titleize
         -else
           -if log = inc.latest_event_log
             /Open Incident -

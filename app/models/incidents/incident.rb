@@ -15,13 +15,11 @@ class Incidents::Incident < ActiveRecord::Base
   has_one :dispatch_log, class_name: 'Incidents::DispatchLog'
   
   has_many :event_logs, ->{ order{event_time.desc} }, class_name: 'Incidents::EventLog', inverse_of: :incident
-  #has_one :latest_event_log, ->{ order{event_time.desc}.where{event != 'note'} }, class_name: 'Incidents::EventLog'
   has_many :attachments, class_name: 'Incidents::Attachment', inverse_of: :incident
   has_many :cases, class_name: 'Incidents::Case', inverse_of: :incident
 
   has_many :responder_assignments, lambda { where{role != 'team_lead'}}, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id, inverse_of: :incident
   has_many :all_responder_assignments, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
-  has_many :on_scene_responder_assignments, lambda { on_scene }, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
   has_one :team_lead, lambda{ where(role: 'team_lead')}, class_name: 'Incidents::ResponderAssignment', foreign_key: 'incident_id'
 
   accepts_nested_attributes_for :team_lead, update_only: true
@@ -32,21 +30,8 @@ class Incidents::Incident < ActiveRecord::Base
   validates :chapter, :area, :date, presence: true
   validates :incident_number, presence: true, format: /\A\d{2}-\d{3,}\z/, uniqueness: { scope: :chapter_id }
 
-  #validates_associated :responder_assignments
-
-  #delegate :address,  :city, :state, :zip, :lat, :lng, :num_adults, :num_children, to: :dat_incident
-  #delegate :units_affected, to: :dat_incident
-
   scope :for_chapter, -> chapter { where{chapter_id==chapter}}
   scope :in_area, -> area {where{area_id == area}}
-  scope :incident_stats, lambda {
-    valid.order(nil).select{[
-      count(id).as(:incident_count),
-      sum(num_cases).as(:case_count),
-      sum(num_families).as(:family_count),
-      sum(num_adults + num_children).as(:client_count)
-    ]}.take
-  }
   scope :valid, lambda {
     where{status != 'invalid'}
   }
@@ -57,7 +42,9 @@ class Incidents::Incident < ActiveRecord::Base
     with_status 'open'
   }
   scope :open_cases, lambda {
-    valid.joins{cas_incident.cases.outer}.where{((cas_incident.cases_open > 0) | (cas_incident.last_date_with_open_cases >= 7.days.ago)) & (cas_incident.cases.case_last_updated > 2.months.ago)}
+    valid.joins{cas_incident.cases.outer}.where{
+      ((cas_incident.cases_open > 0) | (cas_incident.last_date_with_open_cases >= 7.days.ago)) & 
+       (cas_incident.cases.case_last_updated > 2.months.ago)}
   }
   scope :without_cas, -> {
     joins{cas_incident.outer}.where{(cas_incident.id == nil)}
@@ -68,6 +55,15 @@ class Incidents::Incident < ActiveRecord::Base
   scope :with_county_name, -> name {
     where{county == name}
   }
+
+  def self.incident_stats
+    valid.order(nil).select{[
+      count(id).as(:incident_count),
+      sum(num_cases).as(:case_count),
+      sum(num_families).as(:family_count),
+      sum(num_adults + num_children).as(:client_count)
+    ]}.take
+  end
 
   def self.count_resources scope, resources
     scope.joins{dat_incident}.unscope(:order).select do
@@ -120,19 +116,6 @@ class Incidents::Incident < ActiveRecord::Base
     self.class.invalid_incident_types.map{|t| AssignableValues::HumanizedValue.new(t, t.titleize)}
   end
 
-  def ensure_unique_responders
-    # Need this as the uniqueness validation doesn't take into account marked for deletion
-    return unless team_lead and dat_incident
-
-    ids = [team_lead.person_id]
-    responder_assignments.select{|r| !r.marked_for_destruction?}.each do |assignment|
-      if ids.include? assignment.person_id
-        assignment.errors[:person_id] << 'is already taken'
-        errors[:responder_assignments] << 'has duplicates'
-      end
-    end
-  end
-
   def update_from_dat_incident
     address_fields = [:num_adults, :num_children, :num_families]
     if dat_incident
@@ -153,34 +136,8 @@ class Incidents::Incident < ActiveRecord::Base
     incident_number
   end
 
-  def incident_status
-    latest_event_log.try(:event)
-  end
-  
-  def incident_status_title
-    event = latest_event_log.try(:event)
-    event && Incidents::EventLog::EVENTS_TO_DESCRIPTIONS[event]
-  end
-
-  def area_name
-    area.try :name
-  end
-
-  def services_description
-    services = dat_incident.try(:services) and services.map(&:titleize).to_sentence
-  end
-
   def to_label
     [incident_number, county.try(:name), date.to_s, incident_type, address].compact.join " "
-  end
-
-  def time_to_on_scene
-    received = self.event_logs.where{event.in(['dispatch_received', 'dispatch_note', 'dat_received'])}.order{event_time}.first
-    on_scene = self.event_logs.where{event.in(['dat_on_scene'])}.first
-
-    if received and on_scene
-      on_scene.event_time - received.event_time
-    end
   end
 
   def link_to_cas_incident(cas)
@@ -202,14 +159,6 @@ class Incidents::Incident < ActiveRecord::Base
 
   def timeline_mandatory_keys
     chapter.try(:incidents_timeline_mandatory_array, Incidents::TimelineProxy::EVENT_TYPES) || []
-  end
-
-  def full_address
-    [[address, city, state].compact.join(", "), zip].compact.join "  "
-  end
-
-  def latest_event_log
-    event_logs.detect{|l| !%w(note dispatch_note).include?(l.event)}
   end
 
   def timeline
@@ -236,7 +185,4 @@ class Incidents::Incident < ActiveRecord::Base
     self.county = geocode.district.try(:gsub, ' County', '')
   end
 
-  def total_assistance_amount
-    cases.map(&:total_amount).compact.sum
-  end
 end

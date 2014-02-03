@@ -47,8 +47,7 @@
               %strong Incident:
               =inc.humanized_incident_type
               %strong Impact:
-              =[(adults and adults > 0) ? pluralize(adults, "adult") : nil, (children and children > 0) ? pluralize(children, "child") : nil, (units && units > 0) ? pluralize(units, "unit") : nil].compact.join(", ")
-              
+              =inc.demographics_description
               %br
               %strong Responders:
               =inc.all_responder_assignments.was_available.count

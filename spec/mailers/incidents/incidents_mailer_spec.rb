@@ -10,7 +10,7 @@ describe Incidents::IncidentsMailer do
   end
 
   describe "no_incident_report" do
-    let(:report) { double :incident, incident_number: "12-345", area_name: 'County', created_at: Time.zone.now, dispatch_log: double( delivered_to: "Bob", log_items: log_items)}
+    let(:report) { double :incident, incident_number: "12-345", area: double(name: 'County'), created_at: Time.zone.now, dispatch_log: double( delivered_to: "Bob", log_items: log_items)}
     let(:mail) { Incidents::IncidentsMailer.no_incident_report(report, person) }
 
     it "renders the headers" do
@@ -33,7 +33,7 @@ describe Incidents::IncidentsMailer do
       services_requested: "Help!", agency: "Fire Department", contact_name: "Name", contact_phone: "Phone", 
       delivered_at: nil, log_items: log_items
     }
-    let(:report) { double :incident, incident_number: "12-345", area_name: 'County', created_at: Time.zone.now, dispatch_log: dispatch}
+    let(:report) { double :incident, incident_number: "12-345", area: double(name: 'County'), created_at: Time.zone.now, dispatch_log: dispatch}
     let(:mail) { Incidents::IncidentsMailer.new_incident(report, person) }
 
     it "renders the headers" do
@@ -56,7 +56,7 @@ describe Incidents::IncidentsMailer do
       services_requested: "Help!", agency: "Fire Department", contact_name: "Name", contact_phone: "Phone", 
       delivered_at: Time.zone.now, delivered_to: "Bob", log_items: log_items
     }
-    let(:report) { double :incident, incident_number: "12-345", area_name: 'County', created_at: Time.zone.now, dispatch_log: dispatch}
+    let(:report) { double :incident, incident_number: "12-345", area: double(name: 'County'), created_at: Time.zone.now, dispatch_log: dispatch}
     let(:mail) { Incidents::IncidentsMailer.incident_dispatched(report, person) }
 
     it "renders the headers" do

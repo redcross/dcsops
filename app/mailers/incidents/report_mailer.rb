@@ -21,7 +21,8 @@ class Incidents::ReportMailer < ActionMailer::Base
 
     scope = Incidents::Incident.valid.for_chapter(chapter)
     
-    @incidents = scope.where{date.in(my{date_range})}.order{date}.includes{responder_assignments.person}
+    @incident_scope = scope.where{date.in(my{date_range})}.order{date}.includes{responder_assignments.person}
+    @incidents = @incident_scope.map{|i| Incidents::IncidentPresenter.new i}
     @weekly_stats = scope.where{date.in(my{date_range})}.incident_stats
     @yearly_stats = scope.where{date.in(fiscal.range)}.incident_stats
 
@@ -80,7 +81,7 @@ private
   }
 
   def responder_assignments
-    Incidents::ResponderAssignment.where{incident_id.in(my{@incidents})}.was_available
+    Incidents::ResponderAssignment.where{incident_id.in(my{@incidents.map(&:id)})}.was_available
   end
 
   expose(:responders_summary_count) {
@@ -95,7 +96,7 @@ private
   }
 
   expose(:incident_statistics) {
-    Incidents::Incident.count_resources(@incidents, chapter.incidents_resources_tracked_array)
+    Incidents::Incident.count_resources(@incident_scope, chapter.incidents_resources_tracked_array)
   }
 
   expose(:map_width) { 250 }

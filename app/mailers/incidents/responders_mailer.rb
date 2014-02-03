@@ -34,6 +34,6 @@ class Incidents::RespondersMailer < ActionMailer::Base
   end
 
   def incident
-    assignment.incident
+    @incident ||= Incidents::IncidentPresenter.new assignment.incident
   end
 end

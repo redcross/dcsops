@@ -106,7 +106,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     expose(:resource_changes) {
       changes = PaperTrail::Version.scoped.order{created_at.desc}.for_chapter(current_chapter).includes{[root, item]}
       if params[:id] # we have a single resource
-        changes = changes.for_root(resource)
+        changes = changes.for_root(resource.__getobj__)
       else
         changes = changes.for_type(resource_class.to_s).limit(50)
       end
@@ -127,6 +127,10 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     def build_resource
       super.tap{|i| i.date ||= Date.current}
+    end
+
+    def resource
+      @resource_presenter ||= Incidents::IncidentPresenter.new(super)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
