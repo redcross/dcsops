@@ -6,8 +6,9 @@ class Incidents::IncidentsController < Incidents::BaseController
   helper Incidents::MapHelper
 
   include NamedQuerySupport
+  include Searchable
 
-  custom_actions collection: [:needs_report, :tracker, :activity], resource: [:mark_invalid, :close, :reopen]
+  custom_actions collection: [:needs_report, :tracker, :activity, :map], resource: [:mark_invalid, :close, :reopen]
 
   has_scope :in_area, as: :area_id_eq
 
@@ -23,7 +24,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   end
 
   def create
-    create! { current_chapter.incidents_report_editable ? resource_path(resource) : new_incidents_incident_dat_path(resource) }
+    create! { after_create_path }
   end
 
   def close
@@ -54,7 +55,20 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
   end
 
+  def map
+    params[:q] = {
+      date_gteq: '2012-07-01',
+      lat_not_null: true,
+      lng_not_null: true
+    }.merge(params[:q] || {})
+    params[:page] = 'all'
+  end
+
   private
+  def after_create_path
+    current_chapter.incidents_report_editable ? resource_path(resource) : new_incidents_incident_dat_path(resource)
+  end
+
   def mark_invalid_params
     params.require(:incidents_incident).permit(:incident_type, :narrative).merge(status: 'invalid')
   end
@@ -94,7 +108,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     def collection
       @_incidents ||= begin
-        scope = apply_scopes(super).merge(search.result).order{[date.desc, incident_number.desc]}.includes{[area, dat_incident, team_lead.person]}
+        scope = apply_scopes(super).order{[date.desc, incident_number.desc]}.includes{[area, dat_incident, team_lead.person]}
         scope = scope.page(params[:page]) if should_paginate
         scope
       end
@@ -118,7 +132,10 @@ class Incidents::IncidentsController < Incidents::BaseController
     }
     expose(:show_version_root) { params[:action] == 'activity' }
 
-    expose(:search) { search_params = {status_in: ['open', 'closed']}.merge(params[:q] || {}); resource_class.search(search_params) }
+    def default_search_params
+      {status_in: ['open', 'closed']}
+    end
+
     expose(:should_paginate) { params[:page] != 'all' }
 
     def end_of_association_chain

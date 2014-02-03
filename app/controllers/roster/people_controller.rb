@@ -3,6 +3,7 @@ class Roster::PeopleController < Roster::BaseController
   respond_to :html, :json, :kml
 
   include NamedQuerySupport
+  include Searchable
 
   has_scope :name_contains
   has_scope :in_county
@@ -26,10 +27,8 @@ class Roster::PeopleController < Roster::BaseController
     end
 
     def collection
-      @collection ||= apply_scopes(super).merge(search.result(distinct: true)).where(vc_is_active: true).includes{positions}
+      @collection ||= apply_scopes(super).where(vc_is_active: true).includes{positions}
     end
-
-    expose(:search) { resource_class.search(params[:q]) }
 
     expose(:identify_people) { false }
 

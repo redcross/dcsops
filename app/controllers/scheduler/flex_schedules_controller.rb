@@ -1,6 +1,7 @@
 class Scheduler::FlexSchedulesController < Scheduler::BaseController
   inherit_resources
-  respond_to :html, :json
+  respond_to :html, :json, :pdf
+  responders :pdf
   load_and_authorize_resource
 
   actions :index, :show, :update
