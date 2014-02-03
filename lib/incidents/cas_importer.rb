@@ -82,7 +82,7 @@ class Incidents::CasImporter
     (1..(sheet.last_row_index-1)).each_slice(100).threach(num_threads) do |rows|
 
       case_ids = []
-      incident_ids = []
+      cas_incident_numbers = []
       incident = nil
 
       ActiveRecord::Base.connection_pool.with_connection do |conn|
@@ -127,9 +127,7 @@ class Incidents::CasImporter
             if !the_case.save
               errors << the_case
             else
-              if incident.incident_id
-                incident_ids << incident.incident_id
-              end
+              cas_incident_numbers << incident.cas_incident_number
             end
             if block_given?
               yield "Case Data #{incident_num} #{the_case.case_number}"
@@ -137,7 +135,7 @@ class Incidents::CasImporter
           end
 
           Incidents::CasCase.where(id: case_ids).update_all last_import: Time.now
-          Incidents::Incident.where(id: incident_ids).each{|i| i.update_from_cas}
+          Incidents::Incident.where(cas_incident_number: cas_incident_numbers).each{|i| i.update_from_cas}
         end
       end
     end
