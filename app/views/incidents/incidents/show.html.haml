@@ -3,10 +3,13 @@
   =resource.incident_number
   #{resource.city}, #{resource.state}
   %small
-    =resource.date.to_s :dow_short
-    -if resource.incident_type
-      ==-
-      =resource.humanized_incident_type
+    -if can? :incident_details, resource
+      =resource.address
+    -#  ==-
+    -#=resource.date.to_s :dow_short
+    -#-if resource.incident_type
+    -#  ==-
+    -#  =resource.humanized_incident_type
     -if resource.open_incident?
       -if can? :close, resource
         =link_to 'Close Incident', close_resource_path, class: 'btn', method: 'post', data: {confirm: 'Really close this incident?'}

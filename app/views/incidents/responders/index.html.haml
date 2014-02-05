@@ -5,6 +5,7 @@
         =link_to parent do
           %i.icon-chevron-left
           #{parent.incident_number} #{parent.city}, #{parent.state}
+      %strong= Incidents::IncidentPresenter.new(parent).full_address
       %h4 Responders
       %table.table.table-bordered.table-condensed
         %tr
@@ -21,7 +22,6 @@
     .span6
       %h4
         Map
-        %small Edit Incident Location
         .responder-map{style: "height: 300px"}
   .row
     .span12
