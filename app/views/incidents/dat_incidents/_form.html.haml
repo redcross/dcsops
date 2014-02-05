@@ -29,12 +29,15 @@
   :javascript
     window.formController = new DatIncidentsFormController();
     $(function() {
-      var hash = window.location.hash;
-      hash && $('ul.nav a[data-target="' + hash + '"]').tab('show');
-
-      $('a[data-toggle=tab]').on('shown', function(evt) {
-        window.history.replaceState({}, '', $(evt.target).attr('data-target'))
-      })
+      if ('hash' in window.location) {
+        var hash = window.location.hash;
+        hash && $('ul.nav a[data-target="' + hash + '"]').tab('show');
+      }
+      if ('history' in window && 'replaceState' in window.history) {
+        $('a[data-toggle=tab]').on('shown', function(evt) {
+          window.history.replaceState({}, '', $(evt.target).attr('data-target'))
+        });
+      }
 
       $.fn.editable.defaults.mode = 'inline';
       $('[data-editme]').editable()
