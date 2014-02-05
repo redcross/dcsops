@@ -11,16 +11,16 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   belongs_to :incident, class_name: 'Incidents::Incident', foreign_key: 'incident_id', inverse_of: :responder_assignments
 
   validates_presence_of :person
-  validates :role, presence: true, inclusion: {in: ROLES + RESPONSES, allow_blank: true}
+  validates :role, presence: true, inclusion: {in: ROLES + RESPONSES, allow_blank: true}, uniqueness: {scope: :incident_id, if: ->(obj){obj.role == 'team_lead'}}
 
   def humanized_role
     ROLES_TO_LABELS[role] || RESPONSES_TO_LABELS[role]
   end
 
-  def self.grouped_roles
+  def self.grouped_roles(team_lead=false)
     [
       ["Did Not Respond", Incidents::ResponderAssignment::RESPONSES_TO_LABELS.invert.to_a],
-      ["Respond To Incident", Incidents::ResponderAssignment::ROLES_TO_LABELS.invert.to_a.reject{|a| a.last == 'team_lead'}]
+      ["Responded To Incident", Incidents::ResponderAssignment::ROLES_TO_LABELS.invert.to_a.reject{|a| !team_lead && a.last == 'team_lead'}]
     ]
   end
 

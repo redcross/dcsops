@@ -3,10 +3,13 @@
   -if can? :read, (resource.responder_assignments.first || resource.responder_assignments.build)
     =link_to 'Launch Dispatch Console', incidents_incident_responders_path(resource)
 %table.table
-  %tr
-    %th Name
-    %th Role
-  - resource.all_responder_assignments.each do |assignment|
+  - {'Responded' => resource.available_responders, 'Unavailable' => resource.unavailable_responders}.each do |title, collection|
     %tr
-      %td=assignment.person.full_name
-      %td=assignment.role.titleize
+      %th(colspan="2")=title
+    %tr
+      %th Name
+      %th Role
+    - collection.each do |assignment|
+      %tr
+        %td=assignment.person.full_name
+        %td=assignment.role.titleize

@@ -18,7 +18,7 @@
                 (sms)
       -else
         =f.input :person, as: :person_typeahead, text_value: f.object.person.try(:full_name), filter: {chapter_id_eq: f.object.incident.chapter_id}
-      =f.input :role, collection: grouped_options_for_select(Incidents::ResponderAssignment.grouped_roles, f.object.role), label: 'Response'
+      =f.input :role, collection: grouped_options_for_select(Incidents::ResponderAssignment.grouped_roles(true), f.object.role), label: 'Response'
       =f.input :was_flex, label: 'Flex Responder'
       .control-group
         .control-label=label_tag :send_assignment_sms

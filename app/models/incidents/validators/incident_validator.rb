@@ -19,6 +19,7 @@ class Incidents::Validators::IncidentValidator < DelegatedValidator
         assignment.errors[:person_id] << 'is already taken'
         errors[:responder_assignments] << 'has duplicates'
       end
+      ids << assignment.person_id
     end
   end
 

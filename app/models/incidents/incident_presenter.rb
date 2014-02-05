@@ -60,4 +60,12 @@ class Incidents::IncidentPresenter < SimpleDelegator
   def on_scene_responders
     all_responder_assignments.count{|r| r.on_scene }
   end
+
+  def available_responders
+    all_responder_assignments.select(&:was_available)
+  end
+
+  def unavailable_responders
+    all_responder_assignments.reject(&:was_available)
+  end
 end
