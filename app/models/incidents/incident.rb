@@ -109,7 +109,7 @@ class Incidents::Incident < ActiveRecord::Base
   end
 
   def self.invalid_incident_types
-    %w(invalid duplicate not_eligible_for_services)
+    %w(invalid duplicate not_eligible_for_services no_response_needed)
   end
 
   def humanized_invalid_incident_types
