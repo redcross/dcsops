@@ -30,12 +30,12 @@ class window.CalendarController
 
     new PersonTypeaheadController $('#select-person'), (id, record) =>
       @person = id
-      this.reloadMonth()
+      this.reload()
 
     $('#clear-person').click (evt) =>
       $('#select-person').val('')
       @person = null
-      this.reloadMonth()
+      this.reload()
 
     $(document).on 'click', '#highlighting-group > button', (evt) =>
       active = if ($(evt.target).hasClass('active')) then false else true
@@ -48,39 +48,54 @@ class window.CalendarController
       @params['show_shifts'] = chosen
       $('#select-shift-group > button[data-shifts='+chosen+']').addClass('active')
       $('#choose-counties').toggle(chosen == 'county')
-      this.reloadMonth()
+      this.reload()
 
     $('#choose-county').change (evt) =>
       val = $(evt.target).val()
       @params['counties'] = if this.isArray(val) then val else [val]
-      this.reloadMonth()
+      this.reload()
+
+    $(document).on 'change', '.choose-category', (evt) =>
+      val = this.checkboxValues($('input.choose-category'))
+      @params['categories'] = val
+      this.reload()
+
+  checkboxValues: (selector) ->
+    val = []
+    selector.each (idx, el) ->
+      if $(el).is(':checked')
+        val[val.length] = $(el).val()
+    val
 
   renderArgs: () ->
-    $.extend {}, @params,
-      person_id: @person
-      show_shifts: @show_shifts
-      highlight: @highlight
+    @params.person_id = @person
+    @params
 
-  reloadShifts: () ->
+  reload: () ->
+    args = this.renderArgs()
+    this.reloadShifts(args)
+    this.reloadMonth(args)
+
+  reloadShifts: (params) ->
     $.ajax
       url: @avail_url
       type: 'GET'
-      data: this.renderArgs()
+      data: params
       success: (data) =>
         $('.open-shifts').html(data)
 
-  reloadMonth: () ->
+  reloadMonth: (params) ->
     this.reloadShifts()
     $('.calendar-container table').addClass('loading').find('input[type=checkbox]').attr('disabled', true)
     $.ajax
       url: '/scheduler/calendar/' + @month
       type: 'GET'
-      data: this.renderArgs()
+      data: params
       success: (data) =>
         $('.calendar-container').html(data)
 
   reloadDate: (date, period) ->
-    this.reloadShifts()
+    this.reloadShifts(this.renderArgs())
     $.ajax
       url: '/scheduler/calendar/' + date
       type: 'GET'

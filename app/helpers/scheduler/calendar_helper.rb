@@ -45,22 +45,26 @@ module Scheduler::CalendarHelper
 
   def view_as_links
     current = params[:display] || ""
+
+    link_params = {action: :show, year: date.year, month: date.strftime("%B").downcase, display: current}.merge ajax_params
+
     links = {"Calendar" => "", "Spreadsheet" => 'spreadsheet', 'Grid' => 'grid'}.map do |name, val|
       if val != current
-        link_to name, url_for(display: val, counties: show_counties)
+        link_to name, url_for(link_params.merge({display: val}))
       else
         name
       end
     end
 
-    safe_join(links, " | ") + tag(:br) + link_to( "Download PDF", url_for(format: :pdf, counties: show_counties, show_shifts: params[:show_shifts]))
+    safe_join(links, " | ") + tag(:br) + link_to( "Download PDF", url_for(link_params.merge format: :pdf))
   end
 
   def ajax_params
     {
       person_id: person.try(:id),
       show_shifts: show_shifts,
-      counties: show_counties
+      counties: show_counties,
+      categories: show_categories
     }
   end
 

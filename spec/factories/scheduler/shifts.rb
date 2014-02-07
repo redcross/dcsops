@@ -5,6 +5,7 @@ FactoryGirl.define do
     name {"Some Shift #{Faker::Name.first_name}"}
     association :county
     shift_group { |s| s.association :shift_group, chapter: s.county.chapter }
+    shift_category { |s| s.association :shift_category, chapter: s.county.chapter }
     max_signups 1
     min_desired_signups 1
     abbrev 'SH'

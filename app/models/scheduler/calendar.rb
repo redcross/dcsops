@@ -2,15 +2,16 @@ class Scheduler::Calendar
   # Calendar is a service class that retrieves all of the objects (group, shift, 
   # assignment) needed to render a calendar for a given date range
 
-  attr_reader :chapter, :start_date, :end_date, :person, :filter, :counties
+  attr_reader :chapter, :start_date, :end_date, :person, :filter, :counties, :categories
 
-  def initialize(chapter, start_date, end_date, person: nil, filter: :mine, counties: [])
+  def initialize(chapter, start_date, end_date, person: nil, filter: :mine, counties: nil, categories: nil)
     @chapter = chapter
     @start_date = start_date
     @end_date = end_date
     @person = person
     @filter = filter
     @counties = counties
+    @categories = categories
 
     load_shifts
   end
@@ -97,7 +98,10 @@ class Scheduler::Calendar
     groups.inject({}){|hash, group|
       shifts = case filter
       when :all then group.shifts
-      when :county then group.shifts.select{|s| counties.include? s.county_id}
+      when :county then group.shifts.select{|s| 
+        (counties.nil? || counties.include?(s.county_id)) && 
+        (categories.nil? || categories.include?(s.shift_category_id))
+      }
       when :mine then group.shifts.select{|s| person and s.can_be_taken_by? person}
       end
       hash[group] = shifts if shifts.present?

@@ -8,8 +8,8 @@ class Scheduler::CalendarController < Scheduler::BaseController
   before_filter :require_xhr, only: [:day, :month]
 
   def show
-    @month = month_param
-    params[:show_shifts] = :county if params[:display]
+    @date = @month = month_param
+    params[:show_shifts] = 'county' if params[:display]
 
     load_calendar @month, @month.next_month
     view = params[:display] || 'show'
@@ -25,14 +25,14 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def day
-    date = Date.strptime(params[:date], "%Y-%m-%d")
+    @date = Date.strptime(params[:date], "%Y-%m-%d")
 
     load_calendar date, date
     render partial: calendar_partial_name, locals: {editable: editable?, date: date}
   end
 
   def month
-    date = Date.strptime(params[:month], "%Y-%m")
+    @date = Date.strptime(params[:month], "%Y-%m")
     end_date = date.next_month
 
     load_calendar date, end_date
@@ -42,7 +42,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
   private
 
   def load_calendar(start_date, end_date)
-    @calendar = Scheduler::Calendar.new(current_chapter, start_date, end_date, person: person, filter: show_shifts, counties: show_counties)
+    @calendar = Scheduler::Calendar.new(current_chapter, start_date, end_date, person: person, filter: show_shifts, counties: show_counties, categories: show_categories)
   end    
 
   helper_method :editable?
@@ -52,7 +52,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
 
   def require_xhr
     unless request.xhr? or params[:partial].present?
-      redirect_to scheduler_calendar_path(date.year, date.strftime("%B").downcase)
+      redirect_to scheduler_calendar_path(Date.current.year, Date.current.strftime("%B").downcase)
     end
   end
 
@@ -69,11 +69,11 @@ class Scheduler::CalendarController < Scheduler::BaseController
     ["DAT", spreadsheet_county.try(:abbrev), @month.strftime("%Y"), @month.strftime("%b")].compact.join "-"
   end
 
-  helper_method :person, :show_counties, :show_shifts,
+  helper_method :person, :show_counties, :show_shifts, :show_categories,
         :can_take_shift?, :spreadsheet_groups, :spreadsheet_county
 
-  attr_reader :calendar
-  helper_method :calendar
+  attr_reader :calendar, :date
+  helper_method :calendar, :date
 
   def person
     return @_person if defined?(@_person)
@@ -97,6 +97,14 @@ class Scheduler::CalendarController < Scheduler::BaseController
     else
       []
     end.compact
+  end
+
+  def show_categories
+    @_show_categories ||= if params[:categories].present?
+      Array(params[:categories]).select(&:present?).map(&:to_i)
+    else
+      Scheduler::ShiftCategory.for_chapter(current_chapter).where{show == true}.ids
+    end
   end
 
   def show_shifts

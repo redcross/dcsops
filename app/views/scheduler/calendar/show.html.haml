@@ -1,4 +1,4 @@
-%h3#calendar-title{style: "text-align: center"}
+#calendar-title=render 'title', month: @month
   
 .calendar-config
   .row
@@ -19,10 +19,17 @@
         =text_field_tag :person, (person and "#{person.first_name} #{person.last_name}"), id: "select-person", style: "width: 100px"
         %button.btn#clear-person Clear
       #choose-counties{style: show_shifts==:county || 'display: none'}
-        =select_tag "counties[]", options_from_collection_for_select(current_chapter.counties, :id, :name, show_counties.first), multiple: true, id: 'choose-county'
+        =select_tag "counties[]", options_from_collection_for_select(current_chapter.counties, :id, :name, show_counties.first), multiple: false, id: 'choose-county'
+        - cats = Scheduler::ShiftCategory.for_chapter(current_chapter).to_a
+        -if cats.count > 1
+          %h5 Categories
+          - cats.each do |cat|
+            =check_box_tag "categories[]", cat.id, show_categories.include?(cat.id), class: 'choose-category', id: "categories_#{cat.id}"
+            =label_tag "categories_#{cat.id}", cat.name
+            %br
     .span3
       %h5 Other Views:
-      =view_as_links
+      #view-as-links=view_as_links
   .row
     %hr
 .calendar-container.highlight-my-shifts

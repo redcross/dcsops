@@ -127,6 +127,16 @@ body.calendar {
     }
   }
 
+  .calendar-config {
+    label {
+      line-height: 1 !important;
+      display: inline;
+    }
+    input[type=checkbox] {
+      margin-top: -3px;
+    }
+  }
+
   .calendar-grid {
     td,th {
       font-size: 8pt;
@@ -232,11 +242,15 @@ body.steven {
   }
   table {
     width: 100%;
+    -fs-table-paginate: paginate;
+    border-spacing: -1px;
   }
 
-  table.calendar td {
-    font-size: 6pt !important;
-    line-height: 1.0 !important;
+  table.calendar {
+    td {
+      font-size: 6pt !important;
+      line-height: 1.0 !important;
+    }
   }
 
   .pageno:before {
@@ -244,9 +258,6 @@ body.steven {
   }
   .pagect:before {
     content: counter(pages);
-  }
-  table {
-    -fs-table-paginate: paginate;
   }
   h3 {
     margin: 0;

@@ -2,8 +2,8 @@
 
 FactoryGirl.define do
   factory :responder_assignment, :class => 'Incidents::ResponderAssignment' do
-    association :person
     association :incident
-    role "team_lead"
+    person { |ra| ra.association :person, chapter: ra.incident.chapter }
+    role "responder"
   end
 end

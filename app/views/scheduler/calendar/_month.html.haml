@@ -1,16 +1,3 @@
-%h3.noscreen{style: 'text-align: center'}
-  #new-title
-    -past = month.last_month; future = month.next_month
-    =link_to '<', scheduler_calendar_path(past.year, past.strftime("%B").downcase), class: 'noprint'
-    =month.strftime "%B %Y"
-    -if show_shifts == :county
-      ==-
-      = (id = show_counties.first) ? Roster::County.find(id).name : ""
-    -elsif show_shifts == :mine and person
-      ==-
-      = person.first_name
-      = person.last_name
-    =link_to '>', scheduler_calendar_path(future.year, future.strftime("%B").downcase), class: 'noprint'
 %table.calendar
   %thead
     %tr
@@ -23,16 +10,17 @@
       %th.dow-header Friday
       %th.dow-header Saturday
   - date = month
+  - next_month = month.next_month
   - if date.wday == 0
     %tbody
       %tr
         %td.month{colspan: 7}
           =render partial: 'monthly', locals: {date: date, editable: editable}
-  - while date < month.next_month do
+  - while date < next_month do
     %tbody
       %tr
         /%td BOW
-        - while date < month.next_month do
+        - while date < next_month do
           -if date == month
             - if date.wday > 0
               %td.month{colspan: date.wday}
@@ -45,9 +33,9 @@
     - if calendar.weekly_groups.count > 0
       / If we get here, we are at the sunday of the week following the one we want to display,
       / or the month has ended.
-      -if date == month.next_month
+      -if date == next_month
         - wdate = date.at_beginning_of_week
-        - if wdate == month.next_month
+        - if wdate == next_month
           - next
       -else 
         - wdate = date.advance( days: -6)
@@ -55,6 +43,9 @@
         - wdate = month
       %tbody{:"data-week" => wdate.at_beginning_of_week.to_s}
         =render partial: 'week', locals: {date: wdate, editable: editable}
+-if request.xhr?
+  :javascript
+    $('#calendar-title').html(#{render('title', month: month).to_json})
+    $('#view-as-links').html(#{view_as_links.to_json})
 :javascript
-  $('#calendar-title').html($('#new-title').html())
   $("[data-toggle=tooltip]").tooltip()

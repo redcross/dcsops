@@ -59,7 +59,7 @@ describe Scheduler::ShiftSwap do
       swap.new_assignment.should_not be_persisted
       expect {
         assignment.reload
-      }.to_not raise_exception(ActiveRecord::RecordNotFound)
+      }.to_not raise_exception
       swap.error_message.should include('swap a shift to yourself')
     end
 

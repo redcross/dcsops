@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140202022829) do
+ActiveRecord::Schema.define(version: 20140206202735) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -678,6 +678,17 @@ ActiveRecord::Schema.define(version: 20140202022829) do
   add_index "scheduler_shift_assignments", ["person_id"], name: "index_scheduler_shift_assignments_on_person_id", using: :btree
   add_index "scheduler_shift_assignments", ["shift_id"], name: "index_scheduler_shift_assignments_on_shift_id", using: :btree
 
+  create_table "scheduler_shift_categories", force: true do |t|
+    t.integer  "chapter_id"
+    t.string   "name"
+    t.boolean  "show",       default: false, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "ordinal"
+  end
+
+  add_index "scheduler_shift_categories", ["chapter_id"], name: "index_scheduler_shift_categories_on_chapter_id", using: :btree
+
   create_table "scheduler_shift_groups", force: true do |t|
     t.string   "name"
     t.string   "period"
@@ -709,6 +720,7 @@ ActiveRecord::Schema.define(version: 20140202022829) do
     t.integer  "min_desired_signups"
     t.boolean  "ignore_county",            default: false
     t.integer  "min_advance_signup",       default: 0,     null: false
+    t.integer  "shift_category_id"
   end
 
   add_index "scheduler_shifts", ["county_id"], name: "index_scheduler_shifts_on_county_id", using: :btree
