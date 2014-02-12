@@ -3,6 +3,7 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
   respond_to :html, :json, :pdf
   responders :pdf
   load_and_authorize_resource
+  include Searchable
 
   actions :index, :show, :update
 
@@ -15,7 +16,6 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
     end
     scope
   end
-  has_scope :with_position, type: :array
   has_scope :with_availability, type: :boolean, default: true
 
   private
@@ -31,6 +31,6 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
     end
 
     def collection
-      @collection ||= apply_scopes(super).includes{[person.positions, person.counties, person.home_phone_carrier, person.work_phone_carrier, person.alternate_phone_carrier, person.cell_phone_carrier, person.sms_phone_carrier]}.uniq
+      @collection ||= apply_scopes(super).uniq.preload{[person.positions, person.counties, person.home_phone_carrier, person.work_phone_carrier, person.alternate_phone_carrier, person.cell_phone_carrier, person.sms_phone_carrier]}
     end
 end

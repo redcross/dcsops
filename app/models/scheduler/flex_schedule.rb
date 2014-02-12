@@ -6,20 +6,18 @@ class Scheduler::FlexSchedule < ActiveRecord::Base
   }
 
   scope :with_availability, lambda {
-    where(
-      Scheduler::FlexSchedule.available_columns.map{|c| "#{c} = 't'"}.join " OR "
-    )
+    where{
+      Scheduler::FlexSchedule.available_columns.map{|c|__send__(c) == true}.reduce(&:|)
+    }
   }
 
   scope :available_at, lambda { |day, shift|
-    where("available_#{day}_#{shift}".to_sym => true)
+    where("available_#{day}_#{shift}" => true)
   }
 
-  scope :with_position, lambda {|county| joins{person.positions}.where{person.positions.id.in(county)}}
-
-  scope :by_distance_from, -> inc {
+  def self.by_distance_from
     joins{person}.order{_(person.lat.op(:-, inc.lat)).op('^', 2).op(:+, _(person.lng.op(:-, inc.lng)).op('^', 2))}
-  }
+  end
 
   def available(day, shift)
     self.send "available_#{day}_#{shift}".to_sym

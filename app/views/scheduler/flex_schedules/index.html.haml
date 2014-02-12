@@ -30,9 +30,11 @@
                 - days_of_week.each do |d|
                   - name = "#{d}_#{t}"
                   %td=check_box_tag "available[]", name, params[:available] && params[:available].include?(name)
-      %tr
-        %th Only Show People With Positions:
-        %td=select_tag "with_position", options_from_collection_for_select(current_chapter.positions.visible, :id, :name, current_scopes[:with_position]), multiple: true, include_blank: true
+      = fields_for :q, search do |f|
+        %tr
+          %th Only Show People With Positions:
+          %td
+            =f.collection_select :person_positions_id_in, current_chapter.positions.visible.order{name}, :id, :name, {include_blank: true}, {multiple: true}
     =submit_tag 'Show', class: 'btn'
 
 %table.table.table-condensed.flex-table
