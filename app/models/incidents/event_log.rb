@@ -9,18 +9,17 @@ class Incidents::EventLog < Incidents::DataModel
   EVENT_TYPES = {
     "note"=>"Note",
     "incident_occurred"=>     "Incident Occurred",
-    "assistance_requested"=>  "Assistance Requested",
+    "incident_notified"=>     "Incident Notified",
+#    "assistance_requested"=>  "Assistance Requested",
     "incident_verified"=>     "Incident Verified",
     "responders_identified"=> "Responders Identified",
-    "dispatch_received"=>     "ARC Dispatch Received Call",
+    "dispatch_received"=>     "Assistance Requested",
     "dispatch_note"=>         "ARC Dispatch",
     "dispatch_relayed"=>      "Incident Dispatched",
     "dat_received"=>          "DAT Received Call",
     "dat_vehicle_pickup"=>    "DAT Picked Up Vehicle",
     "dat_on_scene"=>          "DAT On Scene",
-    "dat_departed_scene"=>    "DAT Departed Scene",
-    "incident_closed"=>       "Incident Closed",
-    "incident_reopened"=>     "Incident Reopened"
+    "dat_departed_scene"=>    "DAT Departed Scene"
   }
 
   assignable_values_for :event do
