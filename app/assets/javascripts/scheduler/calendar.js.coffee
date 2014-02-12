@@ -18,7 +18,7 @@ class window.CalendarController
       body = 
         date: date
         shift_id: shift
-        person_id: @person || @params.person_id
+        person_id: @params.person_id
       $.ajax
         url: '/scheduler/shift_assignments' + (if register then '' else '/'+assignment)
         data: JSON.stringify(if register then body else {})
@@ -29,12 +29,12 @@ class window.CalendarController
           this.reloadDate(date, period)
 
     new PersonTypeaheadController $('#select-person'), (id, record) =>
-      @person = id
+      @params.person_id = id
       this.reload()
 
     $('#clear-person').click (evt) =>
       $('#select-person').val('')
-      @person = null
+      @params.person_id = null
       this.reload()
 
     $(document).on 'click', '#highlighting-group > button', (evt) =>
@@ -68,7 +68,6 @@ class window.CalendarController
     val
 
   renderArgs: () ->
-    @params.person_id = @person
     @params
 
   reload: () ->
@@ -85,7 +84,6 @@ class window.CalendarController
         $('.open-shifts').html(data)
 
   reloadMonth: (params) ->
-    this.reloadShifts()
     $('.calendar-container table').addClass('loading').find('input[type=checkbox]').attr('disabled', true)
     $.ajax
       url: '/scheduler/calendar/' + @month
