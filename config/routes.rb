@@ -122,4 +122,10 @@ Scheduler::Application.routes.draw do
   end
 
   match 'import/dispatch', via: [:head, :post], to: 'incidents/import#import_dispatch'
+
+  if Rails.env.development?
+    controller :mailer_debug do
+      get 'debug/mailers/:action'
+    end
+  end
 end
