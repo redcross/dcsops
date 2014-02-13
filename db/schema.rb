@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140206202735) do
+ActiveRecord::Schema.define(version: 20140208193719) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -320,6 +320,7 @@ ActiveRecord::Schema.define(version: 20140206202735) do
     t.integer  "area_id"
     t.string   "county"
     t.string   "status",                                   null: false
+    t.date     "response_date"
   end
 
   add_index "incidents_incidents", ["cas_incident_number"], name: "index_incidents_incidents_on_cas_incident_number", using: :btree

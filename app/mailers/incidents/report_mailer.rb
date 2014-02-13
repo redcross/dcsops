@@ -21,9 +21,9 @@ class Incidents::ReportMailer < ActionMailer::Base
 
     scope = Incidents::Incident.valid.for_chapter(chapter)
     
-    @incident_scope = scope.where{date.in(my{date_range})}.order{date}.includes{responder_assignments.person}
+    @incident_scope = date_scope(scope, date_range).order{date}.includes{responder_assignments.person}
     @incidents = @incident_scope.map{|i| Incidents::IncidentPresenter.new i}
-    @weekly_stats = scope.where{date.in(my{date_range})}.incident_stats
+    @weekly_stats = date_scope(scope, date_range).incident_stats
     @yearly_stats = scope.where{date.in(fiscal.range)}.incident_stats
 
     tag :incidents, :weekly_report
@@ -42,6 +42,14 @@ private
   helper_method :subtitle, :title
   def title
     "#{chapter.short_name} Disaster Operations Report"
+  end
+
+  def date_scope(scope, date_range)
+    if chapter.incidents_report_use_response_date
+      scope.where{response_date.in(date_range)}
+    else
+      scope.where{date.in(date_range)}
+    end
   end
 
   def subtitle

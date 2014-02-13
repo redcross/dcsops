@@ -28,9 +28,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   end
 
   def close
-    dat = resource.dat_incident || resource.build_dat_incident
-    dat.incident.status = 'closed'
-    if dat.save
+    if resource.close!
       redirect_to resource
     else
       redirect_to edit_incidents_incident_dat_path(resource, status: 'closed')

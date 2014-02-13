@@ -31,6 +31,10 @@
         font-size: 125%;
         margin: 0;
       }
+      h4 {
+        margin-top: 0;
+        margin-bottom: 5px;
+      }
       .incident-header {
         font-weight: bold;
         margin: 0 !important;
@@ -138,8 +142,16 @@
           %td
             %h1.center#title
               =title
-            %h2.center#subtitle
-              =subtitle
+            #subtitle
+              %h2.center
+                =subtitle
+              - cutoff = chapter.incidents_response_date_cutoff || 0
+              -if chapter.incidents_report_use_response_date && cutoff > 0
+                %h4.center
+                  Report Period:
+                  = @date_range.first.in_time_zone(chapter.time_zone).advance(seconds: cutoff).to_s :date_time
+                  to
+                  = @date_range.last.in_time_zone(chapter.time_zone).advance(days: 1, seconds: cutoff).to_s :date_time
         %tr
           %td
             %table#content(border="0" cellpadding="10" cellspacing="0" width="600")

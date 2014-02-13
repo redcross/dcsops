@@ -185,4 +185,15 @@ class Incidents::Incident < ActiveRecord::Base
     self.county = geocode.district.try(:gsub, ' County', '')
   end
 
+  def close!
+    response_date_cutoff = chapter.incidents_response_date_cutoff || 0
+
+    self.status = 'closed'
+    self.response_date = chapter.time_zone.today
+    if chapter.time_zone.now.seconds_since_midnight < response_date_cutoff
+      self.response_date = self.response_date.yesterday
+    end
+    dat_incident && dat_incident.valid? && save
+  end
+
 end
