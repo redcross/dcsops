@@ -16,7 +16,7 @@ class Scheduler::SchedulerService
     assignments.to_a
   end
 
-  def flex_responders(time: chapter.time_zone.now, limit: nil, area: nil, exclude: [])
+  def flex_responders(time: chapter.time_zone.now, limit: nil, area: nil, exclude: [], origin: nil)
     dow = time.strftime("%A").downcase
     offset = time.seconds_since_midnight
     period = (offset >= chapter.scheduler_flex_day_start && offset < chapter.scheduler_flex_night_start) ? 'day' : 'night'
@@ -25,8 +25,11 @@ class Scheduler::SchedulerService
     if area
       schedules = schedules.for_county(area)
     end
+    if origin
+      schedules = schedules.by_distance_from origin
+    end
 
-    people = schedules.where{id.not_in(exclude)}
+    people = schedules.where{id.not_in(exclude)}.limit(limit)
     people.to_a
   end
 

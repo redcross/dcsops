@@ -15,7 +15,7 @@ class Scheduler::FlexSchedule < ActiveRecord::Base
     where("available_#{day}_#{shift}" => true)
   }
 
-  def self.by_distance_from
+  def self.by_distance_from inc
     joins{person}.order{_(person.lat.op(:-, inc.lat)).op('^', 2).op(:+, _(person.lng.op(:-, inc.lng)).op('^', 2))}
   end
 
