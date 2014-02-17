@@ -74,6 +74,6 @@ class Incidents::RespondersController < Incidents::BaseController
 
 
   expose(:ignore_area) { current_chapter.incidents_dispatch_console_ignore_county || (params[:ignore_area] == '1') }
-  expose(:scheduler_service) { Scheduler::SchedulerService.new(current_chapter) }
+  expose(:service) { Incidents::RespondersService.new(parent, collection, ignore_area_scheduled: ignore_area, ignore_area_flex: true) }
 
 end
