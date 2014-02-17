@@ -58,7 +58,7 @@ class Incidents::IncidentPresenter < SimpleDelegator
   end
 
   def on_scene_responders
-    all_responder_assignments.count{|r| r.on_scene }
+    all_responder_assignments.to_a.count{|r| r.on_scene }
   end
 
   def available_responders
