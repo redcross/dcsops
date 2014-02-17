@@ -9,7 +9,7 @@ class Incidents::EventLog < Incidents::DataModel
   EVENT_TYPES = {
     "note"=>"Note",
     "incident_occurred"=>     "Incident Occurred",
-    "incident_notified"=>     "Incident Notified",
+    "incident_notified"=>     "Notification of Incident",
 #    "assistance_requested"=>  "Assistance Requested",
     "incident_verified"=>     "Incident Verified",
     "responders_identified"=> "Responders Identified",
