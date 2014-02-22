@@ -63,10 +63,10 @@ class Scheduler::ShiftSwap
       @new_assignment = Scheduler::ShiftAssignment.new date: assignment.date, 
                                                       shift: assignment.shift, 
                                                      person: destination, 
-                                           swapping_from_id: assignment.id, 
-                                             is_swapping_to: true
+                                           swapping_from_id: assignment.id
       if valid? && new_assignment.save
-        assignment.destroy
+        assignment.is_swapping_to = true
+        assignment.destroy!
         true
       else
         false

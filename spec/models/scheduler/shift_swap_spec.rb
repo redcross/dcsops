@@ -48,9 +48,11 @@ describe Scheduler::ShiftSwap do
     end
 
     it "confirms a swap even when the shift is frozen for the given day" do
-      shift.update_attribute :signups_frozen_before, assignment.date + 10
-      success = swap.confirm_swap! other_person
-      success.should be_true
+      expect {
+        shift.update_attribute :signups_frozen_before, assignment.date + 10
+        success = swap.confirm_swap! other_person
+        success.should be_true
+      }.to_not change{Scheduler::ShiftAssignment.count}
     end
 
     it "rejects a swap between the same person" do
