@@ -67,6 +67,8 @@ gem 'jbuilder'
 
 gem 'rails_12factor', group: :production
 
+gem 'connect', github: 'jlaxson/openid-connect-engine'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do

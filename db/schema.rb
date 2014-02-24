@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140208193719) do
+ActiveRecord::Schema.define(version: 20140223163819) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,128 @@ ActiveRecord::Schema.define(version: 20140208193719) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "connect_access_token_request_objects", force: true do |t|
+    t.integer  "access_token_id"
+    t.integer  "request_object_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "connect_access_token_scopes", force: true do |t|
+    t.integer  "access_token_id"
+    t.integer  "scope_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "connect_access_tokens", force: true do |t|
+    t.integer  "account_id"
+    t.integer  "client_id"
+    t.string   "token"
+    t.datetime "expires_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "connect_access_tokens", ["token"], name: "index_connect_access_tokens_on_token", unique: true, using: :btree
+
+  create_table "connect_authorization_request_objects", force: true do |t|
+    t.integer  "authorization_id"
+    t.integer  "request_object_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "connect_authorization_scopes", force: true do |t|
+    t.integer  "authorization_id"
+    t.integer  "scope_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "connect_authorizations", force: true do |t|
+    t.integer  "account_id"
+    t.integer  "client_id"
+    t.string   "code"
+    t.string   "nonce"
+    t.string   "redirect_uri"
+    t.datetime "expires_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "connect_authorizations", ["code"], name: "index_connect_authorizations_on_code", unique: true, using: :btree
+
+  create_table "connect_clients", force: true do |t|
+    t.integer  "account_id"
+    t.string   "identifier"
+    t.string   "secret"
+    t.string   "name"
+    t.string   "jwks_uri"
+    t.string   "sector_identifier"
+    t.string   "redirect_uris"
+    t.boolean  "dynamic",             default: false
+    t.boolean  "native",              default: false
+    t.boolean  "ppid",                default: false
+    t.datetime "expires_at"
+    t.text     "raw_registered_json"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "connect_clients", ["identifier"], name: "index_connect_clients_on_identifier", unique: true, using: :btree
+
+  create_table "connect_grants", force: true do |t|
+    t.integer  "client_id"
+    t.integer  "account_id"
+    t.integer  "scope_id"
+    t.datetime "expires_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "connect_grants", ["account_id"], name: "index_connect_grants_on_account_id", using: :btree
+  add_index "connect_grants", ["client_id"], name: "index_connect_grants_on_client_id", using: :btree
+  add_index "connect_grants", ["scope_id"], name: "index_connect_grants_on_scope_id", using: :btree
+
+  create_table "connect_id_token_request_objects", force: true do |t|
+    t.integer  "id_token_id"
+    t.integer  "request_object_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "connect_id_tokens", force: true do |t|
+    t.integer  "account_id"
+    t.integer  "client_id"
+    t.string   "nonce"
+    t.datetime "expires_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "connect_pairwise_pseudonymous_identifiers", force: true do |t|
+    t.integer  "account_id"
+    t.string   "identifier"
+    t.string   "sector_identifier"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "connect_request_objects", force: true do |t|
+    t.text     "jwt_string"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "connect_scopes", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "connect_scopes", ["name"], name: "index_connect_scopes_on_name", unique: true, using: :btree
 
   create_table "data_filters", force: true do |t|
     t.string   "model"

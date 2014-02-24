@@ -76,7 +76,6 @@ class ApplicationController < ActionController::Base
   end
 
   def require_valid_user!(return_to=url_for(only_path: false))
-    #puts "Setting redirec to #{return_to}"
     unless current_user_session || oauth2_api_user
       session[:redirect_after_login] = return_to if return_to
       respond_to do |fmt|

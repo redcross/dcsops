@@ -33,6 +33,8 @@ class AdminAbility
       can :manage, DataFilter
       can :manage, HomepageLink
       can :manage, Lookup
+
+      can :manage, :all
     end
 
     is_admin = person.has_role 'chapter_admin'

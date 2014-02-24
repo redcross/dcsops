@@ -24,6 +24,8 @@ Scheduler::Application.routes.draw do
   root to: "roster/sessions#new", constraints: filter
   root to: "root#index", constraints: lambda{|req| !filter.call(req)}, as: nil
 
+  mount Connect::Engine, at: '/'
+
   get '/health', to: 'root#health'
   get '/inactive', to: 'root#inactive', as: 'inactive_user'
 

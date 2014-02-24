@@ -50,6 +50,18 @@ GIT
   specs:
     cancan (1.6.10)
 
+GIT
+  remote: git://github.com/jlaxson/openid-connect-engine.git
+  revision: e129b01d66edf3a1c1b94d4302bed475d66c6ca8
+  specs:
+    connect (0.0.1)
+      constant_cache
+      html5_validators
+      openid_connect
+      rack-oauth2
+      rails (~> 4.0.2)
+      squeel (~> 1.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -89,6 +101,7 @@ GEM
     assignable_values (0.8.1)
       activerecord
     atomic (1.1.14)
+    attr_required (1.0.0)
     authlogic (3.3.0)
       activerecord (>= 3.2)
       activesupport (>= 3.2)
@@ -100,6 +113,7 @@ GEM
       uuidtools (~> 2.1)
     base_app (1.0.5)
     bcrypt-ruby (3.1.2)
+    bindata (2.0.0)
     bitly (0.9.0)
       httparty (>= 0.7.6)
       multi_json (~> 1.3)
@@ -145,6 +159,9 @@ GEM
     coffee-script-source (1.6.3)
     columnize (0.3.6)
     commonjs (0.2.7)
+    constant_cache (0.0.2)
+      activerecord (>= 2.0.2)
+      activesupport (>= 2.0.2)
     couchrest (1.2.0)
       mime-types (~> 1.15)
       multi_json (~> 1.0)
@@ -203,10 +220,12 @@ GEM
     hashie (2.0.5)
     highline (1.6.20)
     hike (1.2.3)
+    html5_validators (1.1.2)
     httparty (0.12.0)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     httpauth (0.2.0)
+    httpclient (2.3.4.1)
     i18n (0.6.9)
     inherited_resources (1.4.1)
       has_scope (~> 0.6.0.rc)
@@ -219,6 +238,12 @@ GEM
     jquery-ui-rails (4.1.1)
       railties (>= 3.1.0)
     json (1.8.1)
+    json-jwt (0.6.1)
+      activesupport
+      bindata
+      multi_json (>= 1.3)
+      securecompare
+      url_safe_base64
     jwt (0.1.10)
       multi_json (>= 1.5)
     kaminari (0.14.1)
@@ -257,6 +282,17 @@ GEM
       jwt (~> 0.1.4)
       multi_json (~> 1.0)
       rack (~> 1.2)
+    openid_connect (0.7.3)
+      activemodel
+      attr_required (>= 0.0.5)
+      json (>= 1.4.3)
+      json-jwt (>= 0.5.5)
+      rack-oauth2 (>= 1.0.0)
+      swd (>= 0.1.2)
+      tzinfo
+      validate_email
+      validate_url
+      webfinger (>= 0.0.2)
     orm_adapter (0.5.0)
     paper_trail (3.0.0)
       activerecord (>= 3.0, < 5.0)
@@ -278,6 +314,12 @@ GEM
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     rack (1.5.2)
+    rack-oauth2 (1.0.7)
+      activesupport (>= 2.3)
+      attr_required (>= 0.0.5)
+      httpclient (>= 2.2.0.2)
+      multi_json (>= 1.3.6)
+      rack (>= 1.1)
     rack-rewrite (1.5.0)
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -339,6 +381,7 @@ GEM
       railties (>= 4.0.0, < 5.0)
       sass (>= 3.1.10)
       sprockets-rails (~> 2.0.0)
+    securecompare (1.0.0)
     selenium-webdriver (2.39.0)
       childprocess (>= 0.2.5)
       multi_json (~> 1.0)
@@ -369,6 +412,12 @@ GEM
     sqlite3 (1.3.8)
     strongbox (0.7.0)
       activerecord
+    swd (0.2.1)
+      activesupport (>= 3)
+      attr_required (>= 0.0.5)
+      httpclient (>= 2.2.1)
+      i18n
+      json (>= 1.4.3)
     term-ansicolor (1.2.2)
       tins (~> 0.8)
     therubyracer (0.12.0)
@@ -396,9 +445,19 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    url_safe_base64 (0.2.2)
     uuidtools (2.1.4)
+    validate_email (0.1.6)
+      activemodel (>= 3.0)
+      mail (>= 2.2.5)
+    validate_url (0.2.0)
+      activemodel (>= 3.0.0)
     warden (1.2.3)
       rack (>= 1.0)
+    webfinger (1.0.0)
+      activesupport
+      httpclient (>= 2.2.0.2)
+      multi_json
     websocket (1.0.7)
     xpath (2.0.0)
       nokogiri (~> 1.3)
@@ -426,6 +485,7 @@ DEPENDENCIES
   chronic
   cocoon
   coffee-rails (~> 4.0)
+  connect!
   couchrest
   coveralls
   credit_card_validator
