@@ -42,7 +42,7 @@ gem 'strongbox'
 gem 'geokit'#, github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 
 gem 'formtastic', '>=2.3.0rc2'
-gem 'formtastic-bootstrap'
+gem 'formtastic-bootstrap', '~> 2.1'
 gem 'cocoon'
 gem 'ransack',             github: 'ernie/ransack',            branch: 'rails-4'
 gem 'activeadmin',       github: 'gregbell/active_admin'  

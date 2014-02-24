@@ -5,6 +5,7 @@ class Incidents::Attachment < Incidents::DataModel
   validates :incident, :name, presence: true
   validates_attachment :file, presence: true, 
                               size: { in: 0..2.megabytes }
+  do_not_validate_attachment_file_type :file
 
 
   assignable_values_for :attachment_type do
