@@ -35,7 +35,7 @@ gem "paper_trail", '~> 3.0'
 gem "assignable_values"
 gem 'credit_card_validator'
 gem 'bootstrap-kaminari-views'
-gem 'paperclip'
+gem 'paperclip', '~> 4.0.0'
 gem 'threach'
 gem 'strongbox'
 

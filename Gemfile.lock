@@ -299,7 +299,7 @@ GEM
     paper_trail (3.0.0)
       activerecord (>= 3.0, < 5.0)
       activesupport (>= 3.0, < 5.0)
-    paperclip (4.1.1)
+    paperclip (4.0.0)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       cocaine (~> 0.5.3)
@@ -511,7 +511,7 @@ DEPENDENCIES
   newrelic_rpm
   nokogiri
   paper_trail (~> 3.0)
-  paperclip
+  paperclip (~> 4.0.0)
   parallel_tests
   puma
   quiet_assets
