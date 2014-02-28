@@ -8,10 +8,6 @@ class Roster::SessionsController < ApplicationController
   skip_before_filter :require_valid_user!
   skip_before_filter :require_active_user!
 
-  def logout
-    destroy
-  end
-
   def new
 
     if current_user_session
@@ -24,30 +20,10 @@ class Roster::SessionsController < ApplicationController
   end
 
   def create
-    resource = Roster::Session.new params[:roster_session]
-    
-    unless resource.save
-      # Try these credentials against VC
-      person = try_validate_vc_credentials(resource.username, params[:roster_session][:password])
-      if person
-        # Save these credentials so we don't look them up next time
-        person.username = resource.username
-        person.password = params[:roster_session][:password]
-        person.save
-      else
-        flash.now[:error] = "Your username and/or password was not recognized by Volunteer Connection.  Please verify you have entered it correctly."
-      end
-    end
-
-    if resource.save
+    if login_with_credentials resource.username, params[:roster_session][:password]
       resource.person.last_login = Time.now
       resource.person.save
-      if session[:redirect_after_login]
-        redirect_to session[:redirect_after_login]
-        session[:redirect_after_login] = nil
-      else
-        redirect_to roster_person_path(resource.person)
-      end
+      redirect_to after_login_path
     else
       render action: :new
     end
@@ -64,25 +40,30 @@ class Roster::SessionsController < ApplicationController
 
   private
 
-  def try_validate_vc_credentials(username, password)
-    uri = URI.parse("https://volunteerconnection.redcross.org")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Post.new(uri.request_uri)
-    request.set_form_data({user: username, password: password, fail: 'login', login: 'Login', succeed: 'm_home', nd: 'm_home'})
-    response = http.request(request)
-    matches = response.body.scan(/<h2><a href='\/\?nd=profile&account_id=(\d+)'>([^<]+)<\/a><\/h2>/)
-    if matches.count > 0
-      return Roster::Person.for_vc_account(matches.first[0])
+  def after_login_path
+    session.delete(:redirect_after_login) || roster_person_path(resource.person)
+  end
+
+  def login_with_credentials username, password
+    service = Roster::LoginService.new(username, password)
+    if resource.save
+      service.deferred_update
+      true
     else
-      return nil
+      service.call
+      resource.save
     end
+  rescue Net::ReadTimeout
+    flash.now[:error] = "There was an error validating your password.  Please try again."
+    false
+  rescue Vc::Login::InvalidCredentials
+    flash.now[:error] = "The credentials you provided are incorrect."
+    false
   end
 
   helper_method :resource
   def resource
-    @resource ||= (current_user_session || Roster::Session.new)
+    @resource ||= (current_user_session || Roster::Session.new(params[:roster_session]))
   end
 
 end

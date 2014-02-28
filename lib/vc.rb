@@ -1,0 +1,3 @@
+module Vc
+
+end
