@@ -71,6 +71,7 @@ module Vc
       table = dom.css "#dro_history__since_march_2013_ table tbody tr"
       table.map do |row|
         cols = row.css '> td'
+        next nil if cols.length < 3
         {
           incident_name: process_col(cols[0]),
           assign_date: parse_date(process_col(cols[1])),
@@ -78,7 +79,7 @@ module Vc
           gap: process_col(cols[3]),
           qualifications: process_col(cols[4])
         }
-      end
+      end.compact
     end
 
     def process_col dom
