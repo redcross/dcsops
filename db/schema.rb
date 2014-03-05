@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140223163819) do
+ActiveRecord::Schema.define(version: 20140301202811) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(version: 20140223163819) do
     t.text     "raw_registered_json"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "superapp",            default: false
   end
 
   add_index "connect_clients", ["identifier"], name: "index_connect_clients_on_identifier", unique: true, using: :btree
@@ -352,6 +353,16 @@ ActiveRecord::Schema.define(version: 20140223163819) do
     t.string   "qual"
     t.date     "date_first_seen"
     t.date     "date_last_seen"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "disaster_id"
+  end
+
+  create_table "incidents_disasters", force: true do |t|
+    t.integer  "vc_incident_id"
+    t.string   "dr_number"
+    t.integer  "fiscal_year"
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

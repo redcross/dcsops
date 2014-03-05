@@ -21,8 +21,7 @@ class Roster::SessionsController < ApplicationController
 
   def create
     if login_with_credentials resource.username, params[:roster_session][:password]
-      resource.person.last_login = Time.now
-      resource.person.save
+      resource.person.update_attribute :last_login, Time.now
       redirect_to after_login_path
     else
       render action: :new

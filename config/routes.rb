@@ -123,6 +123,14 @@ Scheduler::Application.routes.draw do
     resources :partners
   end
 
+  namespace :api do
+    resources :chapters, only: [:index, :show]
+    resources :people, only: [:index, :show] do
+      get :me, on: :collection
+    end
+    resources :disasters, only: [:index, :show]
+  end
+
   match 'import/dispatch', via: [:head, :post], to: 'incidents/import#import_dispatch'
 
   if Rails.env.development?

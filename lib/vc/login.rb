@@ -2,7 +2,7 @@ module Vc
   class Login
     include HTTParty
     base_uri "https://volunteerconnection.redcross.org"
-    default_timeout 10
+    default_timeout 25
     #debug_output
 
     class InvalidCredentials < StandardError; end

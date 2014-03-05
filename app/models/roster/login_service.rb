@@ -3,11 +3,15 @@ class Roster::LoginService
   def initialize(username, password)
     @username = username
     @password = password
+    @ignore_credentials = false
   end
 
   def deferred_update
     # This should be a delayed_job enqueue
-    call
+    @ignore_credentials = true
+    #call
+  rescue => e
+    Raven.capture e
   end
 
   # Returns true/false based on validity of the credentials
@@ -22,7 +26,7 @@ class Roster::LoginService
 
     update_new_record if @person.new_record?
 
-    update_credentials
+    update_credentials unless @ignore_credentials
     update_data info
     update_deployments info[:dro_history]
     @person.save!

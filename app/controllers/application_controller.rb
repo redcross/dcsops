@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::Base
-  include OauthController
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -24,21 +23,6 @@ class ApplicationController < ActionController::Base
   end
 
   #check_authorization
-
-  rescue_from CanCan::AccessDenied do |exception|
-    raise exception and return if Rails.env.test?
-    begin
-      respond_to do |fmt|
-        fmt.html{ flash[:error] = "You are not authorized to access that page."; redirect_to :back }
-        fmt.pdf{ flash[:error] = "You are not authorized to access that page."; redirect_to :back }
-        fmt.json{ head :forbidden }
-        fmt.ics{ head :forbidden }
-        fmt.kml{ head :forbidden }
-      end
-    rescue ActionController::RedirectBackError
-      redirect_to root_path
-    end
-  end
 
   def current_user_session
     return @current_user_session if defined?(@current_user_session)
@@ -76,29 +60,32 @@ class ApplicationController < ActionController::Base
   end
 
   def require_valid_user!(return_to=url_for(only_path: false))
-    unless current_user_session || oauth2_api_user
+    unless current_user_session
       session[:redirect_after_login] = return_to if return_to
-      respond_to do |fmt|
-        fmt.html{ redirect_to new_roster_session_path }
-        fmt.pdf{ redirect_to new_roster_session_path }
-        fmt.json{ head :unauthorized }
-        fmt.ics{ head :unauthorized }
-        fmt.kml{ head :unauthorized }
-      end
-    else 
-      true
+      respond_with_redirect_or_status(new_roster_session_path, :unauthorized)
     end
   end
 
   def require_active_user!
     person = current_user_session.try(:person) || current_user
     if person and person.vc_is_active == false
-      if request.format == :html
-        redirect_to inactive_user_path
-      else
-        head :forbidden
-      end
+      respond_with_redirect_or_status inactive_user_path, :forbidden
     end
+  end
+
+  rescue_from CanCan::AccessDenied do |exception|
+    raise exception and return if Rails.env.test?
+    flash[:error] = "You are not authorized to access that page."
+    respond_with_redirect_or_status :back, :forbidden
+  end
+
+  def respond_with_redirect_or_status redirect, status, fallback=nil
+    respond_to do |fmt|
+      fmt.any(:html, :pdf) { redirect_to redirect }
+      fmt.all { head status }
+    end
+  rescue ActionController::RedirectBackError
+    redirect_to fallback||root_path
   end
 
   def set_frame_options

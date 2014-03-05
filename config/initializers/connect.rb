@@ -1,5 +1,6 @@
 ActiveSupport.on_load :connect_controller do
   skip_before_filter :require_valid_user!
+  skip_before_filter :require_active_user!
 end
 
 Connect.account_class = "Roster::Person"
@@ -32,19 +33,7 @@ Connect::Config.configure do
 
   self.account_last_login = -> person { person.last_login }
   self.account_attributes = -> person, keys, scopes {
-    scopes = scopes.map(&:name)
-    mapping = {name: :full_name, given_name: :first_name, family_name: :last_name, preferred_username: :username,
-      email: :email}
-    attrs = mapping.map{|key, attr_name| 
-      {key => person.send(attr_name)}
-    }.reduce(&:merge)
-
-    if scopes.include? 'openid'
-      attrs['chapter'] = person.chapter_id 
-      attrs['active'] = person.vc_is_active
-    end
-
-    attrs
+    UserInfoRenderer.new(person, keys, scopes).to_hash
   }
 end
 
