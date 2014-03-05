@@ -95,7 +95,11 @@ module Vc
 
     def parse_csz line
       matches = line.scan(/([\w\s]+),\s*(\w{2})\s*(\d{5})/).first
-      [matches[0], matches[1], matches[2]]
+      if matches
+        [matches[0], matches[1], matches[2]]
+      else
+        [nil, nil, nil]
+      end
     end
 
   end
