@@ -52,18 +52,22 @@ module Vc
       data = block.css("p").first
       lines = data.children.select(&:text?).map{|node| node.text.strip }
 
+      county_idx = lines.find_index{|l| l=~/County/i}
+
+      address_lines = lines[0..(county_idx-1)]
+
       first_name, last_name = name.split /\s+/, 2
-      city, state, zip = parse_csz lines[2]
+      city, state, zip = parse_csz address_lines.last
       {
         first_name: first_name,
         last_name: last_name,
-        address1: lines[0],
-        address2: lines[1],
+        address1: address_lines[0],
+        address2: address_lines.count >= 3 ? address_lines[1] : nil,
         city: city,
         state: state,
         zip: zip,
-        email: lines[4],
-        vc_member_number: lines[5].scan(/Member#: (\d+)/).first[0].to_i
+        email: lines[county_idx+1],
+        vc_member_number: lines.detect{|l| l=~ /Member#/}.scan(/Member#: (\d+)/).first[0].to_i
       }
     end
 
