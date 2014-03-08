@@ -52,14 +52,15 @@ GIT
 
 GIT
   remote: git://github.com/jlaxson/openid-connect-engine.git
-  revision: 3c3001a893900e843a87c97fa8082e7eda066182
+  revision: c88c3405ca7a34732db9b6e551c6d3e793bda1d9
+  branch: master
   specs:
     connect (0.0.1)
       constant_cache
       html5_validators
       openid_connect
       rack-oauth2
-      rails (~> 4.0.2)
+      rails (~> 4.0.3)
       squeel (~> 1.1)
 
 GEM
