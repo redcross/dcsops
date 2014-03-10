@@ -29,7 +29,7 @@ namespace :incidents_periodic do
   task :get_deployments => :environment do
     Raven.capture do
       Roster::Chapter.where{vc_username != nil}.each do |chapter|
-        VcQuery.get_deployments chapter
+        Vc::Deployments.get_deployments chapter
       end
     end
   end
