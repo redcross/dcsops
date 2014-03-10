@@ -1,5 +1,6 @@
 module Vc
   class QueryTool < Client
+    attr_accessor :query_list
 
     def get_disaster_query(query_id, params={})
 

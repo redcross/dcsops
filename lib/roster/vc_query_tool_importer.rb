@@ -114,7 +114,7 @@ class Roster::VcQueryToolImporter
 
   def import(chapter, queries=query_mappings.keys)
     @chapter = chapter
-    @client = VcQuery.new chapter.vc_username, chapter.vc_password
+    @client = Vc::QueryTool.new chapter.vc_username, chapter.vc_password
     @client.logger = self.logger
 
     positions = join_positions_and_usage

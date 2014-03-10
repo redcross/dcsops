@@ -30,7 +30,7 @@ class Roster::MemberPositionsImporter < ImportParser
     unless @person and @person.vc_id == vc_id
       attrs[:vc_is_active] = is_active_status(attrs[:vc_is_active])
       @person = object 
-      @person ||= Roster::Person.find_or_initialize_by(chapter_id: @chapter, vc_id: vc_id) if attrs[:vc_is_active]
+      @person ||= Roster::Person.find_or_initialize_by(vc_id: vc_id) if attrs[:vc_is_active]
       if @person.nil? or (@person.new_record? and !attrs[:vc_is_active])
         #logger.warn "Skipping because inactive and new: #{attrs.inspect}"
         @person = nil
