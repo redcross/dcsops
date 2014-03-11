@@ -52,7 +52,7 @@ GIT
 
 GIT
   remote: git://github.com/jlaxson/openid-connect-engine.git
-  revision: c88c3405ca7a34732db9b6e551c6d3e793bda1d9
+  revision: d03d5c5f2bd98e273a27fbfbcdb2593347c706e2
   branch: master
   specs:
     connect (0.0.1)
@@ -440,7 +440,7 @@ GEM
       execjs
       rails (>= 3.1)
       railties (>= 3.1)
-    tzinfo (0.3.38)
+    tzinfo (0.3.39)
     uglifier (2.4.0)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
