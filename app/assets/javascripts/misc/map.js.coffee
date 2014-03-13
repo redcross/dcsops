@@ -44,13 +44,11 @@ window.MapFactory =
 
     $(dom).mouseenter (evt) =>
       if (!map.hover)
-        console.log 'controlsIn', evt
         map.hover = true
         map.setOptions this.controlsIn
 
     $('body').mouseover (evt) =>
       if (map.hover)
         if $(evt.target).closest(dom).length == 0
-          console.log 'controslOut', evt
           map.hover = false
           map.setOptions this.controlsOut

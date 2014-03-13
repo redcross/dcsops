@@ -146,10 +146,12 @@ class window.AllIncidentsHeatmapController
       @markers = objects.map (obj) =>
         pt = new google.maps.LatLng(obj.lat, obj.lng)
         @bounds.extend pt
-        new google.maps.Marker
+        marker = new google.maps.Marker
           position: pt
           map: @map
           icon: this.iconForEvent(obj.status)
+        google.maps.event.addListener marker,'click', ()=>(console.log obj.id)
+        marker
 
     @map.fitBounds @bounds
 
