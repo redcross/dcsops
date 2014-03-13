@@ -106,7 +106,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     def collection
       @_incidents ||= begin
-        scope = apply_scopes(super).order{[date.desc, incident_number.desc]}.includes{[area, dat_incident, team_lead.person]}
+        scope = apply_scopes(super).order{[date.desc, incident_number.desc]}.preload{[area, dat_incident, team_lead.person]}
         scope = scope.page(params[:page]) if should_paginate
         scope
       end
