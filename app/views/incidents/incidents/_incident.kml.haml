@@ -1,3 +1,4 @@
+- resource = Incidents::IncidentPresenter.new resource
 - dat = resource.dat_incident
 
 %strong Type:
@@ -14,18 +15,18 @@
 %br
 
 %strong Team Lead:
-=resource.team_lead.try(:person).try(:full_name)
+=resource.team_lead_name
 %br
 
 %strong Number of Responders:
-=resource.responder_assignments.count
+=resource.on_scene_responders
 %br
 
 -if dat
   %strong Clients:
-  -if dat.num_adults > 0
+  -if resource.num_adults && resource.num_adults > 0
     =pluralize(resource.num_adults, "Adult")
-  -if dat.num_children > 0
+  -if resource.num_children && resource.num_children > 0
     =pluralize(resource.num_children, "Child")
   %br
 
@@ -38,5 +39,5 @@
   %br
 
 %strong View In:
-=link_to 'DCSOps', url_for(resource)
+=link_to 'DCSOps', polymorphic_url(resource)
 %br

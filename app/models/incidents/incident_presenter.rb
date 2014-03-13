@@ -68,4 +68,8 @@ class Incidents::IncidentPresenter < SimpleDelegator
   def unavailable_responders
     all_responder_assignments.reject(&:was_available)
   end
+
+  def team_lead_name
+    team_lead.try(:person).try(:full_name)
+  end
 end
