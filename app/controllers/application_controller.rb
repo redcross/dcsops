@@ -59,7 +59,7 @@ class ApplicationController < ActionController::Base
     logged_in_user && AdminAbility.new(logged_in_user).can?(:impersonate, person)
   end
 
-  def require_valid_user!(return_to=url_for(only_path: false))
+  def require_valid_user!(return_to=request.original_url)
     unless current_user_session
       session[:redirect_after_login] = return_to if return_to
       respond_with_redirect_or_status(new_roster_session_path, :unauthorized)

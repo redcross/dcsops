@@ -38,6 +38,8 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :scheduler_flex_day_start, :integer
   serialized_accessor :config, :scheduler_flex_night_start, :integer
 
+  serialized_accessor :config, :salesforce_sso_url, :string
+
   def self.array_accessor *syms
     syms.each do |sym|
       define_method "#{sym}_array" do |valid_options=nil|

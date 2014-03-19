@@ -6,23 +6,8 @@ Scheduler::Application.routes.draw do
 
   ActiveAdmin.routes(self)
 
-  filter = lambda{|req| 
-    rack_req = Rack::Request.new req.env
-    rack_req.instance_eval do
-      def request; self; end
-      def remote_ip; self.ip; end
-    end
-    Authlogic::Session::Base.controller = Authlogic::ControllerAdapters::AbstractAdapter.new(rack_req)
-    ret = Roster::Session.find.nil?
-    Authlogic::Session::Base.controller = nil
-    if ret
-      req.env['SET_RETURN_TO'] = '/'
-    end
-    ret
-  }
-
-  root to: "roster/sessions#new", constraints: filter
-  root to: "root#index", constraints: lambda{|req| !filter.call(req)}, as: nil
+  root to: "roster/sessions#new", constraints: UnauthenticatedRequestFilter
+  root to: "root#index", constraints: UnauthenticatedRequestFilter::AuthenticatedRequestFilter, as: nil
 
   mount Connect::Engine, at: '/'
 
@@ -64,6 +49,8 @@ Scheduler::Application.routes.draw do
     resources :people
     resource :session
     #resources :cell_carriers
+
+    match 'salesforce/new', to: 'salesforce#new', as: :salesforce_initiation, via: [:get, :post]
 
     scope :openid, controller: 'open_id', path: 'openid', as: 'openid' do
       get 'user/:user_id', action: :user, as: :user
