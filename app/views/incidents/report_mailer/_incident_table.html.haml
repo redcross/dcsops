@@ -11,15 +11,11 @@
             %br
             =pluralize @weekly_stats.incident_count, "Incident"
             %br
-            =pluralize @weekly_stats.case_count, 'Case'
-            %br
             =pluralize @weekly_stats.client_count, 'Client'
           %td.center
             %strong This Year
             %br
             =pluralize @yearly_stats.incident_count, "Incident"
-            %br
-            =pluralize @yearly_stats.case_count, 'Case'
             %br
             =pluralize @yearly_stats.client_count, 'Client'
         %tr
