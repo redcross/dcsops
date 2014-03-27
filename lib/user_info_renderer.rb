@@ -41,11 +41,12 @@ class UserInfoRenderer
 
   def deployments
     if scopes.include? 'deployments'
-      { deployments: Incidents::Deployment.for_person(person).map{|d| render_deployment d} }
+      { deployments: Incidents::Deployment.for_person(person).includes{disaster}.map{|d| render_deployment d} }
     end
   end
 
   def render_deployment d
-    { dr_number: nil, dr_name: d.dr_name, gap: d.gap, start_date: d.date_first_seen, end_date: d.date_last_seen}
+    pp d
+    { dr_number: nil, dr_name: d.disaster.title, gap: d.gap, start_date: d.date_first_seen, end_date: d.date_last_seen}
   end
 end

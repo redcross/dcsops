@@ -116,7 +116,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     expose(:tracker_collection) { apply_scopes(end_of_association_chain).open_cases.includes{cas_incident.cases}.uniq }
 
     expose(:resource_changes) {
-      changes = PaperTrail::Version.scoped.order{created_at.desc}.for_chapter(current_chapter).includes{[root, item]}
+      changes = PaperTrail::Version.order{created_at.desc}.for_chapter(current_chapter).includes{[root, item]}
       if params[:id] # we have a single resource
         changes = changes.for_root(resource.__getobj__)
       else
