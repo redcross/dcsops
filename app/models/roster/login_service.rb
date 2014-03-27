@@ -49,7 +49,8 @@ class Roster::LoginService
 
   def update_deployments deployments  
     deployments.each do |deployment|
-      dep = Incidents::Deployment.find_or_initialize_by(dr_name: deployment[:incident_name], gap: deployment[:gap], person_id: @person.id)
+      disaster = Incidents::Disaster.find_or_create_by(name: deployment[:incident_name])
+      dep = Incidents::Deployment.find_or_initialize_by(disaster_id: disaster.id, gap: deployment[:gap], person_id: @person.id)
       dep.date_first_seen = deployment[:assign_date]
       dep.date_last_seen = deployment[:release_date] || Date.current
       dep.save!

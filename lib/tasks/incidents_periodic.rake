@@ -26,11 +26,21 @@ namespace :incidents_periodic do
     end
   end
 
-  task :get_deployments => :environment do
+  task :get_deployments => [:environment, :get_disasters] do
     Raven.capture do
       Roster::Chapter.where{vc_username != nil}.each do |chapter|
         next unless chapter.vc_username.present?
-        Vc::Deployments.get_deployments chapter
+        Incidents::DeploymentImporter.get_deployments chapter
+      end
+    end
+  end
+
+  task :get_disasters => :environment do
+    Raven.capture do
+      Roster::Chapter.where{vc_username != nil}.each do |chapter|
+        next unless chapter.vc_username.present?
+        Incidents::DisastersImporter.get_disasters chapter
+        break # For now, this only needs to run for one chapter since it pulls national data
       end
     end
   end

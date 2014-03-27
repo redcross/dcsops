@@ -68,14 +68,14 @@ private
   }
 
   def deployments
-    ignore = chapter.incidents_report_dro_ignore_array.map{|d| d + '%'}
+    ignore = chapter.incidents_report_dro_ignore_array
 
     Incidents::Deployment.for_chapter(chapter).seen_since(@date_range.first)
-                          .includes{person.counties}
-                          .where{ dr_name.not_like_any(ignore) }
+                          .includes{[disaster, person.counties]}
+                          .where{ disaster.dr_number.not_like_any(ignore) }
                           .order{ date_first_seen.desc }
-                          .uniq{|a| [a.person_id, a.dr_name] }
-                          .group_by(&:dr_name)
+                          .uniq{|a| [a.person_id, a.disaster_id] }
+                          .group_by{|a| a.disaster.title }
   end
 
   expose(:detailed_deployments) {

@@ -1,5 +1,17 @@
 class Incidents::DeploymentImporter
   include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+
+  def self.get_deployments(chapter)
+    ImportLog.capture(self.to_s, "Get-#{chapter.id}") do |logger|
+      logger.level = 0
+      query = Vc::QueryTool.new chapter.vc_username, chapter.vc_password, logger
+      file = query.get_disaster_query '38613', {return_jid: 4942232, prompt0: chapter.vc_unit}, :csv
+      StringIO.open file.body do |io|
+        self.new.import_data(chapter, io)
+      end
+    end
+  end
+
   def import_data(chapter, io)
     @chapter = chapter
     workbook = CSV.parse(io)
@@ -32,13 +44,16 @@ class Incidents::DeploymentImporter
 
       number, name = dr_name.split " ", 2
       number.gsub! '-20', '-'
+      fy = number.split('-').last.to_i + 2000
 
-      dep = Incidents::Deployment.find_or_initialize_by(person_id: person.id, dr_name: name, gap: gap)
+      disaster = Incidents::Disaster.find_or_initialize_by(name: name)
+      disaster.dr_number = number
+      disaster.fiscal_year = fy
+      disaster.save!
 
-      dep.dr_number = number
+      dep = Incidents::Deployment.find_or_initialize_by(person_id: person.id, disaster_id: disaster.id, gap: gap)
       dep.date_first_seen ||= @chapter.time_zone.today
       dep.date_last_seen = @chapter.time_zone.today
-
       dep.save!
 
       yield "Deployment Data" if block_given?

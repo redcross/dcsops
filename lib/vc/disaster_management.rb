@@ -9,7 +9,7 @@ module Vc
         components = node.text.strip.split(" ", 2)
         { 
           vc_incident_id: value.to_i, 
-          dr_number: components.first,
+          dr_number: components.first.gsub('-20', '-'),
           name: components.last
         }
       end.compact
@@ -23,7 +23,7 @@ module Vc
         row = row['cell']
         {
           vc_incident_id: row[0],
-          dr_number: row[1],
+          dr_number: row[1].gsub('-20', '-'),
           name: row[2].strip,
           level: row[3],
           start_date: parse_date(row[5]),
