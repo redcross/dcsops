@@ -9,7 +9,7 @@ class Roster::LoginService
   def deferred_update
     # This should be a delayed_job enqueue
     @ignore_credentials = true
-    #call
+    call
   rescue => e
     Raven.capture e
   end
@@ -28,8 +28,9 @@ class Roster::LoginService
 
     update_credentials unless @ignore_credentials
     update_data info
-    update_deployments info[:dro_history]
     @person.save!
+
+    update_deployments info[:dro_history]
   end
 
   def update_new_record
@@ -47,6 +48,11 @@ class Roster::LoginService
   end
 
   def update_deployments deployments  
-
+    deployments.each do |deployment|
+      dep = Incidents::Deployment.find_or_initialize_by(dr_name: deployment[:incident_name], gap: deployment[:gap], person_id: @person.id)
+      dep.date_first_seen = deployment[:assign_date]
+      dep.date_last_seen = deployment[:release_date] || Date.current
+      dep.save!
+    end
   end
 end

@@ -80,7 +80,7 @@ module Vc
           incident_name: process_col(cols[0]),
           assign_date: parse_date(process_col(cols[1])),
           release_date: parse_date(process_col(cols[2])),
-          gap: process_col(cols[3]),
+          gap: process_col(cols[3]).gsub('-', '/'),
           qualifications: process_col(cols[4])
         }
       end.compact

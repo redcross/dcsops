@@ -10,4 +10,9 @@ class Incidents::Deployment < ActiveRecord::Base
   def self.for_person person
     where{person_id == person}
   end
+
+  def gap= gap
+    super gap
+    (self.group, self.activity, self.position, self.qual) = gap.split '/'
+  end
 end

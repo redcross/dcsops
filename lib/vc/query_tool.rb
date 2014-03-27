@@ -2,9 +2,10 @@ module Vc
   class QueryTool < Client
     attr_accessor :query_list
 
-    def get_disaster_query(query_id, params={})
+    def get_disaster_query(query_id, params={}, format=:xls)
+      raise 'Unknown query format' unless [:xls, :pdf, :csv].include? format
 
-      report_args = {nd: 'clearreports_auth', init: 'xls', query_id: query_id}.merge(params)
+      report_args = {nd: 'clearreports_auth', init: format, query_id: query_id}.merge(params)
       logger.debug "Report args: #{report_args.inspect}"
 
       resp = self.post '/', body: report_args

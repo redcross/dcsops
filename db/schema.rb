@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140301202811) do
+ActiveRecord::Schema.define(version: 20140327223349) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,11 +104,11 @@ ActiveRecord::Schema.define(version: 20140301202811) do
     t.boolean  "dynamic",             default: false
     t.boolean  "native",              default: false
     t.boolean  "ppid",                default: false
+    t.boolean  "superapp",            default: false
     t.datetime "expires_at"
     t.text     "raw_registered_json"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "superapp",            default: false
   end
 
   add_index "connect_clients", ["identifier"], name: "index_connect_clients_on_identifier", unique: true, using: :btree
@@ -356,6 +356,7 @@ ActiveRecord::Schema.define(version: 20140301202811) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "disaster_id"
+    t.string   "dr_number"
   end
 
   create_table "incidents_disasters", force: true do |t|
@@ -816,9 +817,9 @@ ActiveRecord::Schema.define(version: 20140301202811) do
     t.integer  "chapter_id"
     t.string   "name"
     t.boolean  "show",       default: false, null: false
+    t.integer  "ordinal"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "ordinal"
   end
 
   add_index "scheduler_shift_categories", ["chapter_id"], name: "index_scheduler_shift_categories_on_chapter_id", using: :btree
