@@ -27,7 +27,7 @@ class Roster::LoginService
     update_new_record if @person.new_record?
 
     update_credentials unless @ignore_credentials
-    update_data info
+    update_data info unless @ignore_credentials
     @person.save!
 
     update_deployments info[:dro_history]
