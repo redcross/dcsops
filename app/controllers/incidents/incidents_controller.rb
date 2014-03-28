@@ -8,7 +8,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   include NamedQuerySupport
   include Searchable
 
-  custom_actions collection: [:needs_report, :tracker, :activity, :map], resource: [:mark_invalid, :close, :reopen]
+  custom_actions collection: [:needs_report, :activity, :map], resource: [:mark_invalid, :close, :reopen]
 
   has_scope :in_area, as: :area_id_eq
 
@@ -113,7 +113,6 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
 
     expose(:needs_report_collection) { end_of_association_chain.needs_incident_report.includes{area}.order{incident_number} }
-    expose(:tracker_collection) { apply_scopes(end_of_association_chain).open_cases.includes{cas_incident.cases}.uniq }
 
     expose(:resource_changes) {
       changes = PaperTrail::Version.order{created_at.desc}.for_chapter(current_chapter).includes{[root, item]}

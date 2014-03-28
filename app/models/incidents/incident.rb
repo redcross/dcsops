@@ -41,11 +41,6 @@ class Incidents::Incident < ActiveRecord::Base
   scope :needs_incident_report, lambda {
     with_status 'open'
   }
-  scope :open_cases, lambda {
-    valid.joins{cas_incident.cases.outer}.where{
-      ((cas_incident.cases_open > 0) | (cas_incident.last_date_with_open_cases >= 7.days.ago)) & 
-       (cas_incident.cases.case_last_updated > 2.months.ago)}
-  }
   scope :without_cas, -> {
     joins{cas_incident.outer}.where{(cas_incident.id == nil)}
   }

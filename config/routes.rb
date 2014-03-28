@@ -75,7 +75,6 @@ Scheduler::Application.routes.draw do
       
       collection do
         get :needs_report
-        get :tracker
         get :activity
         match :link_cas, via: [:get, :post], as: :link_cas
       end
@@ -85,7 +84,7 @@ Scheduler::Application.routes.draw do
         match :reopen, via: [:post, :put, :patch]
       end
     end
-    resources :cas_incidents do
+    resources :cas_incidents, only: :index do
       resources :cases, controller: 'cas_cases' do
         get :narrative, on: :member
       end

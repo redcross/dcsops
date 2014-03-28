@@ -13,9 +13,9 @@
             -if num_incidents_to_link > 0
               (#{num_incidents_to_link})
             %i.icon-chevron-right
-      -if can? :tracker, Incidents::Incident
+      -if can? :read, Incidents::CasIncident
         %li
-          %a{href: tracker_incidents_incidents_path}
+          %a{href: incidents_cas_incidents_path}
             Incident Tracker
             %i.icon-chevron-right
       -if can? :create, Incidents::NotificationSubscription.new(person: current_user, notification_type: 'report')

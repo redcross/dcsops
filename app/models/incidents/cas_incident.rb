@@ -1,7 +1,7 @@
 class Incidents::CasIncident < ActiveRecord::Base
   has_one :incident, class_name: 'Incidents::Incident', primary_key: 'cas_incident_number', foreign_key: 'cas_incident_number'
   belongs_to :chapter, class_name: 'Roster::Chapter'
-  has_many :cases, class_name: 'Incidents::CasCase'
+  has_many :cases, class_name: 'Incidents::CasCase', inverse_of: :cas_incident
   alias :cas_cases :cases
 
   #validates :incident_id, :cas_incident_number, :dr_number, uniqueness: {allow_blank: true, allow_nil: true}
@@ -12,6 +12,12 @@ class Incidents::CasIncident < ActiveRecord::Base
 
   scope :to_link_for_chapter, -> (chapter) {
     for_chapter(chapter).joins{incident.outer}.where{(ignore_incident==false) & (incident.id == nil)}.order{incident_date.desc}
+  }
+
+  scope :open_cases, lambda {
+    joins{cases.outer}.where{
+      ((cases_open > 0) | (last_date_with_open_cases >= 7.days.ago)) & 
+       (cases.case_last_updated > 2.months.ago)}.uniq
   }
 
   def self.[] incident_number
