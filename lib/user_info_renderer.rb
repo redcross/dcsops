@@ -46,7 +46,6 @@ class UserInfoRenderer
   end
 
   def render_deployment d
-    pp d
     { dr_number: nil, dr_name: d.disaster.title, gap: d.gap, start_date: d.date_first_seen, end_date: d.date_last_seen}
   end
 end
