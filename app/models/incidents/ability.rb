@@ -38,7 +38,8 @@ class Incidents::Ability
     end
 
     if is_admin or person.has_role 'cas_details'
-        can [:read, :read_case_details], Incidents::CasIncident, {chapter_id: person.chapter_id}
+        can :read_case_details, Incidents::Incident
+        can :read, Incidents::CasIncident, {chapter_id: person.chapter_id}
         can :narrative, Incidents::CasCase, {cas_incident: {chapter_id: person.chapter_id}}
     end
 
