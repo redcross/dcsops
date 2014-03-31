@@ -7,6 +7,10 @@ class Incidents::CasIncidentsController < Incidents::BaseController
 
   protected
 
+  def end_of_association_chain
+    super.where{chapter_id == my{current_chapter}}
+  end
+
   def collection
     @_cas_incidents ||= super.preload{[cases, incident]}
   end
