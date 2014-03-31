@@ -16,7 +16,7 @@ class Api::Ability
   end
 
   def for_client(client)
-
+    can :read, Roster::Chapter
   end
 
 end
