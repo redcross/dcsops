@@ -30,16 +30,11 @@ ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
 
   collection_action :send_report, method: :post do
     begin
-      chapter = current_chapter
-      today = chapter.time_zone.today
-      subscriptions = Incidents::NotificationSubscription.for_type('report').for_chapter(chapter).to_send_on(today).includes{person.chapter}.with_active_person.readonly(false)
       response.content_type = :text
-      subscriptions.each do |sub|
-        Incidents::ReportMailer.report_for_date_range(sub.person.chapter, sub.person, sub.range_to_send).deliver
-        sub.update_attribute :last_sent, today
-        response.stream.write "Sent to #{sub.person.email}\n"
-      end
-      response.stream.write "Sent to #{subscriptions.count} people.\n"
+      response.stream.write "Sending subscriptions..."
+      job = Incidents::WeeklyReportJob.new(current_chapter.id)
+      job.perform
+      response.stream.write "Sent to #{job.count} people.\n"
     rescue => e
       response.stream.write "An exception occurred while sending, please try again.\n"
       response.stream.write e.to_s + "\n"

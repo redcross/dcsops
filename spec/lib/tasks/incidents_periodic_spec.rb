@@ -90,17 +90,8 @@ describe "" do
   end
 
   describe "incidents_periodic:send_weekly_report" do
-    before(:each) do
-      @incident = FactoryGirl.create :incident
-      @person = FactoryGirl.create :person, chapter: @incident.chapter
-      @person.chapter.update_attributes incidents_report_send_automatically: true
-    end
-
     it "should send the weekly report to a person with a subscription" do
-      Delorean.time_travel_to Date.current.at_beginning_of_week.in_time_zone
-      sub = Incidents::NotificationSubscription.create! person: @person, county: nil, notification_type: 'report', frequency: 'weekly'
-
-      Incidents::ReportMailer.should_receive(:report_for_date_range).with(@person.chapter, @person, sub.range_to_send).and_return(double :deliver => true)
+      Incidents::WeeklyReportJob.should_receive :enqueue
       subject.invoke
     end
   end

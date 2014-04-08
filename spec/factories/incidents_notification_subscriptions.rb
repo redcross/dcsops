@@ -1,9 +1,10 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :incidents_notification_subscription, :class => 'Incidents::NotificationSubscription' do
-    person nil
+  factory :notification_subscription, :class => 'Incidents::NotificationSubscription' do
+    association :person
     county nil
-    notification_type "MyString"
+    notification_type "report"
+    frequency 'weekly'
   end
 end
