@@ -30,6 +30,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_sequence_enabled, :boolean
   serialized_accessor :config, :incidents_enabled_report_frequencies, :string
   serialized_accessor :config, :incidents_report_send_automatically, :boolean
+  serialized_accessor :config, :incidents_report_send_at, :integer, default: 0
   serialized_accessor :config, :incidents_report_include_assistance_amounts, :boolean
   serialized_accessor :config, :incidents_report_use_response_date, :boolean
   serialized_accessor :config, :incidents_response_date_cutoff, :integer, default: 0
