@@ -44,6 +44,8 @@ class Incidents::DeploymentImporter
 
       number, name = dr_name.split " ", 2
       number.gsub! '-20', '-'
+      number.strip!
+      name.strip!
       fy = number.split('-').last.to_i + 2000
 
       disaster = Incidents::Disaster.find_or_initialize_by(name: name)
