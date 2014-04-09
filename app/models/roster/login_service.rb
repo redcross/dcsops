@@ -9,9 +9,7 @@ class Roster::LoginService
   def deferred_update
     # This should be a delayed_job enqueue
     @ignore_credentials = true
-    call
-  rescue => e
-    Raven.capture e
+    Delayed::Job.enqueue self
   end
 
   # Returns true/false based on validity of the credentials
@@ -20,6 +18,7 @@ class Roster::LoginService
 
     update_person_info info
   end
+  alias_method :perform, :call
 
   def update_person_info info
     @person = Roster::Person.find_or_initialize_by(vc_id: info[:vc_id])

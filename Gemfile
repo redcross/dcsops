@@ -15,8 +15,7 @@ gem 'jquery-rails'
 gem 'haml-rails'
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 
-gem "memcachier"
-gem "dalli"
+gem 'delayed_job_active_record'
 
 gem 'inherited_resources'
 gem 'responders'
@@ -61,6 +60,8 @@ gem 'httparty'
 gem 'couchrest'
 gem 'bitly'
 gem 'aws-sdk'
+gem "memcachier"
+gem "dalli"
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 # gem 'turbolinks'
