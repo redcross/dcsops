@@ -1,16 +1,16 @@
 source 'https://rubygems.org'
-ruby "2.0.0"
+ruby "2.1.1"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.0.0'
-gem 'squeel', github: 'ernie/squeel'
+gem 'squeel', github: 'activerecord-hackery/squeel'
 gem 'puma'
 gem 'rack-rewrite'
 
 gem 'activerecord-postgresql-adapter'
 gem 'activerecord-import'
 
-gem 'sass-rails',   '~> 4.0.0.rc1'
+gem 'sass-rails'
 gem 'jquery-rails'
 gem 'haml-rails'
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
@@ -24,7 +24,10 @@ gem 'has_scope'
 gem "twitter-bootstrap-rails", '~> 2.2.8'
 gem 'bootstrap-x-editable-rails'
 gem "spreadsheet" # Import from excel
-gem "authlogic"
+
+gem 'scrypt'
+gem "authlogic", '3.4.0'
+
 gem "ri_cal" # Ical Rendering
 gem "cancan", github: 'jlaxson/cancan'
 gem "ruby-openid", require: 'openid'
@@ -112,6 +115,8 @@ group :development do
   gem 'capistrano'
   gem 'rvm-capistrano'
   gem 'ruby-prof'
+  gem 'spring'
+  gem 'spring-commands-rspec'
 end
 
 # To use ActiveModel has_secure_password
