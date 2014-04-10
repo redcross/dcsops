@@ -1,6 +1,6 @@
 namespace :scheduler_periodic do
   task :send_reminders => [:environment] do
-    Scheduler::SendRemindersJob.enqueue chapter.id
+    Scheduler::SendRemindersJob.enqueue
   end
 
   task :send_daily => [:send_daily_shift_swap]
