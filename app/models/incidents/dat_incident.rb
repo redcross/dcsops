@@ -23,8 +23,6 @@ class Incidents::DatIncident < Incidents::DataModel
   serialize :services
   serialize :languages
 
-  after_save :update_incident
-
   include SerializedColumns
   TRACKED_RESOURCE_TYPES.each do |type_s|
     type = type_s.to_sym
@@ -32,12 +30,6 @@ class Incidents::DatIncident < Incidents::DataModel
   end
   def resource_types_to_track
     TRACKED_RESOURCE_TYPES & (incident.try(:chapter).try(:incidents_resources_tracked_array) || [])
-  end
-
-  def update_incident
-    if incident(true)
-      incident.update_from_dat_incident
-    end
   end
 
   def complete_report?

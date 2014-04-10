@@ -4,8 +4,8 @@ FactoryGirl.define do
   factory :shift_group, :class => 'Scheduler::ShiftGroup' do
     name 'Group'
     period "daily"
-    start_offset 3600
-    end_offset 7200
+    start_offset 0
+    end_offset 24.hours
 
     association :chapter
   end

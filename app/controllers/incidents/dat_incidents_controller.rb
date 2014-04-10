@@ -109,8 +109,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     def resource_params
       return [] if request.get?
 
-      keys = [:incident_call_type, :team_lead_id,
-             :num_adults, :num_children, :num_families, :num_cases, 
+      keys = [:incident_call_type, :team_lead_id, :num_cases, 
              :incident_type, :incident_description, :narrative_brief, :narrative,
              :num_people_injured, :num_people_hospitalized, :num_people_deceased,
              :responder_notified, :responder_arrived, :responder_departed,
@@ -142,6 +141,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
         @_incident_params ||= base.permit([
           :incident_type, :narrative, :status,
           :address, :city, :state, :zip, :lat, :lng, :county, :neighborhood,
+          :num_adults, :num_children, :num_families,
           {:team_lead_attributes => [:id, :person_id, :role, :response]},
           {:responder_assignments_attributes => [:id, :person_id, :role, :response, :_destroy, :was_flex]},
           :evac_partner_used,

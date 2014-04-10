@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140409021212) do
+ActiveRecord::Schema.define(version: 20140409160942) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -337,9 +337,6 @@ ActiveRecord::Schema.define(version: 20140409021212) do
     t.integer  "incident_id",             null: false
     t.string   "incident_call_type"
     t.string   "verified_by"
-    t.integer  "num_adults"
-    t.integer  "num_children"
-    t.integer  "num_families"
     t.integer  "num_people_injured"
     t.integer  "num_people_hospitalized"
     t.integer  "num_people_deceased"

@@ -31,11 +31,29 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
     end
   end
 
+  def self.for_chapter(chapter)
+    where{chapter_id == chapter}
+  end
+
+  def self.daily
+    where{period == 'daily'}
+  end
+
+  def self.first_group(chapter, current_time=Time.zone.now)
+    self.current_groups_for_chapter(chapter, current_time, daily).first || begin
+
+      groups = daily.for_chapter(chapter).order{start_offset.asc}.to_a
+
+      groups.detect{start_offset <= current_time.seconds_since_midnight} || groups.first
+    end
+  end
   # Returns a date, group pairing of the count upcoming groups
   def self.next_groups(chapter, count=2, current_time=Time.zone.now)
     current_time = current_time.in_time_zone(chapter.time_zone)
 
-    current_group = self.current_groups_for_chapter(chapter, current_time).select{|grp| grp.period == 'daily'}.first
+    current_group = first_group(chapter, current_time)
+
+    return [] unless current_group
 
     ret = [{date: current_group.start_date, group: current_group}]
     while ret.count < count
@@ -45,7 +63,7 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
     ret
   end
 
-  def self.current_groups_for_chapter(chapter, current_time=Time.zone.now, scope=scoped)
+  def self.current_groups_for_chapter(chapter, current_time=Time.zone.now, scope=all)
     now = current_time.in_time_zone(chapter.time_zone)
 
     self.where(chapter_id: chapter).merge(scope).select{|group|

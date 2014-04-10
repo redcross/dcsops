@@ -26,6 +26,7 @@ require 'capybara/rspec'
 require 'capybara/rails'
 require 'selenium-webdriver'
 require 'database_cleaner'
+require 'paper_trail/frameworks/rspec'
 #require "sauce_helper"
 
 #Capybara.default_driver = SauceConfig.use_sauce? ? :sauce : :selenium

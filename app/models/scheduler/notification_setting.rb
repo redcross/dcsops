@@ -5,6 +5,7 @@ class Scheduler::NotificationSetting < ActiveRecord::Base
 
   scope :needs_daily_email, ->chapter{ needs_daily(chapter, :email) }
   scope :needs_daily_sms, ->chapter{ needs_daily(chapter, :sms) }
+  scope :needs_daily_swap, ->chapter{ for_chapter(chapter).with_active_person.where{(email_all_swaps_daily == true)} }
 
   scope :needs_daily, -> chapter,method {
     now = chapter.time_zone.now

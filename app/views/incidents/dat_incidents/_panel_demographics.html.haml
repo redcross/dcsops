@@ -1,7 +1,8 @@
 =f.inputs "Demographics" do
-  =f.input :num_adults
-  =f.input :num_children
-  =f.input :num_families
+  =f.fields_for :incident do |f|
+    =f.input :num_adults
+    =f.input :num_children
+    =f.input :num_families
   =f.input :num_people_injured
   =f.input :num_people_hospitalized
   =f.input :num_people_deceased

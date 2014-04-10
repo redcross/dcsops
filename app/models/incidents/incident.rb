@@ -111,16 +111,6 @@ class Incidents::Incident < ActiveRecord::Base
     self.class.invalid_incident_types.map{|t| AssignableValues::HumanizedValue.new(t, t.titleize)}
   end
 
-  def update_from_dat_incident
-    address_fields = [:num_adults, :num_children, :num_families]
-    if dat_incident
-      address_fields.each do |f|
-        self.send "#{f}=", dat_incident.send(f)
-      end
-    end
-    save!
-  end
-
   def update_from_cas
     if cas_incident
       update_attribute :num_cases, cas_incident.cases.count

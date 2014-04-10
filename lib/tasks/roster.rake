@@ -2,6 +2,7 @@ namespace :roster do
 
   task :update => :environment do
     Roster::Chapter.where{vc_username != nil}.each do |chapter|
+      next unless vc_username.present?
       sh("rake roster:update_positions CHAPTER_ID=#{chapter.id}")
     end
   end

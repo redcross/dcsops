@@ -20,11 +20,11 @@
   Structure Type: #{dat.humanized_structure_type}
 
 %p
-  Population: #{pluralize dat.num_adults, "adult"}, #{pluralize dat.num_children, 'child'}
+  Population: #{pluralize @incident.num_adults, "adult"}, #{pluralize @incident.num_children, 'child'}
   %br
   Population: #{dat.num_people_injured} injured, #{dat.num_people_hospitalized} hospitalized, #{dat.num_people_deceased} deceased
   %br
-  Families: #{dat.num_families}
+  Families: #{@incident.num_families}
   %br
   Units: #{dat.units_total}
 
