@@ -18,7 +18,13 @@ class Roster::LoginService
 
     update_person_info info
   end
-  alias_method :perform, :call
+  
+  # Same as call, but ignores Invalid Credentials (for background job)
+  def perform
+    call
+  rescue Vc::Login::InvalidCredentials
+
+  end
 
   def update_person_info info
     @person = Roster::Person.find_or_initialize_by(vc_id: info[:vc_id])
