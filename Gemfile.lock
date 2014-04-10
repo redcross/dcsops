@@ -52,11 +52,10 @@ GIT
 
 GIT
   remote: git://github.com/jlaxson/openid-connect-engine.git
-  revision: 65503f3a331d99ab763840cf522e12fc1292659d
+  revision: 7932b16b21f3931bf91cb84d5ee26aa3835e9863
   branch: master
   specs:
     connect (0.0.1)
-      constant_cache
       html5_validators
       openid_connect
       rack-oauth2
@@ -160,9 +159,6 @@ GEM
     coffee-script-source (1.7.0)
     columnize (0.3.6)
     commonjs (0.2.7)
-    constant_cache (0.0.2)
-      activerecord (>= 2.0.2)
-      activesupport (>= 2.0.2)
     couchrest (1.2.0)
       mime-types (~> 1.15)
       multi_json (~> 1.0)
