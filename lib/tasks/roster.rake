@@ -1,16 +1,24 @@
 namespace :roster do
 
   task :update => :environment do
-    Roster::Chapter.where{vc_username != nil}.each do |chapter|
-      next unless vc_username.present?
-      sh("rake roster:update_positions CHAPTER_ID=#{chapter.id}")
+    Raven.capture do
+      Roster::Chapter.where{vc_username != nil}.each do |chapter|
+        next unless chapter.vc_username.present?
+        begin
+          sh("rake roster:update_positions CHAPTER_ID=#{chapter.id}")
+        rescue => e
+          Raven.capture_exception e
+        end
+      end
     end
   end
 
   task :update_positions => :environment do
-    chapter = Roster::Chapter.find ENV['CHAPTER_ID']
-    ImportLog.capture("UpdatePositions", "chapter-#{chapter.id}") do |logger, log|
-      Roster::VcQueryToolImporter.new(logger, log).import(chapter, [:positions, :qualifications, :usage])
+    Raven.capture do
+      chapter = Roster::Chapter.find ENV['CHAPTER_ID']
+      ImportLog.capture("UpdatePositions", "chapter-#{chapter.id}") do |logger, log|
+        Roster::VcQueryToolImporter.new(logger, log).import(chapter, [:positions, :qualifications, :usage])
+      end
     end
   end
 

@@ -17,7 +17,11 @@ namespace :incidents_periodic do
     Raven.capture do
       Roster::Chapter.where{vc_username != nil}.each do |chapter|
         next unless chapter.vc_username.present?
-        Incidents::DeploymentImporter.get_deployments chapter
+        begin
+          Incidents::DeploymentImporter.get_deployments chapter
+        rescue => e
+          Raven.capture_exception e
+        end
       end
     end
   end

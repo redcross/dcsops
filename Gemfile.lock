@@ -222,7 +222,7 @@ GEM
     has_scope (0.6.0.rc)
       actionpack (>= 3.2, < 5)
       activesupport (>= 3.2, < 5)
-    hashie (2.1.0)
+    hashie (2.0.5)
     highline (1.6.21)
     hike (1.2.3)
     html5_validators (1.1.2)
@@ -512,6 +512,7 @@ DEPENDENCIES
   geokit
   haml-rails
   has_scope
+  hashie (~> 2.0.0)
   httparty
   inherited_resources
   jbuilder
