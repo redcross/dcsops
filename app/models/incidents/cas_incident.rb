@@ -34,54 +34,7 @@ class Incidents::CasIncident < ActiveRecord::Base
 
   # For Debug Purposes
   def create_incident_from_cas!(chapter=nil)
-    return if incident.present?
-
-    self.class.transaction do
-      inc = self.build_incident
-      inc.status = 'closed'
-      inc.incident_number = "19-#{self.id}"
-      inc.chapter = chapter || Roster::Chapter.all.detect{|ch| ch.cas_chapter_codes_array.include? self.chapter_code}
-      inc.num_adults = self.num_clients
-      inc.num_children = 0
-      inc.num_families = self.cases.count
-      inc.num_cases = self.cases.count
-      #inc.units_affected = self.cases.count
-
-      inc.cas_incident_number = cas_incident_number
-
-      kase = self.cases.first
-      if kase
-        inc.address = kase.address
-        inc.city = kase.city
-        inc.state = kase.state
-
-        res = Geokit::Geocoders::GoogleGeocoder.geocode( [inc.address, inc.city, inc.state].join(", "))
-        if res
-          (inc.lat, inc.lng) = res.lat, res.lng
-          inc.county = res.district.gsub(' County', '') if res.district
-          inc.zip = res.zip
-        end
-      elsif county_name
-        res = Geokit::Geocoders::GoogleGeocoder.geocode "#{county_name}, CA, USA"
-        if res
-          (inc.lat, inc.lng) = res.lat, res.lng
-          inc.county = county_name
-        end
-      else
-        return
-      end
-      inc.area = Roster::County.find_by_name(county_name || 'Region') || Roster::County.find_by_name('Region')
-      return unless inc.area
-
-      #inc.incident_call_type = 'hot'
-      #inc.incident_type = 'fire'
-      #inc.team_lead_id = Roster::Person.where(last_name: 'Laxson').first.id
-      inc.date = incident_date
-
-      if inc.save validate: false
-        self.save validate: false
-      end
-    end
+    Incidents::CasPromoter.promote!(self, chapter)
   end
 
 end

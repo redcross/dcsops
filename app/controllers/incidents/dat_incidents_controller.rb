@@ -78,12 +78,17 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     return unless %w(new edit).include? params[:action] 
 
     obj.build_incident if obj.incident.nil?
-    obj.incident.build_evac_partner_use if obj.incident.evac_partner_use.nil?
-    obj.incident.build_feeding_partner_use if obj.incident.feeding_partner_use.nil?
-    obj.incident.build_hotel_partner_use if obj.incident.hotel_partner_use.nil?
-    obj.incident.build_shelter_partner_use if obj.incident.shelter_partner_use.nil?
+    build_partner_uses obj.incident
 
     obj.incident.build_team_lead role: 'team_lead', response: 'available' unless obj.incident.team_lead
+  end
+
+  def build_partner_uses(inc)
+    [:evac, :feeding, :hotel, :shelter].each do |type|
+      unless inc.send("#{type}_partner_use")
+        inc.send("build_#{type}_partner_use")
+      end
+    end
   end
 
   def build_resource
@@ -102,7 +107,10 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   end
 
   def end_of_association_chain
-    Incidents::Incident.includes{[dat_incident.completed_by, dat_incident.vehicles, responder_assignments.person]}.where{(chapter_id == my{current_chapter}) & (incident_number == my{params[:incident_id]})}.first!
+    Incidents::Incident.includes{[dat_incident.completed_by, dat_incident.vehicles, responder_assignments.person]}
+                       .for_chapter(current_chapter)
+                       .where{(incident_number == my{params[:incident_id]})}
+                       .first!
   end
 
     # Never trust parameters from the scary internet, only allow the white list through.

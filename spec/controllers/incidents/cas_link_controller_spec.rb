@@ -56,9 +56,11 @@ describe Incidents::CasLinkController do
 
   it "can promote to an incident" do
     cas = FactoryGirl.create :cas_incident, chapter: @person.chapter
-    FactoryGirl.create :county, name: cas.county_name
+    FactoryGirl.create :county, name: cas.county_name, chapter: @person.chapter
 
-    Geokit::Geocoders::GoogleGeocoder.should_receive(:geocode).and_return(double lat: Faker::Address.latitude, lng: Faker::Address.longitude)
+    Geokit::Geocoders::GoogleGeocoder.should_receive(:geocode).and_return(
+      double lat: Faker::Address.latitude, lng: Faker::Address.longitude, success?: true, 
+             city: Faker::Address.city, district: Faker::Address.city, zip: Faker::Address.zip_code)
 
     expect {
       post :promote, id: cas.to_param, commit: 'Promote to Incident'

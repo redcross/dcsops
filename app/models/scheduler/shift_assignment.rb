@@ -81,8 +81,10 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   scope :for_day, lambda {|day| where(date: day)}
 
   scope :for_active_groups, -> (groups) {
+    groups=groups.uniq{|group| [group.start_date, group.id]}
+
     joins{shift}.where{
-      row(date, shift.shift_group_id).in(my{groups}.map{|group| row(group.start_date, group.id) })
+      row(date, shift.shift_group_id).in(groups.map{|group| row(group.start_date, group.id) })
     }
   }
 
@@ -138,7 +140,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     }.select{|ass| ass.notification_setting.allow_sms_at? now }
   end
 
-  scope :normalized_date_on_or_after, ->(time) {
+  def self.normalized_date_on_or_after time
     in_date = time.to_date
     joins{shift.shift_group}.where(<<-SQL)
     scheduler_shift_assignments.date >= (CASE scheduler_shift_groups.period
@@ -148,7 +150,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     ELSE NULL
     END)
     SQL
-  }
+  end
 
   scope :starts_after, ->(time){
     start_date = time.to_date

@@ -168,6 +168,7 @@ class Incidents::Incident < ActiveRecord::Base
     self.lng = geocode.lng
     self.city = geocode.city
     self.county = geocode.district.try(:gsub, ' County', '')
+    self.zip = geocode.zip
   end
 
   def close!

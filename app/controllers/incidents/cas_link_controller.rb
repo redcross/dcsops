@@ -19,7 +19,7 @@ class Incidents::CasLinkController < Incidents::BaseController
   end
 
   def promote
-    resource.create_incident_from_cas!
+    resource.create_incident_from_cas! current_chapter
     flash[:info] = 'Incident Promoted'
     redirect_to collection_path
   end

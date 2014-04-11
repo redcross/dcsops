@@ -68,6 +68,7 @@ describe Scheduler::SendRemindersJob do
 
     it "works all the way through for daily reminders" do
       person = FactoryGirl.create :person
+      chapter = person.chapter
       person.update_attributes work_phone_carrier: FactoryGirl.create(:cell_carrier)
       setting = Scheduler::NotificationSetting.create person: person, email_all_shifts_at: 0, sms_all_shifts_at: 0
 
