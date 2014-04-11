@@ -106,45 +106,37 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     joins{person}.where{person.vc_is_active == true}
   }
   
-  scope :needs_email_invite, ->(chapter) {
+  def self.needs_email_invite chapter
     joins(:notification_setting).readonly(false)
     .with_active_person.for_chapter(chapter)
     .where(:email_invite_sent => false, :scheduler_notification_settings => {send_email_invites: true})
     .where('date > ?', chapter.time_zone.today)
-  }
-  
-  scope :needs_email_reminder, ->(chapter){
-    where(:email_reminder_sent => false)
-    .joins{notification_setting}.where{notification_setting.email_advance_hours != nil}
-    .with_active_person.for_chapter(chapter).readonly(false)
+  end
+
+  def self.needs_reminder chapter, type
+    where(:"#{type}_reminder_sent" => false)
+    .joins{notification_setting}.where{notification_setting.__send__("#{type}_advance_hours") != nil}
+    .with_active_person.for_chapter(chapter).readonly(false).includes{notification_setting}
     .select{|ass|
       now = chapter.time_zone.now
       start = ass.local_start_time
       etime = ass.local_end_time
-      ass.notification_setting.email_advance_hours and etime > now and (start - ass.notification_setting.email_advance_hours) < now
+      etime > now and (start - ass.notification_setting.send("#{type}_advance_hours")) < now
     }
-  }
+  end
+  
+  def self.needs_email_reminder chapter
+    needs_reminder(chapter, :email)
+  end
 
-  scope :needs_sms_reminder, -> (chapter) {
-    zone = chapter.time_zone
+  def self.needs_sms_reminder chapter
     now = chapter.time_zone.now
 
-    where(:sms_reminder_sent => false)
-    .joins{notification_setting}.where{notification_setting.sms_advance_hours != nil}
-    .with_active_person.for_chapter(chapter).readonly(false)
+    needs_reminder(chapter, :sms)
     .select{|ass|
       ass.person.sms_addresses.present? # Can't send if we don't have any addresses
-    }.select{|ass|
-      start = ass.local_start_time
-      etime = ass.local_end_time
-      notifications_begin = (start - ass.notification_setting.sms_advance_hours)
-
-      ass.notification_setting.sms_advance_hours and etime > now and notifications_begin < now
-    }.select{|ass|
-      seconds = now.seconds_since_midnight
-      seconds >= ass.notification_setting.sms_only_after and seconds <= ass.notification_setting.sms_only_before
-    }
-  }
+    }.select{|ass| ass.notification_setting.allow_sms_at? now }
+  end
 
   scope :normalized_date_on_or_after, ->(time) {
     in_date = time.to_date

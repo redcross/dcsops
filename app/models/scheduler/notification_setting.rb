@@ -38,4 +38,9 @@ class Scheduler::NotificationSetting < ActiveRecord::Base
   def self.admins_to_notify_swap(shift_assignment, ignore=[])
     Roster::Person.joins{notification_setting}.in_county(shift_assignment.shift.county).where{(notification_setting.email_all_swaps == true) & (id.not_in ignore)}.to_a
   end
+
+  def allow_sms_at? time
+    seconds = time.seconds_since_midnight
+    (sms_only_after.nil? || (seconds >= sms_only_after)) and (sms_only_before.nil? || (seconds <= sms_only_before))
+  end
 end
