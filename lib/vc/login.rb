@@ -48,26 +48,47 @@ module Vc
 
     def extract_member_info body, dom
       block = dom.css(".block > .block_body > .block_main")
-      name = block.css("h3").text
       data = block.css("p").first
       lines = data.children.select(&:text?).map{|node| node.text.strip }
 
-      county_idx = lines.find_index{|l| l=~/County/i}
+      [extract_name(block), extract_address(lines), extract_email(lines), extract_member_number(block)].compact.reduce(&:merge)
+    end
 
-      address_lines = lines[0..(county_idx-1)]
-
-      first_name, last_name = name.split /\s+/, 2
-      city, state, zip = parse_csz address_lines.last
+    def extract_name dom
+      first_name, last_name = dom.css("h3").text.split /\s+/, 2
       {
         first_name: first_name,
-        last_name: last_name,
-        address1: address_lines[0],
-        address2: address_lines.count >= 3 ? address_lines[1] : nil,
-        city: city,
-        state: state,
-        zip: zip,
-        email: lines[county_idx+1],
-        vc_member_number: lines.detect{|l| l=~ /Member#/}.scan(/Member#: (\d+)/).first[0].to_i
+        last_name: last_name
+      }
+    end
+
+    def extract_address lines
+      county_idx = lines.find_index{|l| l=~/County/i}
+      if county_idx
+        address_lines = lines[0..(county_idx-1)]
+        city, state, zip = parse_csz address_lines.last
+        {
+          address1: address_lines[0],
+          address2: address_lines.count >= 3 ? address_lines[1] : nil,
+          city: city,
+          state: state,
+          zip: zip
+        }
+      end
+    end
+
+    def extract_email lines
+      county_idx = lines.find_index{|l| l=~/County/i}
+      if county_idx
+        {
+          email: lines[county_idx+1]
+        }
+      end
+    end
+
+    def extract_member_number dom
+      {
+        vc_member_number: dom.text.scan(/Member#:\s+(\d+)/).first[0].to_i
       }
     end
 
