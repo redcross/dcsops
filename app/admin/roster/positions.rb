@@ -11,7 +11,7 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
 
   controller do
     def create
-      create! { :back }
+      create! { redirect_to :back }
     end
 
     def update
