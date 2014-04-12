@@ -49,7 +49,7 @@ class Scheduler::Shift < ActiveRecord::Base
   end
 
   def active_on_day?(date)
-    return (shift_begins.nil? || shift_begins <= date) && (shift_ends.nil? || shift_ends > date)
+    return shift_group.active_on?(date) && (shift_begins.nil? || shift_begins <= date) && (shift_ends.nil? || shift_ends > date)
   end
 
   scope :for_chapter, -> chapter {

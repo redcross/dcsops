@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140409160942) do
+ActiveRecord::Schema.define(version: 20140411232511) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -843,6 +843,13 @@ ActiveRecord::Schema.define(version: 20140409160942) do
     t.integer  "chapter_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "active_sunday",    default: true, null: false
+    t.boolean  "active_monday",    default: true, null: false
+    t.boolean  "active_tuesday",   default: true, null: false
+    t.boolean  "active_wednesday", default: true, null: false
+    t.boolean  "active_thursday",  default: true, null: false
+    t.boolean  "active_friday",    default: true, null: false
+    t.boolean  "active_saturday",  default: true, null: false
   end
 
   add_index "scheduler_shift_groups", ["chapter_id"], name: "index_scheduler_shift_groups_on_chapter_id", using: :btree

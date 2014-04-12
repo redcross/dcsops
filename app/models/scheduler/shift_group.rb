@@ -66,7 +66,7 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
   def self.current_groups_for_chapter(chapter, current_time=Time.zone.now, scope=all)
     now = current_time.in_time_zone(chapter.time_zone)
 
-    self.where(chapter_id: chapter).merge(scope).select{|group|
+   for_chapter(chapter).merge(scope).select{|group|
       group.check_offsets(now)
     }
   end
@@ -78,7 +78,7 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
   end
 
   def check_offset(current, date)
-    if (start_offset <= current and current < end_offset) 
+    if (start_offset <= current and current < end_offset) and active_on?(date)
       self.start_date = date
       true
     else
@@ -91,6 +91,18 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
     when 'daily' then self.class.daily_offsets(now)
     when 'weekly' then self.class.weekly_offsets(now)
     when 'monthly' then self.class.monthly_offsets(now)
+    end
+  end
+
+  def active_on? date
+    case date.wday
+    when 0 then active_sunday
+    when 1 then active_monday
+    when 2 then active_tuesday
+    when 3 then active_wednesday
+    when 4 then active_thursday
+    when 5 then active_friday
+    when 6 then active_saturday
     end
   end
 

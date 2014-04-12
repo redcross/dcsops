@@ -42,6 +42,17 @@ describe Scheduler::ShiftGroup do
       (arr = Scheduler::ShiftGroup.current_groups_for_chapter(@chapter)).should =~ [@shift1]
       arr.first.start_date.should == Date.civil(2013,6,29)
     end
+    it "should not return a daily group which is not active on that day" do
+      @shift1 = FactoryGirl.create(:shift_group, chapter: @chapter, period: 'daily', start_offset: 0.hours, end_offset: 24.hours, active_tuesday: false)
+
+      Delorean.time_travel_to 'tuesday 8am'
+
+      Scheduler::ShiftGroup.current_groups_for_chapter(@chapter).should =~ []
+
+      Delorean.time_travel_to 'wednesday 8am'
+
+      Scheduler::ShiftGroup.current_groups_for_chapter(@chapter).should =~ [@shift1]
+    end
 
     it "should return current weekly groups" do
       @shift1 = FactoryGirl.create(:shift_group, chapter: @chapter, period: 'weekly', start_offset: 1.day, end_offset: 3.days)

@@ -29,11 +29,8 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
       unless record.shift.max_signups == 0 || assignments.count < record.shift.max_signups
         record.errors[:shift] = "This shift is not available"
       end
-      if record.shift.shift_begins and record.shift.shift_begins > record.date
-        record.errors[:shift] = "This shift has not started"
-      end
-      if record.shift.shift_ends and record.shift.shift_ends < record.date
-        record.errors[:shift] = "This shift has ended and is no longer available for signup."
+      unless record.shift.active_on_day? record.date
+        record.errors[:shift] = "This shift does not happen on this day."
       end
     end
   end
