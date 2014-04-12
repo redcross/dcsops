@@ -10,30 +10,6 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   #   en.scheduler.reminders_mailer.email_invite.subject
   #
 
-  def self.run_if_needed(force=true, window=2)
-    end_window = Date.current.advance days: window
-    Scheduler::ShiftAssignment.transaction do
-      if force or Scheduler::ShiftAssignment.joins{shift}.where{(shift.dispatch_role != nil) & (date <= end_window.to_date) & (synced != true)}.exists?
-        self.run
-        Scheduler::ShiftAssignment.joins{shift.shift_group}.update_all synced: true
-      end
-    end
-  end
-
-  def self.run
-    ImportLog.capture(self.to_s, "DirectlineExport") do |logger, import_log|
-      ImportLog.cache do
-        day = Date.current
-        self.export(day - 1, day + 60).deliver
-      end
-    end
-  end
-
-  class << self
-    include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-    add_transaction_tracer :run, category: :task
-  end
-
   def export(start_date, end_date)
     start_date = start_date.to_date
     end_date = end_date.to_date

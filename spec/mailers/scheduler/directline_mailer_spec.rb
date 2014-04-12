@@ -33,36 +33,6 @@ describe Scheduler::DirectlineMailer do
   let(:shift_filename) { "shift_data.csv"}
   let(:roster_filename) { "roster.csv"}
 
-  describe "Support methods" do
-    it "Should run when called with force=true" do
-      day = Date.current
-      Scheduler::DirectlineMailer.any_instance.should_receive(:export).with(day-1, day+60).and_return(double deliver: true)
-      Scheduler::DirectlineMailer.run_if_needed
-
-      @leadass.reload.synced.should == true
-    end
-
-    it "Should not run with force=false and all assignments synced" do
-      @leadass.update_attribute :synced, true
-      Scheduler::DirectlineMailer.any_instance.should_not_receive(:export)
-      Scheduler::DirectlineMailer.run_if_needed(false)
-    end
-
-    it "Should not run with force=false and an unsynced assignment several days away" do
-      @leadass.update_attribute :date, today+7
-      Scheduler::DirectlineMailer.any_instance.should_not_receive(:export)
-      Scheduler::DirectlineMailer.run_if_needed(false)
-      @leadass.reload.synced.should == false
-    end
-
-    it "Should run with force=false and an unsynced assignment today" do
-      @leadass.update_attribute :date, today
-      Scheduler::DirectlineMailer.any_instance.should_receive(:export).and_return(double deliver: true)
-      Scheduler::DirectlineMailer.run_if_needed(false)
-      @leadass.reload.synced.should == true
-    end
-  end
-
   context "Shift Data" do
     it "Should attach the file" do
       mail.attachments[shift_filename].should_not be_nil
