@@ -100,7 +100,7 @@ describe "DAT Incident Report", versions: true do
     click_link @team_lead.full_name
 
     # Add the flex person
-    within :xpath, "//td[text()='#{@flex_responder.full_name}']/.." do
+    within :xpath, "//td[text()='#{@flex_responder.full_name.gsub "'", "\\'"}']/.." do
       click_button "Add Responder"
     end
 
