@@ -5,4 +5,8 @@ class Roster::Role < ActiveRecord::Base
   has_many :role_scopes
 
   accepts_nested_attributes_for :role_scopes, allow_destroy: true
+
+  def display_name
+    "#{chapter_id} - #{name}"
+  end
 end

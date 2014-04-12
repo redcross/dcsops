@@ -7,6 +7,10 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
 
   attr_accessor :start_date
 
+  def display_name
+    "#{chapter_id} - #{name}"
+  end
+
   def next_period_date
     raise unless start_date
     case self.period

@@ -13,4 +13,8 @@ class Roster::Position < ActiveRecord::Base
   def vc_regex
     @compiled_regex ||= (vc_regex_raw.present? && Regexp.new(vc_regex_raw))
   end
+
+  def display_name
+    "#{chapter_id} - #{name}"
+  end
 end

@@ -6,5 +6,9 @@ class Scheduler::ShiftCategory < ActiveRecord::Base
     where{chapter_id == chapter}
   end
 
+  def display_name
+    "#{chapter_id} - #{name}"
+  end
+
   default_scope { order{ordinal} }
 end
