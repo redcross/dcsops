@@ -67,6 +67,7 @@ module Vc
       if county_idx
         address_lines = lines[0..(county_idx-1)]
         city, state, zip = parse_csz address_lines.last
+        return nil unless city
         {
           address1: address_lines[0],
           address2: address_lines.count >= 3 ? address_lines[1] : nil,
