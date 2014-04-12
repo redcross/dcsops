@@ -21,6 +21,9 @@ class Scheduler::ShiftSwap
       
     if success
       notify_swap_confirmed
+
+      # Give it a chance to update the dispatch roster if this shift is coming soon...
+      Scheduler::SendDispatchRosterJob.enqueue false
     end
 
     return success

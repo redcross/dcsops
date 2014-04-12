@@ -8,7 +8,7 @@ namespace :scheduler_periodic do
 
   task :send_dispatch_roster => [:environment] do
     Raven.capture do
-      Scheduler::SendRemindersJob.new(ENV['IF_NEEDED']!='true').perform
+      Scheduler::SendDispatchRosterJob.new(ENV['IF_NEEDED']!='true').perform
     end
   end
 

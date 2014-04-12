@@ -30,13 +30,15 @@ describe "" do
     end
 
     it "should trigger the mailer with no env" do
-      Scheduler::DirectlineMailer.should_receive(:run_if_needed).with(true)
+      Scheduler::SendDispatchRosterJob.should_receive(:new).with(true).and_call_original
+      Scheduler::SendDispatchRosterJob.any_instance.should_receive :perform
       subject.invoke
     end
 
     it "should trigger the mailer with IF_NEEDED=false and run the mailer with force=false" do
       ENV.stub(:[]).with("IF_NEEDED").and_return("true")
-      Scheduler::DirectlineMailer.should_receive(:run_if_needed).with(false)
+      Scheduler::SendDispatchRosterJob.should_receive(:new).with(false).and_call_original
+      Scheduler::SendDispatchRosterJob.any_instance.should_receive :perform
       subject.invoke
     end
 
