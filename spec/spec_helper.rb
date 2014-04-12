@@ -24,13 +24,13 @@ require 'faker'
 require 'zonebie'
 require 'capybara/rspec'
 require 'capybara/rails'
-require 'selenium-webdriver'
+require 'capybara-webkit'
 require 'database_cleaner'
 require 'paper_trail/frameworks/rspec'
 #require "sauce_helper"
 
 #Capybara.default_driver = SauceConfig.use_sauce? ? :sauce : :selenium
-Capybara.default_driver = :selenium
+Capybara.default_driver = :webkit
 Capybara.server_port = ENV['TEST_ENV_NUMBER'] ? (9999+ENV['TEST_ENV_NUMBER'].to_i) : 9999
 
 # Require Formtastic Inputs
