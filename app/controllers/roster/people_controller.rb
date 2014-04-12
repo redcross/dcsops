@@ -1,6 +1,7 @@
 class Roster::PeopleController < Roster::BaseController
   inherit_resources
   respond_to :html, :json, :kml
+  helper EditableHelper
 
   include NamedQuerySupport
   include Searchable

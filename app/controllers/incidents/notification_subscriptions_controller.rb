@@ -2,6 +2,7 @@ class Incidents::NotificationSubscriptionsController < Incidents::BaseController
   inherit_resources
   respond_to :html, :json
   load_and_authorize_resource
+  helper EditableHelper
 
   rescue_from ActiveRecord::RecordNotFound do |ex|
     redirect_to action: :new

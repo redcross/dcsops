@@ -3,6 +3,7 @@ class Scheduler::NotificationSettingsController < Scheduler::BaseController
   inherit_resources
   load_and_authorize_resource
   skip_authorize_resource only: :me
+  helper EditableHelper
 
   actions :show, :update
 
