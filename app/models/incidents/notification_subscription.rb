@@ -13,7 +13,7 @@ class Incidents::NotificationSubscription < ActiveRecord::Base
   FREQUENCIES = %w(daily weekly weekdays)
 
   assignable_values_for :frequency, allow_blank: true do
-    (person.try(:chapter).try(:incidents_enabled_report_frequencies_array) || []) & FREQUENCIES
+    person.try(:chapter).try(:incidents_enabled_report_frequencies_array, FREQUENCIES) || []
   end
 
   before_validation :set_frequency, on: :create
@@ -21,19 +21,19 @@ class Incidents::NotificationSubscription < ActiveRecord::Base
     self.frequency ||= self.assignable_frequencies.first if self.notification_type == 'report'
   end
 
-  scope :for_chapter, -> (chapter) {
+  def self.for_chapter chapter
     joins{person}.where{person.chapter_id == chapter}
-  }
+  end
 
-  scope :for_county, ->(county) {
+  def self.for_county county
     where{(county_id == nil) | (county_id == county)}
-  }
+  end
 
-  scope :for_type, ->(type) {
+  def self.for_type type
     where{notification_type == type}
-  }
+  end
 
-  scope :to_send_on, ->(today) {
+  def self.to_send_on today
     where <<-SQL, {today: today}
     (CASE frequency
     WHEN 'daily' THEN :today::date
@@ -46,11 +46,11 @@ class Incidents::NotificationSubscription < ActiveRecord::Base
       END
     END) > last_sent OR last_sent IS NULL
     SQL
-  }
+  end
 
-  scope :with_active_person, ->{
+  def self.with_active_person
     joins{person}.where{person.vc_is_active == true}
-  }
+  end
 
   def time_zone
     person.chapter.time_zone

@@ -6,19 +6,19 @@ class Incidents::CasIncident < ActiveRecord::Base
 
   #validates :incident_id, :cas_incident_number, :dr_number, uniqueness: {allow_blank: true, allow_nil: true}
 
-  scope :for_chapter, -> chapter {
+  def self.for_chapter chapter
     where{chapter_id == chapter}
-  }
+  end
 
-  scope :to_link_for_chapter, -> (chapter) {
+  def self.to_link_for_chapter chapter
     for_chapter(chapter).joins{incident.outer}.where{(ignore_incident==false) & (incident.id == nil)}.order{incident_date.desc}
-  }
+  end
 
-  scope :open_cases, lambda {
+  def self.open_cases
     joins{cases.outer}.where{
       ((cases_open > 0) | (last_date_with_open_cases >= 7.days.ago)) & 
        (cases.case_last_updated > 2.months.ago)}.uniq
-  }
+  end
 
   def self.[] incident_number
     find_by cas_incident_number: incident_number

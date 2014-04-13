@@ -3,11 +3,11 @@ class Scheduler::NotificationSetting < ActiveRecord::Base
 
   #serialize :shift_notification_phones
 
-  scope :needs_daily_email, ->chapter{ needs_daily(chapter, :email) }
-  scope :needs_daily_sms, ->chapter{ needs_daily(chapter, :sms) }
-  scope :needs_daily_swap, ->chapter{ for_chapter(chapter).with_active_person.where{(email_all_swaps_daily == true)} }
+  def self.needs_daily_email(chapter); needs_daily(chapter, :email); end
+  def self.needs_daily_sms(chapter);   needs_daily(chapter, :sms); end
+  def self.needs_daily_swap(chapter);  for_chapter(chapter).with_active_person.where{email_all_swaps_daily == true}; end
 
-  scope :needs_daily, -> chapter,method {
+  def self.needs_daily chapter, method
     now = chapter.time_zone.now
     midnight = now.at_beginning_of_day
     offset = now.seconds_since_midnight
@@ -16,15 +16,15 @@ class Scheduler::NotificationSetting < ActiveRecord::Base
                                                   ( (__send__(:"last_all_shifts_#{method}") == nil) | 
                                                     (__send__(:"last_all_shifts_#{method}") < midnight)
                                                   )}.readonly(false)
-  }
+  end
 
-  scope :with_active_person, -> {
+  def self.with_active_person
     joins{person}.where{person.vc_is_active == true}
-  }
+  end
 
-  scope :for_chapter, -> (chapter) {
+  def self.for_chapter chapter
     joins{person}.where{person.chapter_id == chapter.id}
-  }
+  end
 
   before_create :set_calendar_api_token
   def set_calendar_api_token
