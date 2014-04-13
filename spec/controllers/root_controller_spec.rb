@@ -15,6 +15,26 @@ describe RootController do
       get 'health'
       response.should be_success
     end
+
+    it "returns 500 when there's an error" do
+      ActiveRecord::Base.connection.should_receive(:select_value) { raise "Database Problem!" }
+      Raven.should_receive(:capture)
+      get 'health'
+      response.status.should == 500
+    end
+  end
+
+  describe "GET 'inactive'" do
+    it "returns http forbidden and renders" do
+      get 'inactive', format: :html
+      response.should be_forbidden
+      response.should render_template("inactive")
+    end
+
+    it "returns http forbidden and renders" do
+      get 'inactive', format: :json
+      response.should be_forbidden
+    end
   end
 
   describe "#homepage_links" do

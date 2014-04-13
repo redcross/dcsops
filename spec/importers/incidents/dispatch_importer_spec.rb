@@ -11,6 +11,11 @@ describe Incidents::DispatchImporter do
     subject.import_data chapter, fixture
   end
 
+  before do
+    geocode_result = double(:geocode_result, success?: true, lat: 0, lng: 0, city: Faker::Address.city, state: Faker::Address.state, district: Faker::Address.city, zip: Faker::Address.zip_code)
+    Incidents::DispatchImporter.geocoder.stub geocode: geocode_result
+  end
+
   describe "1.txt" do
     let!(:county) {FactoryGirl.create :county, chapter: chapter, name: 'Contra Costa'}
     it "should parse the incident" do

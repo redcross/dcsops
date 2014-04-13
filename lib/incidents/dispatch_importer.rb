@@ -1,4 +1,6 @@
 class Incidents::DispatchImporter
+  class_attribute :geocoder
+  self.geocoder = Geokit::Geocoders::GoogleGeocoder
 
   def parse_ampm(date, time)
     m = /(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}) (AM|PM)/.match("#{date} #{time}")
@@ -8,10 +10,10 @@ class Incidents::DispatchImporter
     @chapter.time_zone.parse "#{m[3]}-#{m[1]}-#{m[2]} #{hr}:#{m[5]}"
   end
 
-  def parse_24h(date, time)
-    m = /(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})/.match("#{date} #{time}")
-    @chapter.time_zone.parse "#{m[3]}-#{m[1]}-#{m[2]} #{m[4]}:#{m[5]}:#{m[6]}"
-  end
+  #def parse_24h(date, time)
+  #  m = /(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})/.match("#{date} #{time}")
+  #  @chapter.time_zone.parse "#{m[3]}-#{m[1]}-#{m[2]} #{m[4]}:#{m[5]}:#{m[6]}"
+  #end
 
   def data_matchers
     {
@@ -108,15 +110,11 @@ class Incidents::DispatchImporter
   end
 
   def geocode_incident(log_object, incident)
-    return if Rails.env.test?
-
     incident.address = log_object.address
-    res = Geokit::Geocoders::GoogleGeocoder.geocode "#{log_object.address}, #{log_object.county_name} County, CA, USA"
+    res = self.class.geocoder.geocode "#{log_object.address}, #{log_object.county_name} County, CA, USA"
     incident.take_location_from res if res.success?
   rescue Geokit::Geocoders::TooManyQueriesError
     # Not the end of the world
-  rescue => e
-    Raven.capture_exception(e)
   end
 
   def update_log_object(attrs, log_items)

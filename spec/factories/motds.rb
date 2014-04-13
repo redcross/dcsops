@@ -3,11 +3,10 @@
 FactoryGirl.define do
   factory :motd do
     chapter nil
-    begins "2013-06-16 08:27:20"
-    ends "2013-06-16 08:27:20"
+    begins nil
+    ends nil
     cookie_code "MyString"
     html "MyText"
     dialog_class "MyString"
-    version 1
   end
 end
