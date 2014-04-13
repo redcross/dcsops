@@ -128,10 +128,10 @@ describe Scheduler::ShiftAssignment do
   it "should not allow cancellation before the frozen date" do
     shift = @shifts.first
 
-    item = Scheduler::ShiftAssignment.create person: @person, shift: shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: @person, shift: shift, date: zone.today
     item.should be_valid
 
-    shift.signups_frozen_before = Date.tomorrow; shift.save
+    shift.signups_frozen_before = zone.today.tomorrow; shift.save
 
     item.destroy
     item.should_not be_destroyed
@@ -140,7 +140,7 @@ describe Scheduler::ShiftAssignment do
   it "should not allow signup before the frozen date" do
     shift = @shifts.first
 
-    shift.signups_frozen_before = Date.tomorrow; shift.save
+    shift.signups_frozen_before = zone.today.tomorrow; shift.save
 
     item = Scheduler::ShiftAssignment.create person: @person, shift: shift, date: zone.today
     item.should_not be_valid

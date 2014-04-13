@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Incidents::NotificationSubscription do
   let!(:chapter) { FactoryGirl.create :chapter, incidents_enabled_report_frequencies: 'weekly,weekdays,daily' }
   let(:person) { FactoryGirl.create :person, chapter: chapter}
+  let(:today) { chapter.time_zone.today }
 
   describe "type=report" do
     let(:notification_type) { 'report' }
@@ -83,13 +84,13 @@ describe Incidents::NotificationSubscription do
         end
 
         it "Should return a subscription that hasn't been sent today" do
-          subscription.update_attribute :last_sent, Date.current - 1
-          Incidents::NotificationSubscription.to_send_on(Date.current).should =~ [subscription]
+          subscription.update_attribute :last_sent, today - 1
+          Incidents::NotificationSubscription.to_send_on(today).should =~ [subscription]
         end
 
         it "Should not return a subscription that has been sent today" do
-          subscription.update_attribute :last_sent, Date.current
-          Incidents::NotificationSubscription.to_send_on(Date.current).should =~ []
+          subscription.update_attribute :last_sent, today
+          Incidents::NotificationSubscription.to_send_on(today).should =~ []
         end
       end
 
@@ -99,13 +100,13 @@ describe Incidents::NotificationSubscription do
         end
 
         it "Should return a subscription that hasn't been sent since friday" do
-          subscription.update_attribute :last_sent, Date.current - 3
-          Incidents::NotificationSubscription.to_send_on(Date.current).should =~ [subscription]
+          subscription.update_attribute :last_sent, today - 3
+          Incidents::NotificationSubscription.to_send_on(today).should =~ [subscription]
         end
 
         it "Should not return a subscription that has been sent" do
-          subscription.update_attribute :last_sent, Date.current
-          Incidents::NotificationSubscription.to_send_on(Date.current).should =~ []
+          subscription.update_attribute :last_sent, today
+          Incidents::NotificationSubscription.to_send_on(today).should =~ []
         end
 
       end
@@ -116,8 +117,8 @@ describe Incidents::NotificationSubscription do
         end
 
         it "Should not return a subscription that hasn't been sent since friday" do
-          subscription.update_attribute :last_sent, Date.current - 3
-          Incidents::NotificationSubscription.to_send_on(Date.current - 1).should =~ []
+          subscription.update_attribute :last_sent, today - 3
+          Incidents::NotificationSubscription.to_send_on(today - 1).should =~ []
         end
 
       end
