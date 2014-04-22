@@ -1,6 +1,6 @@
 =render 'info'
 
--if can_swap_to_others? or current_user != resource.person
+-if can_swap_to_others? or current_user != resource.assignment.person
   %h4 Shift Swap
   This shift is available to be swapped.  To accept the swap, click the
   %i accept swap
