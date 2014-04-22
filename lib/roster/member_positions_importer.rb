@@ -162,7 +162,7 @@ class Roster::MemberPositionsImporter < ImportParser
   end
 
   def is_active_status(status_name)
-    ['General Volunteer', 'Employee'].include? status_name
+    ['General Volunteer', 'General Partner Member', 'Employee', 'NHQ Reserve Employee'].include? status_name
   end
 
   def preload_identities(identities)
