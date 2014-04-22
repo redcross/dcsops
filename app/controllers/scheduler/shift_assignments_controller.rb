@@ -34,45 +34,13 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
     scope.for_counties(Array(arg))
   end
 
-  def swap
-    @swap = Scheduler::ShiftSwap.new resource, self
-    if params[:is_swap] && @swap.can_request?
-      @swap.request_swap!(swap_to_person)
-
-    elsif params[:accept_swap] && @swap.can_confirm?
-      destination = swap_to_person || current_user
-
-      if @swap.confirm_swap! destination
-        flash.now[:info] = 'Shift successfully swapped.'
-        redirect_to polymorphic_url(@swap.new_assignment, action: :swap) and return
-      else
-        flash.now[:error] = @swap.error_message
-      end
-
-    elsif params[:cancel_swap] && @swap.can_confirm?
-      @swap.cancel_swap!
-    end
-    show!
-  end
-
-
   def current_user
     super || api_user
   end
 
   private
 
-  def swap_to_person
-    Roster::Person.find_by(id: params[:swap_to_id])
-  end
-
-  helper_method :can_swap_to_others?, :collection_by_date
-  def can_swap_to_others?
-    # This should be true where we have given :manage permissions to specific assignments
-    # The swap code will check if this is legal for a given swap later
-    can? :swap_to_others, Scheduler::ShiftAssignment
-  end
-
+  helper_method :collection_by_date
   def collection_by_date
     @_by_date ||= collection.reduce({}) do |hash, ass|
       fmt = "#{ass.date}-#{ass.shift.shift_group.period}"

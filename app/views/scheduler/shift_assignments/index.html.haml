@@ -17,4 +17,4 @@
       %td= scheduler_shift_assignment.shift.county.name
       %td= scheduler_shift_assignment.date.to_s :dow_short
       -if can? :swap, scheduler_shift_assignment
-        %td= link_to "Swap", swap_scheduler_shift_assignment_path(scheduler_shift_assignment), class: "btn btn-small"
+        %td= link_to "Swap", new_scheduler_shift_assignment_shift_swap_path(scheduler_shift_assignment), class: "btn btn-small"

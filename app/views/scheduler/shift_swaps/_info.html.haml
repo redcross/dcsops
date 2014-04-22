@@ -1,0 +1,16 @@
+%h4 Shift Details:
+%table.table
+  %tr
+    %th Date
+    %td
+      =resource.assignment.date.to_s :dow_short
+      =resource.assignment.shift.shift_group.name
+  %tr
+    %th County
+    %td=resource.assignment.shift.county.name
+  %tr
+    %th Shift
+    %td=resource.assignment.shift.name
+  %tr
+    %th Person
+    %td=resource.assignment.person.full_name

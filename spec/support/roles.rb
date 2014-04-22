@@ -2,7 +2,7 @@ module AuthorizationRoles
   extend ActiveSupport::Concern
   included do
     def grant_role!(name, scope=nil, person=nil)
-      person ||= @person
+      person ||= @logged_in_person
 
       role = Roster::Role.create! name: name, grant_name: name, chapter: person.chapter
       if scope

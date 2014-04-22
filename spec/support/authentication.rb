@@ -3,7 +3,8 @@ module LoggedIn
   included do
     before(:each) do
       activate_authlogic
-      @person ||=  FactoryGirl.create(:person)
+      @logged_in_person = FactoryGirl.create(:person)
+      @person ||= @logged_in_person
       Roster::Session.create @person
     end
   end

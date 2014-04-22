@@ -9,7 +9,7 @@ class Scheduler::Ability
     #can :read, Scheduler::ShiftAssignment, shift: {county_id: county_ids}
     can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], {id: person.id}
     can [:read, :destroy, :create, :swap], Scheduler::ShiftAssignment, person: {id: person.id}
-    can :swap, Scheduler::ShiftAssignment, {available_for_swap: true}
+    can :manage, Scheduler::ShiftSwap, assignment: {person: {chapter_id: person.chapter_id}}
 
     county_ids = person.scope_for_role('county_roster')
     if county_ids.present?

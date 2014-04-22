@@ -18,7 +18,7 @@ Hello, #{ @recipient.first_name }
     If you are available to take this shift, please click the link below to be taken to the scheduling system.  Otherwise, you can ignore this email.
 
 %p
-  =link_to swap_scheduler_shift_assignment_url(@shift), swap_scheduler_shift_assignment_url(@shift)
+  =link_to scheduler_shift_assignment_shift_swap_url(@shift), scheduler_shift_assignment_shift_swap_url(@shift)
 
 %p
   If you have any questions, please contact your DAT Administrator.

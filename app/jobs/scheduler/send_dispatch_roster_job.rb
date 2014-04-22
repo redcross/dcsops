@@ -20,7 +20,7 @@ class Scheduler::SendDispatchRosterJob
   end
 
   def run!
-    ImportLog.capture(self.to_s, "DirectlineExport") do |logger, import_log|
+    ImportLog.capture(self.class.to_s, "DirectlineExport") do |logger, import_log|
       ImportLog.cache do # Enable the query cache here.
         day = Date.current
         Scheduler::DirectlineMailer.export(day - 1, day + 60).deliver

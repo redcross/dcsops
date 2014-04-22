@@ -1,0 +1,29 @@
+=render 'info'
+
+-if can_swap_to_others? or current_user != resource.person
+  %h4 Shift Swap
+  This shift is available to be swapped.  To accept the swap, click the
+  %i accept swap
+  button below.
+
+  =form_tag confirm_resource_path(parent), method: 'post' do
+  
+    -if can_swap_to_others?
+      Person to swap to:
+      =text_field_tag :person, current_user.full_name, id: "select-person", style: "width: 200px", autocomplete: 'off'
+      =hidden_field_tag :swap_to_id, current_user.id, id: "swap-to-id"
+
+    =hidden_field_tag :accept_swap, "1"
+    %br
+    =submit_tag "Confirm Swap", class: "btn btn-danger"
+
+%h4 Cancel Swap
+If you no longer wish to swap this shift:
+=form_tag resource_path, method: 'delete' do
+  =hidden_field_tag :cancel_swap, "1"
+  %br
+  =submit_tag "Cancel Swap", class: "btn"
+
+- content_for :footer_js do
+  :javascript
+    window.swapController = new window.SwapController(#{resource.assignment.shift.county_id.to_json}, #{resource.assignment.shift.position_ids.to_json})

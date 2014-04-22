@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Scheduler::Ability do
   before(:each) do
     @person = FactoryGirl.create :person
+    @logged_in_person = @person
     @position = @person.positions.first
 
     @other_person = FactoryGirl.create :person, chapter: @person.chapter, counties: @person.counties
@@ -58,7 +59,7 @@ describe Scheduler::Ability do
     it "can swap other shifts when available" do
       ass = Scheduler::ShiftAssignment.new person: @other_person, available_for_swap: true
 
-      can?(:swap, ass).should be_true
+      can?(:confirm, Scheduler::ShiftSwap.new(ass, nil)).should be_true
     end
   end
 

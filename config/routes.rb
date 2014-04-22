@@ -7,8 +7,6 @@ Scheduler::Application.routes.draw do
   root to: "roster/sessions#new", constraints: UnauthenticatedRequestFilter
   root to: "root#index", constraints: UnauthenticatedRequestFilter::AuthenticatedRequestFilter, as: nil
 
-  mount Connect::Engine, at: '/'
-
   get '/health', to: 'root#health'
   get '/inactive', to: 'root#inactive', as: 'inactive_user'
 
@@ -28,7 +26,9 @@ Scheduler::Application.routes.draw do
     get 'calendar/:month', month: /\d{4}-\d{2}/, to: 'calendar#month'
 
     resources :shift_assignments do
-      match :swap, on: :member, via: [:get, :post]
+      resource :shift_swap do
+        post :confirm
+      end
     end
     resources :notification_settings, only: [:show, :update] do
       get :me, on: :collection
@@ -116,6 +116,8 @@ Scheduler::Application.routes.draw do
   end
 
   match 'import/dispatch', via: [:head, :post], to: 'incidents/import#import_dispatch'
+
+  mount Connect::Engine, at: '/'
 
   if Rails.env.development?
     controller :mailer_debug do
