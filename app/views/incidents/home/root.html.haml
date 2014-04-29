@@ -35,7 +35,7 @@
           #{current_chapter.short_name} DAT Incidents
     %tr
       - incident_stats_boxes.each_with_index do |(title, stats), idx|
-        %td
+        %td{class: (idx != 0) && 'hidden-phone'}
           %h3.center=title
           %p.center.lead
             %small
