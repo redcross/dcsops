@@ -147,7 +147,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       base = params.require(:incidents_dat_incident)[:incident_attributes]
       if base
         @_incident_params ||= base.permit([
-          :incident_type, :narrative, :status,
+          :incident_type, :narrative, :status, :cas_incident_number,
           :address, :city, :state, :zip, :lat, :lng, :county, :neighborhood,
           :num_adults, :num_children, :num_families,
           {:team_lead_attributes => [:id, :person_id, :role, :response]},

@@ -4,6 +4,8 @@
   =f.semantic_fields_for :incident do |f|
     =f.semantic_errors
     =f.input :incident_number, input_html: {readonly: readonly}
+    -if f.object.chapter.incidents_report_editable
+      =f.input :cas_incident_number, as: :string
     -#=f.input :county, as: (readonly ? :string : :select), input_html: {readonly: readonly, value: resource.incident.try(:county).try(:name)}
     =f.input :date, as: (readonly ? :string : :bootstrap_date), input_html: {readonly: readonly}
     =f.input :incident_type, as: :assignable_select, include_blank: false, required: true, humanized: :humanized_valid_incident_types
