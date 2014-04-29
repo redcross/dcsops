@@ -131,7 +131,7 @@
           %tr
             %th # Meals Served
             %td=resource.feeding_partner_use.try :meals_served
-      -if inline_editable?
+      -if inline_editable? || resource.hotel_partner_use || resource.shelter_partner_use || resource.evac_partner_use
         %h4 
           Shelter/Housing
           %small=edit_link 'housing'
@@ -143,6 +143,9 @@
             %tr
               %th Rooms Booked
               %td=resource.hotel_partner_use.try :hotel_rooms
+            %tr
+              %th Rate
+              %td=number_to_currency resource.hotel_partner_use.try(:hotel_rate), precision: 0
           -if resource.shelter_partner_use || inline_editable?
             %tr
               %th Shelter Opened
