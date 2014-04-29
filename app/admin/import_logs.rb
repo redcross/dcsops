@@ -8,11 +8,7 @@ ActiveAdmin.register ImportLog, as: 'Import Logs' do
       link_to "#{rec.controller}##{rec.name}", scheduler_admin_import_log_path(rec)
     end
     column :result
-    column :message_subject
-    column :file_name
-    column :file_size
     column :num_rows
-    column :exception
     column :exception_message
     column :runtime, sortable: 'runtime' do |rec|
       rec.runtime && ("%0.3fs" % rec.runtime)

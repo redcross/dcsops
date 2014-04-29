@@ -32,6 +32,7 @@ class AdminAbility
       can :manage, DataFilter
       can :manage, HomepageLink
       can :manage, Lookup
+      can :manage, Delayed::Job
 
       can :manage, :all
     end
@@ -42,6 +43,7 @@ class AdminAbility
       can :read, [Roster::Person, Roster::County, Roster::Position], chapter_id: chapter
       can :impersonate, Roster::Person, chapter_id: chapter
       can :manage, Logistics::Vehicle, chapter_id: chapter
+      can :manage, HomepageLink, chapter_id: chapter
       can :new, Incidents::NotificationSubscription
       can :manage, Incidents::NotificationSubscription, person: {chapter_id: chapter}
       can [:test_report, :send_report, :new], Incidents::NotificationSubscription

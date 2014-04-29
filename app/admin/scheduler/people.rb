@@ -70,6 +70,10 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     scope.uniq
   end
 
+  scope :logins do |scope|
+    scope.uniq.order{last_login.desc}.where{last_login != nil}
+  end
+
   member_action :impersonate, method: [:post, :delete] do
     #p = resource
     #p.reset_persistence_token! if p.persistence_token.blank?
