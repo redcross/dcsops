@@ -62,6 +62,17 @@ class Incidents::IncidentsController < Incidents::BaseController
     params[:page] = 'all'
   end
 
+  def index
+    if request.format == :kml
+      expires_in 24.hours, public: false
+      if stale?(etag: cache_key, last_modified: collection.maximum(:updated_at))
+        index!
+      end
+    else
+      index!
+    end
+  end
+
   private
   def after_create_path
     current_chapter.incidents_report_editable ? resource_path(resource) : new_incidents_incident_dat_path(resource)
@@ -160,4 +171,6 @@ class Incidents::IncidentsController < Incidents::BaseController
 
       [attrs]
     end
+
+    expose(:cache_key) { "#{request.format}_#{params[:q]}_count#{collection.count}_#{collection.maximum(:updated_at).to_i}" }
 end

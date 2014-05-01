@@ -24,24 +24,8 @@ xml.kml ns: 'http://www.opengis.net/kml/2.2' do
       end
     end
 
-    collection.includes{[all_responder_assignments, team_lead]}.each do |resource|
-      xml.Placemark id: resource.id do
-        xml.name resource.incident_number + " " + (resource.humanized_incident_type || "")
-        xml.styleUrl "##{resource.incident_type}"
-        if resource.lat and resource.lng
-          lat,lng = [resource.lat, resource.lng]
-          xml.Point do
-            xml.coordinates "#{resource.lng},#{resource.lat}"
-          end
-        end
-
-        xml.description do
-          xml.cdata! render('incident', resource: resource)
-        end
-
-        xml.visibility "1"
-
-      end
+    xml << Rails.cache.fetch(cache_key) do
+      render 'index_placemarks'
     end
   end
 end
