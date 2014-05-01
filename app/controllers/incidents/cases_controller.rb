@@ -15,6 +15,6 @@ class Incidents::CasesController < Incidents::EditPanelController
   end
 
   def resource_params
-    request.get? ? [] : [params.require(:incidents_case).permit(:first_name, :last_name, :num_adults, :num_children, :unit, :address, :city, :state, :zip, :cac_number, :notes, :phone_number, :case_assistance_items_attributes => [:id, :price_list_item_id, :quantity, :_destroy])]
+    request.get? ? [] : [params.require(:incidents_case).permit(:first_name, :last_name, :num_adults, :num_children, :unit, :address, :city, :state, :zip, :cas_case_number, :notes, :phone_number, :case_assistance_items_attributes => [:id, :price_list_item_id, :quantity, :_destroy])]
   end
 end

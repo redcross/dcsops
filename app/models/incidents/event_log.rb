@@ -40,5 +40,17 @@ class Incidents::EventLog < Incidents::DataModel
   def is_note?
     event == 'note'
   end
+
+  def event_time= new_time
+    time = case new_time
+    when String then Time.zone.parse(new_time)
+    else new_time
+    end
+
+    super(time)
+  rescue ArgumentError
+    super(new_time)
+  end
+
 end
 

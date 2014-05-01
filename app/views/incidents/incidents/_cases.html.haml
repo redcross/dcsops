@@ -22,7 +22,10 @@
             =safe_join [kase.unit, kase.address], '<br />'.html_safe
         %tr
           %th Case Number
-          %td=kase.form_901_number
+          %td
+            =kase.cas_case_number
+            -if kase.cas_case_number.present?
+              =link_to "View in CAS", kase.cas_case_url, class: "btn btn-mini", target: '_blank'
         %tr
           %th Financial Assistance
           %td(style="padding: 0; margin: 0")
@@ -40,9 +43,10 @@
                 %td(colspan=2 style="text-align: right")
                   Total: 
                 %td #{number_to_currency kase.total_amount}
-        %tr
-          %th CAC Number
-          %td=kase.cac_masked
+        -if kase.cac_masked.present?
+          %tr
+            %th CAC Number
+            %td=kase.cac_masked
         %tr
           %th Notes
           %td=simple_format kase.notes

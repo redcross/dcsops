@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140411232511) do
+ActiveRecord::Schema.define(version: 20140502040021) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -309,8 +309,7 @@ ActiveRecord::Schema.define(version: 20140411232511) do
 
   create_table "incidents_cases", force: true do |t|
     t.integer  "incident_id"
-    t.string   "cas_incident_number"
-    t.string   "form_901_number"
+    t.string   "cas_case_number"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "address"
@@ -328,7 +327,6 @@ ActiveRecord::Schema.define(version: 20140411232511) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "cac_masked"
-    t.binary   "cac_number"
   end
 
   add_index "incidents_cases", ["incident_id"], name: "index_incidents_cases_on_incident_id", using: :btree
@@ -822,6 +820,7 @@ ActiveRecord::Schema.define(version: 20140411232511) do
 
   add_index "scheduler_shift_assignments", ["date", "person_id", "shift_id"], name: "index_scheduler_shift_assignment_fields", unique: true, using: :btree
   add_index "scheduler_shift_assignments", ["person_id"], name: "index_scheduler_shift_assignments_on_person_id", using: :btree
+  add_index "scheduler_shift_assignments", ["shift_id", "date"], name: "index_scheduler_shift_assignments_on_shift_id_date", using: :btree
   add_index "scheduler_shift_assignments", ["shift_id"], name: "index_scheduler_shift_assignments_on_shift_id", using: :btree
 
   create_table "scheduler_shift_categories", force: true do |t|

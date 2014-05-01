@@ -2,8 +2,7 @@
 
 FactoryGirl.define do
   factory :case, :class => 'Incidents::Case' do
-    cas_incident_number "1-xxxxx"
-    form_901_number "8000000"
+    cas_case_number "1-xxxxx"
     first_name {Faker::Name.first_name}
     last_name {Faker::Name.last_name}
     unit { Faker::Address.building_number }
@@ -22,7 +21,6 @@ FactoryGirl.define do
   end
 
   factory :case_with_assistance, parent: :case do
-    cac_number "4111111111111111"
     total_amount "9.99"
 
     case_assistance_items { |c| (0..3).map{ c.association :case_assistance_item }}
