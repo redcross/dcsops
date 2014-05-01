@@ -96,7 +96,7 @@ class Incidents::Incident < ActiveRecord::Base
   end
 
   def self.valid_incident_types
-    %w(fire flood police tornado blizzard storm transportation hazmat explosion search_and_rescue earthquake)
+    %w(fire flood police tornado blizzard storm transportation hazmat explosion search_and_rescue earthquake building_collapse)
   end
 
   def humanized_valid_incident_types
