@@ -99,6 +99,7 @@ private
   expose(:responders_distance) {
     responder_assignments.joins{person.outer}.includes{[incident, person.outer]}
                           .where{{person: sift(:with_position)}}
+                          .select{|ass| ass.on_scene }
                           .map{|ass| ass.incident.distance_to ass.person}
                           .map{|dist| [50, dist * 2].min}.sum.round
   }
