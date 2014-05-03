@@ -101,6 +101,10 @@ Scheduler::Application.routes.draw do
     scope "notification_subscriptions", as: :notification_subscription do
       resources :report, controller: 'notification_subscriptions', notification_type: 'report'
     end
+
+    namespace :api do
+      resources :incidents, only: :index
+    end
   end
 
   namespace :partners do

@@ -1,11 +1,10 @@
 class Incidents::IncidentsController < Incidents::BaseController
   inherit_resources
-  respond_to :html, :kml
+  respond_to :html
   defaults finder: :find_by_incident_number!
   load_and_authorize_resource except: [:needs_report, :activity]
   helper Incidents::MapHelper
 
-  include NamedQuerySupport
   include Searchable
 
   custom_actions collection: [:needs_report, :activity, :map], resource: [:mark_invalid, :close, :reopen]
@@ -60,17 +59,6 @@ class Incidents::IncidentsController < Incidents::BaseController
       lng_not_null: true
     }.merge(params[:q] || {})
     params[:page] = 'all'
-  end
-
-  def index
-    if request.format == :kml
-      expires_in 24.hours, public: false
-      if stale?(etag: cache_key, last_modified: collection.maximum(:updated_at))
-        index!
-      end
-    else
-      index!
-    end
   end
 
   private
@@ -144,10 +132,10 @@ class Incidents::IncidentsController < Incidents::BaseController
       {status_in: ['open', 'closed']}
     end
 
-    expose(:should_paginate) { params[:page] != 'all' }
+    def should_paginate; params[:page] != 'all'; end
 
     def end_of_association_chain
-      named_query ? super : super.where{chapter_id == my{current_chapter}}
+      super.where{chapter_id == my{current_chapter}}
     end
 
     def build_resource
@@ -171,6 +159,4 @@ class Incidents::IncidentsController < Incidents::BaseController
 
       [attrs]
     end
-
-    expose(:cache_key) { "#{request.format}_#{params[:q]}_count#{collection.count}_#{collection.maximum(:updated_at).to_i}" }
 end
