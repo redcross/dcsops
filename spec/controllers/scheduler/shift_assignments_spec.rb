@@ -60,9 +60,10 @@ describe Scheduler::ShiftAssignmentsController do
         (0..2).map { |i| 
           pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties
           shift = FactoryGirl.create :shift, shift_group: @shift.shift_group, county: pers.counties.first, positions: pers.positions
-          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+6+i), shift: shift }
+          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+6+i), shift: shift
+        }
 
-        grant_role! 'county_dat_admin', @person.county_ids
+        grant_role! 'county_dat_admin', @person.county_ids, @person
 
         get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
 
@@ -75,9 +76,10 @@ describe Scheduler::ShiftAssignmentsController do
         (1..3).map { |i| 
           pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties
           shift = FactoryGirl.create :shift, shift_group: @shift.shift_group, county: pers.counties.first, positions: pers.positions
-          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+i), shift: shift }
+          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+i), shift: shift
+        }
 
-        grant_role! 'county_dat_admin', @person.county_ids
+        grant_role! 'county_dat_admin', @person.county_ids, @person
 
         get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
 
