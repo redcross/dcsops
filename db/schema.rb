@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140502040021) do
+ActiveRecord::Schema.define(version: 20140503221327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -262,8 +262,8 @@ ActiveRecord::Schema.define(version: 20140502040021) do
     t.datetime "last_import"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "lat"
-    t.decimal  "lng"
+    t.float    "lat"
+    t.float    "lng"
   end
 
   add_index "incidents_cas_cases", ["cas_incident_id"], name: "index_incidents_cas_cases_on_cas_incident_id", using: :btree
@@ -317,8 +317,8 @@ ActiveRecord::Schema.define(version: 20140502040021) do
     t.string   "city"
     t.string   "state"
     t.string   "zip"
-    t.decimal  "lat"
-    t.decimal  "lng"
+    t.float    "lat"
+    t.float    "lng"
     t.string   "phone_number"
     t.integer  "num_adults"
     t.integer  "num_children"
@@ -447,8 +447,8 @@ ActiveRecord::Schema.define(version: 20140502040021) do
     t.string   "city"
     t.string   "state"
     t.string   "zip"
-    t.decimal  "lat"
-    t.decimal  "lng"
+    t.float    "lat"
+    t.float    "lng"
     t.string   "idat_incident_id"
     t.string   "idat_incident_rev"
     t.datetime "last_idat_sync"
@@ -541,8 +541,8 @@ ActiveRecord::Schema.define(version: 20140502040021) do
     t.string   "city"
     t.string   "state"
     t.string   "zip"
-    t.decimal  "lat"
-    t.decimal  "lng"
+    t.float    "lat"
+    t.float    "lng"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -593,8 +593,8 @@ ActiveRecord::Schema.define(version: 20140502040021) do
     t.string   "city"
     t.string   "state"
     t.string   "zip"
-    t.decimal  "lat"
-    t.decimal  "lng"
+    t.float    "lat"
+    t.float    "lng"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -680,8 +680,8 @@ ActiveRecord::Schema.define(version: 20140502040021) do
     t.datetime "vc_imported_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "lat"
-    t.decimal  "lng"
+    t.float    "lat"
+    t.float    "lng"
     t.boolean  "vc_is_active",               default: true
     t.string   "gap_primary"
     t.string   "gap_secondary"
