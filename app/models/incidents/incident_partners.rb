@@ -3,7 +3,7 @@ module Incidents::IncidentPartners
 
   included do
     {evac_partner: 'evac_center', hotel_partner: 'hotel', shelter_partner: 'shelter', feeding_partner: 'feeding'}.each do |attr, role|
-      has_one :"#{attr}_use", -> { where(role: role) }, class_name: 'Incidents::PartnerUse'
+      has_one :"#{attr}_use", -> { where(role: role) }, class_name: 'Incidents::PartnerUse', inverse_of: :incident
 
       accepts_nested_attributes_for :"#{attr}_use", update_only: true, reject_if: -> attrs { attrs[:partner_id].blank? && attrs[:partner_name].blank? }
       validates_presence_of :"#{attr}_use", if: :"#{attr}_used"

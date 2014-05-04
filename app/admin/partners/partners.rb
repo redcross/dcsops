@@ -5,7 +5,7 @@ ActiveAdmin.register Partners::Partner, as: 'Partner' do
 
   controller do
     def resource_params
-      request.get? ? [] : [params.require(:partner).permit(:name, :address1, :address2, :city, :state, :zip)]
+      request.get? ? [] : [params.require(:partner).permit(:chapter_id, :name, :address1, :address2, :city, :state, :zip)]
     end
   end
 end

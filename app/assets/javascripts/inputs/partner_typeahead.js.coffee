@@ -22,7 +22,8 @@ class window.PartnerTypeaheadController
           dataType: 'json'
           data:
             $.extend filter,
-              name_contains: query
+              q: 
+                name_cont: query
           url: '/partners/partners'
           success: (data) =>
             @list = {}

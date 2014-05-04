@@ -10,6 +10,7 @@ class Incidents::Ability
 
     # for now, anyone can do the weekly subscription
     can :manage, Incidents::NotificationSubscription, person_id: person.id, notification_type: 'report'
+    can :index, Partners::Partner, chapter_id: person.chapter_id
 
     if person.has_role 'create_incident'
         can :create, Incidents::Incident

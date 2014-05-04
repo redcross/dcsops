@@ -22,7 +22,8 @@ class ::PartnerInput
 
   def script_html
     id = input_html_options[:id]
-    "<script>#{id}_typeahead = new PartnerTypeaheadController($('##{id}_text'), function(sel_id) {$('##{id}').val(sel_id)})</script>".html_safe
+    filter = options[:filter] || {}
+    template.javascript_tag("#{id}_typeahead = new PartnerTypeaheadController($('##{id}_text'), function(sel_id) {$('##{id}').val(sel_id)}, #{{q: filter}.to_json});")
   end
 
   def error_keys

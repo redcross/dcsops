@@ -19,7 +19,7 @@ class Incidents::PartnerUse < ActiveRecord::Base
   before_validation :maybe_create_partner
   def maybe_create_partner
     if partner_name.present? and partner_id.nil?
-      build_partner name: partner_name
+      build_partner name: partner_name, chapter: incident.chapter
     end
   end
 end

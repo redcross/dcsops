@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140503221327) do
+ActiveRecord::Schema.define(version: 20140504045753) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -597,7 +597,10 @@ ActiveRecord::Schema.define(version: 20140503221327) do
     t.float    "lng"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "chapter_id"
   end
+
+  add_index "partners_partners", ["chapter_id"], name: "index_partners_partners_on_chapter_id", using: :btree
 
   create_table "roster_cell_carriers", force: true do |t|
     t.string   "name"
