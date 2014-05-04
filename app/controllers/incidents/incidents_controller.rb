@@ -95,10 +95,10 @@ class Incidents::IncidentsController < Incidents::BaseController
     helper_method :tab_authorized?
     def tab_authorized?(name)
       case name
-      when 'summary', 'dispatch' then true
+      when 'summary' then true
       when 'details', 'timeline', 'responders', 'attachments' then can? :read_details, resource
       when 'cases' then can? :read_case_details, resource
-      when 'changes' then can? :read_case_details, resource
+      when 'changes' then can? :read_changes, resource
       else false
       end
     end

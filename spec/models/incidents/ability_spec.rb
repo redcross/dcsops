@@ -5,7 +5,7 @@ describe Incidents::Ability do
   let(:roles) {[]}
   let(:chapter) {FactoryGirl.create :chapter}
   let(:person) {
-    double(:person, chapter: chapter, id: 10).tap{|p|
+    double(:person, chapter: chapter, id: 10, chapter_id: chapter.id).tap{|p|
       p.stub(:has_role) do |role|
         roles.include? role
       end
