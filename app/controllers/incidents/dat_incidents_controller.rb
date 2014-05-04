@@ -123,7 +123,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
              :num_people_injured, :num_people_hospitalized, :num_people_deceased,
              :responder_notified, :responder_arrived, :responder_departed,
              :units_affected, :units_minor, :units_major, :units_destroyed,
-             :structure_type,
+             :structure_type, :num_first_responders,
              {vehicle_ids: []},
              {languages: []},
              {services: []}

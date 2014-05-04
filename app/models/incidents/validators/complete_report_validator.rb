@@ -11,6 +11,11 @@ class Incidents::Validators::CompleteReportValidator < DelegatedValidator
 
   validates_associated :incident
 
+  def validate_first_responders?
+    services && services.include?('canteened_responders')
+  end
+  validates :num_first_responders, presence: {if: :validate_first_responders?}, numericality: {greater_than_or_equal_to: 0, allow_blank: true, if: :validate_first_responders? }
+
   Incidents::DatIncident::TRACKED_RESOURCE_TYPES.each do |type_s|
     type = type_s.to_sym
     conditional = ->(obj){ obj.incident && obj.incident.chapter.incidents_resources_tracked_array.include?(type_s)}

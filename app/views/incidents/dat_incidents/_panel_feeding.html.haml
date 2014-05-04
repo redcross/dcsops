@@ -6,11 +6,13 @@
       - local_services = {'Canteened Responders' => 'canteened_responders', 'Canteened Clients' => 'canteened_clients'}
       - local_services.each do |label, val|
         %label.checkbox
-          =check_box_tag( "incidents_dat_incident[services][]", val, services.include?( val), {class: "services-other-#{val}"})
+          =check_box_tag( "incidents_dat_incident[services][]", val, services.include?( val), {class: "services-other-#{val}", data: {bind: ".collapse.service-#{val.dasherize}"}})
           =label
       -if @rendering_panel
         - (services - local_services.values).each do |service|
           =hidden_field_tag "incidents_dat_incident[services][]", service
+  .collapse.service-canteened-responders.overflow-visible{class: f.object.services.try(:include?, 'canteened_responders') && 'in'}
+    =f.input :num_first_responders
   /=f.inputs "Meals Served" do
   =f.semantic_fields_for :incident do |f|
     =f.input :feeding_partner_used, as: :boolean, input_html: {data: {bind: '.collapse.meal'}}, label: 'Meal Served'

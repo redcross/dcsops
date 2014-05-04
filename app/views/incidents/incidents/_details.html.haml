@@ -49,6 +49,10 @@
         %tr
           %th Num. Families
           %td=resource.num_families
+        - if dat.num_first_responders && dat.num_first_responders > 0
+          %tr
+            %th Num. First Responders
+            %td=dat.num_first_responders
         %tr
           %th People Injured
           %td=dat.num_people_injured
