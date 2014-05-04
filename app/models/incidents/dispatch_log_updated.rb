@@ -1,8 +1,5 @@
 class Incidents::DispatchLogUpdated
-    include Notifier
-
-  self.notification_type = 'incident_report'
-  self.role_grant_name = 'receive_incident_report'
+  include Notifier
 
   def initialize(dispatch_log)
     @dispatch_log = dispatch_log

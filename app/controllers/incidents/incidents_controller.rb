@@ -11,6 +11,13 @@ class Incidents::IncidentsController < Incidents::BaseController
 
   has_scope :in_area, as: :area_id_eq
 
+  def create
+    create! { after_create_path }
+    if resource.errors.blank?
+      Incidents::IncidentCreated.new(resource).save
+    end
+  end
+
   def show
     if inline_editable? and resource.dat_incident.nil?
       resource.build_dat_incident
@@ -20,10 +27,6 @@ class Incidents::IncidentsController < Incidents::BaseController
     else
       show!
     end
-  end
-
-  def create
-    create! { after_create_path }
   end
 
   def close
@@ -150,9 +153,9 @@ class Incidents::IncidentsController < Incidents::BaseController
     def resource_params
       return [] if request.get?
 
-      keys = [:area_id, :date, :incident_type, :status]
+      keys = [:area_id, :date, :incident_type, :status, :narrative, :address, :city, :state, :zip, :neighborhood, :county, :lat, :lng]
 
-      keys << :incident_number if params[:action] == 'create'
+      keys << :incident_number if params[:action] == 'create' && !current_chapter.incidents_sequence_enabled
 
       attrs = params.require(:incidents_incident).permit(*keys)
       attrs.merge!({chapter_id: current_chapter.id, status: 'open'})

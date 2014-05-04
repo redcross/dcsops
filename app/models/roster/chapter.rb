@@ -34,6 +34,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_report_send_at, :integer, default: 0
   serialized_accessor :config, :incidents_report_include_assistance_amounts, :boolean
   serialized_accessor :config, :incidents_report_use_response_date, :boolean
+  serialized_accessor :config, :incidents_capture_more_details_on_create, :boolean
   serialized_accessor :config, :incidents_response_date_cutoff, :integer, default: 0
   serialized_accessor :config, :incidents_timeline_collect_source, :string
 
@@ -43,6 +44,8 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :salesforce_sso_url, :string
 
   serialized_accessor :config, :cas_host, :string
+
+  serialized_accessor :config, :kiosk_show_counties, :string
 
   def self.array_accessor *syms
     syms.each do |sym|

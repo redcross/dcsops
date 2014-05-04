@@ -4,6 +4,7 @@ class Roster::Ability
   def initialize(person)
 
     if person
+      can :index, Roster::Person, chapter_id: person.chapter_id
       can [:read, :update], Roster::Person, id: person.id
     end
 

@@ -1,0 +1,27 @@
+=f.inputs "Location" do
+  .row
+    %br
+    .span6
+      =f.input :search_for_address, hint: 'Enter as much information as you have about the address, and then click the "Look Up Address" button below.', input_html: {value: '', editable: false}
+      .control-group.address-lookup-group
+        .controls
+          %button.btn.btn-block.address-lookup Look Up Address
+      =f.input :address, input_html: {readonly: true, editable: false}
+      =f.input :city, input_html: {readonly: true, editable: false}
+      =f.input :state, default: 'CA', input_html: {readonly: true, editable: false}
+      =f.input :zip, input_html: {readonly: true, editable: false}
+      =f.input :lat, as: :hidden, input_html: {readonly: true, editable: false}
+      =f.input :lng, as: :hidden, input_html: {readonly: true, editable: false}
+      =f.input :neighborhood, input_html: {readonly: true, editable: false}
+      =f.input :county, input_html: {readonly: true, editable: false}
+      - unless request.xhr?
+        - content_for :footer_js do
+          = google_maps_javascript
+          :javascript
+            $(function() {
+              config = #{map_config.to_json};
+              window.incidentLocationController = window.incidentLocationController || new IncidentLocationController(#{f.object.lat.to_json}, #{f.object.lng.to_json}, config);
+            });
+    - unless request.xhr?
+      .span6
+        .incident-map{style: "height: 450px"}

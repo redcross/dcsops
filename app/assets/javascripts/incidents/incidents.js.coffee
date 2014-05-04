@@ -11,9 +11,8 @@
 
 class window.IncidentLocationController
   fields: ['search_for_address']
-  form_base: 'incidents_dat_incident_incident_attributes'
 
-  constructor: (@currentLat, @currentLng, @config) ->
+  constructor: (@currentLat, @currentLng, @config, @formBase='incidents_dat_incident_incident_attributes') ->
     @dom = $('.incident-map')[0]
 
     this.initGeocoder()
@@ -25,9 +24,12 @@ class window.IncidentLocationController
         this.maybeInitMap()
 
     @fields.forEach (fname) =>
-      field = '#' + @form_base + '_' + fname
-      $(document).on 'change', field, (evt) =>
+      $(document).on 'change', "[id$=#{fname}]", (evt) =>
         this.updateMap()
+
+    $(document).on 'click', 'button.address-lookup', (evt) =>
+      evt.preventDefault();
+      this.inputField('search_for_address').blur()
 
   maybeInitMap: () ->
     if ($(@dom).is(':visible'))
@@ -55,11 +57,14 @@ class window.IncidentLocationController
     @marker = new google.maps.Marker
     @bounds = new google.maps.LatLngBounds new google.maps.LatLng(@config.geocode_bounds[0], @config.geocode_bounds[1]), new google.maps.LatLng(@config.geocode_bounds[2], @config.geocode_bounds[3])
 
+  inputField: (fname) ->
+    $("[id$=incident_#{fname}],[id$=incident_attributes_#{fname}]")
+
   setFieldVal: (fname, val) ->
-    $('#' + @form_base + '_' + fname).val(val)
+    this.inputField(fname).val(val)
 
   getFieldVal: (fname) ->
-    $('#' + @form_base + '_' + fname).val()
+    this.inputField(fname).val()
 
   updateMap: () ->
     vals = @fields.map (fname) =>
@@ -67,6 +72,8 @@ class window.IncidentLocationController
     return unless vals[0]? and vals[0] != ''
     query = vals.join(", ")
     @coder.geocode {address:query, bounds: @bounds}, (results, status) =>
+      ['address', 'lat', 'lng', 'neighborhood', 'city', 'state', 'zip', 'county'].forEach (field) =>
+          this.setFieldVal field, ''
       if (status == google.maps.GeocoderStatus.OK)
         result = results[0]
         pos = result.geometry.location
@@ -77,9 +84,6 @@ class window.IncidentLocationController
           @map.setZoom 12
           @marker.setPosition(pos)
           @marker.setMap(@map)
-
-        ['address', 'lat', 'lng', 'neighborhood', 'city', 'state', 'zip', 'county'].forEach (field) =>
-          this.setFieldVal field, ''
 
         this.setFieldVal('address', result.formatted_address.split(", ")[0])
         this.setFieldVal('lat', pos.lat())

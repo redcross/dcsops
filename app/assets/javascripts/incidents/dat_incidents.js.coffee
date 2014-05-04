@@ -47,10 +47,6 @@ class window.DatIncidentsFormController
 
       $(evt.target).parents('.control-group').remove()
 
-    $(document).on 'click', 'button.address-lookup', (evt) =>
-      evt.preventDefault();
-      $('#incidents_dat_incident_search_for_address').blur()
-
     #$(document).on 'change', 'input.meal-check', (evt) =>
     #  cmd =  ($(evt.target).is(':checked') && 'show' || 'hide')
     #  $(evt.target).parents('.control-group').next('.collapse').collapse(cmd)

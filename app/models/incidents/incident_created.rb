@@ -1,6 +1,23 @@
 class Incidents::IncidentCreated
+  include Notifier
+  self.notification_type = 'new_incident'
+  self.role_grant_name = 'receive_new_incident'
+
+
   def initialize(incident)
     @incident = incident
+  end
+
+  def role_scope
+    @incident.area_id
+  end
+
+  def notification_scope
+    @incident.area_id
+  end
+
+  def chapter
+    @incident.chapter
   end
 
   def save
@@ -10,11 +27,9 @@ class Incidents::IncidentCreated
   end
 
   def fire_notifications
-    county = @incident.area_id
-
-    subscriptions = Incidents::NotificationSubscription.for_county(county).for_type('new_incident')
-    subscriptions.each do |sub|
-      Incidents::IncidentsMailer.new_incident(@incident, sub.person).deliver
+    notify do |person|
+      Incidents::IncidentsMailer.new_incident(@incident, person).deliver
     end
   end
+
 end

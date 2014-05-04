@@ -28,12 +28,25 @@
     Delivered At: #{dispatch.delivered_at.to_s :date_time}
     %br
     Delivered To: #{dispatch.delivered_to}
+    %br
+  -if @incident.narrative.present?
+    Initial Details: 
+    =@incident.narrative
+    %br
+  -if @incident.address
+    Address: #{@incident.address} #{@incident.city}, #{@incident.state} #{@incident.zip}
+    %br
+    County: #{@incident.county}
 
-%p
-  -if dispatch
+-if dispatch
+  %p
     History:
     %br
     - dispatch.log_items.sort_by(&:action_at).each do |item|
       - next if item.action_type =~ /^SMS/
       #{item.action_type}: #{item.recipient} - #{item.result}
       %br
+
+%p
+  View in DCSOps:
+  =link_to incidents_incident_url(@incident), incidents_incident_url(@incident)

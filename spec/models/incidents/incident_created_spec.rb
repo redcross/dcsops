@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Incidents::IncidentCreated do
   before(:each) do
     @incident = FactoryGirl.create :incident
-    @person = FactoryGirl.create :person
+    @person = FactoryGirl.create :person, chapter: @incident.chapter
   end
 
   it "should notify someone subscribed to new_incident" do

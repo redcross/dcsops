@@ -141,6 +141,9 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
+    capybara-screenshot (0.3.19)
+      capybara (>= 1.0, < 3)
+      launchy
     capybara-webkit (1.1.0)
       capybara (~> 2.0, >= 2.0.2)
       json
@@ -253,6 +256,8 @@ GEM
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
     kgio (2.9.2)
+    launchy (2.4.2)
+      addressable (~> 2.3)
     less (2.5.0)
       commonjs (~> 0.2.7)
     less-rails (2.5.0)
@@ -483,6 +488,7 @@ DEPENDENCIES
   cancan!
   capistrano
   capybara
+  capybara-screenshot
   capybara-webkit
   chronic
   cocoon

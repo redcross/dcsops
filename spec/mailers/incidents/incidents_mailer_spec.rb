@@ -4,14 +4,19 @@ describe Incidents::IncidentsMailer do
   let(:from_address) {["incidents@dcsops.org"]}
   let(:person) { FactoryGirl.create :person }
   let(:log_items) { [double(:dispatch_log_item, action_at: Time.zone.now, action_type: 'Dial', recipient: '', result: '')] }
+  let(:report) {
+    mock_model Incidents::Incident, incident_number: "12-345", area: double(name: 'County'), narrative: 'Test 123', created_at: Time.zone.now,
+                                    address: '123', city: '123', state: '123', zip: '123', county: '123'
+  }
 
   before(:each) do
     @chapter = FactoryGirl.create :chapter
   end
 
   describe "no_incident_report" do
-    let(:report) { double :incident, incident_number: "12-345", area: double(name: 'County'), created_at: Time.zone.now, dispatch_log: double( delivered_to: "Bob", log_items: log_items)}
     let(:mail) { Incidents::IncidentsMailer.no_incident_report(report, person) }
+
+    before(:each) { report.stub dispatch_log: double( delivered_to: "Bob", log_items: log_items) }
 
     it "renders the headers" do
       mail.subject.should eq("Missing Incident Report For County")
@@ -33,8 +38,9 @@ describe Incidents::IncidentsMailer do
       services_requested: "Help!", agency: "Fire Department", contact_name: "Name", contact_phone: "Phone", 
       delivered_at: nil, log_items: log_items
     }
-    let(:report) { double :incident, incident_number: "12-345", area: double(name: 'County'), created_at: Time.zone.now, dispatch_log: dispatch}
     let(:mail) { Incidents::IncidentsMailer.new_incident(report, person) }
+
+    before(:each) { report.stub dispatch_log: dispatch }
 
     it "renders the headers" do
       mail.subject.should eq("New Incident For County")
@@ -56,8 +62,8 @@ describe Incidents::IncidentsMailer do
       services_requested: "Help!", agency: "Fire Department", contact_name: "Name", contact_phone: "Phone", 
       delivered_at: Time.zone.now, delivered_to: "Bob", log_items: log_items
     }
-    let(:report) { double :incident, incident_number: "12-345", area: double(name: 'County'), created_at: Time.zone.now, dispatch_log: dispatch}
     let(:mail) { Incidents::IncidentsMailer.incident_dispatched(report, person) }
+    before(:each) { report.stub dispatch_log: dispatch }
 
     it "renders the headers" do
       mail.subject.should eq("Incident For County Dispatched")

@@ -25,6 +25,8 @@ require 'zonebie'
 require 'capybara/rspec'
 require 'capybara/rails'
 require 'capybara-webkit'
+require 'capybara-screenshot'
+require 'capybara-screenshot/rspec'
 require 'database_cleaner'
 require 'paper_trail/frameworks/rspec'
 #require "sauce_helper"

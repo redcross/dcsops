@@ -1,13 +1,19 @@
 .row
   .span12
-    %h1 Submit New Incident
+    %h1 Create New Incident
 .row
   .span12
+    - more_details = current_chapter.incidents_capture_more_details_on_create
     =semantic_form_for resource, builder: FormtasticBootstrap::FormBuilder, html: {class: "form-horizontal"} do |f|
       =f.inputs "Data" do
-        =f.input :status, as: :hidden, input_html: {value: 'open'}
         =f.input :area, collection: current_chapter.counties
         - unless current_chapter.incidents_sequence_enabled
           =f.input :incident_number
+        
         =f.input :date
+        -if more_details
+          =f.input :incident_type, as: :assignable_select, include_blank: false, required: true, humanized: :humanized_valid_incident_types
+          =f.input :narrative, label: "Initial Description", input_html: {rows: "3"}
+      -if more_details
+        =render partial: 'incidents/dat_incidents/location_fields', locals: {f: f}
       =f.actions
