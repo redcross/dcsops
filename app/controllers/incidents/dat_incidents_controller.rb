@@ -42,6 +42,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       resource.valid?
     end
     if params[:panel_name]
+      @rendering_panel = params[:panel_name]
       render action: 'panel', layout: nil
     else
       edit!

@@ -3,10 +3,14 @@
     %label.control-label Canteening
     .controls
       - services = f.object.services || []
-      - {'Canteened Responders' => 'canteened_responders', 'Canteened Clients' => 'canteened_clients'}.each do |label, val|
+      - local_services = {'Canteened Responders' => 'canteened_responders', 'Canteened Clients' => 'canteened_clients'}
+      - local_services.each do |label, val|
         %label.checkbox
           =check_box_tag( "incidents_dat_incident[services][]", val, services.include?( val), {class: "services-other-#{val}"})
           =label
+      -if @rendering_panel
+        - (services - local_services.values).each do |service|
+          =hidden_field_tag "incidents_dat_incident[services][]", service
   /=f.inputs "Meals Served" do
   =f.semantic_fields_for :incident do |f|
     =f.input :feeding_partner_used, as: :boolean, input_html: {data: {bind: '.collapse.meal'}}, label: 'Meal Served'
