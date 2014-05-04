@@ -4,35 +4,17 @@ class Roster::Ability
   def initialize(person)
 
     if person
-        can :read, Roster::Chapter
-        can [:read, :me], Roster::Person
-        can [:update], Roster::Person, id: person.id
+      can [:read, :update], Roster::Person, id: person.id
     end
-    # Define abilities for the passed in user here. For example:
-    #
-    #   user ||= User.new # guest user (not logged in)
-    #   if user.admin?
-    #     can :manage, :all
-    #   else
-    #     can :read, :all
-    #   end
-    #
-    # The first argument to `can` is the action you are giving the user 
-    # permission to do.
-    # If you pass :manage it will apply to every action. Other common actions
-    # here are :read, :create, :update and :destroy.
-    #
-    # The second argument is the resource the user can perform the action on. 
-    # If you pass :all it will apply to every resource. Otherwise pass a Ruby
-    # class of the resource.
-    #
-    # The third argument is an optional hash of conditions to further filter the
-    # objects.
-    # For example, here the user can only update published articles.
-    #
-    #   can :update, Article, :published => true
-    #
-    # See the wiki for details:
-    # https://github.com/ryanb/cancan/wiki/Defining-Abilities
+
+    if person.has_role 'chapter_dat_admin'
+      can [:read, :update], Roster::Person, id: person.chapter_id
+    end
+
+    admin_county_ids = person.scope_for_role('county_dat_admin')
+    if admin_county_ids.present? # is dat county admin
+      can [:read, :update], Roster::Person, county_memberships: {county_id: admin_county_ids}
+    end
+
   end
 end
