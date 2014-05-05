@@ -38,7 +38,8 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   class PersonIsAvailable < ActiveModel::Validator
     def validate(record)
       return false unless record.shift and record.date and record.person
-      assignments = Scheduler::ShiftAssignment.includes(:shift).where(shift: {shift_group_id: record.shift.shift_group}, date: record.date, person_id: record.person)
+      return true unless record.shift.exclusive
+      assignments = Scheduler::ShiftAssignment.includes(:shift).where(shift: {shift_group_id: record.shift.shift_group, exclusive: true}, date: record.date, person_id: record.person)
       if record.id
         assignments = assignments.where("scheduler_shift_assignments.id <> ?", record.id)
       end

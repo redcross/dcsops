@@ -55,6 +55,27 @@ describe Scheduler::ShiftAssignment do
     item.errors[:shift].to_s.should include "already signed up"
   end
 
+  it "should allow a person to take multiple shifts if the new shift is not exclusive" do
+    item = Scheduler::ShiftAssignment.create! person: @person, shift: @shifts.first, date: Date.today
+
+    @person.positions = @positions; @person.counties = @counties; @person.save
+
+    shift = @shifts.last
+    shift.update_attribute :exclusive, false
+    item = Scheduler::ShiftAssignment.new person: @person, shift: shift, date: Date.today
+    item.should be_valid
+  end
+  it "should allow a person to take multiple shifts if the other shift is not exclusive" do
+    @shifts.first.update_attribute :exclusive, false
+    item = Scheduler::ShiftAssignment.create! person: @person, shift: @shifts.first, date: Date.today
+
+    @person.positions = @positions; @person.counties = @counties; @person.save
+
+    shift = @shifts.last
+    item = Scheduler::ShiftAssignment.new person: @person, shift: shift, date: Date.today
+    item.should be_valid
+  end
+
   it "should allow a person to have multiple shifts in a day" do
     second_group = FactoryGirl.create :shift_group, name: "Group 2", chapter: @group.chapter
     second_shift = FactoryGirl.create :shift, county: @person.counties.first, positions: [@positions.first], shift_group: second_group

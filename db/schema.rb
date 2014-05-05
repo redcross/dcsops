@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140504154115) do
+ActiveRecord::Schema.define(version: 20140505221533) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -877,6 +877,7 @@ ActiveRecord::Schema.define(version: 20140504154115) do
     t.boolean  "ignore_county",            default: false
     t.integer  "min_advance_signup",       default: 0,     null: false
     t.integer  "shift_category_id"
+    t.boolean  "exclusive",                default: true,  null: false
   end
 
   add_index "scheduler_shifts", ["county_id"], name: "index_scheduler_shifts_on_county_id", using: :btree
