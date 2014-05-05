@@ -7,6 +7,10 @@ class NestedHash
     Hash.new{|h, k| h[k] = klass.new}
   end
 
+  def self.hash_hash
+    default_hash(Hash)
+  end
+
   def self.hash_array
     default_hash(Array)
   end

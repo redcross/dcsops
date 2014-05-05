@@ -19,33 +19,30 @@
       - date = date.at_beginning_of_week
 
 
-    - my_shift = calendar.my_shift_for_group_on_day(group.id, date)
+    - my_shifts = calendar.my_shifts_for_group_on_day(group.id, date)
     - week_group_key = "#{date.to_s}-#{group.id}"
     - prev_week_len = (wday_offset + wday_length) - 6
     - spacer_len = wday_offset - prev_week_len
     - if wday_offset > 0 and prev_week_len > 0
       - this_date = date.advance(weeks: -1)
       %td.week{colspan: prev_week_len, :"data-prev-week" => "#{this_date.to_s}-#{group.id}"}
-        - this_my_shift = calendar.my_shift_for_group_on_day(group.id, this_date)
-        %div{class: this_my_shift && 'my-shift'}
-          - shifts.select{|sh|sh.active_on_day?(this_date)}.each do |shift|
-            - this_assignments = calendar.assignments_for_shift_on_day(shift, this_date)
-            %div{class: (this_assignments.length < shift.min_desired_signups) && 'open'}
-              = render_shift_assignment_info(false, person, shift, nil, this_date, this_assignments, 'week')
+        - this_my_shift = calendar.my_shifts_for_group_on_day(group.id, this_date)
+        %div{class: this_my_shift.present? && 'my-shift'}
+          - active_shifts = shifts.select{|sh|sh.active_on_day?(this_date)}
+          - render_shifts group, active_shifts, this_date, false  do |idx, is_first, is_last, needs_signups, row_html|
+            %div{class: needs_signups && 'open'}
+              =row_html
       -if spacer_len > 0
         %td.week{colspan: spacer_len}
     - elsif wday_offset > 0
       %td.week{colspan: wday_offset}
-    
-
 
     %td.week{colspan: wday_length, :"data-this-week" => week_group_key}
-      %div{class: my_shift && 'my-shift'}
+      %div{class: my_shifts.present? && 'my-shift'}
         - shifts = shifts.select{|sh|sh.active_on_day?(date)}
-        - shifts.each do |shift|
-          - assignments=calendar.assignments_for_shift_on_day(shift, date).to_a
-          %div{class: (assignments.length < shift.min_desired_signups) && 'open'}
-            = render_shift_assignment_info(editable, person, shift, my_shift, date, assignments, 'week')
+        - render_shifts group, shifts, date, editable  do |idx, is_first, is_last, needs_signups, row_html|
+          %div{class: needs_signups && 'open'}
+            =row_html
     -if request.xhr?
       :javascript
         setTimeout(function() {

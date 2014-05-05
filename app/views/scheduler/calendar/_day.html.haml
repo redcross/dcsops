@@ -1,25 +1,22 @@
 %table.shifts
   %tr
     %th.date-header(colspan=2)=date.day
-  - first_group = false
   - calendar.daily_groups.each_with_index do |(group, shifts), group_idx|
+    - is_last_group = (group_idx == calendar.daily_groups.size-1)
     - shifts = shifts.select{|sh|sh.active_on_day?(date)}
     - next if shifts.blank?
-    - my_shift = nil
+    - my_shifts = nil
     -if person
-      - my_shift = calendar.my_shift_for_group_on_day(group.id, date)
-    - group_class = my_shift ? 'my-shift' : ''
+      - my_shifts = calendar.my_shifts_for_group_on_day(group.id, date)
+    - group_class = my_shifts.present? ? 'my-shift' : ''
     %tr
-      %th.shift-header-normal.shift-side{class: [group_class, group_idx==(calendar.daily_groups.count-1) && 'last-group'], rowspan: shifts.count+1}=group.name
+      %th.shift-header-normal.shift-side{class: [group_class, is_last_group && 'last-group'], rowspan: shifts.count+1}=group.name
       %th.shift-header-normal.shift-top{class: group_class}=group.name
+    
+    - render_shifts group, shifts, date, editable do |idx, is_first, is_last, needs_signups, row_html|
+      %tr{class: [group_class, (!is_last_group && is_last && 'end-group')]}
+        %td{class: needs_signups&&'open'}=row_html
 
-    -shifts.each_with_index do |shift, idx| 
-      - assignments=calendar.assignments_for_shift_on_day(shift, date).to_a
-      - is_last = (idx == shifts.count-1) && (group_idx != calendar.daily_groups.keys.count-1)
-      %tr{class: [group_class, is_last ? 'end-group' : '']}
-        - style=""; if assignments.length < shift.min_desired_signups and date >= current_chapter.time_zone.today; style="open"; end
-        %td{class: style}
-          = render_shift_assignment_info(editable, person, shift, my_shift, date, assignments, 'day')
 -if request.xhr?
   :javascript
     $("[data-toggle=tooltip]").tooltip()

@@ -36,7 +36,7 @@ class Scheduler::Calendar
     @all_shifts[shift.id][date] || []
   end
 
-  def my_shift_for_group_on_day(group_id, date)
+  def my_shifts_for_group_on_day(group_id, date)
     @my_shifts[group_id][date]
   end
 
@@ -74,16 +74,15 @@ class Scheduler::Calendar
   end
 
   def load_my_shifts
-    @my_shifts = Hash.new{|h,k| h[k] = Hash.new }
+    @my_shifts = NestedHash.hash_hash_array
     if person
       group_ids = all_groups.keys
       pid = person.id
-      @my_shifts = Hash.new{|h,k| h[k] = Hash.new }
 
       Scheduler::ShiftAssignment.joins{shift}.includes{shift}
           .where{(shift.shift_group_id.in(group_ids)) & (person_id == pid) & date.in(my{date_range})}
           .each do |assignment|
-        @my_shifts[assignment.shift.shift_group_id][assignment.date] = assignment
+        @my_shifts[assignment.shift.shift_group_id][assignment.date] << assignment
       end
     end
   end
