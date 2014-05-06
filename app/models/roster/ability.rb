@@ -9,7 +9,7 @@ class Roster::Ability
     end
 
     if person.has_role 'chapter_dat_admin'
-      can [:read, :update], Roster::Person, id: person.chapter_id
+      can [:read, :update], Roster::Person, chapter_id: person.chapter_id
     end
 
     admin_county_ids = person.scope_for_role('county_dat_admin')
