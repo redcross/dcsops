@@ -54,7 +54,7 @@ class Incidents::IncidentPresenter < SimpleDelegator
   end
 
   def demographics_description
-    {unit: dat_incident.try(:units_total), adult: num_adults, child: num_children, first_responder: dat_incident.try(:num_first_responders)}.select{|k, v| v && v > 0}.map{|k, v| pluralize(v, k.to_s)}.join ", "
+    {unit: dat_incident.try(:units_total), adult: num_adults, child: num_children, first_responder: dat_incident.try(:num_first_responders)}.select{|k, v| v && v > 0}.map{|k, v| pluralize(v, k.to_s.humanize)}.join ", "
   end
 
   def on_scene_responders
