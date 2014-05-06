@@ -37,26 +37,22 @@
           %small
             = person.positions.select{|p|!p.hidden}.map(&:name).join ", "
         %td
-          = Scheduler::ShiftAssignment.where(person_id: person).where('date <= ?', Date.current).count
-          shifts
+          = pluralize person.num_shifts, 'shift'
         %td
-          - d = Scheduler::ShiftAssignment.where(person_id: person).where('date <= ?', Date.current).order{date.desc}.first.try(:date)
-          -if d
+          -if d = person.prev_shift
             =d.to_s :dow_short
             %br
-            ="(#{(Date.current-d).to_i} days ago)"
+            (#{(Date.current-d).to_i} days ago)
         %td
-          - d = Scheduler::ShiftAssignment.where(person_id: person).where('date >= ?', Date.current).order{date.asc}.first.try(:date)
-          -if d
+          -if d = person.next_shift
             =d.to_s :dow_short
         %td
-          - d = person.last_login
-          -if d
+          -if d = person.last_login
             =d.to_s :dow_short
             %br
-            ="(#{(Date.current-d.to_date).to_i} days ago)"
+            (#{(Date.current-d.to_date).to_i} days ago)
         %td
-          = Scheduler::FlexSchedule.where(id: person.id).first.try(:num_shifts)
+          = flex_schedule_for(person.id).try(:num_shifts)
         %td
           -if flex = can?( :update, Scheduler::FlexSchedule.new(person: person))
             = link_to "Flex Schedule", scheduler_flex_schedule_path(person), :class => 'btn btn-mini'

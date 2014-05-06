@@ -17,7 +17,12 @@ class Scheduler::PeopleController < Scheduler::BaseController
   end
 
   def collection
-    apply_scopes(super).includes{[county_memberships, positions]}.uniq
+    @collection ||= apply_scopes(super).preload{[county_memberships, counties, positions]}.select(
+      "roster_people.*, roster_people.last_name, roster_people.first_name, " +
+      "(SELECT count(*) FROM scheduler_shift_assignments sa WHERE sa.person_id=roster_people.id AND date < '#{Date.current}') AS num_shifts, " +
+      "(SELECT min(date) FROM scheduler_shift_assignments sa WHERE sa.person_id=roster_people.id AND date >= '#{Date.current}') AS next_shift," +
+      "(SELECT max(date) FROM scheduler_shift_assignments sa WHERE sa.person_id=roster_people.id AND date < '#{Date.current}') AS prev_shift"
+    ).uniq
   end
 
   helper_method :date_ranges
