@@ -42,8 +42,11 @@ module Scheduler::CalendarHelper
 
     cbid = "#{date.to_s}-#{shift.id}"
 
-    my_shifts_exclusive = my_shifts.nil? || my_shifts.any?{|sa| sa.shift.exclusive }
+    my_shifts_exclusive = my_shifts.present? && my_shifts.any?{|sa| sa.shift.exclusive }
     can_take_exclusive = editable && (this_assignment || !shift.exclusive || !my_shifts_exclusive)
+
+    #pp my_shifts
+    #puts "Editable: #{editable}; Can take #{can_take}; can_sign_up: #{can_sign_up}, can_remove: #{can_remove}, is_signed_up: #{is_signed_up}, my_shifts_exclusive: #{my_shifts_exclusive}, can_take_exclusive: #{can_take_exclusive}"
 
     s = ActiveSupport::SafeBuffer.new
 
