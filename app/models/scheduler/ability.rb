@@ -27,13 +27,18 @@ class Scheduler::Ability
         can :manage, Scheduler::ShiftAssignment, {person: {county_memberships: {county_id: admin_county_ids}}}
     end
 
-    admin_county_ids = person.scope_for_role('county_dat_admin')
     if person.has_role 'chapter_dat_admin'
-        admin_county_ids = admin_county_ids + person.chapter.county_ids
-    end
-    admin_county_ids = admin_county_ids.uniq
+        can :read, Roster::Person, chapter_id: person.chapter_id
+        can :manage, Scheduler::ShiftAssignment, {person: {chapter_id: person.chapter_id}}
+        can :manage, Scheduler::DispatchConfig, id: person.chapter.county_ids
+        can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], person: {chapter_id: person.chapter_id}
+        can [:read, :update, :update_shifts], Scheduler::Shift, shift_group: {chapter_id: person.chapter_id}
 
-    if true and admin_county_ids.present? # is dat county admin
+        can :receive_admin_notifications, Scheduler::NotificationSetting, id: person.id
+    end
+
+    admin_county_ids = person.scope_for_role('county_dat_admin')
+    if admin_county_ids.present? # is dat county admin
         can :read, Roster::Person, county_memberships: {county_id: admin_county_ids}
         can :manage, Scheduler::ShiftAssignment, {person: {county_memberships: {county_id: admin_county_ids}}}
         can :manage, Scheduler::DispatchConfig, id: admin_county_ids
