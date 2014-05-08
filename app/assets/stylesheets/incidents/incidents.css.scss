@@ -17,6 +17,21 @@ body.incidents {
   }
 }
 
+.table-nested-container {
+  padding: 0 !important;
+}
+
+.table.table-nested {
+  padding: 0;
+  margin: 0;
+  border-collapse: collapse;
+  border: none;
+
+  tr > *:first-child {
+    border-left: none;
+  }
+}
+
 .incident-number-invalid {
   text-decoration: line-through;
 }

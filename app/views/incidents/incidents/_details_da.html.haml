@@ -1,0 +1,24 @@
+- dat = resource.dat_incident
+%h4 
+  Damage Assessment
+  %small=edit_link 'damage_assessment'
+%table.table.table-bordered.table-condensed
+  %tr
+    %th Structure Type
+    %td=dat.humanized_structure_type
+  %tr
+    %th Total Units
+    %td=dat.units_total
+  %tr
+    %td.table-nested-container(colspan="2")
+      %table.table.table-bordered.table-condensed.table-nested
+        %tr
+          %th(style="width: 25%") Affected
+          %th(style="width: 25%") Minor
+          %th(style="width: 25%") Major
+          %th(style="width: 25%") Destroyed
+        %tr
+          %td=dat.units_affected
+          %td=dat.units_minor
+          %td=dat.units_major
+          %td=dat.units_destroyed

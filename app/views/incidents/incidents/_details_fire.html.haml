@@ -1,0 +1,41 @@
+- dat = resource.dat_incident
+%h4 
+  Fire Details
+  %small=edit_link 'fire'
+%table.table.table-bordered.table-condensed
+  %tr
+    %th Box Number
+    %td=dat.box
+  %tr
+    %th Box Time
+    %td=dat.box_at
+  %tr
+    %th Battalion
+    %td=dat.battalion
+  %tr
+    %th Number of Alarms
+    %td=dat.number_of_alarms
+  %tr
+    %th Where Started
+    %td=dat.where_started
+  %tr
+    %th Under Control At
+    %td=dat.under_control_at
+  %tr
+    %th Size Up
+    %td=dat.size_up
+  %tr
+    %th # Exposures
+    %td=dat.num_exposures
+  %tr
+    %th Suspicious Fire
+    %td=dat.suspicious_fire
+  %tr
+    %th Injuries - Black
+    %td=dat.injury_black
+  %tr
+    %th Injuries - Red
+    %td=dat.injury_red
+  %tr
+    %th Injuries - Yellow
+    %td=dat.injury_yellow

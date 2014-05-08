@@ -1,0 +1,15 @@
+%h4 Assistance
+%table.table.table-bordered.table-condensed
+  %tr
+    %th=passthrough_edit_link 'services', 'Assistance Provided'
+    %td=resource.services_description
+  %tr
+    %th=passthrough_edit_link 'resources', 'Resources Provided'
+    %td=resource.resources_description
+  -if resource.cases.present?
+    %tr
+      %th Cases Opened
+      %td=resource.cases.count
+    %tr
+      %th Total Assistance
+      %td=number_to_currency resource.total_assistance_amount

@@ -1,0 +1,6 @@
+.row
+  .span12
+    -if f.object.incident.incident_type == 'fire'
+      =panel 'fire', f
+    -if f.object.incident.incident_type == 'vacate'
+      =panel 'vacate', f

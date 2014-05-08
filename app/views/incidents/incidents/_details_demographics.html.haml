@@ -1,0 +1,33 @@
+- dat = resource.dat_incident
+- include_missing = resource.chapter.incidents_report_advanced_details
+
+%h4 
+  Demographics
+  %small=edit_link 'demographics'
+%table.table.table-bordered.table-condensed
+  %tr
+  %tr
+    %td.table-nested-container
+      %table.table.table-bordered.table-condensed.table-nested
+        %tr
+          %th Adults
+          %th Children
+          %th Families
+        %tr
+          %td=resource.num_adults
+          %td=resource.num_children
+          %td=resource.num_families
+  %tr
+    %td.table-nested-container
+      %table.table.table-bordered.table-condensed.table-nested
+        %tr
+          %th Injured
+          %th Hosp.
+          %th Deceased
+          -if include_missing
+            %th Missing
+        %tr
+          %td=dat.num_people_injured
+          %td=dat.num_people_hospitalized
+          %td=dat.num_people_deceased
+          %td=dat.num_people_missing

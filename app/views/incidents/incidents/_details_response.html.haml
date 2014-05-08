@@ -1,0 +1,25 @@
+- dat = resource.dat_incident
+%h4 Response
+%table.table.table-bordered.table-condensed
+  %tr
+    %th Team Lead
+    %td
+      -if resource.team_lead
+        =resource.team_lead.person.try(:full_name)
+  %tr
+    %th Number of Responders
+    %td=resource.on_scene_responders
+  %tr
+    %th Time to On Scene
+    %td
+      -if resource.time_to_on_scene
+        =distance_of_time_in_words resource.time_to_on_scene
+  %tr
+    %th=passthrough_edit_link 'basic', 'Type of Incident'
+    %td=resource.humanized_incident_type
+  %tr
+    %th=passthrough_edit_link 'basic', 'Type of Call'
+    %td=dat.humanized_incident_call_type
+  %tr
+    %th=passthrough_edit_link 'vehicles', 'Vehicles'
+    %td= dat.vehicles.map(&:name).to_sentence

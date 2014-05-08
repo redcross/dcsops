@@ -1,0 +1,66 @@
+- dat = resource.dat_incident
+%h3 
+  Casework
+  %small
+    Incident:
+    -if resource.cas_incident_number.blank?
+      %span.invalid 
+    -else
+      =resource.cas_incident_number
+  -if resource.cas_incident.blank? and can?(:link_cas, resource)
+    %button.btn.btn-primary.btn-mini{data: {edit_panel: edit_incidents_incident_dat_path(resource, panel_name: 'cas')}} Link to CAS Incident
+-if resource.cas_incident_number.present? and resource.cas_incident.blank?
+  A CAS Incident has been provided but no data for the incident was found.  If this is a new incident, it may take 12-24 hours for incident data to become available.
+-elsif resource.cas_incident
+  - cas = resource.cas_incident
+  -if cas.notes.present?
+    %h4 Notes
+    =cas.notes
+  .row
+    .span6
+      %h4 Details
+      %table.table.table-condensed.table-bordered
+        %tr
+          %th Total Casework Clients
+          %td=cas.num_clients
+        %tr
+          %th Incident Name
+          %td=cas.cas_name
+        %tr
+          %th Incident Number
+          %td=cas.cas_incident_number
+        -if cas.is_dr
+          %tr
+            %th DR Number
+            %td=cas.dr_number
+          %tr
+            %th DR Level
+            %td=cas.dr_level
+        %tr
+          %th Incident Created
+          %td=cas.incident_date
+        %tr
+          %th Date Last Case Open
+          %td=cas.last_date_with_open_cases
+        %tr
+          %th Data Updated
+          %td=cas.last_import
+
+    .span6
+      %h4 Cases
+      %table.table.table-condensed.table-bordered
+        %tr
+          %th Total Cases
+          %td=cas.cases_opened
+        %tr
+          %th Cases Open
+          %td=cas.cases_open
+        %tr
+          %th Cases Closed
+          %td=cas.cases_closed
+        %tr
+          %th Cases w/ Financial Assistance
+          %td=cas.cases_with_assistance
+        %tr
+          %th Cases w/ Service Only
+          %td=cas.cases_service_only

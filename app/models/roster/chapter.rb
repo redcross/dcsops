@@ -37,6 +37,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_capture_more_details_on_create, :boolean
   serialized_accessor :config, :incidents_response_date_cutoff, :integer, default: 0
   serialized_accessor :config, :incidents_timeline_collect_source, :string
+  serialized_accessor :config, :incidents_report_advanced_details, :boolean
 
   serialized_accessor :config, :scheduler_flex_day_start, :integer
   serialized_accessor :config, :scheduler_flex_night_start, :integer

@@ -5,24 +5,25 @@
     .span12
       =f.semantic_errors
 
-  - tabs = {'form_basic' => 'Basic', 'form_responders' => 'Responders', 'form_services' => 'Services'}
+  - tabs = tabs_to_render(f)
   - debug_errors = false
   - all_errors = error_keys(f.object)
   - pp all_errors if debug_errors
-  - components = tabs.map{|name, title| p = FormProxy.new(f); html = render(name, f: p); pp name, p.keys if debug_errors; {name => {proxy: p, html: html, errors: (all_errors & p.keys).present?}}}.reduce(&:merge)
-  - first_error = tabs.keys.detect{|name| components[name][:errors] }
+  - components = tabs.map{|name| p = FormProxy.new(f); html = render(name, f: p); pp name, p.keys if debug_errors; {name => {proxy: p, html: html, errors: (all_errors & p.keys).present?}}}.reduce(&:merge)
+  - first_error = tabs.detect{|name| components[name][:errors] }
   - components.each_with_index { |(name, opts), idx| opts[:active] = (first_error == name || (idx == 0 && first_error.nil?)) }
 
   .tabbable
     %ul.nav.nav-tabs
-      - tabs.each do |name, title|
+      - tabs.each do |name|
+        - title = tab_titles[name]
         %li{class: components[name][:active] && 'active'}
-          %a{data: {toggle: 'tab', target: '#' + name, }, class: (components[name][:errors] && 'error')}
+          %a{data: {toggle: 'tab', target: '#' + name}, class: (components[name][:errors] && 'error')}
             =title
             %span.error-message
 
   .tab-content
-    - tabs.each_with_index do |(name, title), idx|
+    - tabs.each_with_index do |name, idx|
       .tab-pane{id: name, class: components[name][:active] && 'active'}=components[name][:html]
 
 - content_for :footer_js do

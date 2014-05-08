@@ -1,0 +1,22 @@
+%h4 
+  Shelter/Housing
+  %small=edit_link 'housing'
+%table.table.table-bordered.table-condensed
+  -if resource.hotel_partner_use || inline_editable?
+    %tr
+      %th Hotel
+      %td=resource.hotel_partner_use.try :partner_name
+    %tr
+      %th Rooms Booked
+      %td=resource.hotel_partner_use.try :hotel_rooms
+    %tr
+      %th Rate
+      %td=number_to_currency resource.hotel_partner_use.try(:hotel_rate), precision: 0
+  -if resource.shelter_partner_use || inline_editable?
+    %tr
+      %th Shelter Opened
+      %td=resource.shelter_partner_use.try :partner_name
+  -if resource.evac_partner_use || inline_editable?
+    %tr
+      %th Evac Center
+      %td=resource.evac_partner_use.try :partner_name
