@@ -81,13 +81,13 @@ Scheduler::Application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
-  config.action_mailer.default_url_options = { host: 'www.dcsops.org' }
+  config.action_mailer.default_url_options = { host: ENV['WWW_HOSTNAME'] }
 
-  config.paperclip_defaults = {storage: :s3, s3_permissions: :private, bucket: 'arcdata-files'}
+  config.paperclip_defaults = {storage: :s3, s3_permissions: :private, bucket: ENV['S3_FILE_BUCKET']}
 
   config.middleware.insert(0, Rack::Rewrite) do
-    r301 %r{.*}, 'https://www.dcsops.org$&', :if => Proc.new {|rack_env|
-      rack_env['SERVER_NAME'] != 'www.dcsops.org'
+    r301 %r{.*}, "https://#{ENV['WWW_HOSTNAME']}\$&", :if => Proc.new {|rack_env|
+      rack_env['SERVER_NAME'] != ENV['WWW_HOSTNAME']
     }
   end
 end
