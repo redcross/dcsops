@@ -66,6 +66,19 @@ class window.IncidentLocationController
   getFieldVal: (fname) ->
     this.inputField(fname).val()
 
+  getAddressComponent: (result, type, key) ->
+    val = null
+    result.address_components.forEach (el) =>
+      if el.types.indexOf(type) != -1
+        val = el[key]
+    return val
+
+  filterCounty: (strOrNothing) ->
+    if strOrNothing
+      strOrNothing.replace(' County', '')
+    else
+      strOrNothing
+
   updateMap: () ->
     vals = @fields.map (fname) =>
       this.getFieldVal(fname)
@@ -92,24 +105,13 @@ class window.IncidentLocationController
         city = null
         admin3 = null
 
-        result.address_components.forEach (el) =>
-          el.types.forEach (type) =>
-            if type == 'neighborhood'
-              this.setFieldVal('neighborhood', el.long_name)
-            else if type == 'locality'
-              city = el.long_name
-            else if type == 'administrative_area_level_3'
-              admin3 = el.long_name
-            else if type == 'administrative_area_level_1'
-              this.setFieldVal('state', el.short_name)
-            else if type == 'administrative_area_level_2'
-              this.setFieldVal('county', el.short_name.replace(' County', ''))
-            else if type == 'postal_code'
-              this.setFieldVal('zip', el.long_name)
-
-        # In some areas, a county subdivision is returned instead of city.  Take it as the name
-        # if we don't get a city back
-        this.setFieldVal('city', city || admin3)
+        this.setFieldVal('state', this.getAddressComponent(result, 'administrative_area_level_1', 'short_name'))
+        this.setFieldVal('county', this.filterCounty(this.getAddressComponent(result, 'administrative_area_level_2', 'long_name')))
+        this.setFieldVal('zip', this.getAddressComponent(result, 'postal_code', 'long_name'))
+        this.setFieldVal 'city', (this.getAddressComponent(result, 'sublocality', 'long_name') ||
+                                  this.getAddressComponent(result, 'locality', 'long_name') ||
+                                  this.getAddressComponent(result, 'administrative_area_level_3', 'long_name'))
+        this.setFieldVal('neighborhood', this.getAddressComponent(result, 'neighborhood', 'long_name'))
       else
         @marker.setMap null
 
