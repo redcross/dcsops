@@ -31,7 +31,7 @@ class Incidents::Validators::CompleteReportValidator < DelegatedValidator
             presence: {if: :validate_fire_details?}
 
   def validate_vacate_details?
-    incident.chapter.incidents_report_advanced_details && incident.incident_type == 'fire'
+    incident.chapter.incidents_report_advanced_details && incident.incident_type == 'vacate'
   end
   validates :vacate_type, :vacate_number, presence: {if: :validate_vacate_details?}
 end

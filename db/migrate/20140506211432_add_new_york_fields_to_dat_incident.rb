@@ -9,7 +9,7 @@ class AddNewYorkFieldsToDatIncident < ActiveRecord::Migration
     add_column :incidents_dat_incidents, :where_started, :string
     add_column :incidents_dat_incidents, :under_control_at, :timestamp
     add_column :incidents_dat_incidents, :box, :string
-    add_column :incidents_dat_incidents, :box_at, :string
+    add_column :incidents_dat_incidents, :box_at, :timestamp
     add_column :incidents_dat_incidents, :battalion, :string
     add_column :incidents_dat_incidents, :num_alarms, :integer
 
