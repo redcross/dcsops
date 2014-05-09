@@ -1,0 +1,18 @@
+%h1
+  =parent.name
+  =resource_class.name.to_s.demodulize.titleize.pluralize
+%table.table.table-bordered.table-condensed.table-edit-grid
+  %thead
+    %tr
+      %th ID
+      - columns.each do |col|
+        %th=col.name.to_s.titleize
+      %th Actions
+  %tbody
+    - collection.each do |resource|
+      =render 'row', resource: resource
+
+%button.add-row.btn Add Row
+- content_for :footer_js do
+  :javascript
+    window.gridController = new GridController(#{collection_path.to_json}, #{render('row', resource: resource_class.new).to_json});

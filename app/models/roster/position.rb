@@ -4,7 +4,7 @@ class Roster::Position < ActiveRecord::Base
 
   has_and_belongs_to_many :roles, class_name: 'Roster::Role'
 
-  validates_presence_of :chapter
+  validates_presence_of :chapter, :name
 
   serialize :role_scope
 

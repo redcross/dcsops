@@ -1,0 +1,13 @@
+- css ||= ""
+- css << " danger" if resource.errors.present?
+- row_id ||= resource.id
+%tr{id: "resource-#{row_id}", data: {resource_id: resource.persisted? ? resource.id : row_id, is_new: !resource.persisted?}, class: css}
+  =semantic_fields_for resource do |f|
+    %td=resource.id
+    - columns.each do |col|
+      %td=f.input col.name, form_options(col)
+    %td
+      =hidden_field_tag :row_id, row_id
+      =f.action :submit, button_html: {class: 'btn btn-primary btn-sm'}, label: 'Save'
+      -if f.object.errors.present?
+        =f.object.errors.full_messages

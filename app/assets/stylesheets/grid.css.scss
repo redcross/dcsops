@@ -1,0 +1,28 @@
+table.table-edit-grid {
+  li {
+    display: block;
+  }
+
+  input[type=text], input[type=number], select {
+    margin-bottom: 0;
+    height: 24px;
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+
+    font-size: 90%;
+    line-height: 1;
+  }
+
+  li.error {
+    color: red;
+    input {
+      border-color: red !important;
+    }
+  }
+
+  ol.choices-group {
+    padding: 0;
+  }
+}

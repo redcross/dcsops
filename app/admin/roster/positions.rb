@@ -22,7 +22,6 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
   end
 
   controller do
-
     def update
       update! { url_for(action: :index)}
     end

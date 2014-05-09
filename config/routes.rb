@@ -42,8 +42,6 @@ Scheduler::Application.routes.draw do
 
   namespace :roster do
     resources :chapters
-    #resources :positions
-    #resources :counties
     resources :people
     resource :session
     #resources :cell_carriers
@@ -132,6 +130,14 @@ Scheduler::Application.routes.draw do
       get :me, on: :collection
     end
     resources :disasters, only: [:index, :show]
+  end
+
+  namespace :admin do
+    resources :chapters do
+      resources :positions
+      resources :counties
+      resources :shifts
+    end
   end
 
   match 'import/dispatch', via: [:head, :post], to: 'incidents/import#import_dispatch'
