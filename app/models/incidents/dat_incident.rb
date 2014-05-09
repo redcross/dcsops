@@ -16,6 +16,10 @@ class Incidents::DatIncident < Incidents::DataModel
     %w(single_family_home apartment sro mobile_home commercial none)
   end
 
+  assignable_values_for :vacate_type, allow_blank: true do
+    Lookup.for_chapter_and_scope(incident.chapter, "Incidents::Incident#vacate_type").map{|l| {l.name => l.value}}.reduce(&:merge)
+  end
+
   delegated_validator Incidents::Validators::CompleteReportValidator, if: :complete_report?
 
   accepts_nested_attributes_for :incident, update_only: true#, reject_if: :cant_update_incident

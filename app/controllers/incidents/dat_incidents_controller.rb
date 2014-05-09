@@ -120,10 +120,13 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
       keys = [:incident_call_type, :team_lead_id, :num_cases, 
              :incident_type, :incident_description, :narrative_brief, :narrative,
-             :num_people_injured, :num_people_hospitalized, :num_people_deceased,
+             :num_people_injured, :num_people_hospitalized, :num_people_deceased, :num_people_missing,
              :responder_notified, :responder_arrived, :responder_departed,
              :units_affected, :units_minor, :units_major, :units_destroyed,
              :structure_type, :num_first_responders,
+             :suspicious_fire, :injuries_black, :injuries_red, :injuries_yellow,
+             :where_started, :under_control_at, :box, :box_at, :battalion, :num_alarms,
+             :size_up, :num_exposures, :vacate_type, :vacate_number, :hazardous_materials,
              {vehicle_ids: []},
              {languages: []},
              {services: []}

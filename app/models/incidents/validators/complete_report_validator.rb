@@ -26,8 +26,8 @@ class Incidents::Validators::CompleteReportValidator < DelegatedValidator
   def validate_fire_details?
     incident.chapter.incidents_report_advanced_details && incident.incident_type == 'fire'
   end
-  validates :box, :box_at, :battalion, :number_of_alarms, :where_started, :under_control_at,
-            :size_up, :num_exposures, :injury_black, :injury_red, :injury_yellow,
+  validates :box, :box_at, :battalion, :num_alarms, :where_started, :under_control_at,
+            :size_up, :num_exposures, :injuries_black, :injuries_red, :injuries_yellow,
             presence: {if: :validate_fire_details?}
 
   def validate_vacate_details?

@@ -23,3 +23,7 @@
   %tr
     %th=passthrough_edit_link 'vehicles', 'Vehicles'
     %td= dat.vehicles.map(&:name).to_sentence
+  -if resource.chapter.incidents_report_advanced_details
+    %tr
+      %th=passthrough_edit_link 'basic', 'Hazardous Materials'
+      %td=dat.hazardous_materials
