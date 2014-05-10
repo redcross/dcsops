@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140506211432) do
+ActiveRecord::Schema.define(version: 20140509182430) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -505,6 +505,53 @@ ActiveRecord::Schema.define(version: 20140506211432) do
 
   add_index "incidents_notification_subscriptions", ["county_id"], name: "index_incidents_notification_subscriptions_on_county_id", using: :btree
   add_index "incidents_notification_subscriptions", ["person_id"], name: "index_incidents_notification_subscriptions_on_person_id", using: :btree
+
+  create_table "incidents_notifications_events", force: true do |t|
+    t.integer  "chapter_id"
+    t.string   "name"
+    t.string   "description"
+    t.string   "event_type"
+    t.string   "event"
+    t.integer  "ordinal"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_notifications_events", ["chapter_id"], name: "index_incidents_notifications_events_on_chapter_id", using: :btree
+
+  create_table "incidents_notifications_roles", force: true do |t|
+    t.integer  "chapter_id"
+    t.string   "name"
+    t.string   "scope"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "incidents_notifications_roles_roster_positions", id: false, force: true do |t|
+    t.integer "role_id",     null: false
+    t.integer "position_id", null: false
+  end
+
+  add_index "incidents_notifications_roles_roster_positions", ["role_id", "position_id"], name: "index_incidents_notifications_roles_roster_positions", unique: true, using: :btree
+
+  create_table "incidents_notifications_roles_scheduler_shifts", id: false, force: true do |t|
+    t.integer "role_id",  null: false
+    t.integer "shift_id", null: false
+  end
+
+  add_index "incidents_notifications_roles_scheduler_shifts", ["role_id", "shift_id"], name: "index_incidents_notifications_roles_scheduler_shifts", unique: true, using: :btree
+
+  create_table "incidents_notifications_triggers", force: true do |t|
+    t.integer  "role_id"
+    t.integer  "event_id"
+    t.string   "template"
+    t.boolean  "use_sms"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_notifications_triggers", ["event_id"], name: "index_incidents_notifications_triggers_on_event_id", using: :btree
+  add_index "incidents_notifications_triggers", ["role_id"], name: "index_incidents_notifications_triggers_on_role_id", using: :btree
 
   create_table "incidents_partner_uses", force: true do |t|
     t.integer  "incident_id"

@@ -1,0 +1,16 @@
+%p
+  Incident Type: #{@incident.humanized_incident_type}
+  %br
+  County: #{@incident.county}
+  %br
+  Address: #{@incident.full_address}
+
+%p
+  Escalation Level: #{@event.name}
+  %br
+  Message: #{@options[:message]}
+
+%p
+  You are assigned to this event at the level of #{@template}.
+  View in DCSOps:
+  =link_to incidents_incident_url(@incident), incidents_incident_url(@incident)

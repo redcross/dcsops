@@ -142,4 +142,8 @@ class Scheduler::Shift < ActiveRecord::Base
   def total_shifts_for_month(month)
     ((month.end_of_month)-month).to_i
   end
+
+  def display_name
+    "#{shift_group.chapter_id} - #{shift_group.name} - #{name}"
+  end
 end

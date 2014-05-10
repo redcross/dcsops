@@ -1,11 +1,11 @@
 %p
   Hello,
 %p
-  An incident number was created for your county at least 12 hours ago, but no incident details report has been received.  This is an automated reminder, so if it is in error, please disregard, otherwise see below for details and a link to submit the report.
+  An incident number was created at least 12 hours ago, but no incident details report has been received.
 %p
   Incident Number: #{@incident.incident_number}
   %br
-  County: #{@incident.area_name}
+  County: #{@incident.county}
   %br
   Date and Time Created: #{@incident.created_at.to_s}
   %br

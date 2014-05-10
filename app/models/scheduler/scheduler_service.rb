@@ -5,12 +5,15 @@ class Scheduler::SchedulerService
     @chapter = chapter
   end
 
-  def scheduled_responders(time: chapter.time_zone.now, limit: nil, area: nil, exclude: [])
+  def scheduled_responders(time: chapter.time_zone.now, limit: nil, area: nil, exclude: [], shifts: nil)
     groups = Scheduler::ShiftGroup.current_groups_for_chapter(chapter, time)
     assignments = Scheduler::ShiftAssignment.joins{[shift]}.includes{[shift, person]}.for_active_groups(groups)
                   .where{person_id.not_in(exclude)}.limit(limit)
     if area
       assignments = assignments.where{shift.county_id == area}
+    end
+    if shifts
+      assignments = assignments.where{shift_id.in(shifts)}
     end
 
     assignments.to_a
