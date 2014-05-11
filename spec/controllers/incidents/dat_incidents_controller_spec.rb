@@ -67,9 +67,9 @@ describe Incidents::DatIncidentsController do
       @dat = FactoryGirl.build :dat_incident
       @lead = FactoryGirl.create :person
       @vehicle = FactoryGirl.create :vehicle
-
-      Incidents::IncidentReportFiled.stub(new: double(save: true))
     end
+
+    before(:each) { Incidents::Notifications::Notification.stub :create_for_event }
 
     let(:create_attrs) {
       attrs = @dat.attributes
@@ -94,8 +94,23 @@ describe Incidents::DatIncidentsController do
       }.to_not change{@incident.reload.incident_number}
     end
     it "should notify the report was filed" do
-      Incidents::IncidentReportFiled.should_receive(:new).with(@incident, true).and_return(double(save: true))
+      Incidents::Notifications::Notification.should_receive(:create_for_event).with(anything, 'incident_report_filed', {is_new: true})
       post :create, incident_id: @incident.to_param, incidents_dat_incident: create_attrs
+    end
+  end
+
+  context "updating an existing report" do
+    before(:each) do
+      @incident = FactoryGirl.create :incident, chapter: @person.chapter
+      @dat = FactoryGirl.create :dat_incident, incident: @incident
+      @lead = FactoryGirl.create :person
+      @vehicle = FactoryGirl.create :vehicle
+      grant_role! :submit_incident_report
+    end
+
+    it "should notify the report was filed" do
+      Incidents::Notifications::Notification.should_receive(:create_for_event).with(anything, 'incident_report_filed', {is_new: false})
+      put :update, incident_id: @incident.to_param, incidents_dat_incident: {num_adults: 3}
     end
   end
 end

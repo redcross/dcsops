@@ -58,16 +58,15 @@ describe Incidents::Notifications::Notification do
   describe '#deliver_message', type: :mailer do
     it "Delivers email" do
       data = {person: person, template: 'mobilization', use_sms: false}
-      Incidents::Notifications::Mailer.should_receive(:email_notification).with(person, 'mobilization', incident, event, message).and_return(double deliver: true)
-      Incidents::Notifications::Mailer.should_not_receive(:sms_notification)
+      Incidents::Notifications::Mailer.should_receive(:notify_event).with(person, false, event, incident, 'mobilization', message).once.and_return(double deliver: true)
       notification.deliver_message data
     end
 
     it "Delivers sms if use_sms is specified" do
       person.stub sms_addresses: ['test@vtext.com']
       data = {person: person, template: 'mobilization', use_sms: true}
-      Incidents::Notifications::Mailer.should_receive(:email_notification).and_return(double deliver: true)
-      Incidents::Notifications::Mailer.should_receive(:sms_notification).with(person, 'mobilization', incident, event, message).and_return(double deliver: true)
+      Incidents::Notifications::Mailer.should_receive(:notify_event).with(person, false, event, incident, 'mobilization', message).once.and_return(double deliver: true)
+      Incidents::Notifications::Mailer.should_receive(:notify_event).with(person, true, event, incident, 'mobilization', message).and_return(double deliver: true)
       notification.deliver_message data
     end
   end
@@ -76,7 +75,7 @@ describe Incidents::Notifications::Notification do
     it "works completely" do
       person = FactoryGirl.create :person
       role = FactoryGirl.create :notification_role, positions: [person.positions.first], chapter: person.chapter
-      event = FactoryGirl.create :event, chapter: person.chapter
+      event = FactoryGirl.create :event, chapter: person.chapter, event: 'new_incident'
       incident = FactoryGirl.create :incident, chapter: person.chapter
       trigger = FactoryGirl.create :trigger, role: role, event: event, template: 'notification'
 

@@ -55,6 +55,7 @@ describe Incidents::IncidentsController do
   describe '#mark_invalid' do
     before(:each) { grant_role! 'submit_incident_report' }
     let!(:inc) {FactoryGirl.create :raw_incident, chapter: @person.chapter}
+    before(:each) { Incidents::Notifications::Notification.stub :create_for_event }
 
     it "should succeed as get" do
       get :mark_invalid, id: inc.to_param
@@ -83,6 +84,11 @@ describe Incidents::IncidentsController do
         response.should redirect_to('/incidents/incidents/needs_report')
         flash[:error].should_not be_empty
       }.to_not change{inc.reload.status}
+    end
+
+    it "should trigger the invalid notification" do
+      Incidents::Notifications::Notification.should_receive(:create_for_event).with(anything, 'incident_invalid')
+      post :mark_invalid, id: inc.to_param, incidents_incident: {incident_type: 'invalid', narrative: 'Test'}
     end
   end
 
@@ -126,6 +132,7 @@ describe Incidents::IncidentsController do
     let(:params) {
       {incident_number: '14-123', area_id: area.id, date: Date.current.to_s}
     }
+    before(:each) { Incidents::Notifications::Notification.stub :create_for_event }
 
     it "should succeed with valid params in editable mode" do
       @person.chapter.update_attributes incidents_report_editable: true
@@ -133,6 +140,11 @@ describe Incidents::IncidentsController do
         post :create, incidents_incident: params
         response.should redirect_to("/incidents/incidents/#{params[:incident_number]}")
       }.to change(Incidents::Incident, :count).by(1)
+    end
+
+    it "should trigger the created notification" do
+      Incidents::Notifications::Notification.should_receive(:create_for_event).with(anything, 'new_incident')
+      post :create, incidents_incident: params
     end
 
     it "should succeed with valid params in normal mode" do

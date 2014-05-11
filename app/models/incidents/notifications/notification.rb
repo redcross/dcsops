@@ -4,6 +4,11 @@ module Incidents::Notifications
       new(*args).send
     end
 
+    def self.create_for_event incident, event_name, options=nil
+      event = Event.for_chapter(incident.chapter).for_type('event').for_event_name(event_name).first
+      create incident, event, options if event
+    end
+
     def initialize(incident, event, options = nil)
       @incident = incident
       @event = event

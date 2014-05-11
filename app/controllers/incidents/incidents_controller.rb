@@ -14,7 +14,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   def create
     create! { after_create_path }
     if resource.errors.blank?
-      Incidents::IncidentCreated.new(resource).save
+      Incidents::Notifications::Notification.create_for_event resource, 'new_incident'
     end
   end
 
@@ -50,7 +50,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   def mark_invalid
     if params[:incidents_incident] and resource.update_attributes mark_invalid_params
       flash[:info] = 'The incident has been removed.'
-      Incidents::IncidentInvalid.new(resource).save
+      Incidents::Notifications::Notification.create_for_event resource, 'incident_invalid'
       redirect_to needs_report_resources_path
     end
   end

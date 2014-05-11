@@ -13,5 +13,13 @@ module Incidents::Notifications
     def self.for_chapter chapter
       where{chapter_id == chapter}
     end
+
+    def self.for_type type
+      where{event_type == type}
+    end
+
+    def self.for_event_name name
+      where{event == name}
+    end
   end
 end

@@ -62,7 +62,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
   private
   def notify(is_new=true)
-    Incidents::IncidentReportFiled.new(resource.incident.reload, is_new).save
+    Incidents::Notifications::Notification.create_for_event resource.incident, 'incident_report_filed', is_new: is_new
   end
 
   helper_method :form_url

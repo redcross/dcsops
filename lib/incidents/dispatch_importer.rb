@@ -150,9 +150,9 @@ class Incidents::DispatchImporter
 
   def send_notification(log_object, created)
     if created
-      Incidents::IncidentCreated.new(log_object.incident).save
+      Incidents::Notifications::Notification.create_for_event log_object.incident, 'new_incident'
     else
-      Incidents::DispatchLogUpdated.new(log_object).save
+      Incidents::Notifications::Notification.create_for_event log_object.incident, 'incident_dispatched'
     end
   end
 

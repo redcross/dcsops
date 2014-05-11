@@ -14,6 +14,7 @@ describe Incidents::DispatchImporter do
   before do
     geocode_result = double(:geocode_result, success?: true, lat: 0, lng: 0, city: Faker::Address.city, state: Faker::Address.state, district: Faker::Address.city, zip: Faker::Address.zip_code)
     Incidents::DispatchImporter.geocoder.stub geocode: geocode_result
+    Incidents::Notifications::Notification.stub :create_for_event
   end
 
   describe "1.txt" do
@@ -89,13 +90,13 @@ describe Incidents::DispatchImporter do
     end
 
     it "should notify IncidentCreated" do
-      Incidents::IncidentCreated.any_instance.should_receive(:save)
+      Incidents::Notifications::Notification.should_receive(:create_for_event).with(anything, 'new_incident')
 
       import
     end
 
     it "should not notify DispatchLogUpdated" do
-      Incidents::DispatchLogUpdated.any_instance.should_not_receive(:save)
+      Incidents::Notifications::Notification.should_not_receive(:create_for_event).with(anything, 'incident_dispatched')
 
       import
     end
@@ -114,13 +115,13 @@ describe Incidents::DispatchImporter do
       end
 
       it "should not notify IncidentCreated" do
-        Incidents::IncidentCreated.any_instance.should_not_receive(:save)
+        Incidents::Notifications::Notification.should_not_receive(:create_for_event).with(anything, 'new_incident')
 
         import
       end
 
       it "should notify DispatchLogUpdated" do
-        Incidents::DispatchLogUpdated.any_instance.should_receive(:save)
+        Incidents::Notifications::Notification.should_receive(:create_for_event).with(anything, 'incident_dispatched')
 
         import
       end
