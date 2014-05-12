@@ -22,6 +22,8 @@ class Incidents::Incident < ActiveRecord::Base
   has_many :all_responder_assignments, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
   has_one :team_lead, lambda{ where(role: 'team_lead')}, class_name: 'Incidents::ResponderAssignment', foreign_key: 'incident_id'
 
+  belongs_to :notification_level, class_name: 'Incidents::Notifications::Event'
+
   accepts_nested_attributes_for :team_lead, update_only: true
   accepts_nested_attributes_for :responder_assignments, reject_if: -> hash {(hash[:person_id].blank?)}, allow_destroy: true
   accepts_nested_attributes_for :event_logs

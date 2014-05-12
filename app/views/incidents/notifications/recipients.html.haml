@@ -1,0 +1,15 @@
+%table.table.table-bordered.table-condensed
+  %thead
+    %tr
+      %th Name
+      %th Message
+      %th Email
+      %th SMS
+  %tbody
+    - @roles.each do |role|
+      - role[:people].each do |person|
+        %tr
+          %td=person.full_name
+          %td=role[:template].titleize
+          %td=person.email
+          %td=role[:use_sms] && person.sms_addresses.try(:first)

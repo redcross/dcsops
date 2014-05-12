@@ -1,0 +1,15 @@
+=semantic_form_for [parent, resource], url: form_url, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
+  .modal-header 
+    %a.close(data-dismiss="modal") &times;
+    %h3 Send Notification
+  .modal-body.send-notifications
+    =f.input :event_id, as: :select, collection: Incidents::Notifications::Event.for_chapter(parent.chapter).for_type('escalation').order{ordinal}, label: 'Severity' 
+    =f.input :message, as: :text, input_html: {rows: 4}
+    =link_to 'Show Recipients', '#', class: "show-recipients", data: {recipients_url: recipients_resource_path}
+    .message-recipients
+  .modal-footer
+    -if f.object.persisted?
+      =link_to 'Delete', incidents_incident_event_log_path(parent, resource), method: 'delete', data: {confirm: 'Really delete this event?'}, class: 'btn btn-danger'
+    =f.action :submit, button_html: {class: "btn btn-primary", data: {disable_with: "Sending..."}}, label: 'Send Notification'
+:javascript
+  window.notificationsController = window.notificationsController || new IncidentNotificationsController()

@@ -66,6 +66,9 @@ Scheduler::Application.routes.draw do
       end
 
       resource :dat, controller: :dat_incidents
+      resource :notification, only: [:new, :create] do
+        get :recipients
+      end
       resources :event_logs
       resources :responders
       resources :cases

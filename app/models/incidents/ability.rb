@@ -26,6 +26,7 @@ class Incidents::Ability
         can :update, Incidents::DatIncident, {incident: {date: ((today-5)..(today+1))}}
         can :manage, Incidents::ResponderAssignment, {incident: {status: 'open'}} if person.chapter.incidents_enable_dispatch_console
         can :manage, Incidents::Case, {incident: {status: 'open'}} if person.chapter.incidents_collect_case_details
+        can [:create, :recipients], Incidents::Notifications::Message
     end
 
     if is_admin or person.has_role 'cas_admin'

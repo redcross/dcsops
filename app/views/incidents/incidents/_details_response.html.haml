@@ -27,3 +27,12 @@
     %tr
       %th=passthrough_edit_link 'basic', 'Hazardous Materials'
       %td=dat.hazardous_materials
+  -if resource.chapter.incidents_use_escalation_levels
+    %tr
+      %th=passthrough_edit_link '', "Notification Level", url: new_incidents_incident_notification_path(resource)
+      %td
+        =resource.notification_level.try(:name)
+        -if resource.notification_level_message.present?
+          %br
+          Message:
+          =resource.notification_level_message

@@ -204,11 +204,13 @@ class window.IncidentEditPanelController
           modal.html(data)
           modal.find('legend').remove()
 
-    $(document).on 'edit-panel:success', (evt, panel) =>
-      console.log(panel);
+    $(document).on 'edit-panel:success', (evt, panels) =>
+      console.log(panels);
+      panels = [].concat(panels);
       $('#edit-modal').modal('hide');
 
-      this.updateTab(panel)
+      panels.forEach (panel) =>
+        this.updateTab(panel)
       if $('#inc-changes').length > 0
         this.updateTab('changes')
 
@@ -216,6 +218,7 @@ class window.IncidentEditPanelController
   updateTab: (tabName) ->
     #tabName = 'details'
     return unless tabName
+    return unless $("#inc-#{tabName}").length > 0
     $.ajax
       url: window.location.href
       data:
