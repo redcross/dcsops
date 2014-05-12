@@ -23,7 +23,7 @@ class Incidents::DispatchLogUpdated
     @dispatch_log.delivered_at ? 'incident_dispatch' : 'new_incident'
   end
 
-  def self.role_grant_name
+  def role_grant_name
     "receive_#{notification_type}"
   end
 
