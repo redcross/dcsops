@@ -23,13 +23,28 @@ module Incidents::Notifications
       end
     end
 
+    def triggers_for_event event
+      event.triggers.includes{role.role_scopes}
+    end
+
     def roles_for_event event
-      triggers = event.triggers.select{|tr| match_scope tr.role }
+      triggers = triggers_for_event(event).select{|tr| match_scope tr.role }
       triggers.map { |tr| {template: tr.template, use_sms: tr.use_sms, people: tr.role.members}}
     end
 
     def match_scope role
-      true
+      if role.role_scopes.blank?
+        true
+      else
+        incident_county = "#{@incident.county}, #{@incident.state}".downcase
+        role.role_scopes.any? { |scope|
+          case scope.level
+          when 'region' then true
+          when 'county' then scope.value.downcase == incident_county
+          else false
+          end
+        }
+      end
     end
 
     def plan_messages roles

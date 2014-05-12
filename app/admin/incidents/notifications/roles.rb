@@ -19,10 +19,14 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
   form do |f|
     f.inputs
     f.inputs do
-      f.has_many :triggers do |rf|
+      f.has_many :triggers, allow_destroy: true do |rf|
         rf.input :event
         rf.input :template, as: :assignable_select_admin
         rf.input :use_sms
+      end
+      f.has_many :role_scopes, allow_destroy: true do |sf|
+        sf.input :level, as: :assignable_select_admin
+        sf.input :value
       end
     end
     f.inputs do
@@ -36,14 +40,16 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
     default_main_content
     columns do
       column do
-        panel "Positions" do
-          table_for role.positions do
-            column :name
+        panel "Bindings" do
+          table_for role.role_scopes do
+            column("Scope") { |s| s.humanized_level }
+            column :value
           end
-        end
-        panel "Shifts" do
+          table_for role.positions do
+            column("Position") { |p| p.name }
+          end
           table_for role.shifts do
-            column :name
+            column("Shift") { |s| s.name }
             column("Shift Group") { |shift| shift.shift_group.name }
           end
         end
@@ -90,7 +96,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
     end
 
     def resource_params
-      request.get? ? [] : [params.require(:notification_role).permit(:name, :chapter_id, position_ids: [], shift_ids: [], triggers_attributes: [:id, :event_id, :template, :use_sms, :_destroy])]
+      request.get? ? [] : [params.require(:notification_role).permit(:name, :chapter_id, position_ids: [], shift_ids: [], triggers_attributes: [:id, :event_id, :template, :use_sms, :_destroy], role_scopes_attributes: [:id, :_destroy, :level, :value])]
     end
   end
 end

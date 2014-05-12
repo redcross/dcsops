@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140511010541) do
+ActiveRecord::Schema.define(version: 20140512161045) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -521,10 +521,19 @@ ActiveRecord::Schema.define(version: 20140511010541) do
 
   add_index "incidents_notifications_events", ["chapter_id"], name: "index_incidents_notifications_events_on_chapter_id", using: :btree
 
+  create_table "incidents_notifications_role_scopes", force: true do |t|
+    t.integer  "role_id"
+    t.string   "level"
+    t.string   "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_notifications_role_scopes", ["role_id"], name: "index_incidents_notifications_role_scopes_on_role_id", using: :btree
+
   create_table "incidents_notifications_roles", force: true do |t|
     t.integer  "chapter_id"
     t.string   "name"
-    t.string   "scope"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

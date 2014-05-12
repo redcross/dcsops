@@ -13,7 +13,7 @@ describe Incidents::Notifications::Notification do
     let(:role) { FactoryGirl.build_stubbed :notification_role, chapter: chapter }
 
     it "Should return hash of information" do
-      event.stub triggers: [trigger]
+      notification.stub triggers_for_event: [trigger]
       role.stub members: [person] 
       data = notification.roles_for_event(event)
       data.should have(1).item
@@ -24,6 +24,31 @@ describe Incidents::Notifications::Notification do
       people = data[:people]
       people.should be_a(Array)
       people.should =~ [person]
+    end
+  end
+
+  describe '#match_scope' do
+    let(:role) { FactoryGirl.build_stubbed :notification_role, chapter: chapter }
+    let(:scope) {mock_model Incidents::Notifications::RoleScope}
+    it "is true when role has no scopes" do
+      notification.match_scope(role).should be_true
+    end
+    it "is true when role scope is region" do
+      scope.stub level: 'region'
+      role.stub role_scopes: [scope]
+      notification.match_scope(role).should be_true
+    end
+    it "is true when role scope is county and matches" do
+      scope.stub level: 'county'
+      scope.stub value: "#{incident.county}, #{incident.state}"
+      role.stub role_scopes: [scope]
+      notification.match_scope(role).should be_true
+    end
+    it "is false when role scope is county and doesn't match" do
+      scope.stub level: 'county'
+      scope.stub value: "Other County, #{incident.state}"
+      role.stub role_scopes: [scope]
+      notification.match_scope(role).should be_false
     end
   end
 
