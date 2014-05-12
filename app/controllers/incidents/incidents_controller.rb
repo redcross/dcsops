@@ -1,6 +1,7 @@
 class Incidents::IncidentsController < Incidents::BaseController
   inherit_resources
   respond_to :html
+  respond_to :js, only: :index
   defaults finder: :find_by_incident_number!
   load_and_authorize_resource except: [:needs_report, :activity]
   helper Incidents::MapHelper
@@ -10,6 +11,10 @@ class Incidents::IncidentsController < Incidents::BaseController
   custom_actions collection: [:needs_report, :activity, :map], resource: [:mark_invalid, :close, :reopen]
 
   has_scope :in_area, as: :area_id_eq
+  has_scope :county_state_eq do |controller, scope, val|
+    county_name, state_name = val.split ", "
+    scope.where{(lower(county) == county_name.downcase) & (state == state_name)}
+  end
 
   def create
     create! { after_create_path }
@@ -108,11 +113,16 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     def collection
       @_incidents ||= begin
-        scope = apply_scopes(super).order{[date.desc, incident_number.desc]}.preload{[area, dat_incident, team_lead.person]}
+        scope = apply_scopes(super).order{[date.desc, incident_number.desc]}#.preload{[area, dat_incident, team_lead.person]}
         scope = scope.page(params[:page]) if should_paginate
         scope
       end
     end
+
+    def collection_for_stats
+      @stats_collection ||= collection.unscope(:limit, :offset, :order, :includes, :joins)
+    end
+    helper_method :collection_for_stats
 
     expose(:needs_report_collection) { end_of_association_chain.needs_incident_report.includes{area}.order{incident_number} }
 

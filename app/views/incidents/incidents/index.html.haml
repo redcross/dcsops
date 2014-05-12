@@ -6,54 +6,101 @@
     /%table
     /  %tr
     .row.collapse
-      .span2=f.label :address_cont
-      .span2=f.label :city_cont
-      .span2=f.label :county_cont
-      .span2=f.label :date_gteq, 'After'
-      .span2=f.label :date_lteq, 'Before'
+      .span12
+        .span2=f.label :address_cont
+        .span2=f.label :city_cont
+        .span2=f.label :county_cont
+        .span2=f.label :date_gteq, 'After'
+        .span2=f.label :date_lteq, 'Before'
     /%tr
     .controls-row
       =f.text_field :address_cont, class: 'input-medium span2', placeholder: 'Address'
       =f.text_field :city_cont,    class: 'input-medium span2', placeholder: 'City'
-      =f.text_field :county_cont,  class: 'input-medium span2', placeholder: 'County'
+      =select_tag :county_state_eq, options_for_select(counties_for_menu(Incidents::Incident.for_chapter(current_chapter).valid), params[:county_state_eq]), class: 'input-medium span2', include_blank: true, prompt: "County"
       =f.date_field :date_gteq,    class: 'input-medium span2', placeholder: 'After YYYY-MM-DD'
       =f.date_field :date_lteq,    class: 'input-medium span3', placeholder: 'Before YYYY-MM-DD'
     .row(style="margin-top: 15px")
       .span5
+        Neighborhood:
+        =f.select :neighborhood_eq, options_for_select(neighborhoods_for_menu(Incidents::Incident.for_chapter(current_chapter).valid), f.object.neighborhood_eq), class: 'input-medium span2', include_blank: true
         =f.label :incident_type_in
-        =f.select :incident_type_in, options_from_collection_for_select(proto.humanized_incident_types, :value, :humanized, search.incident_type_in), include_blank: true, class: 'input-medium'
+        =f.select :incident_type_in, options_from_collection_for_select(proto.humanized_incident_types, :value, :humanized, search.incident_type_in), include_blank: true, class: 'input-small'
       .span4
         =f.label :status_in
         - proto.humanized_statuses.each do |status|
           - id="q_status_in_#{status.value}"
           =check_box_tag 'q[status_in][]', status.value, search.status_in.try(:include?, status.value), {id: id}
           =label_tag id, status.humanized
+        =label_tag :show_statistics
+        =check_box_tag :show_statistics, '1', params[:show_statistics]
       .span2
         =f.submit class: 'btn'
 
-= paginate collection, :theme => 'twitter-bootstrap', pagination_class: 'pagination pagination-centered'
+-if params[:show_statistics]
+  .row
+    .span5
+      - stats = collection_for_stats.valid.incident_stats
+      - resources = Incidents::Incident.count_resources(collection_for_stats.valid, current_chapter.incidents_resources_tracked_array)
+      %table.table.table-bordered
+        %tr
+          %th Responses
+          %td=num stats.incident_count
+        %tr
+          %th No Response
+          %td=num collection_for_stats.with_status('invalid').where{incident_type.in(['not_eligible_for_services', 'no_response_needed'])}.count
+        %tr
+          %th Clients
+          %td=num stats.client_count
+        %tr
+          %th Adults
+          %td=num stats.num_adults
+        %tr
+          %th Children
+          %td
+            =num stats.num_children
+            -if stats.num_children && stats.client_count
+              (#{number_to_percentage (stats.num_children.to_f/stats.client_count)*100, precision: 0})
+        %tr
+          %th Responder Miles Driven
+          %td=num total_miles_driven(collection_for_stats.valid)
+        %tr
+          %th Average Response Time
+          %td=average_response_time(collection_for_stats.valid)
+        -if current_chapter.incidents_collect_case_details
+          - assistance = assistance_totals(collection_for_stats.valid)
+          %tr
+            %th Assistance
+            %td=number_to_currency assistance.map(&:total_assistance).sum, precision: 0
+          %tr
+            %th Cases
+            %td=num assistance.map(&:num_cases).sum
+          %tr
+            - with_assistance = assistance.detect{|a| a.total_assistance > 0}
+            %th Case Average
+            %td
+              -if with_assistance
+                =number_to_currency with_assistance.total_assistance/with_assistance.num_cases, precision: 0
+        -else
+          %tr
+            %th Cases
+            %td=num stats.case_count
+        %tr
+          %th Items Given
+          %td.table-nested-container
+            %table.table.table-bordered.table-condensed.table-nested
+              - resources.each do |res, val|
+                %tr
+                  %th=res.titleize
+                  %td=val
+    .span7
+      .all-incidents-map{style: "height: 500px"}
 
-%table.span12
-  %tr
-    %th
-    %th Incident
-    %th Date
-    %th Address
-    %th City
-    %th County
-    %th Type
+      - content_for :footer_js do
+        = google_maps_javascript
+        :javascript
+          config = #{map_config.to_json};
+          allIncidentsMapController = new AllIncidentsHeatmapController(#{map_json_for(collection_for_stats).to_json}, 'marker', config);
 
-  - collection.each do |resource|
-    %tr
-      %td
-        =link_to resource do
-          %span.label{class: (case resource.status; when 'open' then 'label-success'; when 'closed' then 'label-info'; when 'invalid' then 'label-important'; end)}=resource.humanized_status
-      %td{class: "incident-number-#{resource.status}"}
-        = link_to resource.incident_number, resource
-      %td= resource.date
-      %td= resource.address
-      %td= resource.city
-      %td= resource.county
-      %td= resource.humanized_incident_type
-
-= paginate collection, :theme => 'twitter-bootstrap', pagination_class: 'pagination pagination-centered'
+        
+.incidents-table
+  =render 'index_table'

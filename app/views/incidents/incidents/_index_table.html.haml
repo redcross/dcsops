@@ -1,0 +1,27 @@
+= paginate collection, :theme => 'twitter-bootstrap', pagination_class: 'pagination pagination-centered', remote: true
+
+%table.span12
+  %tr
+    %th
+    %th Incident
+    %th Date
+    %th Address
+    %th City
+    %th County
+    %th Type
+
+  - collection.each do |resource|
+    %tr
+      %td
+        =link_to resource do
+          %span.label{class: (case resource.status; when 'open' then 'label-success'; when 'closed' then 'label-info'; when 'invalid' then 'label-important'; end)}=resource.humanized_status
+      %td{class: "incident-number-#{resource.status}"}
+        = link_to resource.incident_number, resource
+      %td= resource.date
+      %td= resource.address
+      %td= resource.city
+      %td= resource.county
+      %td= resource.humanized_incident_type
+%br
+%br
+= paginate collection, :theme => 'twitter-bootstrap', pagination_class: 'pagination pagination-centered', remote: true

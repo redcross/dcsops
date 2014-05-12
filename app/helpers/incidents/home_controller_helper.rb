@@ -25,8 +25,10 @@ module Incidents::HomeControllerHelper
   end
 
   def map_json_for(incidents)
-    incidents.map do |inc|
-      {id: inc.incident_number, lat: inc.lat, lng: inc.lng, clients: [inc.num_adults, inc.num_children].compact.sum, status: inc.status}
+    incidents.pluck(:incident_number, :lat, :lng, :num_adults, :num_children, :status).map do |inc|
+      {id: inc[0], lat: inc[1], lng: inc[2], clients: [inc[3], inc[4]].compact.sum, status: inc[5], url: incidents_incident_path(inc[0])}
     end
+  rescue ActiveRecord::ThrowResult
+    []
   end
 end

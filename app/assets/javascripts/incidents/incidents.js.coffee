@@ -115,7 +115,7 @@ class window.IncidentLocationController
 
 class window.AllIncidentsMapController
 
-  constructor: (objects, config) ->
+  constructor: (objects, config, autoFit) ->
     dom = $('.all-incidents-map')[0]
     @map = MapFactory.createMap dom, config,
       draggable: true
@@ -136,6 +136,14 @@ class window.AllIncidentsHeatmapController
     @coder = new google.maps.Geocoder()
     @bounds = new google.maps.LatLngBounds
 
+    @validIcon =
+      url: 'https://mts.googleapis.com/vt/icon/name=icons/spotlight/spotlight-waypoint-a.png&text=%20&psize=16&font=fonts/Roboto-Regular.ttf&color=ffff3333&ax=44&ay=48&scale=2'
+      scaledSize: new google.maps.Size(17, 30)
+
+    @invalidIcon =
+      url: 'https://mts.googleapis.com/vt/icon/name=icons/spotlight/spotlight-waypoint-b.png&text=%20&psize=16&font=fonts/Roboto-Regular.ttf&color=ffff3333&ax=44&ay=48&scale=2'
+      scaledSize: new google.maps.Size(17, 30)
+
     if display == 'heatmap'
       @data = objects.map (obj) =>
         pt = new google.maps.LatLng(obj.lat, obj.lng)
@@ -154,13 +162,14 @@ class window.AllIncidentsHeatmapController
           position: pt
           map: @map
           icon: this.iconForEvent(obj.status)
-        google.maps.event.addListener marker,'click', ()=>(console.log obj.id)
+          title: obj.id
+        google.maps.event.addListener marker,'click', (evt)=>(window.location = obj.url)
         marker
 
     @map.fitBounds @bounds
 
   iconForEvent: (event) ->
-    ""
+    if (event == 'invalid') then @invalidIcon else @validIcon
 
 class window.IncidentsTrackerController
   constructor: () ->
