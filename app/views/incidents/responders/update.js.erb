@@ -1,1 +1,1 @@
-$(document).trigger('edit-panel:success', <%= raw resource.person_id.to_json %>);
+$('.assigned-table').html(<%=raw render('assigned_table').to_json%>);

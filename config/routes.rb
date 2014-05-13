@@ -70,7 +70,9 @@ Scheduler::Application.routes.draw do
         get :recipients
       end
       resources :event_logs
-      resources :responders
+      resources :responders do
+        post :status, action: :update_status, on: :member
+      end
       resources :cases
       resources :attachments
       

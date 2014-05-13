@@ -5,11 +5,19 @@
 %table.table
   - {'Responded' => resource.available_responders, 'Unavailable' => resource.unavailable_responders}.each do |title, collection|
     %tr
-      %th(colspan="2")=title
+      %th(colspan="6")=title
     %tr
       %th Name
       %th Role
+      %th Status
+      %th Assigned/Dispatched
+      %th On Scene
+      %th Departed Scene
     - collection.each do |assignment|
       %tr
         %td=assignment.person.full_name
         %td=assignment.role.titleize
+        %td
+        %td=(assignment.dispatched_at || assignment.created_at).try(:to_s, :date_time)
+        %td=assignment.on_scene_at.try(:to_s, :date_time)
+        %td=assignment.departed_scene_at.try(:to_s, :date_time)

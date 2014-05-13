@@ -1,9 +1,9 @@
 class Incidents::RespondersController < Incidents::BaseController
   inherit_resources
-  respond_to :html, :json
+  respond_to :html, :json, :js
   belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident
   defaults resource_class: Incidents::ResponderAssignment, collection_name: 'all_responder_assignments'
-  custom_actions collection: [:available]
+  custom_actions collection: [:available], resource: [:status]
   load_and_authorize_resource class: 'Incidents::ResponderAssignment'
   helper Incidents::MapHelper
 
@@ -26,6 +26,23 @@ class Incidents::RespondersController < Incidents::BaseController
   end
   alias_method :create, :update
 
+  def update_status
+    new_status = params[:status]
+    if %w(dispatched on_scene departed_scene).include? new_status
+      val = resource.send("#{new_status}_at")
+      resource.send("#{new_status}_at=", val || current_chapter.time_zone.now)
+      resource.save
+    end
+    if new_status == 'on_scene'
+      mark_incident_on_scene
+    elsif new_status == 'departed_scene'
+      mark_incident_departed_scene
+    end
+    respond_with resource, location: smart_resource_url do |fmt|
+      fmt.js { render action: :update }
+    end
+  end
+
   protected
 
   def notify_assignment
@@ -43,7 +60,7 @@ class Incidents::RespondersController < Incidents::BaseController
 
   def resource_params
     return [] if request.get?
-    [params.require(:incidents_responder_assignment).permit(:person_id, :was_flex, :role, :send_assignment_sms, :send_assignment_email)]
+    [params.require(:incidents_responder_assignment).permit(:person_id, :was_flex, :role, :send_assignment_sms, :send_assignment_email, :driving_distance, :dispatched_at, :on_scene_at, :departed_scene_at)]
   end
 
   def build_resource
@@ -52,6 +69,11 @@ class Incidents::RespondersController < Incidents::BaseController
 
   def resource
     @assignment ||= super.tap{|a| prepare_resource a }
+  end
+
+  def create_resource(res)
+    res.dispatched_at ||= current_chapter.time_zone.now if res.was_available
+    super(res)
   end
 
   def prepare_resource(assignment)
@@ -72,8 +94,30 @@ class Incidents::RespondersController < Incidents::BaseController
     end
   end
 
+  def mark_incident_on_scene
+    on_scene = parent.event_logs.where{event == 'dat_on_scene'}.exists?
+    unless on_scene
+      parent.event_logs.create(event: 'dat_on_scene', event_time: current_chapter.time_zone.now, message: "#{resource.person.full_name} arrived on scene.  (Automatic message)", person: current_user)
+    end
+  end
+
+  def mark_incident_departed_scene
+    responders_still_on_scene = collection.where{departed_scene_at == nil}.select(&:on_scene).present?
+    departed_scene_exists = parent.event_logs.where{event == 'dat_departed_scene'}.exists?
+    if !responders_still_on_scene && !departed_scene_exists
+      parent.event_logs.create(event: 'dat_departed_scene', event_time: current_chapter.time_zone.now, message: "#{resource.person.full_name} was the last to depart the scene.  (Automatic message)", person: current_user)
+    end
+  end
+
+  def collection
+    @collection ||= super.includes{person}
+  end
 
   expose(:ignore_area) { current_chapter.incidents_dispatch_console_ignore_county || (params[:ignore_area] == '1') }
   expose(:service) { Incidents::RespondersService.new(parent, collection, ignore_area_scheduled: ignore_area, ignore_area_flex: true) }
 
+  def enable_messaging
+    false
+  end
+  helper_method :enable_messaging
 end

@@ -33,7 +33,7 @@ describe Incidents::RespondersController do
   let(:valid_session) { {} }
 
   let(:incident) { FactoryGirl.create :incident }
-  let(:person) { FactoryGirl.create :person, work_phone_carrier: FactoryGirl.create(:cell_carrier) }
+  let(:person) { FactoryGirl.create :person, work_phone_carrier: FactoryGirl.create(:cell_carrier), chapter: incident.chapter }
 
   before :each do
     grant_role! 'submit_incident_report'
@@ -89,12 +89,69 @@ describe Incidents::RespondersController do
     end
 
     it "should assign the person if given" do
-      person = FactoryGirl.create :person
       get :new, {incident_id: incident.to_param, person_id: person.id}
       response.should be_success
 
       controller.send(:person).should == person
       controller.send(:resource).person_id.should == person.id
+    end
+  end
+
+  describe "GET show" do
+    it "should succeed" do
+      ass = FactoryGirl.create :responder_assignment, person: person, incident: incident
+      get :show, {incident_id: incident.to_param, id: ass.id}
+      response.should be_success
+    end
+  end
+
+  describe "POST update_status" do
+    let!(:assignment) { FactoryGirl.create :responder_assignment, person: person, incident: incident }
+    it "fails with an invalid value" do
+      expect {
+        post :update_status, {incident_id: incident.to_param, id: assignment.id, status: 'whatever'}
+      }.to_not change{assignment.reload.attributes}
+    end
+    it "updates dispatched at" do
+      expect {
+        post :update_status, {incident_id: incident.to_param, id: assignment.id, status: 'dispatched'}
+      }.to change{assignment.reload.dispatched_at}.from(nil)
+    end
+    it "updates on scene at" do
+      expect {
+        post :update_status, {incident_id: incident.to_param, id: assignment.id, status: 'on_scene'}
+      }.to change{assignment.reload.on_scene_at}.from(nil)
+    end
+    it "updates departed at" do
+      expect {
+        post :update_status, {incident_id: incident.to_param, id: assignment.id, status: 'departed_scene'}
+      }.to change{assignment.reload.departed_scene_at}.from(nil)
+    end
+
+    it "marks the incident as on scene" do
+      post :update_status, {incident_id: incident.to_param, id: assignment.id, status: 'on_scene'}
+      on_scene = incident.event_logs.detect{|el| el.event == 'dat_on_scene'}
+      on_scene.should_not be_nil
+    end
+
+    it "doesn't mark the incident as on scene if it already is" do
+      log = incident.event_logs.create event: 'dat_on_scene', event_time: Time.zone.now
+      expect {
+        post :update_status, {incident_id: incident.to_param, id: assignment.id, status: 'on_scene'}
+      }.to_not change{log.reload.attributes}
+    end
+
+    it "marks the incident as departed scene" do
+      post :update_status, {incident_id: incident.to_param, id: assignment.id, status: 'departed_scene'}
+      dat_departed_scene = incident.event_logs.detect{|el| el.event == 'dat_departed_scene'}
+      dat_departed_scene.should_not be_nil
+    end
+
+    it "doesn't mark the incident as departed scene if this isn't the last responder" do
+      FactoryGirl.create :responder_assignment, incident: incident, role: 'responder'
+      expect {
+        post :update_status, {incident_id: incident.to_param, id: assignment.id, status: 'departed_scene'}
+      }.to_not change(Incidents::EventLog, :count)
     end
   end
 

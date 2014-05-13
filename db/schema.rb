@@ -11,12 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140512161045) do
+ActiveRecord::Schema.define(version: 20140512183203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
-  enable_extension "tablefunc"
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "resource_id",   null: false
@@ -267,7 +266,6 @@ ActiveRecord::Schema.define(version: 20140512161045) do
   end
 
   add_index "incidents_cas_cases", ["cas_incident_id"], name: "index_incidents_cas_cases_on_cas_incident_id", using: :btree
-  add_index "incidents_cas_cases", ["case_number"], name: "index_incidents_cas_cases_on_case_number", unique: true, using: :btree
 
   create_table "incidents_cas_incidents", force: true do |t|
     t.string   "dr_number"
@@ -352,7 +350,6 @@ ActiveRecord::Schema.define(version: 20140512161045) do
     t.text     "languages"
     t.hstore   "resources"
     t.integer  "num_first_responders"
-    t.string   "vacate_ordered_by"
     t.boolean  "suspicious_fire"
     t.integer  "injuries_black"
     t.integer  "injuries_red"
@@ -360,7 +357,7 @@ ActiveRecord::Schema.define(version: 20140512161045) do
     t.string   "where_started"
     t.datetime "under_control_at"
     t.string   "box"
-    t.string   "box_at"
+    t.datetime "box_at"
     t.string   "battalion"
     t.integer  "num_alarms"
     t.string   "size_up"
@@ -488,7 +485,6 @@ ActiveRecord::Schema.define(version: 20140512161045) do
   end
 
   add_index "incidents_incidents", ["cas_incident_number"], name: "index_incidents_incidents_on_cas_incident_number", using: :btree
-  add_index "incidents_incidents", ["chapter_id", "id", "date"], name: "index_incidents_incidents_on_chapter_id_id_date", using: :btree
   add_index "incidents_incidents", ["chapter_id", "incident_number"], name: "index_incidents_incidents_on_chapter_id_incident_number", unique: true, using: :btree
   add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id", using: :btree
   add_index "incidents_incidents", ["incident_number"], name: "index_incidents_incidents_on_incident_number", using: :btree
@@ -595,7 +591,11 @@ ActiveRecord::Schema.define(version: 20140512161045) do
     t.string   "response"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "was_flex",    default: false
+    t.boolean  "was_flex",          default: false
+    t.float    "driving_distance"
+    t.datetime "dispatched_at"
+    t.datetime "on_scene_at"
+    t.datetime "departed_scene_at"
   end
 
   add_index "incidents_responder_assignments", ["incident_id"], name: "index_incidents_responder_assignments_on_incident_id", using: :btree
@@ -719,8 +719,6 @@ ActiveRecord::Schema.define(version: 20140512161045) do
     t.integer "person_id"
     t.boolean "persistent"
   end
-
-  add_index "roster_county_memberships", ["person_id"], name: "index_roster_county_memberships_on_person_id", using: :btree
 
   create_table "roster_people", force: true do |t|
     t.integer  "chapter_id"
@@ -903,7 +901,6 @@ ActiveRecord::Schema.define(version: 20140512161045) do
 
   add_index "scheduler_shift_assignments", ["date", "person_id", "shift_id"], name: "index_scheduler_shift_assignment_fields", unique: true, using: :btree
   add_index "scheduler_shift_assignments", ["person_id"], name: "index_scheduler_shift_assignments_on_person_id", using: :btree
-  add_index "scheduler_shift_assignments", ["shift_id", "date"], name: "index_scheduler_shift_assignments_on_shift_id_date", using: :btree
   add_index "scheduler_shift_assignments", ["shift_id"], name: "index_scheduler_shift_assignments_on_shift_id", using: :btree
 
   create_table "scheduler_shift_categories", force: true do |t|
@@ -975,7 +972,6 @@ ActiveRecord::Schema.define(version: 20140512161045) do
     t.integer  "chapter_id",     null: false
   end
 
-  add_index "versions", ["chapter_id", "root_type", "root_id"], name: "index_versions_on_chapter_id_root_type_root_id", using: :btree
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
 end

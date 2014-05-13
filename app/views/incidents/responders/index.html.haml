@@ -1,25 +1,14 @@
 .app{"ng-app" => ''}
   .row
-    .span6
+    .span7
       %h3
         =link_to parent do
           %i.icon-chevron-left
           #{parent.incident_number} #{parent.city}, #{parent.state}
       %strong= Incidents::IncidentPresenter.new(parent).full_address
-      %h4 Responders
-      %table.table.table-bordered.table-condensed
-        %tr
-          %th Name
-          %th Role
-          %th Contact
-          %th Action
-        - collection.select(&:was_available).each do |assignment|
-          %tr
-            %td=assignment.person.full_name
-            %td=assignment.humanized_role
-            %td=assignment.person.primary_phone
-            %td=link_to 'Edit', edit_resource_path(assignment), class: 'btn btn-mini'
-    .span6
+      .assigned-table
+        =render 'assigned_table'
+    .span5
       %h4
         Map
         .responder-map{style: "height: 300px"}

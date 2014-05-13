@@ -162,4 +162,5 @@ class Incidents::IncidentsController < Incidents::BaseController
 
       [attrs]
     end
+
 end

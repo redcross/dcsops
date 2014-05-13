@@ -65,4 +65,36 @@ module Incidents::RespondersHelper
                             .map{ |pos| content_tag(:span, data: {toggle: 'tooltip'}, title: pos.name) { pos.abbrev }}
     safe_join quals, ', '
   end
+
+  def format_status_time time
+    time.to_s :time
+  end
+
+  def assignment_status ass
+    if ass.departed_scene_at
+      "Departed at #{format_status_time ass.departed_scene_at}"
+    elsif ass.on_scene_at
+      "On Scene at #{format_status_time ass.on_scene_at}"
+    elsif ass.dispatched_at
+      "Dispatched at #{format_status_time ass.dispatched_at}"
+    else
+      "Assigned at #{format_status_time ass.created_at}"
+    end
+  end
+
+  def status_link ass, label, status
+    link_to label, status_resource_path(ass, status: status), method: :post, remote: true, data: {disable_with: "Updating..."}
+  end
+
+  def next_status_link ass
+    if ass.departed_scene_at
+
+    elsif ass.on_scene_at
+      status_link ass, "Mark Departed Scene", 'departed_scene'
+    elsif ass.dispatched_at
+      status_link ass, "Mark On Scene", 'on_scene'
+    else
+      status_link ass, "Mark Dispatched", 'dispatched'
+    end
+  end
 end

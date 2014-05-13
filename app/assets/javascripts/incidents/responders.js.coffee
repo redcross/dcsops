@@ -152,9 +152,18 @@ class window.IncidentAssignmentController
       unitSystem: google.maps.UnitSystem.IMPERIAL
       durationInTraffic: true
       (resp, status) =>
-        console.log resp, status
         if status == google.maps.DirectionsStatus.OK
           @renderer.setDirections resp
+          distance = try
+            resp.routes[0].legs[0].distance.value
+          catch
+            null
+          if distance
+            this.setDistanceMeters(distance)
+
+  setDistanceMeters: (distance) ->
+    distance = distance / 1609.3
+    $('input[id$=driving_distance]').val(distance)
 
 
 

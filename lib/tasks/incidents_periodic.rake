@@ -35,4 +35,10 @@ namespace :incidents_periodic do
       end
     end
   end
+
+  task :update_driving_distances => :environment do
+    Raven.capture do
+      Incidents::UpdateDrivingDistanceJob.new.perform
+    end
+  end
 end
