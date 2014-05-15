@@ -52,15 +52,10 @@ module Incidents::Notifications
 
     helper do
       def short_maps_url(inc)
-        short_url("https://maps.google.com/maps?q=#{inc.lat}+#{inc.lng}+")
+        short_url(@incident.map_url)
       end
       def short_incident_url(inc)
         short_url(incidents_incident_url(inc))
-      end
-
-      def short_url(url)
-        return url if Rails.env.development? # Bitly won't shorten localhost
-        Rails.cache.fetch([:shorten, url]) { Bitly.client.shorten(url).short_url }
       end
     end
   end

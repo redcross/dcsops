@@ -75,6 +75,9 @@ Scheduler::Application.routes.draw do
       end
       resources :cases
       resources :attachments
+      resources :responder_messages do
+        post :acknowledge, on: :member
+      end
       
       collection do
         get :needs_report
@@ -109,6 +112,7 @@ Scheduler::Application.routes.draw do
 
     namespace :api do
       resources :incidents, only: :index
+      post :twilio_incoming, controller: :responder_messages_twilio, action: :incoming
     end
   end
 

@@ -1,7 +1,7 @@
 %h4 
   Responders
   -if enable_messaging
-    =link_to 'Message All', '#', class: 'btn'
+    =link_to 'Message All', '#', class: 'btn', data: {edit_panel: new_incidents_incident_responder_message_path(parent)}
 %table.table.table-bordered.table-condensed
   %tr
     %th Name
@@ -10,12 +10,13 @@
     %th Status
     %th
   - collection.select(&:was_available).each do |assignment|
+    - has_sms = assignment.person.sms_addresses.present?
     %tr
       %td=assignment.person.full_name
       %td=assignment.humanized_role
       %td
         =assignment.person.primary_phone
-        -if assignment.person.sms_addresses.present?
+        -if has_sms
           %span.label.label-success SMS
       %td=assignment_status(assignment)
       %td
@@ -27,5 +28,5 @@
             %li.disabled=link_to assignment.person.full_name, '#'
             %li=link_to 'Edit…', edit_resource_path(assignment), tabindex: "-1"
             %li=next_status_link assignment
-            -if enable_messaging
-              %li=link_to 'Send Message', ''
+            -if enable_messaging && has_sms
+              %li=link_to 'Send Message', '#', data: {edit_panel: new_incidents_incident_responder_message_path(parent, recipient: assignment.person_id)}

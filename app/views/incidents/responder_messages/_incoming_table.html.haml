@@ -1,0 +1,12 @@
+-if incoming_messages.present?
+  %table.table.table-bordered.table-condensed
+    %tr
+      %th Person
+      %th Message
+      %th
+    - incoming_messages.each do |msg|
+      %tr
+        %td=msg.person.full_name
+        %td
+          .incoming-message-preview=msg.message
+        %td=link_to 'View', '#', class: 'btn btn-mini', data: {edit_panel: incidents_incident_responder_message_path(parent, msg)}

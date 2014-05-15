@@ -72,4 +72,8 @@ class Incidents::IncidentPresenter < SimpleDelegator
   def team_lead_name
     team_lead.try(:person).try(:full_name)
   end
+
+  def map_url
+    "https://maps.google.com/maps?q=#{lat}+#{lng}+"
+  end
 end

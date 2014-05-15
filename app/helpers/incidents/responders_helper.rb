@@ -97,4 +97,8 @@ module Incidents::RespondersHelper
       status_link ass, "Mark Dispatched", 'dispatched'
     end
   end
+
+  def incoming_messages
+    @incoming ||= Incidents::ResponderMessage.unacknowledged_for_incident(parent).includes{person}
+  end
 end

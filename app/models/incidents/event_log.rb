@@ -6,6 +6,10 @@ class Incidents::EventLog < Incidents::DataModel
   validates :message, presence: {if: :is_note?, allow_blank: false}
   validates :event, uniqueness: {scope: :incident_id, if: ->(log){!%w(note dispatch_note).include? log.event}}
 
+  def self.note
+    where{event == 'note'}
+  end
+
   EVENT_TYPES = {
     "note"=>"Note",
     "incident_occurred"=>     "Incident Occurred",

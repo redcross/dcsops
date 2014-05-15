@@ -27,6 +27,7 @@ class Incidents::Ability
         can :manage, Incidents::ResponderAssignment, {incident: {status: 'open'}} if person.chapter.incidents_enable_dispatch_console
         can :manage, Incidents::Case, {incident: {status: 'open'}} if person.chapter.incidents_collect_case_details
         can [:create, :recipients], Incidents::Notifications::Message
+        can [:create, :read, :acknowledge], Incidents::ResponderMessage
     end
 
     if is_admin or person.has_role 'cas_admin'

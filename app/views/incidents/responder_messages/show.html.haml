@@ -1,0 +1,14 @@
+.modal-header 
+  %a.close(data-dismiss="modal") &times;
+  %h3
+    Message From
+    =resource.person.full_name
+.modal-body
+  =resource.message
+.modal-footer
+  =form_tag acknowledge_resource_path, method: :post, class: 'form form-inline', style: 'display: inline', remote: true do
+    %label.checkbox 
+      Save In Timeline
+      =check_box_tag :save_in_timeline, '1', false
+    =submit_tag 'Acknowledge', class: 'btn btn-primary'
+  =link_to 'Reply', '#', data: {edit_panel: new_resource_path(recipient:resource.person)}, class: 'btn'

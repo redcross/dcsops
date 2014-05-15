@@ -61,6 +61,7 @@ gem 'bitly'
 gem 'aws-sdk'
 gem "memcachier"
 gem "dalli"
+gem "twilio-ruby"
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 # gem 'turbolinks'

@@ -19,7 +19,7 @@ class Incidents::EditPanelController < Incidents::BaseController
 
   def update
     action = params[:action] == 'create' ? :create! : :update!
-    self.send(action) { polymorphic_url(parent, {anchor: "inc-"+Array(self.class.panel_name).first}) }
+    self.send(action) { after_create_url }
   end
   alias_method :create, :update
 
@@ -29,6 +29,10 @@ class Incidents::EditPanelController < Incidents::BaseController
   end
 
   protected
+
+  def after_create_url
+    polymorphic_url(parent, {anchor: "inc-"+Array(self.class.panel_name).first})
+  end
 
   def check_incident_open
     unless parent.status == 'open'

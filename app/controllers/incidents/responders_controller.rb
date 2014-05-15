@@ -34,9 +34,9 @@ class Incidents::RespondersController < Incidents::BaseController
       resource.save
     end
     if new_status == 'on_scene'
-      mark_incident_on_scene
+      resource.on_scene!
     elsif new_status == 'departed_scene'
-      mark_incident_departed_scene
+      resource.departed_scene!
     end
     respond_with resource, location: smart_resource_url do |fmt|
       fmt.js { render action: :update }
@@ -94,21 +94,6 @@ class Incidents::RespondersController < Incidents::BaseController
     end
   end
 
-  def mark_incident_on_scene
-    on_scene = parent.event_logs.where{event == 'dat_on_scene'}.exists?
-    unless on_scene
-      parent.event_logs.create(event: 'dat_on_scene', event_time: current_chapter.time_zone.now, message: "#{resource.person.full_name} arrived on scene.  (Automatic message)", person: current_user)
-    end
-  end
-
-  def mark_incident_departed_scene
-    responders_still_on_scene = collection.where{departed_scene_at == nil}.select(&:on_scene).present?
-    departed_scene_exists = parent.event_logs.where{event == 'dat_departed_scene'}.exists?
-    if !responders_still_on_scene && !departed_scene_exists
-      parent.event_logs.create(event: 'dat_departed_scene', event_time: current_chapter.time_zone.now, message: "#{resource.person.full_name} was the last to depart the scene.  (Automatic message)", person: current_user)
-    end
-  end
-
   def collection
     @collection ||= super.includes{person}
   end
@@ -117,7 +102,7 @@ class Incidents::RespondersController < Incidents::BaseController
   expose(:service) { Incidents::RespondersService.new(parent, collection, ignore_area_scheduled: ignore_area, ignore_area_flex: true) }
 
   def enable_messaging
-    false
+    parent.chapter.incidents_enable_messaging
   end
   helper_method :enable_messaging
 end

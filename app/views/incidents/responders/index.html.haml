@@ -8,6 +8,8 @@
       %strong= Incidents::IncidentPresenter.new(parent).full_address
       .assigned-table
         =render 'assigned_table'
+      .incoming-table
+        =render partial: 'incidents/responder_messages/incoming_table'
     .span5
       %h4
         Map
@@ -71,4 +73,5 @@
       respondersController.loadTravelTimes();
       respondersController.mapResponders();
       $("[data-toggle=tooltip]").tooltip()
+      window.editPanelController = new IncidentEditPanelController();
     })
