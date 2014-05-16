@@ -9,7 +9,15 @@ class Incidents::ResponderMessagesController < Incidents::EditPanelController
       parent.event_logs.create event: 'note', event_time:resource.created_at, person: current_user, message: log_message
     end
     resource.update_attribute :acknowledged, true
-    render action: :update
+
+    if params[:commit] == 'Reply'
+      redirect_to action: :new, recipient: resource.person_id
+    else
+      render action: :update
+    end
+
+
+    Incidents::ResponderMessageTablePublisher.new(parent).publish_incoming
   end
 
   protected

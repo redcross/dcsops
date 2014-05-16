@@ -61,6 +61,7 @@ describe Incidents::ResponderMessageService do
       subject.handle_command "commands"
     end
     it "stores the message otherwise" do
+      incoming_message.stub :save
       incoming_message.should_receive(:acknowledged=).with(true).ordered
       incoming_message.should_receive(:acknowledged=).with(false).ordered
       subject.handle_command "some other message"

@@ -83,7 +83,7 @@ module Incidents::RespondersHelper
   end
 
   def status_link ass, label, status
-    link_to label, status_resource_path(ass, status: status), method: :post, remote: true, data: {disable_with: "Updating..."}
+    link_to label, status_incidents_incident_responder_path(parent, ass, status: status), method: :post, remote: true, data: {disable_with: "Updating..."}
   end
 
   def next_status_link ass
@@ -98,7 +98,11 @@ module Incidents::RespondersHelper
     end
   end
 
-  def incoming_messages
-    @incoming ||= Incidents::ResponderMessage.unacknowledged_for_incident(parent).includes{person}
+  def incoming_messages(incident)
+    @incoming ||= Incidents::ResponderMessage.unacknowledged_for_incident(incident).includes{person}.order{created_at.asc}
+  end
+
+  def enable_messaging
+    parent.chapter.incidents_enable_messaging
   end
 end

@@ -11,4 +11,4 @@
       Save In Timeline
       =check_box_tag :save_in_timeline, '1', false
     =submit_tag 'Acknowledge', class: 'btn btn-primary'
-  =link_to 'Reply', '#', data: {edit_panel: new_resource_path(recipient:resource.person)}, class: 'btn'
+    =submit_tag 'Reply', class: 'btn'#, data: {edit_panel: new_resource_path(recipient:resource.person)}

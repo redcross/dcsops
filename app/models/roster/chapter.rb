@@ -53,6 +53,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :twilio_auth_token, :string
   serialized_accessor :config, :incidents_twilio_number, :string
   serialized_accessor :config, :incidents_enable_messaging, :boolean
+  serialized_accessor :config, :incidents_enable_chat, :boolean
 
   def self.array_accessor *syms
     syms.each do |sym|

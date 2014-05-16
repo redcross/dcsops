@@ -9,7 +9,7 @@
       .assigned-table
         =render 'assigned_table'
       .incoming-table
-        =render partial: 'incidents/responder_messages/incoming_table'
+        =render partial: 'incidents/responder_messages/incoming_table', locals: {incident: parent}
     .span5
       %h4
         Map
@@ -64,7 +64,6 @@
     %a.btn.btn-primary(data-dismiss="modal") Close
 
 - content_for :footer_js do
-  = google_maps_javascript
   :javascript
     $(function() {
       window.respondersController = new IncidentRespondersController();
@@ -75,3 +74,5 @@
       $("[data-toggle=tooltip]").tooltip()
       window.editPanelController = new IncidentEditPanelController();
     })
+  = google_maps_javascript
+  = incidents_goinstant_setup(parent)

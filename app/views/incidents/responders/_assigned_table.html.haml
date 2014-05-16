@@ -26,7 +26,7 @@
             %span.caret
           %ul.dropdown-menu{role: "menu", aria_labelledby: "dropdownMenu"}
             %li.disabled=link_to assignment.person.full_name, '#'
-            %li=link_to 'Edit…', edit_resource_path(assignment), tabindex: "-1"
+            %li=link_to 'Edit…', edit_incidents_incident_responder_path(parent, assignment), tabindex: "-1"
             %li=next_status_link assignment
             -if enable_messaging && has_sms
               %li=link_to 'Send Message', '#', data: {edit_panel: new_incidents_incident_responder_message_path(parent, recipient: assignment.person_id)}

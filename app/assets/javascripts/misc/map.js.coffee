@@ -30,6 +30,7 @@ window.MapFactory =
     #panControl: false
 
   createMap: (dom, mapConfig, options) ->
+    return null unless window.google
     google.maps.visualRefresh = true
     
     mapOpts = $.extend({}, this.defaultOptions(mapConfig), options)

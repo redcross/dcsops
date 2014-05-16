@@ -38,6 +38,7 @@ class Incidents::RespondersController < Incidents::BaseController
     elsif new_status == 'departed_scene'
       resource.departed_scene!
     end
+    Incidents::ResponderMessageTablePublisher.new(parent).publish_responders
     respond_with resource, location: smart_resource_url do |fmt|
       fmt.js { render action: :update }
     end
@@ -46,6 +47,7 @@ class Incidents::RespondersController < Incidents::BaseController
   protected
 
   def notify_assignment
+    Incidents::ResponderMessageTablePublisher.new(parent).publish_responders
     return unless resource.was_available
 
     if params[:send_assignment_email]
@@ -53,9 +55,20 @@ class Incidents::RespondersController < Incidents::BaseController
       flash[:notice] = 'Sent assignment email.'
     end
     if params[:send_assignment_sms] and resource.person.sms_addresses.present?
-      Incidents::RespondersMailer.assign_sms(resource).deliver
+      message = build_assignment_sms_message
+      sms_client.send_message(message)
       flash[:notice] = 'Sent assignment SMS.'
     end
+  end
+
+  def sms_client
+    @sms_client ||= Incidents::SMSClient.new(parent.chapter)
+  end
+
+  def build_assignment_sms_message
+    incident = Incidents::IncidentPresenter.new(parent)
+    Incidents::ResponderMessage.new chapter: parent.chapter, incident: parent, person: resource.person, responder_assignment: resource,
+                                    message: "You are assigned to #{incident.incident_number} as #{resource.humanized_role} at #{incident.address}, #{incident.city}. View location on map: #{view_context.short_url(incident.map_url)} Reply COMMANDS for help."
   end
 
   def resource_params
@@ -100,9 +113,4 @@ class Incidents::RespondersController < Incidents::BaseController
 
   expose(:ignore_area) { current_chapter.incidents_dispatch_console_ignore_county || (params[:ignore_area] == '1') }
   expose(:service) { Incidents::RespondersService.new(parent, collection, ignore_area_scheduled: ignore_area, ignore_area_flex: true) }
-
-  def enable_messaging
-    parent.chapter.incidents_enable_messaging
-  end
-  helper_method :enable_messaging
 end

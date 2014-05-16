@@ -53,7 +53,10 @@ describe Incidents::RespondersController do
       end
 
       it "triggers the assignment mailers with a responding role" do
-        Incidents::RespondersMailer.should_receive(:assign_sms).and_return(double deliver: true)
+        client_stub = double :sms_client
+        controller.stub sms_client: client_stub
+        Bitly.stub(client: double(:shorten => double(short_url: "https://short.url")))
+        client_stub.should_receive(:send_message).with(an_instance_of(Incidents::ResponderMessage))
         Incidents::RespondersMailer.should_receive(:assign_email).and_return(double deliver: true)
         post :create, {:incidents_responder_assignment => valid_attributes.merge(role: 'team_lead'), incident_id: incident.to_param, send_assignment_sms: true, send_assignment_email: true}, valid_session
       end

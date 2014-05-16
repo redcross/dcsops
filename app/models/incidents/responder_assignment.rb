@@ -37,7 +37,7 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   scope :with_person_in_counties, ->(counties){ joins{person.county_memberships}.where{person.county_memberships.county_id.in(my{Array(counties)}) } }
   scope :for_chapter, -> chapter { joins{incident}.where{incident.chapter_id==chapter} }
   def self.open
-    was_available.where{departed_scene_at == nil}
+    was_available
   end
   def self.for_person person
     where{person_id == person}

@@ -1,12 +1,18 @@
--if incoming_messages.present?
+-if incoming_messages(incident).present?
+  %h4 Incoming SMS Messages
   %table.table.table-bordered.table-condensed
     %tr
-      %th Person
+      %th From
+      %th When
       %th Message
       %th
-    - incoming_messages.each do |msg|
+    - incoming_messages(incident).each do |msg|
       %tr
-        %td=msg.person.full_name
+        %td
+          =msg.person.full_name
+        %td
+          =time_ago_in_words msg.created_at
+          ago
         %td
           .incoming-message-preview=msg.message
-        %td=link_to 'View', '#', class: 'btn btn-mini', data: {edit_panel: incidents_incident_responder_message_path(parent, msg)}
+        %td=link_to 'View', '#', class: 'btn btn-mini', data: {edit_panel: incidents_incident_responder_message_path(incident, msg)}

@@ -14,6 +14,8 @@
       -if can? :reopen, resource
         =link_to 'Reopen', reopen_resource_path, class: 'btn', method: 'post', data: {confirm: 'Really reopen this incident?'}
 
+.incoming-table
+  =render partial: 'incidents/responder_messages/incoming_table', locals: {incident: resource}
 
 - tabs = %w(details timeline responders cases attachments changes summary).select{|name| tab_authorized? name}
 
@@ -38,6 +40,7 @@
 
 - content_for :footer_js do
   = google_maps_javascript
+  
   :javascript
     $(function() {
       if ('hash' in window.location) {
@@ -53,4 +56,11 @@
       config = #{map_config.to_json};
       incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json}, config);
       editPanelController = new IncidentEditPanelController();
+
+      
     });
+
+- if true # can edit incident report
+  - content_for :footer_js do
+    =incidents_goinstant_setup
+

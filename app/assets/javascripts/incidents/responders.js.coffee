@@ -23,6 +23,7 @@ class window.IncidentRespondersController
 
   initMap: (config, dom) ->
     @map = MapFactory.createMap(dom, config)
+    return unless @map? # If loading the maps library failed somehow
     @coder = new google.maps.Geocoder()
     @incidentMarker = new google.maps.Marker
     @bounds = new google.maps.LatLngBounds new google.maps.LatLng(config.geocode_bounds[0], config.geocode_bounds[1]), new google.maps.LatLng(config.geocode_bounds[2], config.geocode_bounds[3])
@@ -34,7 +35,7 @@ class window.IncidentRespondersController
       scaledSize: new google.maps.Size(17, 30),
 
   setIncidentLocation: (lat, lng) ->
-    return unless lat? and lng? and lat != 0 and lng != 0
+    return unless @map? and lat? and lng? and lat != 0 and lng != 0
     @incidentLocation = new google.maps.LatLng(lat, lng)
     @incidentMarker.setPosition @incidentLocation
     @incidentMarker.setMap @map
@@ -104,6 +105,7 @@ class window.IncidentRespondersController
 
 
   mapResponders: () ->
+    return unless @map?
     elements = $('[data-person]')
 
     extent = new google.maps.LatLngBounds
@@ -129,6 +131,7 @@ class window.IncidentAssignmentController
     dom = @mapDom
 
     @map = MapFactory.createMap(dom, @mapConfig)
+    return unless @map?
     @coder = new google.maps.Geocoder()
     @incidentMarker = new google.maps.Marker
     @bounds = new google.maps.LatLngBounds new google.maps.LatLng(config.geocode_bounds[0], config.geocode_bounds[1]), new google.maps.LatLng(config.geocode_bounds[2], config.geocode_bounds[3])

@@ -22,19 +22,22 @@ class Incidents::ResponderMessageService
   end
 
   def open_assignment_for_person(person)
-    Incidents::ResponderAssignment.joins{incident}.where{incident.status == 'open'}.for_person(person).open.order{created_at.desc}.first
+    Incidents::ResponderAssignment.joins{incident}.readonly(false).where{incident.status == 'open'}.for_person(person).order{created_at.desc}.first
   end
 
   def handle_command command
     incoming.acknowledged = true
     case command
-    when /incident/ then handle_incident_info
-    when /on scene/, /arrived/ then handle_on_scene
-    when /departed/ then handle_departed_scene
-    when /map/, /directions/, /address/ then handle_incident_map
-    when /responders/ then handle_responders
-    when /commands/ then handle_help
-    else incoming.acknowledged = false
+    when /^incident/ then handle_incident_info
+    when /^on scene/, /^arrived/ then handle_on_scene
+    when /^departed/ then handle_departed_scene
+    when /^map/, /^directions/, /^address/ then handle_incident_map
+    when /^responders/ then handle_responders
+    when /^commands/ then handle_help
+    else 
+      incoming.acknowledged = false
+      incoming.save
+      Incidents::ResponderMessageTablePublisher.new(incident).publish_incoming
     end
   end
 
@@ -46,6 +49,7 @@ class Incidents::ResponderMessageService
     if !assignment.on_scene_at
       assignment.on_scene!
       response.message = "You're now on scene"
+      Incidents::ResponderMessageTablePublisher.new(incident).publish_responders
     else
       response.message = "You're already on scene"
     end
@@ -55,6 +59,7 @@ class Incidents::ResponderMessageService
     if !assignment.departed_scene_at && assignment.on_scene_at
       assignment.departed_scene!
       response.message = "You've now departed the scene."
+      Incidents::ResponderMessageTablePublisher.new(incident).publish_responders
     elsif assignment.departed_scene_at
       response.message = "You've already departed the scene."
     else

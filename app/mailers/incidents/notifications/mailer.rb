@@ -2,6 +2,7 @@ module Incidents::Notifications
   class Mailer < ActionMailer::Base
     include MailerCommon
     default from: "DCSOps <incidents@dcsops.org>"
+    helper ApplicationHelper
 
     def notify_event person, sms, event, incident, template, options=nil
       @sms = sms
