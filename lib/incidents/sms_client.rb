@@ -14,7 +14,7 @@ class Incidents::SMSClient
       :body => responder_message.message
     )
 
-    responder_message.save
+    responder_message.save validate: false
   end
 
   protected

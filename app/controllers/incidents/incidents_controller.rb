@@ -1,9 +1,11 @@
 class Incidents::IncidentsController < Incidents::BaseController
   inherit_resources
   respond_to :html
+  respond_to :json, only: :update
   defaults finder: :find_by_incident_number!
   load_and_authorize_resource except: [:needs_report, :activity]
   helper Incidents::MapHelper
+  responders :partial
 
   include Searchable
 
@@ -22,11 +24,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     if inline_editable? and resource.dat_incident.nil?
       resource.build_dat_incident
     end
-    if partial = requested_partial_name
-      render partial: partial
-    else
-      show!
-    end
+    show!
   end
 
   def close
@@ -64,6 +62,10 @@ class Incidents::IncidentsController < Incidents::BaseController
     params[:page] = 'all'
   end
 
+  def valid_partial? partial
+    tab_authorized? partial
+  end
+
   private
   def after_create_path
     current_chapter.incidents_report_editable ? resource_path(resource) : new_incidents_incident_dat_path(resource)
@@ -71,15 +73,6 @@ class Incidents::IncidentsController < Incidents::BaseController
 
   def mark_invalid_params
     params.require(:incidents_incident).permit(:incident_type, :narrative).merge(status: 'invalid')
-  end
-
-  def requested_partial_name
-    partial = params[:partial] 
-    if partial and tab_authorized?(partial)
-      partial
-    else
-      nil
-    end
   end
 
   def require_open_incident    
@@ -153,7 +146,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     def resource_params
       return [] if request.get?
 
-      keys = [:area_id, :date, :incident_type, :status, :narrative, :address, :city, :state, :zip, :neighborhood, :county, :lat, :lng]
+      keys = [:area_id, :date, :incident_type, :status, :narrative, :address, :city, :state, :zip, :neighborhood, :county, :lat, :lng, :recruitment_message]
 
       keys << :incident_number if params[:action] == 'create' && !current_chapter.incidents_sequence_enabled
 

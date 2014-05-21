@@ -25,9 +25,7 @@ module Incidents::RespondersHelper
         content_tag(:td, location(person)),
         tag(:td, class: 'distance'),
         tag(:td, class: 'travel-time'),
-        #content_tag(:td) do
-        #  link_to 'Send SMS', '', class: 'btn btn-mini' if person.sms_addresses.present? && editable
-        #end <<
+        content_tag(:td, recruit_action(person, editable)),
         content_tag(:td, links(person, obj, editable))
       ])
     end
@@ -41,6 +39,21 @@ module Incidents::RespondersHelper
 
   def location(person)
     "#{person.city.try(:titleize)}, #{person.state}" if person.city.present? && person.state.present?
+  end
+
+  def recruit_action person, editable
+    recruitment = recruitments[person.id].try(:first)
+    if recruitment
+      if recruitment.unavailable?
+        content_tag(:span, "Not Available", class: "text-error")
+      elsif recruitment.available?
+        content_tag(:span, "Available", class: "text-success")
+      else
+        "Message Sent"
+      end
+    else
+      link_to 'Send SMS', incidents_incident_responder_recruitments_path(parent, person_id: person.id), method: :post, remote: true, class: 'btn btn-mini' if person.sms_addresses.present? && editable
+    end
   end
 
   def assignment_url(person, obj)

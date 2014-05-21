@@ -42,6 +42,9 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   def self.for_person person
     where{person_id == person}
   end
+  def self.for_incident inc
+    where{incident_id == inc}
+  end
 
   def on_scene!(user=nil)
     update_attribute :on_scene_at, incident.chapter.time_zone.now unless on_scene_at

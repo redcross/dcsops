@@ -44,6 +44,11 @@ class Incidents::RespondersController < Incidents::BaseController
     end
   end
 
+  def valid_partial? partial
+    %w(assigned_table responders_table).include? partial
+  end
+
+
   protected
 
   def notify_assignment
@@ -110,6 +115,11 @@ class Incidents::RespondersController < Incidents::BaseController
   def collection
     @collection ||= super.includes{person}
   end
+
+  def recruitments
+    @recruitments ||= Incidents::ResponderRecruitment.for_incident(parent).group_by(&:person_id)
+  end
+  helper_method :recruitments
 
   expose(:ignore_area) { current_chapter.incidents_dispatch_console_ignore_county || (params[:ignore_area] == '1') }
   expose(:service) { Incidents::RespondersService.new(parent, collection, ignore_area_scheduled: ignore_area, ignore_area_flex: true) }

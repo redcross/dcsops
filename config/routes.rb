@@ -78,6 +78,7 @@ Scheduler::Application.routes.draw do
       resources :responder_messages do
         post :acknowledge, on: :member
       end
+      resources :responder_recruitments
       
       collection do
         get :needs_report

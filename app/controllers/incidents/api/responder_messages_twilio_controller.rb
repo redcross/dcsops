@@ -18,10 +18,6 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
     reply = Incidents::ResponderMessageService.new(message).reply
     if reply.message.present?
       respond_with_message reply.message
-      reply.direction = 'reply'
-      reply.local_number = params[:To]
-      reply.remote_number = params[:From]
-      reply.save
     else
       head :no_content
     end
@@ -29,7 +25,15 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
 
   protected
 
-  def respond_with_message message
+  def respond_with_message reply
+    render_message_string reply.message
+    reply.direction = 'reply'
+    reply.local_number = params[:To]
+    reply.remote_number = params[:From]
+    reply.save
+  end
+
+  def render_message_string message
     twiml = Twilio::TwiML::Response.new do |r|
       r.Message message
     end

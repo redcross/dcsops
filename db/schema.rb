@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140513175332) do
+ActiveRecord::Schema.define(version: 20140516144829) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -482,6 +482,7 @@ ActiveRecord::Schema.define(version: 20140513175332) do
     t.date     "response_date"
     t.integer  "notification_level_id"
     t.text     "notification_level_message"
+    t.string   "recruitment_message"
   end
 
   add_index "incidents_incidents", ["cas_incident_number"], name: "index_incidents_incidents_on_cas_incident_number", using: :btree
@@ -619,6 +620,18 @@ ActiveRecord::Schema.define(version: 20140513175332) do
 
   add_index "incidents_responder_messages", ["chapter_id"], name: "index_incidents_responder_messages_on_chapter_id", using: :btree
   add_index "incidents_responder_messages", ["person_id"], name: "index_incidents_responder_messages_on_person_id", using: :btree
+
+  create_table "incidents_responder_recruitments", force: true do |t|
+    t.integer  "incident_id"
+    t.integer  "person_id"
+    t.string   "response"
+    t.integer  "outbound_message_id"
+    t.integer  "inbound_message_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_responder_recruitments", ["incident_id", "person_id"], name: "index_responder_recruitments_incident_person", using: :btree
 
   create_table "incidents_vehicle_uses", force: true do |t|
     t.integer  "vehicle_id"

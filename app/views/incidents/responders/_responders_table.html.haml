@@ -1,0 +1,31 @@
+%table.table.table-bordered.table-condensed
+  %thead
+    %tr 
+      %th Type
+      %th Qualifications
+      %th Name
+      %th City
+      %th Distance
+      %th 
+        Travel Time
+        =image_tag 'glyphicons_028_cars.png', style: 'height: 1em; margin-bottom: 3px; display: none', class: 'traffic-icon' 
+      %th Recruit
+      %th Assign
+  %tbody
+    %tr
+      %th(colspan=8) Scheduled
+  %tbody.responders-list
+    - service.scheduled_responders.each do |schedule|
+      =person_row(schedule)
+  %tbody
+    %tr
+      %th(colspan=8) Flex
+  %tbody.responders-list
+    - service.flex_responders.each do |flex|
+      =person_row(flex)
+  %tbody
+    %tr
+      %th(colspan=8) Decline
+  %tbody.responders-list
+    - collection.reject(&:was_available).each do |ass|
+      =person_row(ass)

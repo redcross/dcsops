@@ -6,9 +6,9 @@
           %i.icon-chevron-left
           #{parent.incident_number} #{parent.city}, #{parent.state}
       %strong= Incidents::IncidentPresenter.new(parent).full_address
-      .assigned-table
+      .assigned-table{data: {refresh: url_for(partial: 'assigned_table')}}
         =render 'assigned_table'
-      .incoming-table
+      .incoming-table{data: {refresh: url_for(controller: 'incidents/responder_messages', action: 'index', partial: 'incoming_table')}}
         =render partial: 'incidents/responder_messages/incoming_table', locals: {incident: parent}
     .span5
       %h4
@@ -19,41 +19,14 @@
       %h4 
         Available Responders
         %small=link_to 'Add Other Person', new_resource_path
-        =form_tag '', method: :get, class: 'form-inline', style: 'display: inline' do
-          =label_tag :ignore_area
-          =check_box_tag :ignore_area, '1', ignore_area
-          =submit_tag 'Filter', class: 'btn btn-mini'
-      %table.table.table-bordered.table-condensed.responders-table
-        %thead
-          %tr 
-            %th Type
-            %th Qualifications
-            %th Name
-            %th City
-            %th Distance
-            %th 
-              Travel Time
-              =image_tag 'glyphicons_028_cars.png', style: 'height: 1em; margin-bottom: 3px; display: none', class: 'traffic-icon' 
-            -#%th Recruit
-            %th Assign
-        %tbody
-          %tr
-            %th(colspan=8) Scheduled
-        %tbody.responders-list
-          - service.scheduled_responders.each do |schedule|
-            =person_row(schedule)
-        %tbody
-          %tr
-            %th(colspan=8) Flex
-        %tbody.responders-list
-          - service.flex_responders.each do |flex|
-            =person_row(flex)
-        %tbody
-          %tr
-            %th(colspan=8) Decline
-        %tbody.responders-list
-          - collection.reject(&:was_available).each do |ass|
-            =person_row(ass)
+        -#=form_tag '', method: :get, class: 'form-inline', style: 'display: inline' do
+        -#  =label_tag :ignore_area
+        -#  =check_box_tag :ignore_area, '1', ignore_area
+        -#  =submit_tag 'Filter', class: 'btn btn-mini'
+        Recruitment message:
+        =editable_string parent, :recruitment_message
+      .responders-table{data: {refresh: url_for(partial: 'responders_table')}}
+        =render 'responders_table'
 
 .modal.hide.fade#edit-modal
   .modal-header 

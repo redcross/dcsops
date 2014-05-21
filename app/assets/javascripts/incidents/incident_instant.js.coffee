@@ -9,10 +9,15 @@ class window.IncidentInstantController
   monitorChapter: (@chapterRoomName) ->
 
   handleIncidentUpdate: (value, context) ->
-    if value.name == 'messages-table'
-      $('.incoming-table').html(value.html)
-    else if value.name == 'assigned-table'
-      $('.assigned-table').html(value.html)
+    console.log value.refresh
+    $target = $(value.refresh)
+    if $target.length > 0 && path = $target.data('refresh')
+      $.ajax
+        url: path
+        method: 'GET'
+        success: (data, status, xhr) =>
+          $target.html(data)
+
 
   startChat: (roomName) ->
     @connectionPromise.then( (result) => result.connection.room(roomName).join() )

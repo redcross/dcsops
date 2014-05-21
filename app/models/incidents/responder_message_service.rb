@@ -1,6 +1,6 @@
 class Incidents::ResponderMessageService
   include Incidents::ResponderMessagesHelper, ApplicationHelper # to get short_url
-  attr_reader :incoming, :response, :assignment
+  attr_reader :incoming, :response, :assignment, :recruitment
   def initialize(message)
     @incoming = message
   end
@@ -8,24 +8,42 @@ class Incidents::ResponderMessageService
   def reply
     @response = Incidents::ResponderMessage.new chapter: incoming.chapter, person: incoming.person
 
-    @assignment = open_assignment_for_person(incoming.person)
-    unless @assignment
+    if @assignment = open_assignment_for_person(incoming.person)
+      @incident = incoming.incident = response.incident = assignment.incident
+      handle_assignment_command incoming.message.downcase
+    elsif @recruitment = open_recruitment_for_person(incoming.person)
+      @incident = incoming.incident = response.incident = recruitment.incident
+      handle_recruitment_command incoming.message.downcase
+    else
       response.message = "You are not currently assigned to an incident response."
       return response
     end
 
-    incoming.incident = response.incident = assignment.incident
-    handle_command incoming.message.downcase
+    
     incoming.save
 
     response
   end
 
   def open_assignment_for_person(person)
-    Incidents::ResponderAssignment.joins{incident}.readonly(false).where{incident.status == 'open'}.for_person(person).order{created_at.desc}.first
+    Incidents::ResponderAssignment.joins{incident}.readonly(false).where{incident.status == 'open'}.was_available.for_person(person).order{created_at.desc}.first
   end
 
-  def handle_command command
+  def open_recruitment_for_person(person)
+    Incidents::ResponderRecruitment.joins{incident}.readonly(false).where{incident.status == 'open'}.for_person(person).order{created_at.desc}.first
+  end
+
+  def handle_recruitment_command command
+    incoming.acknowledged = true
+    case command
+    when /^yes/ then handle_response_yes
+    when /^no/ then handle_response_no
+    else
+      handle_unknown_message
+    end
+  end
+
+  def handle_assignment_command command
     incoming.acknowledged = true
     case command
     when /^incident/ then handle_incident_info
@@ -35,10 +53,24 @@ class Incidents::ResponderMessageService
     when /^responders/ then handle_responders
     when /^commands/ then handle_help
     else 
-      incoming.acknowledged = false
-      incoming.save
-      Incidents::ResponderMessageTablePublisher.new(incident).publish_incoming
+     handle_unknown_message
     end
+  end
+
+  def handle_unknown_message
+    incoming.acknowledged = false
+    incoming.save
+    Incidents::ResponderMessageTablePublisher.new(incident).publish_incoming
+  end
+
+  def handle_response_yes
+    recruitment.available!
+    Incidents::ResponderMessageTablePublisher.new(incident).publish_recruitment
+  end
+
+  def handle_response_no
+    recruitment.unavailable!
+    Incidents::ResponderMessageTablePublisher.new(incident).publish_recruitment
   end
 
   def handle_help

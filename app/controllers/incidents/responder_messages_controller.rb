@@ -1,7 +1,8 @@
 class Incidents::ResponderMessagesController < Incidents::EditPanelController
 
   self.panel_name='responders'
-  custom_actions resource: [:acknowledge]
+  custom_actions resource: [:acknowledge], collection: [:index]
+  responders :partial
 
   def acknowledge
     if params[:save_in_timeline]
@@ -18,6 +19,10 @@ class Incidents::ResponderMessagesController < Incidents::EditPanelController
 
 
     Incidents::ResponderMessageTablePublisher.new(parent).publish_incoming
+  end
+
+  def valid_partial? partial
+    partial == 'incoming_table'
   end
 
   protected
