@@ -1,10 +1,10 @@
 class Incidents::EventLog < Incidents::DataModel
   belongs_to :person, class_name: 'Roster::Person'
 
-  validates :event_time, :incident, presence: {allow_blank: false, allow_nil: false}
+  validates :event_time, presence: {allow_blank: false, allow_nil: false}
   validates :person, presence: {if: :is_note?}
   validates :message, presence: {if: :is_note?, allow_blank: false}
-  validates :event, uniqueness: {scope: :incident_id, if: ->(log){!%w(note dispatch_note).include? log.event}}
+  validates :event, uniqueness: {scope: :incident_id, if: ->(log){log.incident_id && !%w(note dispatch_note).include?(log.event)}}
 
   def self.note
     where{event == 'note'}

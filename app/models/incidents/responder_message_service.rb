@@ -1,19 +1,31 @@
 class Incidents::ResponderMessageService
   include Incidents::ResponderMessagesHelper, ApplicationHelper # to get short_url
   attr_reader :incoming, :response, :assignment, :recruitment
+
+  MessageMatcher = Struct.new(:patterns, :handler)
+  ASSIGNMENT_MATCHERS = []
+  RECRUITMENT_MATCHERS = []
+  def self.assignment_matcher *patterns, &block
+    ASSIGNMENT_MATCHERS << MessageMatcher.new(patterns, block)
+  end
+  def self.recruitment_matcher *patterns, &block
+    RECRUITMENT_MATCHERS << MessageMatcher.new(patterns, block)
+  end
+
   def initialize(message)
     @incoming = message
   end
 
   def reply
     @response = Incidents::ResponderMessage.new chapter: incoming.chapter, person: incoming.person
+    incoming.acknowledged = true
 
     if @assignment = open_assignment_for_person(incoming.person)
       @incident = incoming.incident = response.incident = assignment.incident
-      handle_assignment_command incoming.message.downcase
+      handle_command incoming.message.downcase, ASSIGNMENT_MATCHERS
     elsif @recruitment = open_recruitment_for_person(incoming.person)
       @incident = incoming.incident = response.incident = recruitment.incident
-      handle_recruitment_command incoming.message.downcase
+      handle_command incoming.message.downcase, RECRUITMENT_MATCHERS
     else
       response.message = "You are not currently assigned to an incident response."
       return response
@@ -33,28 +45,13 @@ class Incidents::ResponderMessageService
     Incidents::ResponderRecruitment.joins{incident}.readonly(false).where{incident.status == 'open'}.for_person(person).order{created_at.desc}.first
   end
 
-  def handle_recruitment_command command
-    incoming.acknowledged = true
-    case command
-    when /^yes/ then handle_response_yes
-    when /^no/ then handle_response_no
-    else
-      handle_unknown_message
+  def handle_command input, matchers
+    matchers.each do |matcher|
+      if matcher.patterns.any?{|p| p =~ input}
+        return self.instance_exec(&matcher.handler)
+      end
     end
-  end
-
-  def handle_assignment_command command
-    incoming.acknowledged = true
-    case command
-    when /^incident/ then handle_incident_info
-    when /^on scene/, /^arrived/ then handle_on_scene
-    when /^departed/ then handle_departed_scene
-    when /^map/, /^directions/, /^address/ then handle_incident_map
-    when /^responders/ then handle_responders
-    when /^commands/ then handle_help
-    else 
-     handle_unknown_message
-    end
+    handle_unknown_message
   end
 
   def handle_unknown_message
@@ -63,21 +60,21 @@ class Incidents::ResponderMessageService
     Incidents::ResponderMessageTablePublisher.new(incident).publish_incoming
   end
 
-  def handle_response_yes
+  recruitment_matcher /^yes/ do
     recruitment.available!
     Incidents::ResponderMessageTablePublisher.new(incident).publish_recruitment
   end
 
-  def handle_response_no
+  recruitment_matcher /^no/ do
     recruitment.unavailable!
     Incidents::ResponderMessageTablePublisher.new(incident).publish_recruitment
   end
 
-  def handle_help
+  assignment_matcher /^commands/ do
     response.message = "DCSOps SMS Commands: MAP for map link, RESPONDERS for contact info, ARRIVED to record you're on scene, DEPARTED to record you've left"
   end
 
-  def handle_on_scene
+  assignment_matcher /^on scene/, /^arrived/ do
     if !assignment.on_scene_at
       assignment.on_scene!
       response.message = "You're now on scene"
@@ -87,7 +84,7 @@ class Incidents::ResponderMessageService
     end
   end
 
-  def handle_departed_scene
+  assignment_matcher /^departed/ do
     if !assignment.departed_scene_at && assignment.on_scene_at
       assignment.departed_scene!
       response.message = "You've now departed the scene."
@@ -99,15 +96,15 @@ class Incidents::ResponderMessageService
     end
   end
 
-  def handle_incident_map
+  assignment_matcher /^map/, /^directions/, /^address/ do
     response.message = map_link_message
   end
 
-  def handle_responders
+  assignment_matcher /^responders/ do
     response.message = responder_info_message(incoming.person)
   end
 
-  def handle_incident_info
+  assignment_matcher /^incident/ do
     response.message = "Incident #{incident.incident_number} Type: #{incident.humanized_incident_type}.  You are assigned as: #{assignment.humanized_role}"
   end
 

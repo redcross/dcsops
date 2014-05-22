@@ -1,4 +1,5 @@
 class Incidents::AttachmentsController < Incidents::EditPanelController
+  belongs_to_incident
   self.panel_name = 'attachments'
 
   protected

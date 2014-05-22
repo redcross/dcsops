@@ -17,7 +17,7 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
 
     reply = Incidents::ResponderMessageService.new(message).reply
     if reply.message.present?
-      respond_with_message reply.message
+      respond_with_message reply
     else
       head :no_content
     end

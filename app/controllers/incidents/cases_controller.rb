@@ -1,4 +1,5 @@
 class Incidents::CasesController < Incidents::EditPanelController
+  belongs_to_incident
   self.panel_name = 'cases'
   
   protected

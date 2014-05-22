@@ -200,9 +200,14 @@ class window.IncidentEditPanelController
       $.ajax
         url: panel
         dataType: 'html'
-        success: (data, status, xhr) =>
+        success: (data, status, xhr) ->
           modal.html(data)
           modal.find('legend').remove()
+        error: (xhr, status, error) ->
+          wrapper = $('<div class="modal-body text-error">An error occurred: <span class="error-value"></span>.  Please try again.<a class="close" data-dismiss="modal">&times;</a></div>')
+          wrapper.find(".error-value").text(error)
+          modal.html("")
+          modal.append(wrapper)
 
     $(document).on 'edit-panel:success', (evt, panels) =>
       console.log(panels);

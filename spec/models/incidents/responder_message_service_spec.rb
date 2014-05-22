@@ -35,101 +35,69 @@ describe Incidents::ResponderMessageService do
     end
   end
 
-  describe '#handle_command' do
-    it "dispatches incident info" do
-      subject.should_receive :handle_incident_info
-      subject.handle_command "incident"
-    end
-    it "dispatches on scene" do
-      subject.should_receive :handle_on_scene
-      subject.handle_command "arrived"
-    end
-    it "dispatches departed scene" do
-      subject.should_receive :handle_departed_scene
-      subject.handle_command "departed"
-    end
-    it "dispatches map info" do
-      subject.should_receive :handle_incident_map
-      subject.handle_command "map"
-    end
-    it "dispatches responder info" do
-      subject.should_receive :handle_responders
-      subject.handle_command "responders"
-    end
-    it "dispatches commands" do
-      subject.should_receive :handle_help
-      subject.handle_command "commands"
-    end
-    it "stores the message otherwise" do
-      incoming_message.stub :save
-      incoming_message.should_receive(:acknowledged=).with(true).ordered
-      incoming_message.should_receive(:acknowledged=).with(false).ordered
-      subject.handle_command "some other message"
-    end
-  end
-
-  describe "message handlers" do
+  describe '#handle_command for assignment matchers' do
     let(:outgoing_message) { Incidents::ResponderMessage.new }
+    let(:matchers) { Incidents::ResponderMessageService::ASSIGNMENT_MATCHERS }
     before(:each) {
       subject.stub response: outgoing_message
     }
 
-    it "responds with help" do
-      subject.handle_help
-      outgoing_message.message.should include("SMS Commands")
-    end
-
-    it "responds with map" do
-      subject.handle_incident_map
-      outgoing_message.message.should include(incident.address)
-    end
-
-    it "responds with responders" do
-      subject.handle_responders
-      outgoing_message.message.should include("Responders")
-    end
-
-    it "responds with incident info" do
-      subject.handle_incident_info
+    it "dispatches incident info" do
+      subject.handle_command "incident", matchers
       outgoing_message.message.should include(incident.incident_number)
     end
-
-    describe "responds to on scene" do
+    describe "dispatches on scene" do
       it "marks the assignment" do
         assignment.should_receive :on_scene!
-        subject.handle_on_scene
+        subject.handle_command "arrived", matchers
         outgoing_message.message.should include("now on scene")
       end
 
       it "doesn't mark the assignment when already on scene" do
         assignment.stub on_scene_at: Time.zone.now
         assignment.should_not_receive :on_scene!
-        subject.handle_on_scene
+        subject.handle_command "arrived", matchers
         outgoing_message.message.should include("already on scene")
       end
     end
-
     describe "responds to departed scene" do
       before(:each) { assignment.stub on_scene_at: Time.zone.now }
       it "marks the assignment when already on scene" do
         assignment.should_receive :departed_scene!
-        subject.handle_departed_scene
+        subject.handle_command "departed", matchers
         outgoing_message.message.should include("now departed")
       end
 
       it "doesn't mark the assignment when already departed" do
         assignment.stub departed_scene_at: Time.zone.now
         assignment.should_not_receive :departed_scene!
-        subject.handle_departed_scene
+        subject.handle_command "departed", matchers
         outgoing_message.message.should include("already departed")
       end
 
       it "doesn't mark the assignment when not on scene" do
         assignment.stub on_scene_at: nil
         assignment.should_not_receive :departed_scene!
-        subject.handle_departed_scene
+        subject.handle_command "departed", matchers
         outgoing_message.message.should include("aren't on scene")
       end
+    end
+    it "dispatches map info" do
+      subject.handle_command "map", matchers
+      outgoing_message.message.should include(incident.address)
+    end
+    it "dispatches responder info" do
+      subject.handle_command "responders", matchers
+      outgoing_message.message.should include("Responders")
+    end
+    it "dispatches commands" do
+      subject.handle_command "commands", matchers
+      outgoing_message.message.should include("SMS Commands")
+    end
+    it "stores the message otherwise" do
+      incoming_message.stub :save
+      incoming_message.should_receive(:acknowledged=).with(false).ordered
+      subject.handle_command "some other message", matchers
     end
   end
 end

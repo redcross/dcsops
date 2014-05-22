@@ -1,0 +1,37 @@
+
+%h3 
+  Timeline
+  -if can? :create, Incidents::EventLog
+    %button.btn.btn-primary{data: {edit_panel: new_incidents_event_log_path}} Add Log
+
+= paginate collection, :theme => 'twitter-bootstrap', pagination_class: 'pagination pagination-centered'
+%table.table.table-bordered.table-condensed
+  %thead
+    %tr
+      %th Time
+      %th Incident
+      %th Event
+      %th Message
+      %th Person
+  %tbody
+    - collection.each do |evt|
+      %tr
+        %td=evt.event_time.try :to_s, :date_time
+        %td
+          -if evt.incident
+            =link_to evt.incident.incident_number, evt.incident
+        %td=evt.humanized_event
+        %td=simple_format evt.message, {}, wrapper_tag: :span
+= paginate collection, :theme => 'twitter-bootstrap', pagination_class: 'pagination pagination-centered'
+.modal.hide.fade#edit-modal
+  .modal-header 
+    %a.close(data-dismiss="modal") &times;
+    %h3 Edit
+  .modal-body
+  .modal-footer
+    %a.btn.btn-primary(data-dismiss="modal") Close
+- content_for :footer_js do
+  :javascript
+    $(function() {
+      editPanelController = new IncidentEditPanelController();
+    });

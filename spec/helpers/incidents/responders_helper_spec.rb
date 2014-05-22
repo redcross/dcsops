@@ -8,6 +8,7 @@ describe Incidents::RespondersHelper do
 
   before do
     helper.stub parent: incident
+    helper.stub recruitments: []
     inc = self.incident
     helper.class_eval do
       define_method :new_resource_path do|*args|
@@ -64,6 +65,24 @@ describe Incidents::RespondersHelper do
     it "should not link if not editable" do
       res = helper.person_row(assignment, false)
       res.should_not match(%r[responders/new\?person_id=#{person.id}])
+    end
+
+    it "should show message sent if a recruitment exists" do
+      helper.stub recruitments: {person.id => [double(:recruitment, available?: false, unavailable?: false)]}
+      res = helper.person_row(assignment, true)
+      res.should match("Message Sent")
+    end
+
+    it "should show available if a recruitment exists" do
+      helper.stub recruitments: {person.id => [double(:recruitment, available?: true, unavailable?: false)]}
+      res = helper.person_row(assignment, true)
+      res.should match("Available")
+    end
+
+    it "should show unavailable if a recruitment exists" do
+      helper.stub recruitments: {person.id => [double(:recruitment, available?: false, unavailable?: true)]}
+      res = helper.person_row(assignment, true)
+      res.should match("Not Available")
     end
   end
 

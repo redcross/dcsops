@@ -60,6 +60,7 @@ Scheduler::Application.routes.draw do
   namespace :incidents do
     root to: "home#root"
     get :operations, to: "home#operations"
+    resources :event_logs
     resources :incidents do
       collection do
         get :map

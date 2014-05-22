@@ -4,6 +4,7 @@ describe Incidents::NotificationSubscription do
   let!(:chapter) { FactoryGirl.create :chapter, incidents_enabled_report_frequencies: 'weekly,weekdays,daily' }
   let(:person) { FactoryGirl.create :person, chapter: chapter}
   let(:today) { chapter.time_zone.today }
+  after(:each) { Delorean.back_to_1985}
 
   describe "type=report" do
     let(:notification_type) { 'report' }
@@ -70,17 +71,13 @@ describe Incidents::NotificationSubscription do
     describe "frequency weekdays" do
       let!(:subscription) { Incidents::NotificationSubscription.create! person: person, notification_type: 'report', frequency: 'weekdays'}
 
-      after(:each) do
-        Delorean.back_to_1985
-      end
-
       it "Should return a subscription that has never been sent" do
         Incidents::NotificationSubscription.to_send_on(Date.current).should =~ [subscription]
       end
 
       describe "on a non-Monday weekday" do
         before(:each) do
-          Delorean.time_travel_to Date.current.at_beginning_of_week
+          Delorean.time_travel_to chapter.time_zone.today.at_beginning_of_week+3
         end
 
         it "Should return a subscription that hasn't been sent today" do
@@ -117,7 +114,7 @@ describe Incidents::NotificationSubscription do
         end
 
         it "Should not return a subscription that hasn't been sent since friday" do
-          subscription.update_attribute :last_sent, today - 3
+          subscription.update_attribute :last_sent, today - 2
           Incidents::NotificationSubscription.to_send_on(today - 1).should =~ []
         end
 
@@ -129,10 +126,6 @@ describe Incidents::NotificationSubscription do
   describe "#range_to_send" do
     let(:sub) {Incidents::NotificationSubscription.new(notification_type: 'weekly', person: person)}
     let(:today) {chapter.time_zone.today}
-
-    after(:each) do
-      Delorean.back_to_1985
-    end
 
     it "should send yesterday when a daily" do
       sub.frequency = 'daily'

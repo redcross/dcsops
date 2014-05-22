@@ -6,6 +6,7 @@ class Incidents::RespondersController < Incidents::BaseController
   custom_actions collection: [:available], resource: [:status]
   load_and_authorize_resource class: 'Incidents::ResponderAssignment'
   helper Incidents::MapHelper
+  responders :partial
 
   actions :all, :except => :show
 

@@ -1,5 +1,5 @@
 class Incidents::ResponderMessagesController < Incidents::EditPanelController
-
+  belongs_to_incident
   self.panel_name='responders'
   custom_actions resource: [:acknowledge], collection: [:index]
   responders :partial
@@ -14,10 +14,9 @@ class Incidents::ResponderMessagesController < Incidents::EditPanelController
     if params[:commit] == 'Reply'
       redirect_to action: :new, recipient: resource.person_id
     else
-      render action: :update
+    # Let the EditablePanelResponder take care of the normal render/redirect
+      respond_with resource, location: parent
     end
-
-
     Incidents::ResponderMessageTablePublisher.new(parent).publish_incoming
   end
 
@@ -78,5 +77,10 @@ class Incidents::ResponderMessagesController < Incidents::EditPanelController
   def after_create_url
     incidents_incident_responders_path(incident)
   end
+
+  def acknowledge_resource_path
+    url_for(action: :acknowledge)
+  end
+  helper_method :acknowledge_resource_path
 
 end

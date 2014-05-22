@@ -6,7 +6,7 @@
 .modal-body
   =resource.message
 .modal-footer
-  =form_tag acknowledge_resource_path, method: :post, class: 'form form-inline', style: 'display: inline', remote: true do
+  =form_tag acknowledge_resource_path, method: :post, class: 'form form-inline', style: 'display: inline', remote: request.xhr? do
     %label.checkbox 
       Save In Timeline
       =check_box_tag :save_in_timeline, '1', false

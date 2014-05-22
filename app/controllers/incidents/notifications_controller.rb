@@ -1,4 +1,5 @@
 class Incidents::NotificationsController < Incidents::EditPanelController
+  belongs_to_incident
   self.panel_name = ['details', 'timeline']
   defaults resource_class: Incidents::Notifications::Message, singleton: true
   custom_actions resource: :recipients
