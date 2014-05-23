@@ -25,10 +25,9 @@
         =f.input :dispatched_at, as: :time_field
         =f.input :on_scene_at, as: :time_field
         =f.input :departed_scene_at, as: :time_field
-      -if f.object.person && f.object.person.sms_addresses.present?
-        .control-group
-          .control-label=label_tag :send_assignment_sms
-          .controls=check_box_tag :send_assignment_sms, '1', params[:send_assignment_sms] == '1'
+      .control-group
+        .control-label=label_tag :send_assignment_sms
+        .controls=check_box_tag :send_assignment_sms, '1', params[:send_assignment_sms] == '1'
       .control-group
         .control-label=label_tag :send_assignment_email
         .controls=check_box_tag :send_assignment_email, '1', params[:send_assignment_email] == '1'
