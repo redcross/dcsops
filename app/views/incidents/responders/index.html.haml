@@ -6,9 +6,9 @@
           %i.icon-chevron-left
           #{parent.incident_number} #{parent.city}, #{parent.state}
       %strong= Incidents::IncidentPresenter.new(parent).full_address
-      .assigned-table{data: {refresh: url_for(partial: 'assigned_table')}}
+      .assigned-table{data: {refresh_name: "responders", refresh: url_for(partial: 'assigned_table')}}
         =render 'assigned_table'
-      .incoming-table{data: {refresh: url_for(controller: 'incidents/responder_messages', action: 'index', partial: 'incoming_table')}}
+      .incoming-table{data: {refresh_name: "incoming", refresh: url_for(controller: 'incidents/responder_messages', action: 'index', partial: 'incoming_table')}}
         =render partial: 'incidents/responder_messages/incoming_table', locals: {incident: parent}
     .span5
       %h4
@@ -25,7 +25,7 @@
         -#  =submit_tag 'Filter', class: 'btn btn-mini'
         Recruitment message:
         =editable_string parent, :recruitment_message
-      .responders-table{data: {refresh: url_for(partial: 'responders_table')}}
+      .responders-table{data: {refresh_name: "available", refresh: url_for(partial: 'responders_table')}}
         =render 'responders_table'
 
 .modal.hide.fade#edit-modal

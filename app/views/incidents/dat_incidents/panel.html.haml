@@ -6,6 +6,6 @@
     =hidden_field_tag :panel_name, params[:panel_name]
     =panel params[:panel_name], f
   .modal-footer
-    =f.action :submit, button_html: {class: 'btn btn-primary'}, label: 'Update Incident'
+    =f.action :submit, button_html: {class: 'btn btn-primary', data: {disable_with: "Saving…"}}, label: 'Update Incident'
 :javascript
   if (!window.formController) {window.formController = new DatIncidentsFormController()};

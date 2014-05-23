@@ -27,7 +27,7 @@
   
 .tab-content
   - tabs.each_with_index do |name, idx|
-    .tab-pane{class: ((idx==0) && 'active'), id: "inc-#{name}"}
+    .tab-pane{class: ((idx==0) && 'active'), id: "inc-#{name}", data: {refresh_name: name, refresh: url_for(partial: name)}}
       =render name
 
 .modal.hide.fade#edit-modal

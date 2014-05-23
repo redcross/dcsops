@@ -9,14 +9,19 @@ class window.IncidentInstantController
   monitorChapter: (@chapterRoomName) ->
 
   handleIncidentUpdate: (value, context) ->
-    console.log value.refresh
-    $target = $(value.refresh)
-    if $target.length > 0 && path = $target.data('refresh')
-      $.ajax
-        url: path
-        method: 'GET'
-        success: (data, status, xhr) =>
-          $target.html(data)
+    values = value.refresh
+    return unless values?
+    values.forEach (value, idx) =>
+      console.log value
+      $targets = $("[data-refresh-name=\"#{value}\"]")
+      $targets.each (idx, target) =>
+        path = $(target).data('refresh')
+        return unless path
+        $.ajax
+          url: path
+          method: 'GET'
+          success: (data, status, xhr) =>
+            $(target).html(data)
 
 
   startChat: (roomName) ->

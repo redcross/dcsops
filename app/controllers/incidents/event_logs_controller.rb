@@ -5,6 +5,20 @@ class Incidents::EventLogsController < Incidents::EditPanelController
 
   protected
 
+  def update_resource(resource, args)
+    super resource, args
+    notify
+  end
+
+  def create_resource resource
+    super resource
+    notify
+  end
+
+  def notify
+    Incidents::ResponderMessageTablePublisher.new(parent).publish_timeline
+  end
+
   def collection
     @collection ||= begin
       coll = super.includes{incident}.where{chapter_id==my{current_chapter}}.order{event_time.desc}
