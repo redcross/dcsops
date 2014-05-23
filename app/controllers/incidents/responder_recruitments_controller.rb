@@ -7,6 +7,7 @@ class Incidents::ResponderRecruitmentsController < Incidents::EditPanelControlle
   def create_resource resource
     if super(resource)
       send_message resource
+      Incidents::ResponderMessageTablePublisher.new(incident).publish_recruitment
       true
     else
       false

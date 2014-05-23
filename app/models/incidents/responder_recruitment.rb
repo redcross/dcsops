@@ -15,7 +15,7 @@ class Incidents::ResponderRecruitment < ActiveRecord::Base
     }
   end
 
-  assignable_values_for :response, allow_nil: true do
+  assignable_values_for :response, allow_blank: true do
     %w(available unavailable)
   end
 
