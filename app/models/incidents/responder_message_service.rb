@@ -71,16 +71,26 @@ class Incidents::ResponderMessageService
   end
 
   assignment_matcher /^commands/ do
-    response.message = "DCSOps SMS Commands: MAP for map link, RESPONDERS for contact info, ARRIVED to record you're on scene, DEPARTED to record you've left"
+    response.message = "DCSOps SMS Commands: MAP for map link, RESPONDERS for contact info, ENROUTE when you're on the way, ARRIVED to record you're on scene, DEPARTED to record you've left"
+  end
+
+  assignment_matcher /^enroute/ do
+    if !assignment.dispatched_at
+      assignment.dispatched!
+      response.message = "You're now enroute."
+      Incidents::ResponderMessageTablePublisher.new(incident).publish_responders
+    else
+      response.message = "You're already enroute."
+    end
   end
 
   assignment_matcher /^on scene/, /^arrived/ do
     if !assignment.on_scene_at
       assignment.on_scene!
-      response.message = "You're now on scene"
+      response.message = "You're now on scene."
       Incidents::ResponderMessageTablePublisher.new(incident).publish_responders
     else
-      response.message = "You're already on scene"
+      response.message = "You're already on scene."
     end
   end
 

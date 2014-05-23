@@ -46,6 +46,10 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
     where{incident_id == inc}
   end
 
+  def dispatched!(user=nil)
+    update_attribute :dispatched_at, incident.chapter.time_zone.now unless dispatched_at
+  end
+
   def on_scene!(user=nil)
     update_attribute :on_scene_at, incident.chapter.time_zone.now unless on_scene_at
 

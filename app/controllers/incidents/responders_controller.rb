@@ -90,11 +90,6 @@ class Incidents::RespondersController < Incidents::BaseController
     @assignment ||= super.tap{|a| prepare_resource a }
   end
 
-  def create_resource(res)
-    res.dispatched_at ||= current_chapter.time_zone.now if res.was_available
-    super(res)
-  end
-
   def prepare_resource(assignment)
     if params[:person_id]
       assignment.person_id ||= params[:person_id]
