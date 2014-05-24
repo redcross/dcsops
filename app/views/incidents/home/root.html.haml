@@ -28,6 +28,11 @@
           %a{href: incidents_responders_path}
             Show Responder Info
             %i.icon-chevron-right
+      -if current_chapter.incidents_use_global_log && can?(:read, Incidents::EventLog)
+        %li
+          =link_to incidents_event_logs_path do
+            ECC Log
+            %i.icon-chevron-right
   %table.span9
     %tr
       %td{colspan: incident_stats_boxes.count}

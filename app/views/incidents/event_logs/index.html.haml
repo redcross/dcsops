@@ -21,7 +21,9 @@
           -if evt.incident
             =link_to evt.incident.incident_number, evt.incident
         %td=evt.humanized_event
-        %td=simple_format evt.message, {}, wrapper_tag: :span
+        %td(style="max-width: 50%")=simple_format evt.message, {}, wrapper_tag: :span
+        %td=evt.person.try(:full_name)
+
 = paginate collection, :theme => 'twitter-bootstrap', pagination_class: 'pagination pagination-centered'
 .modal.hide.fade#edit-modal
   .modal-header 

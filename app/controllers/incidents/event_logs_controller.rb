@@ -16,7 +16,7 @@ class Incidents::EventLogsController < Incidents::EditPanelController
   end
 
   def notify
-    Incidents::ResponderMessageTablePublisher.new(parent).publish_timeline
+    Incidents::ResponderMessageTablePublisher.new(parent).publish_timeline if parent?
   end
 
   def collection
