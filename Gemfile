@@ -14,6 +14,7 @@ gem 'sass-rails'
 gem 'jquery-rails'
 gem 'haml-rails'
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
+gem "sprockets", '~> 2.11.0'
 
 gem 'delayed_job_active_record'
 
@@ -41,10 +42,11 @@ gem 'threach'
 
 gem 'geokit'#, github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 
-gem 'formtastic', '>=2.3.0rc2'
+gem 'formtastic', '~> 2.3.0rc3'
 gem 'formtastic-bootstrap', '~> 2.1'
 gem 'cocoon'
-gem 'ransack',             github: 'ernie/ransack',            branch: 'rails-4'
+gem 'polyamorous', '~> 0.6.0'
+gem 'ransack', '~> 1.1.0'#, github: 'ernie/ransack',            branch: 'rails-4'
 gem 'activeadmin',       github: 'gregbell/active_admin'  
 
 gem 'acts_as_flying_saucer', github: 'jlaxson/acts_as_flying_saucer', branch: 'master'

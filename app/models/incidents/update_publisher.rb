@@ -34,7 +34,6 @@ class Incidents::UpdatePublisher
 
   def send_update value
     client = GoInstantClient.client
-    pp value
     client.send_to_channel chapter_room_name, channel_name, value
   end
 

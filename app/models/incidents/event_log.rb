@@ -38,7 +38,7 @@ class Incidents::EventLog < Incidents::DataModel
   ]
 
   assignable_values_for :event do
-    if incident_id
+    if has_incident?
       INCIDENT_EVENT_TYPES
     else
       GLOBAL_EVENT_TYPES
@@ -57,7 +57,11 @@ class Incidents::EventLog < Incidents::DataModel
   end
 
   def body_required?
-    incident_id.blank? || event == 'note'
+    !has_incident? || event == 'note'
+  end
+
+  def has_incident?
+    incident_id || incident
   end
 
   def event_time= new_time
