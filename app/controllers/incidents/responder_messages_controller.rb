@@ -17,7 +17,7 @@ class Incidents::ResponderMessagesController < Incidents::EditPanelController
     # Let the EditablePanelResponder take care of the normal render/redirect
       respond_with resource, location: parent
     end
-    Incidents::ResponderMessageTablePublisher.new(parent).publish_incoming
+    Incidents::UpdatePublisher.new(parent.chapter, parent).publish_incoming
   end
 
   def valid_partial? partial

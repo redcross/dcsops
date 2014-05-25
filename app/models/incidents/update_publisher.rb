@@ -1,6 +1,7 @@
-class Incidents::ResponderMessageTablePublisher
-  attr_reader :incident
-  def initialize(incident)
+class Incidents::UpdatePublisher
+  attr_reader :chapter, :incident
+  def initialize(chapter, incident=nil)
+    @chapter = chapter
     @incident = incident
   end
 
@@ -28,16 +29,21 @@ class Incidents::ResponderMessageTablePublisher
 
   def update_tabs *tabs
     tabs << 'changes'
-    send_update({refresh: tabs})
+    send_update({refresh: tabs, incident: (incident && incident.id)})
   end
 
   def send_update value
     client = GoInstantClient.client
-    client.send_to_channel room_name, channel_name, value
+    pp value
+    client.send_to_channel chapter_room_name, channel_name, value
   end
 
   def room_name
     "incident-#{incident.id}"
+  end
+
+  def chapter_room_name
+    "chapter-#{chapter.id}"
   end
 
   def channel_name

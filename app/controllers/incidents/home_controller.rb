@@ -1,11 +1,14 @@
 class Incidents::HomeController < Incidents::BaseController
   helper Incidents::MapHelper, Incidents::HomeControllerHelper
+  responders :partial
+  respond_to :html
 
   def root
+    respond_with []
   end
 
-  def operations
-
+  def valid_partial? name
+    name == "recent_table"
   end
 
   private
@@ -14,4 +17,5 @@ class Incidents::HomeController < Incidents::BaseController
   expose(:recent_incidents) {
     Incidents::Incident.for_chapter(current_chapter).valid.includes{[dat_incident, event_logs]}.order{incident_number.desc}.order{date.desc}.limit(15)
   }
+
 end

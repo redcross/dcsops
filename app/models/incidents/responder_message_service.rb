@@ -57,17 +57,17 @@ class Incidents::ResponderMessageService
   def handle_unknown_message
     incoming.acknowledged = false
     incoming.save
-    Incidents::ResponderMessageTablePublisher.new(incident).publish_incoming
+    publisher.publish_incoming
   end
 
   recruitment_matcher /^yes/ do
     recruitment.available!
-    Incidents::ResponderMessageTablePublisher.new(incident).publish_recruitment
+    publisher.publish_recruitment
   end
 
   recruitment_matcher /^no/ do
     recruitment.unavailable!
-    Incidents::ResponderMessageTablePublisher.new(incident).publish_recruitment
+    publisher.publish_recruitment
   end
 
   assignment_matcher /^commands/ do
@@ -78,7 +78,7 @@ class Incidents::ResponderMessageService
     if !assignment.dispatched_at
       assignment.dispatched!
       response.message = "You're now enroute."
-      Incidents::ResponderMessageTablePublisher.new(incident).publish_responders
+      publisher.publish_responders
     else
       response.message = "You're already enroute."
     end
@@ -88,7 +88,7 @@ class Incidents::ResponderMessageService
     if !assignment.on_scene_at
       assignment.on_scene!
       response.message = "You're now on scene."
-      Incidents::ResponderMessageTablePublisher.new(incident).publish_responders
+      publisher.publish_responders
     else
       response.message = "You're already on scene."
     end
@@ -98,7 +98,7 @@ class Incidents::ResponderMessageService
     if !assignment.departed_scene_at && assignment.on_scene_at
       assignment.departed_scene!
       response.message = "You've now departed the scene."
-      Incidents::ResponderMessageTablePublisher.new(incident).publish_responders
+      publisher.publish_responders
     elsif assignment.departed_scene_at
       response.message = "You've already departed the scene."
     else
@@ -120,5 +120,9 @@ class Incidents::ResponderMessageService
 
   def incident
     @incident ||= Incidents::IncidentPresenter.new(assignment.incident)
+  end
+
+  def publisher
+    @publisher ||= Incidents::UpdatePublisher.new(incident.chapter, incident)
   end
 end

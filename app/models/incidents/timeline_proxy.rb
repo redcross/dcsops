@@ -7,7 +7,7 @@ class Incidents::TimelineProxy
 
   validate :validate_fields
 
-  EVENT_TYPES = Incidents::EventLog::EVENT_TYPES.keys.reject{|v| %w(note dispatch_note).include? v}
+  EVENT_TYPES = Incidents::EventLog::INCIDENT_EVENT_TYPES.keys.reject{|v| %w(note dispatch_note).include? v}
 
   def initialize(incident, mandatory_fields=[])
     @incident = incident

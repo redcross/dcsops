@@ -29,6 +29,7 @@ class Incidents::Ability
         can [:create, :recipients], Incidents::Notifications::Message
         can [:create, :read, :acknowledge], Incidents::ResponderMessage
         can [:create], Incidents::ResponderRecruitment
+        can :manage, :chat
     end
 
     if is_admin or person.has_role 'cas_admin'

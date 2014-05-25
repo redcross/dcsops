@@ -93,7 +93,7 @@ class Incidents::IncidentsController < Incidents::BaseController
       case name
       when 'summary' then true
       when 'details', 'timeline', 'responders', 'attachments' then can? :read_details, resource
-      when 'cases' then can? :read_case_details, resource
+      when 'cases' then resource.chapter.incidents_collect_case_details && can?(:read_case_details, resource)
       when 'changes' then can? :read_changes, resource
       else false
       end

@@ -2,15 +2,15 @@ class Incidents::EventLog < Incidents::DataModel
   belongs_to :person, class_name: 'Roster::Person'
 
   validates :event_time, presence: {allow_blank: false, allow_nil: false}
-  validates :person, presence: {if: :is_note?}
-  validates :message, presence: {if: :is_note?, allow_blank: false}
+  validates :person, presence: {if: :body_required?}
+  validates :message, presence: {if: :body_required?, allow_blank: false}
   validates :event, uniqueness: {scope: :incident_id, if: ->(log){log.incident_id && !%w(note dispatch_note).include?(log.event)}}
 
   def self.note
     where{event == 'note'}
   end
 
-  EVENT_TYPES = {
+  INCIDENT_EVENT_TYPES = {
     "note"=>"Note",
     "incident_occurred"=>     "Incident Occurred",
     "incident_notified"=>     "Notification of Incident",
@@ -26,8 +26,23 @@ class Incidents::EventLog < Incidents::DataModel
     "dat_departed_scene"=>    "DAT Departed Scene"
   }
 
+  GLOBAL_EVENT_TYPES = [
+    'note',
+    'vehicle_checkout',
+    'radio_check',
+    'call_incoming',
+    'call_outgoing',
+    'shift_change',
+    'staff_reported_late',
+    'staff_reported_sick'
+  ]
+
   assignable_values_for :event do
-    EVENT_TYPES
+    if incident_id
+      INCIDENT_EVENT_TYPES
+    else
+      GLOBAL_EVENT_TYPES
+    end
   end
 
   belongs_to :source, class_name: 'Lookup'
@@ -41,8 +56,8 @@ class Incidents::EventLog < Incidents::DataModel
     chapter && chapter.incidents_timeline_collect_source_array.include?(event)
   end
 
-  def is_note?
-    event == 'note'
+  def body_required?
+    incident_id.blank? || event == 'note'
   end
 
   def event_time= new_time

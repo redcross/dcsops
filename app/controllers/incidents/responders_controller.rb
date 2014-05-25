@@ -39,7 +39,7 @@ class Incidents::RespondersController < Incidents::BaseController
     elsif new_status == 'departed_scene'
       resource.departed_scene!
     end
-    Incidents::ResponderMessageTablePublisher.new(parent).publish_responders
+    Incidents::UpdatePublisher.new(parent.chapter, parent).publish_responders
     respond_with resource, location: smart_resource_url do |fmt|
       fmt.js { render action: :update }
     end
@@ -53,7 +53,7 @@ class Incidents::RespondersController < Incidents::BaseController
   protected
 
   def notify_assignment
-    Incidents::ResponderMessageTablePublisher.new(parent).publish_responders
+    Incidents::UpdatePublisher.new(parent.chapter, parent).publish_responders
     return unless resource.was_available
 
     if params[:send_assignment_email]

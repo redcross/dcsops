@@ -2,6 +2,23 @@ class Incidents::EventLogsController < Incidents::EditPanelController
   self.panel_name = 'timeline'
   belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident, optional: true
   defaults route_prefix: nil
+  before_filter :require_parent_or_global_log
+  include Searchable
+  responders :partial
+  respond_to :html, :js
+
+  has_scope :event_scope do |controller, scope, val|
+    case val
+    when 'global' then scope.where{incident_id == nil}
+    when 'incident' then scope.where{incident_id != nil}
+    else scope
+    end
+  end
+
+  def index
+    build_resource
+    super
+  end
 
   protected
 
@@ -15,13 +32,18 @@ class Incidents::EventLogsController < Incidents::EditPanelController
     notify
   end
 
+  def destroy_resource resource
+    super resource
+    notify
+  end
+
   def notify
-    Incidents::ResponderMessageTablePublisher.new(parent).publish_timeline if parent?
+    Incidents::UpdatePublisher.new(current_chapter, parent).publish_timeline
   end
 
   def collection
     @collection ||= begin
-      coll = super.includes{incident}.where{chapter_id==my{current_chapter}}.order{event_time.desc}
+      coll = super.includes{[incident, person]}.where{chapter_id==my{current_chapter}}.order{event_time.desc}
       coll = coll.page(params[:page]) if paginate?
       coll
     end
@@ -46,4 +68,16 @@ class Incidents::EventLogsController < Incidents::EditPanelController
   def smart_collection_url
     parent? ? parent_path : collection_path
   end
+
+  def require_parent_or_global_log
+    unless parent? || current_chapter.incidents_use_global_log
+      redirect_to incidents_root_path
+    end
+  end
+
+  public
+  def valid_partial? name
+    name == 'table'
+  end
+
 end
