@@ -1,7 +1,8 @@
 =f.inputs "Location" do
-  .row
+  -is_panel = params[:panel_name].present?
+  .rowa
     %br
-    .col-sm-6
+    %div{class: is_panel ? "" : "col-sm-6"}
       =f.input :search_for_address, hint: 'Enter as much information as you have about the address, and then click the "Look Up Address" button below.', input_html: {value: '', editable: false}
       .form-group.address-lookup-group
         .col-xs-5
@@ -22,6 +23,6 @@
               config = #{map_config.to_json};
               window.incidentLocationController = window.incidentLocationController || new IncidentLocationController(#{f.object.lat.to_json}, #{f.object.lng.to_json}, config);
             });
-    - unless request.xhr?
+    - unless is_panel
       .col-sm-6
         .incident-map{style: "height: 450px"}

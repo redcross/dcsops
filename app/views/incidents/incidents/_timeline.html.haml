@@ -1,7 +1,7 @@
 
 %h3 
   Timeline
-  -if can? :create, resource.event_logs.build
+  -if can?(:create, resource.event_logs.build) && resource.open_incident?
     %button.btn.btn-primary{data: {edit_panel: new_incidents_incident_event_log_path(resource)}} Add Log
 
 - resource.event_logs(true).each do |evt|

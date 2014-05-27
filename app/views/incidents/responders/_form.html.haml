@@ -6,16 +6,18 @@
         %small=link_to 'Cancel', collection_path
       -if f.object.person
         =f.input :person_id, as: :hidden
-        .control-group
-          .control-label Person
-          .controls=f.object.person.full_name
+        .form-group
+          %label.control-label Person
+          .form-wrapper
+            .form-control-static=f.object.person.full_name
         - f.object.person.phone_order.each do |ph|
-          .control-group
-            .control-label=ph[:label].to_s.titleize
-            .controls
-              =ph[:number]
-              -if ph[:carrier]
-                (sms)
+          .form-group
+            %label.control-label=ph[:label].to_s.titleize
+            .form-wrapper
+              .form-control-static
+                =ph[:number]
+                -if ph[:carrier]
+                  (sms)
       -else
         =f.input :person, as: :person_typeahead, text_value: f.object.person.try(:full_name), filter: {chapter_id_eq: f.object.incident.chapter_id}
       =f.input :role, collection: grouped_options_for_select(Incidents::ResponderAssignment.grouped_roles(true), f.object.role), label: 'Response'
@@ -25,12 +27,14 @@
         =f.input :dispatched_at, as: :time_field
         =f.input :on_scene_at, as: :time_field
         =f.input :departed_scene_at, as: :time_field
-      .control-group
-        .control-label=label_tag :send_assignment_sms
-        .controls=check_box_tag :send_assignment_sms, '1', params[:send_assignment_sms] == '1'
-      .control-group
-        .control-label=label_tag :send_assignment_email
-        .controls=check_box_tag :send_assignment_email, '1', params[:send_assignment_email] == '1'
+      .form-group
+        %label.control-label=label_tag :send_assignment_sms
+        .form-wrapper
+          .form-control-static=check_box_tag :send_assignment_sms, '1', params[:send_assignment_sms] == '1'
+      .form-group
+        %label.control-label=label_tag :send_assignment_email
+        .form-wrapper
+          .form-control-static=check_box_tag :send_assignment_email, '1', params[:send_assignment_email] == '1'
       =f.actions do
         =f.action :submit, label: "Save Assignment", button_html: {class: 'btn btn-primary'}
         -unless f.object.new_record?

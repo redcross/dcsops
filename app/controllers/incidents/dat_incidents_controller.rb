@@ -56,7 +56,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       success.html {notify(params[:action] == 'create'); redirect_to resource.incident}
       success.js { notify(params[:action] == 'create'); render action: 'update' }
       failure.html { flash.now[:error] = "The incident report is incomplete.  Please correct the fields highlighted in red and try again."; render action: 'edit'}
-      failure.js { render action: 'panel', layout: nil}
+      failure.js { pp resource.errors; render action: 'panel', layout: nil}
     end
   end
   alias_method :create, :update
@@ -78,7 +78,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     inc_attrs = incident_params
     obj.incident.attributes = inc_attrs if inc_attrs
 
-    #return unless %w(new edit).include? params[:action] 
+    return unless %w(new edit).include? params[:action] 
 
     build_partner_uses obj.incident
 

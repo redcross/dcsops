@@ -1,42 +1,46 @@
 =semantic_form_for [parent, resource], url: form_url, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
-  .modal-header 
-    %a.close(data-dismiss="modal") &times;
-    %h3
-      Send Message
-      -if f.object.person
-        to #{f.object.person.full_name}
-  .modal-body
-    =f.semantic_errors *f.object.errors.keys
-    .control-group
-      .control-label Message Type
-      .controls
-        %label.radio
-          =radio_button_tag 'message_type', 'manual', true
-          Manual Message
-        %label.radio
-          =radio_button_tag 'message_type', 'map_link', false, data: {message: map_link_message}
-          Map Link
-        %label.radio
-          =radio_button_tag 'message_type', 'timeline_entry', false, data: {message: timeline_entry_message}
-          Last Timeline Entry
-        %label.radio
-          =radio_button_tag 'message_type', 'contact_info', false, data: {message: responder_info_message(resource.person)}
-          Responder Contact Info
-    -if f.object.person_id.nil?
-      .control-group
-        .control-label Recipients
-        .controls
-          - all_recipients.each do |recip|
-            =recip.person.full_name
-            %br
-    =f.input :message, as: :text, input_html: {rows: 5}
-    =f.input :person_id, as: :hidden
-    .control-group
-      .control-label Characters
-      .controls
-        %span.num-characters.uneditable-input
-  .modal-footer
-    =f.action :submit, button_html: {class: "btn btn-primary", data: {disable_with: "Sending…"}}, label: "Send Message"
+  .modal-dialog
+    .modal-content
+      .modal-header 
+        %a.close(data-dismiss="modal") &times;
+        %h4.modal-title
+          Send Message
+          -if f.object.person
+            to #{f.object.person.full_name}
+      .modal-body
+        =f.semantic_errors *f.object.errors.keys
+        .form-group
+          %label.control-label Message Type
+          .form-wrapper
+            %label.radio
+              =radio_button_tag 'message_type', 'manual', true
+              Manual Message
+            %label.radio
+              =radio_button_tag 'message_type', 'map_link', false, data: {message: map_link_message}
+              Map Link
+            %label.radio
+              =radio_button_tag 'message_type', 'timeline_entry', false, data: {message: timeline_entry_message}
+              Last Timeline Entry
+            %label.radio
+              =radio_button_tag 'message_type', 'contact_info', false, data: {message: responder_info_message(resource.person)}
+              Responder Contact Info
+        -if f.object.person_id.nil?
+          .form-group
+            %label.control-label Recipients
+            .form-wrapper
+              .form-control-static
+                - all_recipients.each do |recip|
+                  =recip.person.full_name
+                  %br
+        =f.input :message, as: :text, input_html: {rows: 5}
+        =f.input :person_id, as: :hidden
+        .form-group
+          %label.control-label Characters
+          .form-wrapper
+            .form-control-static
+              %span.num-characters.uneditable-input
+      .modal-footer
+        =f.action :submit, button_html: {class: "btn btn-primary", data: {disable_with: "Sending…"}}, label: "Send Message"
 
 :javascript
   $(function() {

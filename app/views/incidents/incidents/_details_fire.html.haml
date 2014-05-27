@@ -8,7 +8,7 @@
     %td=dat.box
   %tr
     %th Box Time
-    %td=dat.box_at
+    %td=dat.box_at.try(:to_s, :date_time)
   %tr
     %th Battalion
     %td=dat.battalion
@@ -20,7 +20,7 @@
     %td=dat.where_started
   %tr
     %th Under Control At
-    %td=dat.under_control_at
+    %td=dat.under_control_at.try(:to_s, :date_time)
   %tr
     %th Size Up
     %td=dat.size_up
@@ -29,7 +29,7 @@
     %td=dat.num_exposures
   %tr
     %th Suspicious Fire
-    %td=dat.suspicious_fire
+    %td= dat.suspicious_fire.nil? ? "" : (dat.suspicious_fire ? 'Yes' : 'No')
   %tr
     %th Injuries - Black
     %td=dat.injuries_black

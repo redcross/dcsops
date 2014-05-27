@@ -1,7 +1,7 @@
 %h4 
   Responders
   -if enable_messaging
-    =link_to 'Message All', '#', class: 'btn', data: {edit_panel: new_incidents_incident_responder_message_path(parent)}
+    =link_to 'Message All', '#', class: 'btn btn-default', data: {edit_panel: new_incidents_incident_responder_message_path(parent)}
 %table.table.table-bordered.table-condensed
   %tr
     %th Name
@@ -21,7 +21,7 @@
       %td=assignment_status(assignment)
       %td
         .btn-group
-          =link_to '#', class: "btn btn-mini dropdown-toggle", data: {toggle: 'dropdown'} do
+          =link_to '#', class: "btn btn-default btn-sm dropdown-toggle", data: {toggle: 'dropdown'} do
             Actions
             %span.caret
           %ul.dropdown-menu{role: "menu", aria_labelledby: "dropdownMenu"}
