@@ -19,7 +19,7 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
     end
 
     def resource_params
-      request.get? ? [] : [params.require(:position).permit(:name, :abbrev, :vc_regex_raw, :hidden, :chapter_id, :watchfire_role, :role_ids => [])]
+      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :vc_regex_raw, :hidden, :chapter_id, :watchfire_role, :role_ids => [])]
     end
   end
 

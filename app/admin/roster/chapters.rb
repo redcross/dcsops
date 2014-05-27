@@ -10,7 +10,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
     def resource_params
       keys = [:name, :short_name, :code, :time_zone_raw, :vc_username, :vc_password, :vc_position_filter, :vc_unit]
       keys = keys + resource_class.serialized_columns.values.map{|c| c.last.name.to_sym }
-      request.get? ? [] : [params.require(:chapter).permit(*keys)]
+      [params.fetch(resource_request_name, {}).permit(*keys)]
     end
   end
 
@@ -40,6 +40,6 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
     column :short_name
     column :time_zone_raw
     column :vc_username
-    default_actions
+    actions
   end
 end

@@ -14,8 +14,7 @@ ActiveAdmin.register Lookup do
 
   controller do
     def resource_params
-      return [] if request.get?
-      [params.require('lookup').permit!]
+      [params.fetch(resource_request_name, {}).permit!]
     end
   end
 end

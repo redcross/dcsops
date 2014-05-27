@@ -3,7 +3,7 @@ ActiveAdmin.register Roster::Role, as: 'Role' do
 
   controller do
     def resource_params
-      request.get? ? [] : [params.require(:role).permit(:name, :chapter_id, :grant_name, role_scopes: [:scope, :_destroy])]
+      [params.fetch(resource_request_name, {}).permit(:name, :chapter_id, :grant_name, role_scopes: [:scope, :_destroy])]
     end
 
     def collection
@@ -17,7 +17,7 @@ ActiveAdmin.register Roster::Role, as: 'Role' do
     column :scopes do |obj|
       obj.role_scopes.map(&:scope).join ","
     end
-    default_actions
+    actions
   end
 
   form do |f|

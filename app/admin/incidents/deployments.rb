@@ -15,7 +15,7 @@ ActiveAdmin.register Incidents::Deployment, as: 'Deployment' do
     column :gap
     column :date_first_seen
     column :date_last_seen
-    default_actions
+    actions
   end
 
   controller do

@@ -9,7 +9,7 @@ ActiveAdmin.register Roster::County, as: 'County' do
 
   controller do
     def resource_params
-      request.get? ? [] : [params.require(:county).permit(:name, :abbrev, :county_code, :fips_code, :gis_name, :vc_regex_raw, :chapter_id)]
+      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :county_code, :fips_code, :gis_name, :vc_regex_raw, :chapter_id)]
     end
   end
 

@@ -13,7 +13,7 @@ ActiveAdmin.register Scheduler::DispatchConfig, as: 'Dispatch Configs' do
     column :backup_second
     column :backup_third
     column :backup_fourth
-    default_actions
+    actions
   end
 
   form do |f|
@@ -33,7 +33,7 @@ ActiveAdmin.register Scheduler::DispatchConfig, as: 'Dispatch Configs' do
 
   controller do
     def resource_params
-      [params.require(:dispatch_configs).permit(:is_active, :backup_first_id, :backup_second_id, :backup_third_id, :backup_fourth_id, :name, :county_id)]
+      [params.fetch(resource_request_name, {}).permit(:is_active, :backup_first_id, :backup_second_id, :backup_third_id, :backup_fourth_id, :name, :county_id)]
     end
   end
 end

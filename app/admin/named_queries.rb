@@ -26,7 +26,7 @@ ActiveAdmin.register NamedQuery, as: 'Named Query' do
 
   controller do
     def resource_params
-      request.get? ? [] : [params.require(:named_query).permit(:name, :token, :controller, :action, :parameters)]
+      [params.fetch(resource_request_name, {}).permit(:name, :token, :controller, :action, :parameters)]
     end
   end
 end

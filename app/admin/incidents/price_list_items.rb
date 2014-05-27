@@ -14,7 +14,7 @@ ActiveAdmin.register Incidents::PriceListItem, as: 'Price List Item' do
 
   controller do
     def resource_params
-      request.get? ? [] : [params.require(:price_list_item).permit!]
+      [params.fetch(resource_request_name, {}).permit!]
     end
     helper do
       def available_type_classes

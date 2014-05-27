@@ -11,7 +11,7 @@ ActiveAdmin.register HomepageLink, as: 'Homepage Link' do
     column "Target" do |link|
       link.url.present? ? link.url : link.file_file_name
     end
-    default_actions
+    actions
   end
 
   form do |f|
@@ -39,7 +39,7 @@ ActiveAdmin.register HomepageLink, as: 'Homepage Link' do
     end
 
     def resource_params
-      request.get? ? [] : [params.require(:homepage_link).permit(:name, :description, :file, :icon, :url, :ordinal, :group, :group_ordinal)]
+      [params.fetch(resource_request_name, {}).permit(:name, :description, :file, :icon, :url, :ordinal, :group, :group_ordinal)]
     end
   end
 end

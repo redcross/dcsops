@@ -3,8 +3,7 @@ ActiveAdmin.register DataFilter do
 
   controller do
     def resource_params
-      return [] if request.get?
-      [params.require('data_filter').permit(:model, :field, :pattern_raw)]
+      [params.fetch(resource_request_name, {}).permit(:model, :field, :pattern_raw)]
     end
   end
 end

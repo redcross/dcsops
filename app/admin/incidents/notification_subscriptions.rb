@@ -54,7 +54,7 @@ ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
     column :county
     column :persistent
     column :last_sent
-    default_actions
+    actions
   end
 
   form do |f|

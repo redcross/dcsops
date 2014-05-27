@@ -5,7 +5,7 @@ ActiveAdmin.register Scheduler::ShiftCategory, as: 'Shift Category' do
 
   controller do
     def resource_params
-      request.get? ? [] : [params.require(:shift_category).permit(:name, :show, :chapter_id, :ordinal)]
+      [params.fetch(resource_request_name, {}).permit(:name, :show, :chapter_id, :ordinal)]
     end
   end
 end

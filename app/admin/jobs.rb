@@ -26,7 +26,7 @@ ActiveAdmin.register Delayed::Job, as: 'Job' do
     column :failed_at
     column :locked_by
     column :created_at
-    default_actions
+    actions
   end
 
   show do

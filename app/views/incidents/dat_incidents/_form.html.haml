@@ -1,4 +1,4 @@
-= semantic_form_for resource, url: form_url, builder: HorizontalFormBuilder, html: {class: 'form-horizontal'} do |f|
+= semantic_form_for resource, url: form_url, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'} do |f|
   =f.fields_for :incident do |f|
     =f.input :status, as: :hidden, input_html: {value: 'closed'}
   .row

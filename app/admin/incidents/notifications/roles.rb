@@ -13,7 +13,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
     column(:members) { |r|
       (r.positions.map(&:name) + r.shifts.map(&:name)).join ", "
     }
-    default_actions
+    actions
   end
 
   form do |f|
@@ -96,7 +96,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
     end
 
     def resource_params
-      request.get? ? [] : [params.require(:notification_role).permit(:name, :chapter_id, position_ids: [], shift_ids: [], triggers_attributes: [:id, :event_id, :template, :use_sms, :_destroy], role_scopes_attributes: [:id, :_destroy, :level, :value])]
+      [params.fetch(resource_request_name, {}).permit(:name, :chapter_id, position_ids: [], shift_ids: [], triggers_attributes: [:id, :event_id, :template, :use_sms, :_destroy], role_scopes_attributes: [:id, :_destroy, :level, :value])]
     end
   end
 end
