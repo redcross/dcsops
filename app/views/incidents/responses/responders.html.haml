@@ -1,19 +1,19 @@
-=form_tag '', method: :get, class: 'form-horizontal' do
+=form_tag '', method: :get, class: 'form-inline' do
   Show County:
-  =select_tag :county_id, options_from_collection_for_select(current_chapter.counties, :id, :name, current_scopes[:county_id])
-  =submit_tag 'Show', class: 'btn'
+  =select_tag :county_id, options_from_collection_for_select(current_chapter.counties, :id, :name, current_scopes[:county_id]), class: "form-control"
+  =submit_tag 'Show', class: 'btn btn-primary'
 
 .legend
   %span.text-success
-    %i.icon-check-sign 
+    %i.fa.fa-check-square
     Available
   %span
-    %i.icon-check-empty 
+    %i.fa.fa-square-o 
     Not Available (Flex)
-  %span.text-error 
-    %i.icon-remove-sign
+  %span.text-danger 
+    %i.fa.fa-times-circle
     Not Available (Committed)
-%table.table.table-bordered
+%table.table.table-bordered.table-condensed
   %thead
     %tr
       %th Name
@@ -35,11 +35,11 @@
           %td
             %a{href: url_for(ass.incident), title: tooltip_for(ass)}(data-toggle="tooltip")
               -if ass.was_available
-                %i.icon-large.icon-check-sign.text-success
+                %i.icon-large.fa.fa-check-square.text-success
               -elsif ass.was_flex
-                %i.icon-large.icon-check-empty
+                %i.icon-large.fa.fa-square-o
               -else
-                %i.icon-large.icon-remove-sign.text-error
+                %i.icon-large.fa.fa-times-circle.text-danger
             /=ass.humanized_role
         - (max_responses-assignments.count).times do
           %td

@@ -1,5 +1,5 @@
 @import "twitter/bootstrap/bootstrap";
-@import "twitter/bootstrap/responsive";
+//@import "twitter/bootstrap/responsive";
 
 // Set the correct sprite paths
 @iconSpritePath: asset-path("twitter/bootstrap/glyphicons-halflings");
@@ -39,4 +39,32 @@
     padding-right: 5px;
   }
 
+}
+
+.form-horizontal .form-group {
+  > label {
+    .make-xs-column(5)
+  }
+  .form-wrapper {
+    .make-xs-column(7)
+  }
+}
+
+.tt-dropdown-menu {
+  &:extend(.dropdown-menu);
+}
+
+.tt-suggestion {
+  > p {
+    &:extend(.dropdown-menu > li > a);
+    &:hover,
+    &:focus {
+      &:extend(.dropdown-menu > .active > a);
+    }
+  }
+  &.tt-cursor {
+    > p {
+      &:extend(.dropdown-menu > .active > a);
+    }
+  }
 }

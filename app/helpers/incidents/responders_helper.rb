@@ -45,7 +45,7 @@ module Incidents::RespondersHelper
     recruitment = recruitments[person.id].try(:first)
     if recruitment
       if recruitment.unavailable?
-        content_tag(:span, "Not Available", class: "text-error")
+        content_tag(:span, "Not Available", class: "text-danger")
       elsif recruitment.available?
         content_tag(:span, "Available", class: "text-success")
       else

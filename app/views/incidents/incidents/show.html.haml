@@ -7,7 +7,7 @@
       =resource.address
     -if resource.open_incident?
       -if can? :close, resource
-        =link_to 'Close', close_resource_path, class: 'btn', method: 'post', data: {confirm: 'Really close this incident?'}
+        =link_to 'Close', close_resource_path, class: 'btn btn-default', method: 'post', data: {confirm: 'Really close this incident?'}
       -if can? :mark_invalid, resource
         =link_to 'Invalid/No Response', mark_invalid_resource_path, class: 'btn btn-danger'
     -else
@@ -30,7 +30,7 @@
     .tab-pane{class: ((idx==0) && 'active'), id: "inc-#{name}", data: {refresh_name: name, refresh: polymorphic_path(resource, partial: name)}}
       =render name
 
-.modal.hide.fade#edit-modal
+.modal.fade#edit-modal
   .modal-header 
     %a.close(data-dismiss="modal") &times;
     %h3 Edit
@@ -48,7 +48,7 @@
         hash && $('ul.nav a[data-target="' + hash + '"]').tab('show');
       }
       if ('history' in window && 'replaceState' in window.history) {
-        $('a[data-toggle=tab]').on('shown', function(evt) {
+        $('a[data-toggle=tab]').on('shown.bs.tab', function(evt) {
           window.history.replaceState({}, '', $(evt.target).attr('data-target'))
         });
       }

@@ -1,14 +1,14 @@
 - model_class = Roster::Person
 .page-headera
   %h1
-    /%i.icon-user
+    /%i.fa.fa-user
     = resource.first_name
     = resource.last_name
   /= link_to 'Change Password', '#', class: 'btn btn-small'
   /= link_to 'Send Password Reset', '#', class: 'btn btn-small'
 
 .row
-  .span6
+  .col-sm-6
     %h3 
       Details
     %p
@@ -29,14 +29,14 @@
         %a{href: "https://volunteerconnection.redcross.org/?nd=profile_edit"} edit your profile in Volunteer Connection
         or contact your county staffing or CDV team.  Changes take 24-48 hours to take effect.
 
-  .span6
+  .col-sm-6
     %h3 Contact Info
     %p
       %strong= model_class.human_attribute_name(:email) + ':'
       -if resource.email.present?
         = resource.email
       -else
-        %span.text-error
+        %span.text-danger
           %strong
             No Email Address.
           Please complete your
@@ -53,7 +53,7 @@
         = resource.state
         = resource.zip
       -else
-        %span.text-error
+        %span.text-danger
           %strong
             Incomplete Address
           Please complete your
@@ -69,7 +69,7 @@
             = val[:number]
 
 .row
-  .span12
+  .col-sm-12
     %h3 Contact Settings
     %p
       %small

@@ -8,14 +8,17 @@ class window.PartnerTypeaheadController
 
     controller = this
 
-    @dom.typeahead
+    taOpts = 
+      higlight: true
+
+    mainDsOpts =
+      name: "search"
+      displayKey: "name"
+      templates:
+        suggestion: (datum) -> "<p>#{datum.name}<br />#{datum.address1}</p>"
       source: (query, process) =>
         if query.length <= 2
           process([])
-          return
-
-        if @prev_query and query.indexOf(@prev_query) != -1
-          this.addNewItemRow(@prev_data, query, process)
           return
 
         $.ajax
@@ -27,35 +30,49 @@ class window.PartnerTypeaheadController
           url: '/partners/partners'
           success: (data) =>
             @list = {}
-            
-            processed = data.map (el) => 
-              key = el.name
-              @list[key] = el
-              key
-
             @prev_query = query
-            @prev_data = processed
+            @prev_data = data
 
-            this.addNewItemRow(processed, query, process)
+            console.log data
 
-            process(processed)
+            process(data)
+
+    newDsOpts =
+      name: "newPartner"
+      displayKey: "name"
+      templates:
+        suggestion: (ctx) -> "<p>New Partner: #{ctx.name}</p>"
+      source: (query, process) ->
+        process([{isNew: true, value: query, name: query}])
+
+    @dom.typeahead taOpts, mainDsOpts, newDsOpts
+    
+    $(@dom).on 'typeahead:selected', (evt, datum) =>
+      console.log evt, evt.target, evt.target.value, datum
+      if datum.id
+        @callback(datum.id, datum)
+        @setCreating false
+      else
+        @callback(null, null, datum.value)
+        @setCreating true
+      @selected = datum.full_name
 
 
-      updater: (item) =>
-        el = @list[item]
-        if el
-          @callback(@list[item].id, @list[item])
-          this.setCreating(false)
-        else if @canCreate
-          @callback(null, null, item)
-          this.setCreating(true)
-        item
+  updater: (item) =>
+    el = @list[item]
+    if el
+      @callback(@list[item].id, @list[item])
+      this.setCreating(false)
+    else if @canCreate
+      @callback(null, null, item)
+      this.setCreating(true)
+    item
 
-      highlighter: (item) =>
-        el = @list[item]
-        if el
-          "#{el.name}<br /><small>#{el.address1}</small>"
-        else "New Partner: #{item}"
+  highlighter: (item) =>
+    el = @list[item]
+    if el
+      "#{el.name}<br /><small>#{el.address1}</small>"
+    else "New Partner: #{item}"
 
   addNewItemRow: (serverData, name, process) ->
     arr = serverData.slice()

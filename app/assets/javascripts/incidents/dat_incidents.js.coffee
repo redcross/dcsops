@@ -34,18 +34,18 @@ class window.DatIncidentsFormController
       return if id==''
       name = $('#vehicles :selected').text()
       tmpl = $(evt.target).data('template')
-      dom = $.parseHTML(tmpl)
+      dom = $(tmpl)
 
       $(dom).find('.vehicle-name').text(name)
       $(dom).find('input').val(id)
 
-      $(evt.target).parents('.control-group').before(dom)
+      $(evt.target).parents('.form-group').before(dom)
       $("#vehicles").val('')
 
     $(document).on 'click', '.remove-vehicle', (evt) =>
       evt.preventDefault()
 
-      $(evt.target).parents('.control-group').remove()
+      $(evt.target).parents('.form-group').remove()
 
     #$(document).on 'change', 'input.meal-check', (evt) =>
     #  cmd =  ($(evt.target).is(':checked') && 'show' || 'hide')

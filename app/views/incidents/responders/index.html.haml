@@ -1,21 +1,21 @@
 .app{"ng-app" => ''}
   .row
-    .span7
+    .col-sm-7
       %h3
         =link_to parent do
-          %i.icon-chevron-left
+          %i.fa.fa-chevron-left
           #{parent.incident_number} #{parent.city}, #{parent.state}
       %strong= Incidents::IncidentPresenter.new(parent).full_address
       .assigned-table{data: {refresh_name: "responders", refresh: url_for(partial: 'assigned_table')}}
         =render 'assigned_table'
       .incoming-table{data: {refresh_name: "incoming", refresh: url_for(controller: 'incidents/responder_messages', action: 'index', partial: 'incoming_table')}}
         =render partial: 'incidents/responder_messages/incoming_table', locals: {incident: parent}
-    .span5
+    .col-sm-5
       %h4
         Map
         .responder-map{style: "height: 300px"}
   .row
-    .span12
+    .col-sm-12
       %h4 
         Available Responders
         %small=link_to 'Add Other Person', new_resource_path

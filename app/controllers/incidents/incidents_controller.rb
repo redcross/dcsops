@@ -36,7 +36,8 @@ class Incidents::IncidentsController < Incidents::BaseController
   end
 
   def reopen
-    resource.update_attributes status: 'open', last_no_incident_warning: 1.hour.ago
+    resource.update_attribute :status, 'open'
+    resource.update_attribute :last_no_incident_warning, 1.hour.ago
     redirect_to resource
   end
 

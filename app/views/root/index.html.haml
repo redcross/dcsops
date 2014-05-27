@@ -1,5 +1,5 @@
 .row
-  .offset3.span6
+  .col-sm-offset-3.col-sm-6
     .center
       %h3
         DCS
@@ -8,17 +8,17 @@
     .row
       .app
         %a{href: roster_person_path(current_user)}
-          %i.icon-info-sign.icon-2x
+          %i.fa.fa-info-circle.fa-2x
           %h4 My Contact Info
     .row
       .app
         %a{href: scheduler_root_path}
-          %i.icon-calendar.icon-2x
+          %i.fa.fa-calendar.fa-2x
           %h4 DAT Scheduling
     .row
       .app
         %a{href: incidents_root_path}
-          %i.icon-fire.icon-2x
+          %i.fa.fa-fire.fa-2x
           %h4 Incidents
     - homepage_links.each do |group, links|
       .row
@@ -28,5 +28,5 @@
           .app
             =link_to link.link do
               -if link.icon.present?
-                %i.icon-2x{class: "icon-#{link.icon}"}
+                %i.fa-2x{class: "fa fa-#{link.icon}"}
               %h4=link.name

@@ -21,7 +21,7 @@ gem 'delayed_job_active_record'
 gem 'inherited_resources'
 gem 'responders'
 gem 'has_scope'
-gem "twitter-bootstrap-rails", '~> 2.2.8'
+gem "twitter-bootstrap-rails", '~> 3.1.0', github: 'seyhunak/twitter-bootstrap-rails', branch: 'bootstrap3'
 gem 'bootstrap-x-editable-rails'
 gem "spreadsheet" # Import from excel
 
@@ -43,7 +43,7 @@ gem 'threach'
 gem 'geokit'#, github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 
 gem 'formtastic', '~> 2.3.0rc3'
-gem 'formtastic-bootstrap', '~> 2.1'
+gem 'formtastic-bootstrap', '~> 3.0'
 gem 'cocoon'
 gem 'polyamorous', '~> 0.6.0'
 gem 'ransack', '~> 1.1.0'#, github: 'ernie/ransack',            branch: 'rails-4'

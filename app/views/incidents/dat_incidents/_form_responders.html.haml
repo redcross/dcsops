@@ -1,5 +1,5 @@
 .row
-  .span12
+  .col-sm-12
     =f.inputs "Responders" do
       =f.semantic_fields_for :incident do |f|
         =f.semantic_errors :responder_assignments
@@ -51,6 +51,6 @@
 
         =link_to_add_association 'Add Other Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary"
 .row
-  .span12
+  .col-sm-12
     =f.actions do
-      %a.btn{href: '#', data: {target: "#form_services", "toggle"=>"remote-tab"}} Go to Services Page
+      %a.btn.btn-default{href: '#', data: {target: "#form_services", "toggle"=>"remote-tab"}} Go to Services Page

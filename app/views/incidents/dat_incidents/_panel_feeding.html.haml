@@ -1,13 +1,14 @@
 =f.inputs "On-Scene Feeding" do
-  .control-group
-    %label.control-label Canteening
-    .controls
+  .form-group
+    %label.form-label Canteening
+    .form-wrapper
       - services = f.object.services || []
       - local_services = {'Canteened Responders' => 'canteened_responders', 'Canteened Clients' => 'canteened_clients'}
       - local_services.each do |label, val|
-        %label.checkbox
-          =check_box_tag( "incidents_dat_incident[services][]", val, services.include?( val), {class: "services-other-#{val}", data: {bind: ".collapse.service-#{val.dasherize}"}})
-          =label
+        .checkbox
+          %label
+            =check_box_tag( "incidents_dat_incident[services][]", val, services.include?( val), {class: "services-other-#{val}", data: {bind: ".collapse.service-#{val.dasherize}"}})
+            =label
       -if @rendering_panel
         - (services - local_services.values).each do |service|
           =hidden_field_tag "incidents_dat_incident[services][]", service

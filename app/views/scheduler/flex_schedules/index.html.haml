@@ -10,7 +10,7 @@
       %tr
         %th Show County
         %td
-          =select_tag "county", options_from_collection_for_select(current_chapter.counties, :id, :name, current_scopes[:county]), multiple: false, id: 'choose-county', prompt: 'All'
+          =select_tag "county", options_from_collection_for_select(current_chapter.counties, :id, :name, current_scopes[:county]), multiple: false, id: 'choose-county', prompt: 'All', class: "form-control"
       %tr
         %th Only People With Availability
         %td
@@ -19,7 +19,7 @@
       %tr
         %th Only Show People Available During:
         %td
-          %table.table-bordered.filter-table
+          %table.table.table-bordered.filter-table
             %tr
               %th
               - days_of_week.each do |d|
@@ -34,8 +34,8 @@
         %tr
           %th Only Show People With Positions:
           %td
-            =f.collection_select :person_positions_id_in, current_chapter.positions.visible.order{name}, :id, :name, {include_blank: true}, {multiple: true}
-    =submit_tag 'Show', class: 'btn'
+            =f.collection_select :person_positions_id_in, current_chapter.positions.visible.order{name}, :id, :name, {include_blank: true}, {multiple: true, class: "form-control"}
+    =submit_tag 'Show', class: 'btn btn-primary'
 
 %table.table.table-condensed.flex-table
   %thead

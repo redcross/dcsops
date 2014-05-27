@@ -8,7 +8,7 @@
   /= link_to 'Send Password Reset', '#', class: 'btn btn-small'
 
 .row
-  .span6
+  .col-sm-6
     %h3 
       Details
     %p
@@ -29,7 +29,7 @@
         %a{href: "https://volunteerconnection.redcross.org/?nd=profile_edit"} edit your profile in Volunteer Connection
         or contact your county staffing or CDV team.  Changes may take 48 hours to take effect.
 
-  .span6
+  .col-sm-6
     %h3 Contact Info
     %p
       %strong= model_class.human_attribute_name(:email) + ':'
@@ -55,7 +55,7 @@
             = val[:number]
 
 .row
-  .span12
+  .col-sm-12
     %h3 Contact Settings
     %p
       %small

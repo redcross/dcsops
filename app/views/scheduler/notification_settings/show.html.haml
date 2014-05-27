@@ -1,9 +1,9 @@
 .row
-  .span12
+  .col-sm-12
     %h1 Reminder Settings
 
 .row
-  .span10.offset1
+  .col-sm-10.offset1
     %h3 Shifts
     %p
       =editable_select resource, :send_email_invites, [{value: 0, text: "Do not"},{value: 1, text: "Do"}], is_boolean: true

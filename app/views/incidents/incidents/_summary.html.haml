@@ -1,7 +1,7 @@
 - dat = resource.dat_incident
 
 .row
-  .span6
+  .col-sm-6
     %h4 At a glance:
     %table.table.table-bordered.table-condensed
       %tr
@@ -21,6 +21,6 @@
         %th Cases Opened On Scene
         %td=resource.num_cases
     %p.lead=resource.narrative_brief
-  .span6
+  .col-sm-6
     .map-container{style: "border-radius: 10px; overflow: hidden"}
       .incident-map{style: "height: 300px"}

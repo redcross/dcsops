@@ -10,7 +10,7 @@ class ::PartnerInput
     builder.semantic_fields_for(method) do |builder|
       bootstrap_wrapping do
         builder.hidden_field(:partner_id, input_html_options) +
-        builder.text_field(:partner_name, input_html_options.merge({id: input_html_options[:id] + '_text', value: builder.object.partner.try(:name)}))+
+        builder.text_field(:partner_name, input_html_options.merge({class: "form-control", id: input_html_options[:id] + '_text', value: builder.object.partner.try(:name)}))+
         script_html
       end
     end

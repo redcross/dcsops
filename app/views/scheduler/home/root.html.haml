@@ -1,8 +1,8 @@
 %h3 DAT Scheduling
 .row
-  .span4
+  .col-sm-4
     %h5 
-      %i.icon-user
+      %i.fa.fa-user
       Personal Details
     %p
       = "Welcome, #{current_person.first_name}."
@@ -28,14 +28,14 @@
       /=link_to "See your upcoming shifts"
       /%br
       %a{href: scheduler_notification_setting_path(current_person)}
-        %i.icon-bell
+        %i.fa.fa-bell
         Update reminder preferences
       %br
       %a{href: roster_person_path(current_person)}
-        %i.icon-phone
+        %i.fa.fa-phone
         Edit contact details
     %h5 
-      %i.icon-time
+      %i.fa.fa-time
       Your flex availability schedule:
       %small=link_to "(Edit)", scheduler_flex_schedule_path(current_person)
     - sched = Scheduler::FlexSchedule.where(id: current_person.id).first_or_initialize
@@ -53,9 +53,9 @@
             -avail = sched.send("available_#{dow}_#{time}")
             %td{class: avail && "avail"}
               =avail ? 'Yes' : 'No'
-  .span4
+  .col-sm-4
     %h5 
-      %i.icon-calendar
+      %i.fa.fa-calendar
       Calendar Details
     - month = Date.current.beginning_of_month
     - 3.times do
@@ -77,20 +77,20 @@
     -if can? :read, Scheduler::Shift
       %div
         %a{href: scheduler_shifts_path}
-          %i.icon-cog
+          %i.fa.fa-cog
           Manage Calendars
     %div
       %a{href: scheduler_flex_schedules_path}
-        %i.icon-time
+        %i.fa.fa-time
         Show Flex Schedule Calendar
     -if can? :read, Roster::Person
       %div
         %a{href: scheduler_people_path}
-          %i.icon-user
+          %i.fa.fa-user
           Show Roster
-  .span4
+  .col-sm-4
     %h5 
-      %i.icon-group
+      %i.fa.fa-group
       Current On-Call Team:
       %small=link_to 'See All', scheduler_on_call_path
     - groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_chapter)
@@ -100,9 +100,9 @@
     = render partial: 'current_shifts', locals: {counties: current_person.counties, groups: groups}
 
 .row
-  .span6
+  .col-sm-6
     %h5 
-      %i.icon-random
+      %i.fa.fa-random
       Available Shift Swaps
     - if available_swaps.blank?
       There are no shift swaps currently available to you.
@@ -124,9 +124,9 @@
             %td=shift.person.full_name
             %td
               =link_to "Claim", scheduler_shift_assignment_shift_swap_path(shift), class: "btn btn-small"
-  .span6
+  .col-sm-6
     %h5
-      %i.icon-fire
+      %i.fa.fa-fire
       Your Recent Responses
     %table.table
       %thead

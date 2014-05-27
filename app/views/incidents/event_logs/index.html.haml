@@ -5,22 +5,32 @@
     %button.btn.btn-primary{data: {edit_panel: new_incidents_event_log_path}} Add Log
 
 .well
-  =search_form_for search, class: "form form-inline" do |f|
-    %label
-      Event Type:
-      =f.select :event_eq, options_for_select(resource.humanized_events.map{|x| [x.humanized, x.value]}), prompt: "All"
-    %label
-      Show Events From:
-      =select_tag :event_scope, options_for_select([['ECC', 'global'], ['Incident', 'incident']], current_scopes[:event_scope]), prompt: "All"
-    %label
-      Events Before:
-      =f.text_field :event_time_lteq, value: f.object.event_time_lteq.try(:to_date)
-    =f.submit 'Search', class: "btn"
+  =search_form_for search, class: "form-inline" do |f|
+    .row
+      .form-group.col-sm-3
+        %label
+          Event Type:
+        =f.select :event_eq, options_for_select(resource.humanized_events.map{|x| [x.humanized, x.value]}), {prompt: "All"}, class: "form-control"
+      .form-group.col-sm-3
+        %label
+          Show Events From:
+        =select_tag :event_scope, options_for_select([['ECC', 'global'], ['Incident', 'incident']], current_scopes[:event_scope]), prompt: "All", class: "form-control"
+      .form-group.col-sm-3
+        %label
+          Events Before:
+        =f.text_field :event_time_lteq, value: f.object.event_time_lteq.try(:to_date), class: "form-control"
+      .form-group.col-sm-3
+        %label.control-label
+          Message Contains:
+        =f.text_field :message_cont, class: "form-control"
+    .row
+      .col-sm-12
+        =f.submit 'Search', class: "btn btn-default"
 
 .event-logs-table{data: {refresh_name: "timeline", refresh: url_for(partial: 'table', q: params[:q])}}
   =render 'table'
 
-.modal.hide.fade#edit-modal
+.modal.fade#edit-modal
   .modal-header 
     %a.close(data-dismiss="modal") &times;
     %h3 Edit

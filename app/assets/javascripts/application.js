@@ -14,8 +14,9 @@
 //= require jquery_ujs
 
 //= require twitter/bootstrap
-//= require bootstrap-editable/bootstrap-editable
+//= require bootstrap3-editable/bootstrap-editable
 //= require cocoon
+//= require typeahead
 
 //= require_tree ../../../vendor/assets/javascripts/
 

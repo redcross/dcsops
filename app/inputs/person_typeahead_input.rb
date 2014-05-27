@@ -9,7 +9,7 @@ class ::PersonTypeaheadInput
   def to_html
     bootstrap_wrapping do
       builder.hidden_field(:"#{method}_id", input_html_options) +
-      TagHelper.new.text_field_tag(method.to_s + "_text", text_value, input_html_options.merge({id: input_html_options[:id] + '_text', autocomplete: 'off'})) +
+      TagHelper.new.text_field_tag(method.to_s + "_text", text_value, input_html_options.merge({id: input_html_options[:id] + '_text', autocomplete: 'off', class: "form-control"})) +
       script_html
     end
   end

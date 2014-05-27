@@ -1,8 +1,8 @@
-= semantic_form_for resource, url: form_url, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'} do |f|
+= semantic_form_for resource, url: form_url, builder: HorizontalFormBuilder, html: {class: 'form-horizontal'} do |f|
   =f.fields_for :incident do |f|
     =f.input :status, as: :hidden, input_html: {value: 'closed'}
   .row
-    .span12
+    .col-sm-12
       =f.semantic_errors
 
   - tabs = tabs_to_render(f)
@@ -39,7 +39,7 @@
         hash && $('ul.nav a[data-target="' + hash + '"]').tab('show');
       }
       if ('history' in window && 'replaceState' in window.history) {
-        $('a[data-toggle=tab]').on('shown', function(evt) {
+        $('a[data-toggle=tab]').on('shown.bs.tab', function(evt) {
           window.history.replaceState({}, '', $(evt.target).attr('data-target'))
         });
       }

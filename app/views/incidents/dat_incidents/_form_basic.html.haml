@@ -1,15 +1,15 @@
 .row
-  .span6
+  .col-sm-6
     =panel 'basic', f
-  .span6
+  .col-sm-6
     =panel 'demographics', f
 
 =panel 'location', f
 
 .row
-  .span6
+  .col-sm-6
     =panel 'damage_assessment', f
-  .span6
+  .col-sm-6
     =f.inputs "Timeline" do
       =f.semantic_fields_for :incident do |f|
         =f.semantic_fields_for :timeline do |tf|
@@ -20,6 +20,6 @@
                 =tl.input :source, as: :assignable_select
 
 .row
-  .span12
+  .col-sm-12
     =f.actions do
-      %a.btn{href: '#', data: {target: "#form_responders", "toggle"=>"remote-tab"}} Go to Responders Page
+      %a.btn.btn-default{href: '#', data: {target: "#form_responders", "toggle"=>"remote-tab"}} Go to Responders Page

@@ -97,7 +97,7 @@ describe "DAT Incident Report", versions: true do
 
   def fill_in_responders
     fill_in 'incidents_dat_incident_incident_attributes_team_lead_attributes_person_id_text', with: @team_lead.first_name[0..3]
-    click_link @team_lead.full_name
+    find('p', text: @team_lead.full_name).click
 
     # Add the flex person
     within :xpath, "//td[text()='#{@flex_responder.full_name.gsub "'", "\\'"}']/.." do
@@ -116,7 +116,7 @@ describe "DAT Incident Report", versions: true do
     within "#responder-table tbody" do
       within "tr:last-child" do
         fill_in 'person_text', with: @responder.first_name
-        click_link @responder.full_name
+        find('p', text: @responder.full_name).click
 
         find(:xpath, ".//input[@type='checkbox']").should_not be_checked
         select 'Team Lead Trainee'
@@ -148,7 +148,7 @@ describe "DAT Incident Report", versions: true do
     fill_in 'Comfort kits*', with: 10
     fill_in 'Blankets*', with: 20
 
-    select @vehicle.name
+    select @vehicle.name, from: "Vehicle"
     click_button 'Add Another Vehicle'
   end
 end

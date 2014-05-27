@@ -1,41 +1,43 @@
 =f.inputs "Services" do
   - services = f.object.services || []
   - local_services = []
-  .control-group
-    %label.control-label Client Financial Assistance
-    .controls
+  .form-group
+    %label.form-label Client Financial Assistance
+    .form-wrapper
       - {"Emergency Housing" => 'housing', 'Food' => 'food', 'Clothing' => 'clothing', 'Medication' => 'medication'}.each do |label, val|
         - local_services << val
-        %label.checkbox
-          =check_box_tag "incidents_dat_incident[services][]", val, services.include?( val)
-          =label
-  .control-group
-    %label.control-label Other Assistance
-    .controls
+        .checkbox
+          %label
+            =check_box_tag "incidents_dat_incident[services][]", val, services.include?( val)
+            =label
+  .form-group
+    %label.form-label Other Assistance
+    .form-wrapper
       - {"Mental Health Support" => 'mental_health', 'Translation' => 'translation', "Snacks for Clients" => 'client_snacks'}.each do |label, val|
         - local_services << val
-        %label.checkbox
-          - more_classes = (val == 'translation') ? {data: {bind: '.collapse.languages'}} : {}
-          =check_box_tag( "incidents_dat_incident[services][]", val, services.include?( val), {class: "services-other-#{val}"}.merge(more_classes))
-          =label
+        .checkbox
+          %label
+            - more_classes = (val == 'translation') ? {data: {bind: '.collapse.languages'}} : {}
+            =check_box_tag( "incidents_dat_incident[services][]", val, services.include?( val), {class: "services-other-#{val}"}.merge(more_classes))
+            =label
 
   -if @rendering_panel
     - (services - local_services).each do |service|
       =hidden_field_tag "incidents_dat_incident[services][]", service
 
-  .collapse.languages{class: f.object.services.try(:include?, 'translation') && 'in'}
-    .control-group
-      %label.control-label Languages Translated
-      .controls
-        - languages = f.object.languages || []
-        - all_languages = %w(english spanish cantonese mandarin vietnamese russian tagalog)
-        - extra_languages = languages - all_languages
-        - all_languages.each do |val|
-          %label.checkbox
+  .form-group.collapse.languages{class: f.object.services.try(:include?, 'translation') && 'in'}
+    %label.form-label Languages Translated
+    .form-wrapper
+      - languages = f.object.languages || []
+      - all_languages = %w(english spanish cantonese mandarin vietnamese russian tagalog)
+      - extra_languages = languages - all_languages
+      - all_languages.each do |val|
+        .checkbox
+          %label
             =check_box_tag "incidents_dat_incident[languages][]", val, languages.include?( val)
             =val.titleize
-        - extra_languages.each do |val|
-          Other:
-          = text_field_tag "incidents_dat_incident[languages][]", val
+      - extra_languages.each do |val|
         Other:
-        = text_field_tag "incidents_dat_incident[languages][]"
+        = text_field_tag "incidents_dat_incident[languages][]", val, class: 'form-control col-xs-5'
+      Other:
+      = text_field_tag "incidents_dat_incident[languages][]", '', class: 'form-control col-xs-5'

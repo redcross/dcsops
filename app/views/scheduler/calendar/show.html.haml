@@ -2,24 +2,25 @@
   
 .calendar-config
   .row
-    .span3
+    .col-sm-3
       %h5 Select Shifts
-      .btn-group.btn-group-vertical.span2#select-shift-group
-        %button.btn.btn-block{:"data-shifts" => "mine", class: show_shifts==:mine && "active"} My Positions
-        %button.btn.btn-block{:"data-shifts" => "county", class: show_shifts==:county && "active"} County Shifts
-        %button.btn.btn-block{:"data-shifts" => "all", class: show_shifts==:all && "active"} All Shifts
-    .span3
+      .btn-group-vertical.btn-block#select-shift-group
+        %button.btn.btn-default.btn-block{:"data-shifts" => "mine", class: show_shifts==:mine && "active"} My Positions
+        %button.btn.btn-default.btn-block{:"data-shifts" => "county", class: show_shifts==:county && "active"} County Shifts
+        %button.btn.btn-default.btn-block{:"data-shifts" => "all", class: show_shifts==:all && "active"} All Shifts
+    .col-sm-3
       %h5 Select Highlighting
-      .btn-group.btn-group-vertical.span2#highlighting-group
-        %button.btn.btn-block.active{:"data-style" => "highlight-my-shifts"} My Shifts
-        %button.btn.btn-block{:"data-style" => "highlight-open-shifts"} Open Shifts
-    .span3
+      .btn-group-vertical.btn-block#highlighting-group
+        %button.btn.btn-default.btn-block.active{:"data-style" => "highlight-my-shifts"} My Shifts
+        %button.btn.btn-default.btn-block{:"data-style" => "highlight-open-shifts"} Open Shifts
+    .col-sm-3
       %h5 Show Shifts For
-      .input-append
-        =text_field_tag :person, (person and "#{person.first_name} #{person.last_name}"), id: "select-person", style: "width: 100px"
-        %button.btn#clear-person Clear
+      .row
+        .col-xs-8
+          =text_field_tag :person, (person and person.full_name), id: "select-person", class: "form-control col-xs-8"
+        %button.btn.btn-default.col-xs-4#clear-person Clear
       #choose-counties{style: show_shifts==:county || 'display: none'}
-        =select_tag "counties[]", options_from_collection_for_select(current_chapter.counties, :id, :name, show_counties.first), multiple: false, id: 'choose-county'
+        =select_tag "counties[]", options_from_collection_for_select(current_chapter.counties, :id, :name, show_counties.first), multiple: false, id: 'choose-county', class: "form-control"
         - cats = Scheduler::ShiftCategory.for_chapter(current_chapter).to_a
         -if cats.count > 1
           %h5 Categories
@@ -27,7 +28,7 @@
             =check_box_tag "categories[]", cat.id, show_categories.include?(cat.id), class: 'choose-category', id: "categories_#{cat.id}"
             =label_tag "categories_#{cat.id}", cat.name
             %br
-    .span3
+    .col-sm-3
       %h5 Other Views:
       #view-as-links=view_as_links
   .row

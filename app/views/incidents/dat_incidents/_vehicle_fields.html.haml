@@ -1,6 +1,7 @@
-.control-group
+.form-group
   %label.control-label Vehicle
-  .controls
-    %span.vehicle-name=veh.try(:name)
+  .form-wrapper
+    %p.vehicle-name.form-control-static(style="display: inline-block")
+      =veh.try(:name)
     =hidden_field_tag 'incidents_dat_incident[vehicle_ids][]', veh.try(:id)
-    %button.btn.btn-danger.btn-mini.remove-vehicle Remove
+    %button.btn.btn-danger.btn-xs.remove-vehicle Remove

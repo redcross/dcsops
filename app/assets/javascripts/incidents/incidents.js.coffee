@@ -20,7 +20,7 @@ class window.IncidentLocationController
     unless this.maybeInitMap()
       id = $(@dom).closest('.tab-pane').attr('id')
       sel = "a[data-target=##{id}]"
-      $(document).on 'shown', sel, (evt) =>
+      $(document).on 'shown.bs.tab', sel, (evt) =>
         this.maybeInitMap()
 
     @fields.forEach (fname) =>
@@ -204,7 +204,7 @@ class window.IncidentEditPanelController
           modal.html(data)
           modal.find('legend').remove()
         error: (xhr, status, error) ->
-          wrapper = $('<div class="modal-body text-error">An error occurred: <span class="error-value"></span>.  Please try again.<a class="close" data-dismiss="modal">&times;</a></div>')
+          wrapper = $('<div class="modal-body text-danger">An error occurred: <span class="error-value"></span>.  Please try again.<a class="close" data-dismiss="modal">&times;</a></div>')
           wrapper.find(".error-value").text(error)
           modal.html("")
           modal.append(wrapper)

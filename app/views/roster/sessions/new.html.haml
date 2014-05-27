@@ -1,8 +1,8 @@
 .row
-  .span6.offset3
+  .col-sm-6.offset3
     =form_for resource, url: roster_session_path, html: {class: 'login-form'} do |f|
       %h3 
-        %i.icon-lock
+        %i.fa.fa-lock
         Please Sign In
       %p
         -#DCSOps uses the same username and password you use to log into Volunteer Connection.

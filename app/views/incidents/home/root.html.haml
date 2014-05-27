@@ -1,39 +1,39 @@
 .row
-  .span3
-    %ul.nav.nav-tabs.nav-stacked
+  .col-sm-4
+    %ul.nav.nav-tabs.nav-stacked.nav-tabs-small
       -if can? :needs_report, Incidents::Incident
         %li
           %a{href: needs_report_incidents_incidents_path}
             Submit Incident Report
-            %i.icon-chevron-right
+            %i.fa.fa-chevron-right
       -if can? :link_cas, Incidents::Incident
         %li
           %a{href: incidents_cas_link_index_path}
             Link CAS Incidents
             -if num_incidents_to_link > 0
               (#{num_incidents_to_link})
-            %i.icon-chevron-right
+            %i.fa.fa-chevron-right
       -if can? :read, Incidents::CasIncident
         %li
           %a{href: incidents_cas_incidents_path}
             Incident Tracker
-            %i.icon-chevron-right
+            %i.fa.fa-chevron-right
       -if can? :create, Incidents::NotificationSubscription.new(person: current_user, notification_type: 'report')
         %li
           %a{href: incidents_notification_subscription_report_path(current_user)}
             Manage Subscription
-            %i.icon-chevron-right
+            %i.fa.fa-chevron-right
       -if can? :show, :responders
         %li
           %a{href: incidents_responders_path}
             Show Responder Info
-            %i.icon-chevron-right
+            %i.fa.fa-chevron-right
       -if current_chapter.incidents_use_global_log && can?(:read, Incidents::EventLog)
         %li
           =link_to incidents_event_logs_path do
             ECC Log
-            %i.icon-chevron-right
-  %table.span9
+            %i.fa.fa-chevron-right
+  %table.col-sm-8
     %tr
       %td{colspan: incident_stats_boxes.count}
         %h2.center
@@ -44,18 +44,18 @@
           %h3.center=title
           %p.center.lead
             %small
-              %i.icon-fire
+              %i.fa.fa-fire
               =pluralize stats.incident_count, "Incident"
               %br
-              %i.icon-group
+              %i.fa.fa-group
               =pluralize stats.family_count, "Family"
               %br
-              %i.icon-user
+              %i.fa.fa-user
               =pluralize stats.client_count, "Client"
 
 
 .row
-  .span4
+  .col-sm-5.col-md-4
     .recent-table{data: {refresh_name: "timeline details", refresh: url_for(partial: 'recent_table')}}
       =render 'recent_table'
     -if can? :index, Incidents::Incident
@@ -65,9 +65,9 @@
       %h5
         =link_to 'Current Activity&hellip;'.html_safe, activity_incidents_incidents_path
 
-  .span8
+  .col-sm-7.col-md-8
     .map-container
-      .all-incidents-map{style: "height: 500px"}
+      .all-incidents-map{style: "height: 500px; width: 100%"}
 
 - content_for :footer_js do
   = google_maps_javascript

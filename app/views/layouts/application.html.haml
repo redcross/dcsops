@@ -22,51 +22,51 @@
     /[if lt IE 10]
       = javascript_include_tag "es5-shim"
       
-    .navbar.navbar-responsive-top
-      .navbar-inner
-        .container
-          %a.btn.btn-navbar(data-target=".nav-collapse" data-toggle="collapse")
+    %nav.navbar.navbar-default(role="navigation")
+      .container
+        .navbar-header
+          %button.navbar-toggle(data-target="#main-navbar-collapse" data-toggle="collapse")
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
-          %a.brand(href="/")
+          %a.navbar-brand(href="/")
             DCS
             %b> Ops
-          .container.nav-collapse
-            %ul.nav
-              %li= link_to "DAT Scheduling", scheduler_root_path
-              %li= link_to 'Incidents', incidents_root_path
-              -if has_admin_dashboard_access
-                %li= link_to "Admin", scheduler_admin_people_path
-            %ul.nav.pull-right
-              -if impersonating_user
-                %li= link_to "Impersonating #{impersonating_user.full_name}", impersonate_scheduler_admin_person_path(impersonating_user), method: :delete
-              -if current_user_session
-                - person = current_user_session.person
-                %li
-                  = link_to roster_person_path(person) do
-                    Logged in as #{person.full_name}
-                    - unless person.profile_complete?
-                      %i.icon-exclamation-sign.text-error
-                %li= link_to "Logout", roster_session_path, method: :delete
+        .collapse.navbar-collapse#main-navbar-collapse
+          %ul.nav.navbar-nav
+            %li= link_to "DAT Scheduling", scheduler_root_path
+            %li= link_to 'Incidents', incidents_root_path
+            -if has_admin_dashboard_access
+              %li= link_to "Admin", scheduler_admin_people_path
+          %ul.nav.navbar-nav.navbar-right
+            -if impersonating_user
+              %li= link_to "Impersonating #{impersonating_user.full_name}", impersonate_scheduler_admin_person_path(impersonating_user), method: :delete
+            -if current_user_session
+              - person = current_user_session.person
+              %li
+                = link_to roster_person_path(person) do
+                  Logged in as #{person.full_name}
+                  - unless person.profile_complete?
+                    %i.fa.fa-exclamation-sign.text-danger
+              %li= link_to "Logout", roster_session_path, method: :delete
 
     .container
       - current_messages.each do |motd|
         -if cookies["-motd-#{motd.cookie_code}"] != motd.cookie_version.to_s
           .row.noprint
-            .span12
+            .col-sm-12
               .alert.sandbox-dialog{class: motd.dialog_class, data: {cookie_code: motd.cookie_code, cookie_value: motd.cookie_version, cookie_end: (motd.ends || 1.month.from_now).httpdate}}
-                %i.icon-warning-sign.icon-3x.float-left{style: 'float: left; padding-right: .3em'}
+                %i.fa.fa-warning-sign.icon-3x.float-left{style: 'float: left; padding-right: .3em'}
                 = motd.html.html_safe
 
                 %button.close{"data-dismiss" => 'alert'} 
                   x
                   -#&#215;
       .row
-        .span12
+        .col-sm-12
           = bootstrap_flash
           = yield
-        -#/.span3
+        -#/.col-sm-3
         -#/  .well.sidebar-nav
         -#/    %h3 Sidebar
         -#/    %ul.nav.nav-list

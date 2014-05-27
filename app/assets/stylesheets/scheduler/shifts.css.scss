@@ -10,11 +10,8 @@ body.shifts {
     border-bottom: 2px solid rgb(221, 221, 221);
   }
 
-  input {
+  .input-group {
     width: auto;
-    max-width: 75px !important;
-  }
-  .input-append {
-    margin-bottom: 0;
+    max-width: 200px !important;
   }
 }

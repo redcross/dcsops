@@ -1,16 +1,18 @@
   
 =semantic_form_for [parent, resource], url: form_url, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
-  .modal-header 
-    %a.close(data-dismiss="modal") &times;
-    %h3 Add Event
-  .modal-body
-    =f.input :event, as: :assignable_select, required: true
-    =f.input :event_time, as: :time_field
-    -if f.object.source_required?
-      .event-log-source
-        =f.input :source, as: :assignable_select
-    =f.input :message, input_html: {rows: 4}
-  .modal-footer
-    -if f.object.persisted?
-      =link_to 'Delete', incidents_incident_event_log_path(parent, resource), method: 'delete', data: {confirm: 'Really delete this event?'}, class: 'btn btn-danger'
-    =f.action :submit, button_html: {class: "btn btn-primary", data: {disable_with: "Creating…"}}
+  .modal-dialog
+    .modal-content
+      .modal-header 
+        %a.close(data-dismiss="modal") &times;
+        %h4.modal-title Add Event
+      .modal-body
+        =f.input :event, as: :assignable_select, required: true
+        =f.input :event_time, as: :time_field
+        -if f.object.source_required?
+          .event-log-source
+            =f.input :source, as: :assignable_select
+        =f.input :message, input_html: {rows: 4}
+      .modal-footer
+        -if f.object.persisted?
+          =link_to 'Delete', incidents_incident_event_log_path(parent, resource), method: 'delete', data: {confirm: 'Really delete this event?'}, class: 'btn btn-danger'
+        =f.action :submit, button_html: {class: "btn btn-primary", data: {disable_with: "Creating…"}}

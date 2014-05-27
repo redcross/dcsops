@@ -7,10 +7,13 @@ table.form-table {
     margin: 0;
   }
 
-  label.control-label {
-    float: none;
-    width: auto;
-    display: none;
+  div.input:not(.checkbox) {
+
+    label.control-label {
+      float: none;
+      width: auto;
+      display: none;
+    }
   }
 
   .controls {
@@ -22,9 +25,6 @@ table.form-table {
   }
 }
 form.incidents_dat_incident {
-  input, select {
-    width: 90%;
-  }
 
   .input-append, .input-prepend {
     input {
@@ -58,6 +58,10 @@ form.incidents_dat_incident {
 
   ul.nav .error {
     color: rgb(185, 74, 72);
+  }
+
+  td > .form-group {
+    margin: 0;
   }
 
 }

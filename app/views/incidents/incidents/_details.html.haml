@@ -16,7 +16,7 @@
         =dat.completed_by.try(:full_name)
 
 .row
-  .span5
+  .col-sm-5
     %h4
       Location
       %small=edit_link 'location'
@@ -27,7 +27,7 @@
       %br
       =resource.county
       County
-  .span7
+  .col-sm-7
     %h4 
       Narrative
       %small=edit_link 'narrative'
@@ -35,7 +35,7 @@
 
 -if dat
   .row
-    .span5
+    .col-sm-5
       =render 'details_demographics'
       =render 'details_da'
       - if resource.chapter.incidents_report_advanced_details
@@ -43,7 +43,7 @@
           =render 'details_fire'
         - if resource.incident_type == 'vacate'
           =render 'details_vacate'
-    .span7
+    .col-sm-7
       =render 'details_response'
       =render 'details_assistance'
       -if resource.feeding_partner_use || inline_editable?

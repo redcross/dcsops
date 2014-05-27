@@ -6,11 +6,11 @@
     /%table
     /  %tr
     .row.collapse
-      .span2=f.label :address_cont
-      .span2=f.label :city_cont
-      .span2=f.label :county_cont
-      .span2=f.label :date_gteq, 'After'
-      .span2=f.label :date_lteq, 'Before'
+      .col-sm-2=f.label :address_cont
+      .col-sm-2=f.label :city_cont
+      .col-sm-2=f.label :county_cont
+      .col-sm-2=f.label :date_gteq, 'After'
+      .col-sm-2=f.label :date_lteq, 'Before'
     /%tr
     .controls-row
       =f.text_field :address_cont, class: 'input-medium span2', placeholder: 'Address'
@@ -19,21 +19,21 @@
       =f.date_field :date_gteq,    class: 'input-medium span2', placeholder: 'After YYYY-MM-DD'
       =f.date_field :date_lteq,    class: 'input-medium span3', placeholder: 'Before YYYY-MM-DD'
     .row(style="margin-top: 15px")
-      .span5
+      .col-sm-5
         =f.label :incident_type_in
         =f.select :incident_type_in, options_from_collection_for_select(proto.humanized_incident_types, :value, :humanized, search.incident_type_in), include_blank: true, class: 'input-medium'
-      .span4
+      .col-sm-4
         =f.label :status_in
         - proto.humanized_statuses.each do |status|
           - id="q_status_in_#{status.value}"
           =check_box_tag 'q[status_in][]', status.value, search.status_in.try(:include?, status.value), {id: id}
           =label_tag id, status.humanized
-      .span2
+      .col-sm-2
         =f.submit class: 'btn'
 
 = paginate collection, :theme => 'twitter-bootstrap', pagination_class: 'pagination pagination-centered'
 
-%table.span12
+%table.col-sm-12
   %tr
     %th
     %th Incident

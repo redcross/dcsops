@@ -41,6 +41,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       resource.incident.status = params[:status]
       resource.valid?
     end
+    build_partner_uses(resource.incident) # the valid? call wipes out uses sometimes
     if params[:panel_name]
       @rendering_panel = params[:panel_name]
       render action: 'panel', layout: nil
@@ -77,9 +78,8 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     inc_attrs = incident_params
     obj.incident.attributes = inc_attrs if inc_attrs
 
-    return unless %w(new edit).include? params[:action] 
+    #return unless %w(new edit).include? params[:action] 
 
-    obj.build_incident if obj.incident.nil?
     build_partner_uses obj.incident
 
     obj.incident.build_team_lead role: 'team_lead', response: 'available' unless obj.incident.team_lead
@@ -94,18 +94,18 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   end
 
   def build_resource
-    return @dat_incident if @dat_incident
+    return @resource if @resource
 
     obj = super
 
     obj.completed_by ||= current_user
     prepare_resource(obj)    
 
-    @dat_incident = obj
+    @resource = obj
   end
 
   def resource
-    @dat_incident ||= super.tap{|obj| prepare_resource(obj) }
+    @resource ||= super.tap{|obj| prepare_resource(obj) }
   end
 
   def end_of_association_chain

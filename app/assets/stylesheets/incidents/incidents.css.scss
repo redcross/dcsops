@@ -8,7 +8,7 @@ body.incidents {
     line-height: 1.5;
   }
 
-  .modal form, .well form {
+  .amodal form, .well form {
     margin: 0;
     padding: 0;
     fieldset legend {
@@ -27,8 +27,27 @@ body.incidents {
   border-collapse: collapse;
   border: none;
 
-  tr > *:first-child {
-    border-left: none;
+  tbody:first-child, thead:first-child {
+    tr:first-child {
+      > * {
+        border-top: none !important;
+      }
+    }
+  }
+
+  tbody, thead {
+    tr > *:first-child {
+      border-left: none;
+    }
+    tr > *:last-child {
+      border-right: none
+    }
+  }
+
+  tbody:last-child, thead:last-child, tfoot:last-child {
+    tr:last-child > * {
+      border-bottom: none;
+    }
   }
 }
 

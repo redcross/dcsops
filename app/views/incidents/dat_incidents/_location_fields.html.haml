@@ -1,11 +1,11 @@
 =f.inputs "Location" do
   .row
     %br
-    .span6
+    .col-sm-6
       =f.input :search_for_address, hint: 'Enter as much information as you have about the address, and then click the "Look Up Address" button below.', input_html: {value: '', editable: false}
-      .control-group.address-lookup-group
-        .controls
-          %button.btn.btn-block.address-lookup Look Up Address
+      .form-group.address-lookup-group
+        .col-xs-5
+        %button.btn.btn-default.address-lookup.col-xs-7 Look Up Address
       =f.input :address, input_html: {readonly: true, editable: false}
       =f.input :city, input_html: {readonly: true, editable: false}
       =f.input :state, default: 'CA', input_html: {readonly: true, editable: false}
@@ -23,5 +23,5 @@
               window.incidentLocationController = window.incidentLocationController || new IncidentLocationController(#{f.object.lat.to_json}, #{f.object.lng.to_json}, config);
             });
     - unless request.xhr?
-      .span6
+      .col-sm-6
         .incident-map{style: "height: 450px"}

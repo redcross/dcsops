@@ -52,11 +52,6 @@ PaperTrail.enabled = false
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 
-# Setup key for CAC encryption
-rsa_key = OpenSSL::PKey::RSA.new 2048
-ENV['CAC_PUBLIC_KEY'] = rsa_key.public_key.to_pem
-ENV['CAC_PRIVATE_KEY'] = rsa_key.to_pem
-
 RSpec.configure do |config|
   # ## Mock Framework
   #

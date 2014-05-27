@@ -1,18 +1,18 @@
 .row
-  .span6
+  .col-sm-6
     =panel 'narrative', f
-  .span6
+  .col-sm-6
     =panel 'services', f
 
 .row
-  .span6
+  .col-sm-6
     =panel 'feeding', f
-  .span6
+  .col-sm-6
     =panel 'housing', f
 .row
-  .span6
+  .col-sm-6
     =panel 'resources', f
-  .span6
+  .col-sm-6
     =panel 'vehicles', f
 =f.actions do
   =f.action :submit, label: 'Submit Incident Information', button_html: {class: 'btn btn-primary'}

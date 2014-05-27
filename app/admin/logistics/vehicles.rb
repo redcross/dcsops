@@ -21,7 +21,7 @@ ActiveAdmin.register Logistics::Vehicle, as: 'Vehicle' do
     end
 
     def resource_params
-      request.get? ? [] : [params.require(:vehicle).permit(:chapter_id, :name, :category, :address, :city, :state, :zip, :lat, :lng)]
+      [params.fetch(resource_request_name, {}).permit(:chapter_id, :name, :category, :address, :city, :state, :zip, :lat, :lng)]
     end
   end
 end

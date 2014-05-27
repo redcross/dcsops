@@ -1,6 +1,6 @@
 class ::BootstrapDateInput <  FormtasticBootstrap::Inputs::StringInput
   def initialize(*opts)
-    opts.last[:prepend] = "<i class='icon-calendar'></i>".html_safe
+    opts.last[:prepend] = "<i class='fa fa-calendar'></i>".html_safe
     #opts.last[:append] = "<button class='btn datepicker-today'>Today</button>".html_safe
     super *opts
   end

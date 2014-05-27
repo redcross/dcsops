@@ -30,36 +30,40 @@
               - dates_for_count.each_with_index do |date, idx|
                 %td=avail_data[idx][shift].map{|date, avail| avail ? 1 : 0}.sum
               %td
-                .input-append
-                  =f.date_field :signups_frozen_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', class: "frozen"
-                  %a.btn.add-on.clearbtn Clear
+                .input-group
+                  =f.date_field :signups_frozen_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', class: "frozen form-control"
+                  .input-group-btn
+                    %a.btn.clearbtn.btn-default Clear
               %td
-                .input-append
-                  =f.date_field :signups_available_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', class: "available"
-                  %a.btn.add-on.clearbtn Clear
+                .input-group
+                  =f.date_field :signups_available_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', class: "available form-control"
+                  .input-group-btn
+                    %button.btn.clearbtn.btn-default Clear
               %td
-                .input-append
-                  =f.text_field :max_advance_signup, type: :number, class: 'max-signup'
-                  %span.add-on days
+                .input-group
+                  =f.text_field :max_advance_signup, type: :number, class: 'max-signup form-control'
+                  %span.input-group-addon days
       %tfoot
         %tr.all-shifts
           = fields_for "county_shifts[#{county.id}]" do |f|
             %th{colspan: 5}
               All Shifts
-              %button.btn.btn-mini Cancel
+              %button.btn.btn-mini.btn-default Cancel
               %button.btn.btn-mini.btn-warning Save
             %td
-              .input-append
-                =f.text_field :signups_frozen_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', "data-all-class" => 'frozen'
-                %a.btn.add-on.clearallbtn{"data-all-class" => 'frozen'} Clear
+              .input-group
+                =f.text_field :signups_frozen_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', "data-all-class" => 'frozen', class: ' form-control'
+                .input-group-btn
+                  %a.btn.btn-default.clearallbtn{"data-all-class" => 'frozen'} Clear
             %td
-              .input-append
-                =f.text_field :signups_available_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', "data-all-class" => 'available'
-                %a.btn.add-on.clearallbtn{"data-all-class" => 'available'} Clear
+              .input-group
+                =f.text_field :signups_available_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', "data-all-class" => 'available', class: " form-control"
+                .input-group-btn
+                  %a.btn.btn-default.clearallbtn{"data-all-class" => 'available'} Clear
             %td
-              .input-append
-                =f.text_field :max_advance_signup, type: :number, "data-all-class" => 'max-signup'
-                %span.add-on days
+              .input-group
+                =f.text_field :max_advance_signup, type: :number, "data-all-class" => 'max-signup', class: " form-control"
+                %span.input-group-addon days
 
 - content_for :footer_js do
   :javascript

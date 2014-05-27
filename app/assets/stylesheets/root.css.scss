@@ -35,10 +35,10 @@
   }
 }
 
-.modal { position: absolute; } 
-.modal-body { max-height: none; }
+.amodal { position: absolute; } 
+.amodal-body { max-height: none; }
 @media (max-width: 767px) {   
-  .modal {
+  .amodal {
     position: absolute;
   }
 }

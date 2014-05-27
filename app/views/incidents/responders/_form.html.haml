@@ -1,6 +1,6 @@
 = form_for resource, url: url_for({action: resource.persisted? ? :update : :create}), builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
   .row
-    .span6
+    .col-sm-6
       %h3 
         Assign Responder
         %small=link_to 'Cancel', collection_path
@@ -35,7 +35,7 @@
         =f.action :submit, label: "Save Assignment", button_html: {class: 'btn btn-primary'}
         -unless f.object.new_record?
           =link_to 'Remove', resource_path, class: 'btn btn-danger', method: 'delete'
-    .span6
+    .col-sm-6
       .assignment-map.gmap(style="height: 300px")
       .directions.gmap
 

@@ -5,19 +5,19 @@
   %table.table.table-condensed.noprint
     %tr
       %th County
-      %td=select_tag "county", options_from_collection_for_select(current_chapter.counties, :id, :name, current_scopes[:county]), multiple: false, id: 'choose-county', include_blank: true
+      %td=select_tag "county", options_from_collection_for_select(current_chapter.counties, :id, :name, current_scopes[:county]), multiple: false, id: 'choose-county', prompt: "All", class: "form-control"
     %tr
       %th Position
-      %td=select_tag "with_position", options_from_collection_for_select(current_chapter.positions.visible, :id, :name, current_scopes[:with_position]), multiple: true, include_blank: true
+      %td=select_tag "with_position", options_from_collection_for_select(current_chapter.positions.visible, :id, :name, current_scopes[:with_position]), multiple: true, include_blank: true, class: "form-control"
     %tr
       %th Last Shift Taken
-      %td=select_tag "last_shift", options_for_select(date_ranges, current_scopes[:last_shift].try(:to_i)), include_blank: true
+      %td=select_tag "last_shift", options_for_select(date_ranges, current_scopes[:last_shift].try(:to_i)), prompt: "Any Time", class: "form-control"
     %tr
       %th Name
-      %td=text_field_tag :name_contains, current_scopes[:name_contains], placeholder: "Search Name"
+      %td=text_field_tag :name_contains, current_scopes[:name_contains], placeholder: "Search Name", class: "form-control"
     %tr
       %th
-      %td=submit_tag 'Show', class: 'btn'
+      %td=submit_tag 'Show', class: 'btn btn-primary'
 %table.table.table-striped.table-condensed
   %thead
     %tr

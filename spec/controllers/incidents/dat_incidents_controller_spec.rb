@@ -101,16 +101,14 @@ describe Incidents::DatIncidentsController do
 
   context "updating an existing report" do
     before(:each) do
-      @incident = FactoryGirl.create :incident, chapter: @person.chapter
-      @dat = FactoryGirl.create :dat_incident, incident: @incident
-      @lead = FactoryGirl.create :person
-      @vehicle = FactoryGirl.create :vehicle
+      @incident = FactoryGirl.create :closed_incident, chapter: @person.chapter
       grant_role! :submit_incident_report
     end
 
     it "should notify the report was filed" do
       Incidents::Notifications::Notification.should_receive(:create_for_event).with(anything, 'incident_report_filed', {is_new: false})
-      put :update, incident_id: @incident.to_param, incidents_dat_incident: {num_adults: 3}
+      put :update, incident_id: @incident.to_param, incidents_dat_incident: {incident_attributes: {num_adults: 3}}
+      response.should redirect_to(@incident)
     end
   end
 end

@@ -1,8 +1,8 @@
 .row
-  .span12
+  .col-sm-12
     %h1 Create New Incident
 .row
-  .span12
+  .col-sm-12
     - more_details = current_chapter.incidents_capture_more_details_on_create
     =semantic_form_for resource, builder: FormtasticBootstrap::FormBuilder, html: {class: "form-horizontal"} do |f|
       =f.inputs "Data" do

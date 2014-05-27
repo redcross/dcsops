@@ -36,7 +36,7 @@ FactoryGirl.define do
   factory :closed_incident, parent: :incident do
     status 'closed'
     association :dat_incident 
-    team_lead {|f| f.association :responder_assignment, person: f.association( :person)}
+    team_lead {|f| f.association :responder_assignment, person: f.association(:person, chapter: f.chapter), role: 'team_lead'}
     before(:create) {|i| 
         i.event_logs.build event: 'dat_received', event_time: 2.hours.ago
         i.event_logs.build event: 'dat_on_scene', event_time: 1.hours.ago
