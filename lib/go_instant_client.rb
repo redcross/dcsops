@@ -5,7 +5,8 @@ class GoInstantClient
   headers({"Content-type" => "application/json"})
 
   def self.client
-    @client ||= Rails.env.test? ? NullClient.new : new(ENV['GOINSTANT_CLIENT_ID'], ENV['GOINSTANT_CLIENT_SECRET'], ENV['GOINSTANT_APP_NAME'])
+    client_id = ENV['GOINSTANT_CLIENT_ID']
+    @client ||= client_id.blank? ? NullClient.new : new(client_id, ENV['GOINSTANT_CLIENT_SECRET'], ENV['GOINSTANT_APP_NAME'])
   end
 
   def self.sign_token uid, display_name, groups=nil
