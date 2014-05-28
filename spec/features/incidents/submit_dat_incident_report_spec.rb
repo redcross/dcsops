@@ -46,7 +46,7 @@ describe "DAT Incident Report", versions: true do
   end
 
   def navigate_to_incident
-    visit "/incidents"
+    visit "/incidents/#{@chapter.url_slug}"
 
     click_link "Submit Incident Report"
     within :xpath, "//td[text()='#{@incident.incident_number}']/ancestor::tr" do

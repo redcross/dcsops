@@ -13,6 +13,9 @@ require 'spec_helper'
 describe Incidents::IncidentsHelper do
   before do
     helper.stub_chain(:resource, :to_param) { "IncidentURLParam" }
+    helper.stub :edit_resource_dat_path do |*arg|
+      "path_here?#{arg.first.to_query}"
+    end
   end
 
   describe '#edit_link' do

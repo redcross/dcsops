@@ -18,7 +18,7 @@
         %td=inc.date.to_s :dow_short
         %td=time_ago_in_words inc.created_at
         %td
-          %a.btn.btn-primary{href: current_chapter.incidents_report_editable ? resource_path(inc) : new_incidents_incident_dat_path(inc)} Submit Incident Information
+          %a.btn.btn-primary{href: @chapter.incidents_report_editable ? resource_path(inc) : new_resource_dat_path(inc)} Submit Incident Information
           %a.btn.btn-danger{href: mark_invalid_resource_path(inc)} No Response / Mark Invalid
 
 -unless current_chapter.incidents_report_editable
@@ -27,4 +27,4 @@
 
 -if can? :create, Incidents::Incident
   %h3 Create New Incident
-  %a.btn.btn-warning{href: new_incidents_incident_path} Create New Incident Report
+  %a.btn.btn-warning{href: new_resource_path} Create New Incident Report

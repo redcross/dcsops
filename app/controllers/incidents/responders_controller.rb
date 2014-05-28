@@ -1,7 +1,9 @@
 class Incidents::RespondersController < Incidents::BaseController
   inherit_resources
   respond_to :html, :json, :js
-  belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident
+  belongs_to :chapter, finder: :find_by_url_slug!, parent_class: Roster::Chapter do
+    belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident
+  end
   defaults resource_class: Incidents::ResponderAssignment, collection_name: 'all_responder_assignments'
   custom_actions collection: [:available], resource: [:status]
   load_and_authorize_resource class: 'Incidents::ResponderAssignment'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140521182629) do
+ActiveRecord::Schema.define(version: 20140528015550) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -734,7 +734,10 @@ ActiveRecord::Schema.define(version: 20140521182629) do
     t.string   "vc_position_filter"
     t.hstore   "config"
     t.integer  "vc_unit"
+    t.string   "url_slug"
   end
+
+  add_index "roster_chapters", ["url_slug"], name: "index_roster_chapters_on_url_slug", unique: true, using: :btree
 
   create_table "roster_counties", force: true do |t|
     t.integer  "chapter_id"

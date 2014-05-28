@@ -6,10 +6,10 @@
   
     -if dat && can?( :update, resource.dat_incident)
       %small
-        =link_to "Edit", edit_incidents_incident_dat_path(resource)
+        =link_to "Edit", edit_resource_dat_path
     -elsif dat.nil? && can?( :create, Incidents::DatIncident)
       %small
-        =link_to "Submit Report", edit_incidents_incident_dat_path(resource)
+        =link_to "Submit Report", edit_resource_dat_path
     -if dat
       %small
         Submitted By:

@@ -22,14 +22,14 @@ describe Incidents::NotificationsController do
   describe "#new" do
 
     it "renders normally" do
-      get :new, {incident_id: incident.to_param}
+      get :new, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param}
       response.should render_template('new')
       response.should render_template(partial: '_form')
       response.should render_template(layout: 'application')
     end
 
     it "renders without layout when xhr" do
-      xhr :get, :new, {incident_id: incident.to_param}
+      xhr :get, :new, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param}
       response.should render_template('new')
       response.should render_template(layout: nil)
     end
@@ -38,14 +38,14 @@ describe Incidents::NotificationsController do
       @person.position_memberships.delete_all
       @person.reload
       expect {
-        get :new, {incident_id: incident.to_param}
+        get :new, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param}
       }.to raise_error
     end
 
     it "redirects if the incident is closed" do
       incident.update_attribute :status, 'closed'
-      get :new, {incident_id: incident.to_param}
-      response.should redirect_to(incident)
+      get :new, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param}
+      response.should redirect_to(incidents_chapter_incident_path(incident.chapter, incident))
       flash[:error].should_not be_blank
     end
   end
@@ -54,7 +54,7 @@ describe Incidents::NotificationsController do
     it "creates with a valid object" do
       Incidents::Notifications::Notification.should_receive(:create).with(incident, event, {message: message})
       expect {
-        post :create, {incident_id: incident.to_param, :incidents_notifications_message => valid_attributes}
+        post :create, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param, :incidents_notifications_message => valid_attributes}
       }.to change(Incidents::EventLog, :count).by(1)
       response.should_not be_error
       incident.reload
@@ -64,12 +64,12 @@ describe Incidents::NotificationsController do
 
     context "when HTML" do
       it "redirects to the incident when valid" do
-        post :create, {incident_id: incident.to_param, :incidents_notifications_message => valid_attributes}
+        post :create, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param, :incidents_notifications_message => valid_attributes}
         response.should redirect_to(controller: 'incidents/incidents', id: incident.to_param, action: :show, anchor: "inc-details")
       end
 
       it "renders new with layout when invalid" do
-        post :create, {incident_id: incident.to_param, :incidents_notifications_message => invalid_attributes}
+        post :create, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param, :incidents_notifications_message => invalid_attributes}
         response.should be_success
         response.should render_template('new')
         response.should render_template(layout: 'application')
@@ -78,12 +78,12 @@ describe Incidents::NotificationsController do
 
     context "when JS" do
       it "triggers the incident page refresh" do
-        xhr :post, :create, {incident_id: incident.to_param, :incidents_notifications_message => valid_attributes}
+        xhr :post, :create, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param, :incidents_notifications_message => valid_attributes}
         response.should render_template('update')
       end
 
       it "renders the form within javascript when invalid" do
-        xhr :post, :create, {incident_id: incident.to_param, :incidents_notifications_message => invalid_attributes}
+        xhr :post, :create, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param, :incidents_notifications_message => invalid_attributes}
         response.should render_template('edit')
         response.should render_template(partial: '_form.html')
         response.should render_template(layout: nil)

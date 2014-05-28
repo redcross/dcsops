@@ -2,7 +2,7 @@
   .row
     .col-sm-7
       %h3
-        =link_to parent do
+        =link_to parent_path do
           %i.fa.fa-chevron-left
           #{parent.incident_number} #{parent.city}, #{parent.state}
       %strong= Incidents::IncidentPresenter.new(parent).full_address
@@ -24,7 +24,7 @@
         -#  =check_box_tag :ignore_area, '1', ignore_area
         -#  =submit_tag 'Filter', class: 'btn btn-mini'
         Recruitment message:
-        =editable_string parent, :recruitment_message
+        =editable_string parent, :recruitment_message, url: parent_path
       .responders-table{data: {refresh_name: "available", refresh: url_for(partial: 'responders_table')}}
         =render 'responders_table'
 

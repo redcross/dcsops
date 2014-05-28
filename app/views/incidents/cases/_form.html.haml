@@ -49,7 +49,7 @@
     
   .modal-footer
     -if f.object.persisted? and can? :destroy, resource
-      =link_to 'Delete', incidents_incident_case_path(parent, resource), method: 'delete', data: {confirm: 'Really delete this case?'}, class: 'btn btn-danger', remote: request.xhr?
+      =link_to 'Delete', resource_path, method: 'delete', data: {confirm: 'Really delete this case?'}, class: 'btn btn-danger', remote: request.xhr?
     =f.action :submit, button_html: {class: "btn btn-primary"}
 
   :javascript

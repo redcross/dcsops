@@ -3,39 +3,39 @@
     %ul.nav.nav-tabs.nav-stacked.nav-tabs-small
       -if can? :needs_report, Incidents::Incident
         %li
-          %a{href: needs_report_incidents_incidents_path}
+          %a{href: needs_report_incidents_chapter_incidents_path(@chapter)}
             Submit Incident Report
             %i.fa.fa-chevron-right
       -if current_chapter.incidents_use_global_log && can?(:read, Incidents::EventLog)
         %li
-          =link_to incidents_event_logs_path do
+          =link_to incidents_chapter_event_logs_path(@chapter) do
             ECC Log
             %i.fa.fa-chevron-right
       -if can? :link_cas, Incidents::Incident
         %li
-          %a{href: incidents_cas_link_index_path}
+          %a{href: incidents_chapter_cas_link_index_path(@chapter)}
             Link CAS Incidents
             -if num_incidents_to_link > 0
               (#{num_incidents_to_link})
             %i.fa.fa-chevron-right
       -if can? :read, Incidents::CasIncident
         %li
-          %a{href: incidents_cas_incidents_path}
+          %a{href: incidents_chapter_cas_incidents_path(@chapter)}
             Incident Tracker
             %i.fa.fa-chevron-right
       -if can? :create, Incidents::NotificationSubscription.new(person: current_user, notification_type: 'report')
         %li
-          %a{href: incidents_notification_subscription_report_path(current_user)}
+          %a{href: incidents_chapter_report_subscription_path(@chapter, current_user)}
             Daily/Weekly Report
             %i.fa.fa-chevron-right
       -if can? :show, :responders
         %li
-          %a{href: incidents_responders_path}
+          %a{href: incidents_chapter_responders_path(@chapter)}
             Responder History
             %i.fa.fa-chevron-right
   .col-sm-8
     %h1.center
-      #{current_chapter.short_name} DAT Incidents
+      #{@chapter.short_name} DAT Incidents
     %table(style="width: 100%")
       %tr
         - incident_stats_boxes.each_with_index do |(title, stats), idx|
@@ -59,10 +59,10 @@
       =render 'recent_table'
     -if can? :index, Incidents::Incident
       %h5
-        =link_to 'More Incidents&hellip;'.html_safe, incidents_incidents_path
+        =link_to 'More Incidents&hellip;'.html_safe, incidents_chapter_incidents_path(@chapter)
     -if can? :read_case_details, Incidents::Incident and current_chapter.incidents_report_editable
       %h5
-        =link_to 'Current Activity&hellip;'.html_safe, activity_incidents_incidents_path
+        =link_to 'Current Activity&hellip;'.html_safe, activity_incidents_chapter_incidents_path(@chapter)
 
   .col-sm-7.col-md-8
     .map-container
@@ -71,7 +71,7 @@
 - content_for :footer_js do
   = google_maps_javascript
   :javascript
-    config = #{map_config.to_json};
+    config = #{map_config(@chapter).to_json};
     allIncidentsMapController = new AllIncidentsMapController(#{map_json_for(recent_incidents).to_json}, config);
   =chapter_goinstant_setup(current_chapter)
 

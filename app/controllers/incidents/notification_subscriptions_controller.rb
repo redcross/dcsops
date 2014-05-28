@@ -1,6 +1,8 @@
 class Incidents::NotificationSubscriptionsController < Incidents::BaseController
   inherit_resources
   respond_to :html, :json
+  belongs_to :chapter, parent_class: Roster::Chapter, finder: :find_by_url_slug!
+  defaults route_collection_name: :report_subscriptions, route_instance_name: :report_subscription
   load_and_authorize_resource
   helper EditableHelper
 
@@ -8,12 +10,14 @@ class Incidents::NotificationSubscriptionsController < Incidents::BaseController
     redirect_to action: :new
   end
 
+  actions :all, except: [:index, :edit]
+
   def create
-    create! { incidents_notification_subscription_report_path(build_resource.person_id) }
+    create! { resource_path(build_resource.person_id) }
   end
 
   def destroy
-    destroy! { incidents_notification_subscription_report_path(resource.person_id) }
+    destroy! { resource_path(resource.person_id) }
   end
 
   private

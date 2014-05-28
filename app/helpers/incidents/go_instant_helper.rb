@@ -51,7 +51,7 @@ module Incidents::GoInstantHelper
     JS
     goinstant_page_setup(current_user, rooms) <<
     javascript_tag(js) <<
-    (enable_chat && chat_setup(chapter))
+    (enable_chat ? chat_setup(chapter) : '')
   end
 
   def chat_setup chapter=nil

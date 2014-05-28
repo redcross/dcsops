@@ -1,6 +1,6 @@
 :plain
-  The Weekly Disaster Operations Report is only viewable in a client that supports graphical email.  To see recent disaster operations in your web browser, go to #{incidents_root_url} .
+  The Weekly Disaster Operations Report is only viewable in a client that supports graphical email.  To see recent disaster operations in your web browser, go to #{incidents_chapter_root_url(chapter)} .
 
   --
 
-  This message is automatically sent by the DCSOps system.  Manage or unsubscribe at this url: #{incidents_notification_subscription_report_url(@person)}
+  This message is automatically sent by the DCSOps system.  Manage or unsubscribe at this url: #{incidents_chapter_report_subscription_url(chapter, @person)}

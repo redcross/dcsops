@@ -8,7 +8,7 @@ describe Incidents::HomeController do
 
   describe "GET 'root'" do
     it "returns http success" do
-      get 'root'
+      get 'root', chapter_id: @person.chapter.to_param
       response.should be_success
     end
   end

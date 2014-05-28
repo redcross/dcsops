@@ -2,7 +2,7 @@
 %h3 
   Timeline
   -if can?(:create, resource.event_logs.build) && resource.open_incident?
-    %button.btn.btn-primary{data: {edit_panel: new_incidents_incident_event_log_path(resource)}} Add Log
+    %button.btn.btn-primary{data: {edit_panel: new_resource_event_log_path}} Add Log
 
 - resource.event_logs(true).each do |evt|
   %h5
@@ -14,7 +14,7 @@
         =evt.person.full_name
       =evt.event_time.to_s :date_time
     -if can? :update, evt
-      %small=link_to '(edit)', edit_incidents_incident_event_log_path(resource, evt), data: {edit_panel: edit_incidents_incident_event_log_path(resource, evt)}
+      %small=link_to '(edit)', edit_resource_event_log_path(evt), data: {edit_panel: edit_resource_event_log_path(evt)}
   -if evt.source
     Source: #{evt.source.name}
     %br

@@ -13,7 +13,7 @@ describe Incidents::CasLinkController do
 
     inc.link_to_cas_incident(cas2)
 
-    get :index
+    get :index, chapter_id: inc.chapter.to_param
 
     response.should be_success
     controller.send(:collection).should =~ [cas]
@@ -23,7 +23,7 @@ describe Incidents::CasLinkController do
     cas = FactoryGirl.create :cas_incident, chapter: @person.chapter
     inc = FactoryGirl.create :incident, chapter: @person.chapter
 
-    post :link, id: cas.to_param, incident_id: inc.id
+    post :link, id: cas.to_param, incident_id: inc.id, chapter_id: inc.chapter.to_param
     response.should be_redirect
     flash[:info].should_not be_empty
 
@@ -37,7 +37,7 @@ describe Incidents::CasLinkController do
 
     inc.link_to_cas_incident(cas2)
     expect {
-      post :link, id: cas2.to_param, incident_id: inc2.id
+      post :link, id: cas2.to_param, incident_id: inc2.id, chapter_id: inc.chapter.to_param
       response.should be_redirect
       flash[:error].should_not be_empty
     }.to_not change{inc.reload.cas_incident_number}
@@ -47,7 +47,7 @@ describe Incidents::CasLinkController do
     cas = FactoryGirl.create :cas_incident, chapter: @person.chapter
 
     expect {
-      post :ignore, id: cas.to_param
+      post :ignore, id: cas.to_param, chapter_id: @person.chapter.to_param
     }.to change{cas.reload.ignore_incident}.to(true)
 
     response.should be_redirect
@@ -63,7 +63,7 @@ describe Incidents::CasLinkController do
              city: Faker::Address.city, district: Faker::Address.city, zip: Faker::Address.zip_code)
 
     expect {
-      post :promote, id: cas.to_param, commit: 'Promote to Incident'
+      post :promote, id: cas.to_param, commit: 'Promote to Incident', chapter_id: cas.chapter.to_param
       response.should be_redirect
       flash[:info].should_not be_empty
 

@@ -2,10 +2,10 @@
 %h3 
   Timeline
   -if can? :create, Incidents::EventLog
-    %button.btn.btn-primary{data: {edit_panel: new_incidents_event_log_path}} Add Log
+    %button.btn.btn-primary{data: {edit_panel: new_resource_path}} Add Log
 
 .well
-  =search_form_for search, class: "form-inline" do |f|
+  =search_form_for search, class: "form-inline", url: collection_path, method: :get do |f|
     .row
       .form-group.col-sm-3
         %label
@@ -27,7 +27,7 @@
       .col-sm-12
         =f.submit 'Search', class: "btn btn-default"
 
-.event-logs-table{data: {refresh_name: "timeline", refresh: url_for(partial: 'table', q: params[:q])}}
+.event-logs-table{data: {refresh_name: "timeline", refresh: collection_path(partial: 'table', q: params[:q])}}
   =render 'table'
 
 .modal.fade#edit-modal

@@ -1,7 +1,7 @@
 %h3 
   Attachments
   -if can? :create, resource.attachments.build
-    %button.btn.btn-primary{data: {edit_panel: new_incidents_incident_attachment_path(resource)}} Add Attachment
+    %button.btn.btn-primary{data: {edit_panel: new_resource_attachment_path(resource)}} Add Attachment
 
 - resource.attachments(true).each do |att|
   %h5
@@ -9,7 +9,7 @@
     \-
     =att.humanized_attachment_type
     -if can? :update, att
-      %small=link_to '(edit)', edit_incidents_incident_attachment_path(resource, att), data: {edit_panel: edit_incidents_incident_attachment_path(resource, att)}
+      %small=link_to '(edit)', edit_resource_attachment_path(resource, att), data: {edit_panel: edit_resource_attachment_path(resource, att)}
 
   -if att.image?
     =link_to att.file.expiring_url(3600), data: {image_well: true} do

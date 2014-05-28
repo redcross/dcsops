@@ -26,14 +26,14 @@ describe Incidents::DatIncidentsController do
       incident = FactoryGirl.create :incident, chapter: @person.chapter
       dat = FactoryGirl.create :dat_incident, incident: incident
 
-      get :new, incident_id: incident.to_param
+      get :new, incident_id: incident.to_param, chapter_id: incident.chapter.to_param
 
       response.should redirect_to(action: :edit, incident_id: incident.to_param)
     end
 
     it "should render under an incident" do
       incident = FactoryGirl.create :incident, chapter: @person.chapter
-      get :new, incident_id: incident.to_param
+      get :new, incident_id: incident.to_param, chapter_id: incident.chapter.to_param
       response.should be_success
     end
 
@@ -48,11 +48,11 @@ describe Incidents::DatIncidentsController do
       @dat = FactoryGirl.create :dat_incident, incident: @incident
     end
     it "should render under an incident" do
-      get :edit, incident_id: @incident.to_param
+      get :edit, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param
     end
     it "should not render standalone" do
       expect {
-        get :edit, id: @dat.to_param
+        get :edit, id: @dat.to_param, chapter_id: @incident.chapter.to_param
       }.to raise_error
     end
   end
@@ -82,20 +82,20 @@ describe Incidents::DatIncidentsController do
 
     it "should allow creating" do
       expect {
-        post :create, incident_id: @incident.to_param, incidents_dat_incident: create_attrs
-        response.should redirect_to(@incident)
+        post :create, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param, incidents_dat_incident: create_attrs
+        response.should redirect_to(incidents_chapter_incident_path(@incident.chapter, @incident))
       }.to change(Incidents::DatIncident, :count).by(1)
     end
     it "should not change incident attributes" do
       create_attrs[:incident_attributes].merge!( {:incident_number => "15-555"})
       expect {
-        post :create, incident_id: @incident.to_param, incidents_dat_incident: create_attrs
-        response.should redirect_to(@incident)
+        post :create, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param, incidents_dat_incident: create_attrs
+        response.should redirect_to(incidents_chapter_incident_path(@incident.chapter, @incident))
       }.to_not change{@incident.reload.incident_number}
     end
     it "should notify the report was filed" do
       Incidents::Notifications::Notification.should_receive(:create_for_event).with(anything, 'incident_report_filed', {is_new: true})
-      post :create, incident_id: @incident.to_param, incidents_dat_incident: create_attrs
+      post :create, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param, incidents_dat_incident: create_attrs
     end
   end
 
@@ -107,8 +107,8 @@ describe Incidents::DatIncidentsController do
 
     it "should notify the report was filed" do
       Incidents::Notifications::Notification.should_receive(:create_for_event).with(anything, 'incident_report_filed', {is_new: false})
-      put :update, incident_id: @incident.to_param, incidents_dat_incident: {incident_attributes: {num_adults: 3}}
-      response.should redirect_to(@incident)
+      put :update, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param, incidents_dat_incident: {incident_attributes: {num_adults: 3}}
+      response.should redirect_to(incidents_chapter_incident_path(@incident.chapter, @incident))
     end
   end
 end

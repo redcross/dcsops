@@ -4,12 +4,12 @@ FactoryGirl.define do
   factory :raw_incident, :class => 'Incidents::Incident' do
     date "2013-06-05"
     status 'open'
-    area { |i| i.association :county, chapter: i.chapter }
+    area { |i| i.chapter.counties.first || i.association(:county, chapter: i.chapter) }
     incident_number {"13-#{'%03d' % SecureRandom.random_number(999)}"}
   end
 
   factory :incident, parent: :raw_incident do
-    association :chapter
+    chapter
     
     cas_incident_number {"1-#{SecureRandom.hex(4).upcase}"}
     

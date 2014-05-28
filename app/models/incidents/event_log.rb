@@ -1,5 +1,6 @@
 class Incidents::EventLog < Incidents::DataModel
   belongs_to :person, class_name: 'Roster::Person'
+  belongs_to :chapter, class_name: 'Roster::Chapter'
 
   validates :event_time, presence: {allow_blank: false, allow_nil: false}
   validates :person, presence: {if: :body_required?}

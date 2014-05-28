@@ -56,7 +56,7 @@ module Incidents::Notifications
         short_url(@incident.map_url)
       end
       def short_incident_url(inc)
-        short_url(incidents_incident_url(inc))
+        short_url(incidents_chapter_incident_url(inc.chapter, inc))
       end
     end
   end

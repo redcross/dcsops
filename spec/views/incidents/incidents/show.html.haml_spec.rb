@@ -14,10 +14,28 @@ describe "incidents/incidents/show" do
     view.stub :reopen_resource_path => ''
     view.stub :tab_authorized? => true
     view.stub :inline_editable? => false
+    view.stub :resource_responder_messages_path do |*args|
+      incidents_chapter_incident_responder_messages_path(person.chapter, @incident, *args)
+    end
+    view.stub :resource_path do |*args|
+      incidents_chapter_incident_path(person.chapter, @incident)
+    end
+    view.stub :edit_resource_dat_path do |*args|
+      edit_incidents_chapter_incident_dat_path(person.chapter, @incident)
+    end
+    view.stub :new_resource_event_log_path do |*args|
+      new_incidents_chapter_incident_event_log_path(person.chapter, @incident, *args)
+    end
+    view.stub :edit_resource_event_log_path do |*args|
+      edit_incidents_chapter_incident_event_log_path(person.chapter, @incident, *args)
+    end
+    view.stub :new_resource_attachment_path do |*args|
+      new_incidents_chapter_incident_attachment_path(person.chapter, @incident, *args)
+    end
   end
 
   def presenter(factory)
-    Incidents::IncidentPresenter.new FactoryGirl.create(factory)
+    Incidents::IncidentPresenter.new FactoryGirl.create(factory, chapter: person.chapter)
   end
 
   describe "open with no linked incidents" do
@@ -40,7 +58,7 @@ describe "incidents/incidents/show" do
 
       render
 
-      rendered.should match(edit_incidents_incident_dat_path(@incident))
+      rendered.should match(edit_incidents_chapter_incident_dat_path(@incident.chapter, @incident))
       rendered.should match('Demographics')
     end
   end
@@ -51,7 +69,7 @@ describe "incidents/incidents/show" do
     it "should render" do
       render
 
-      rendered.should match(edit_incidents_incident_dat_path(@incident))
+      rendered.should match(edit_incidents_chapter_incident_dat_path(@incident.chapter, @incident))
       rendered.should match('Demographics')
 
       rendered.should match('Reopen')

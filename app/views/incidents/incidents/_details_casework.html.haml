@@ -8,7 +8,7 @@
     -else
       =resource.cas_incident_number
   -if resource.cas_incident.blank? and can?(:link_cas, resource)
-    %button.btn.btn-primary.btn-mini{data: {edit_panel: edit_incidents_incident_dat_path(resource, panel_name: 'cas')}} Link to CAS Incident
+    %button.btn.btn-primary.btn-mini{data: {edit_panel: edit_resource_dat_path(panel_name: 'cas')}} Link to CAS Incident
 -if resource.cas_incident_number.present? and resource.cas_incident.blank?
   A CAS Incident has been provided but no data for the incident was found.  If this is a new incident, it may take 12-24 hours for incident data to become available.
 -elsif resource.cas_incident

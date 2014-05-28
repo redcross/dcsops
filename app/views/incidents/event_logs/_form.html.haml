@@ -1,7 +1,6 @@
-  
-=semantic_form_for [parent, resource], url: form_url, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
-  .modal-dialog
-    .modal-content
+.modal-dialog
+  .modal-content
+    =semantic_form_for [parent, resource], url: form_url, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
       .modal-header 
         %a.close(data-dismiss="modal") &times;
         %h4.modal-title Add Event
@@ -14,5 +13,5 @@
         =f.input :message, input_html: {rows: 4}
       .modal-footer
         -if f.object.persisted?
-          =link_to 'Delete', incidents_incident_event_log_path(parent, resource), method: 'delete', data: {confirm: 'Really delete this event?'}, class: 'btn btn-danger'
+          =link_to 'Delete', resource_path, method: 'delete', data: {confirm: 'Really delete this event?'}, class: 'btn btn-danger'
         =f.action :submit, button_html: {class: "btn btn-primary", data: {disable_with: "Creating…"}}

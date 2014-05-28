@@ -3,6 +3,7 @@ class Incidents::EditPanelController < Incidents::BaseController
   inherit_resources
   load_and_authorize_resource
   def self.belongs_to_incident
+    belongs_to :chapter, finder: :find_by_url_slug!, parent_class: Roster::Chapter
     belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident
     actions :all, except: [:index, :show]
   end
@@ -33,14 +34,14 @@ class Incidents::EditPanelController < Incidents::BaseController
 
   def after_create_url
     if parent? 
-      polymorphic_url(parent, {anchor: "inc-"+Array(self.class.panel_name).first})
+      parent_path({anchor: "inc-"+Array(self.class.panel_name).first})
     else
       url_for(action: :index)
     end
   end
 
   def check_incident_open
-    unless !parent? || parent.status == 'open'
+    unless @incident.nil? || parent.status == 'open'
       flash[:error] = "The incident is not open for editing."
       redirect_to parent_path
     end

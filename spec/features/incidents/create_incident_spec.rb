@@ -6,7 +6,7 @@ describe "Manually create incident" do
     grant_role! :submit_incident_report
     grant_role! :incidents_admin
 
-    visit "/incidents"
+    visit "/incidents/#{@person.chapter.url_slug}"
 
     @incident_number = FactoryGirl.build(:incident).incident_number
 
@@ -22,7 +22,6 @@ describe "Manually create incident" do
     click_button 'Create Incident'
 
     page.should have_text('New DAT Incident Report')
-    page.should have_xpath("//input[@value='#{@incident_number}']")
   end
   
 end

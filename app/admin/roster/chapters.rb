@@ -7,8 +7,13 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
   actions :all, except: [:destroy]
 
   controller do
+    def resource
+      param = params[:id]
+      @chapter ||= (end_of_association_chain.where{(url_slug == param)}.first || end_of_association_chain.find(param))
+    end
+
     def resource_params
-      keys = [:name, :short_name, :code, :time_zone_raw, :vc_username, :vc_password, :vc_position_filter, :vc_unit]
+      keys = [:name, :short_name, :code, :url_slug, :time_zone_raw, :vc_username, :vc_password, :vc_position_filter, :vc_unit]
       keys = keys + resource_class.serialized_columns.values.map{|c| c.last.name.to_sym }
       [params.fetch(resource_request_name, {}).permit(*keys)]
     end
@@ -20,6 +25,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
       f.input :code
       f.input :vc_unit
       f.input :short_name
+      f.input :url_slug
       f.input :time_zone_raw
       f.input :vc_username
       f.input :vc_password, as: :string

@@ -34,10 +34,11 @@
             %b> Ops
         .collapse.navbar-collapse#main-navbar-collapse
           %ul.nav.navbar-nav
-            %li= link_to "DAT Scheduling", scheduler_root_path
-            %li= link_to 'Incidents', incidents_root_path
-            -if has_admin_dashboard_access
-              %li= link_to "Admin", scheduler_admin_people_path
+            -if current_user
+              %li= link_to "DAT Scheduling", scheduler_root_path
+              %li= link_to 'Incidents', incidents_chapter_root_path(current_chapter)
+              -if has_admin_dashboard_access
+                %li= link_to "Admin", scheduler_admin_people_path
           %ul.nav.navbar-nav.navbar-right
             -if impersonating_user
               %li= link_to "Impersonating #{impersonating_user.full_name}", impersonate_scheduler_admin_person_path(impersonating_user), method: :delete

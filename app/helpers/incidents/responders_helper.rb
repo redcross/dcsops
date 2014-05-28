@@ -52,7 +52,9 @@ module Incidents::RespondersHelper
         "Message Sent"
       end
     else
-      link_to 'Send SMS', incidents_incident_responder_recruitments_path(parent, person_id: person.id), method: :post, remote: true, class: 'btn btn-mini' if person.sms_addresses.present? && editable
+      if parent.chapter.incidents_enable_messaging
+        link_to 'Send SMS', incidents_chapter_incident_responder_recruitments_path(parent.chapter, parent, person_id: person.id), method: :post, remote: true, class: 'btn btn-mini' if person.sms_addresses.present? && editable
+      end
     end
   end
 
@@ -96,7 +98,7 @@ module Incidents::RespondersHelper
   end
 
   def status_link ass, label, status
-    link_to label, status_incidents_incident_responder_path(parent, ass, status: status), method: :post, remote: true, data: {disable_with: "Updating..."}
+    link_to label, status_resource_path(ass, status: status), method: :post, remote: true, data: {disable_with: "Updating..."}
   end
 
   def next_status_link ass

@@ -58,58 +58,58 @@ Scheduler::Application.routes.draw do
   end
 
   namespace :incidents do
-    root to: "home#root"
-    get :operations, to: "home#operations"
-    resources :event_logs
-    resources :incidents do
-      collection do
-        get :map
-      end
-
-      resource :dat, controller: :dat_incidents
-      resource :notification, only: [:new, :create] do
-        get :recipients
-      end
+    scope ':chapter_id', as: :chapter do
+      root to: "home#root"
+      get :operations, to: "home#operations"
       resources :event_logs
-      resources :responders do
-        post :status, action: :update_status, on: :member
-      end
-      resources :cases
-      resources :attachments
-      resources :responder_messages do
-        post :acknowledge, on: :member
-      end
-      resources :responder_recruitments
-      
-      collection do
-        get :needs_report
-        get :activity
-        match :link_cas, via: [:get, :post], as: :link_cas
-      end
-      member do
-        match :mark_invalid, via: [:get, :post, :put, :patch]
-        match :close, via: [:post, :put, :patch]
-        match :reopen, via: [:post, :put, :patch]
-      end
-    end
-    resources :cas_incidents, only: :index do
-      resources :cases, controller: 'cas_cases' do
-        get :narrative, on: :member
-      end
-    end
-    resources :cas_link, only: [:index], controller: :cas_link do
-      member do
-        post :link
-        post :promote
-        post :ignore
-      end
-    end
+      resources :incidents do
+        collection do
+          get :map
+        end
 
-    scope "responses", controller: :responses do
-      root to: :responders, as: 'responders'
-    end
-    scope "notification_subscriptions", as: :notification_subscription do
-      resources :report, controller: 'notification_subscriptions', notification_type: 'report'
+        resource :dat, controller: :dat_incidents
+        resource :notification, only: [:new, :create] do
+          get :recipients
+        end
+        resources :event_logs
+        resources :responders do
+          post :status, action: :update_status, on: :member
+        end
+        resources :cases
+        resources :attachments
+        resources :responder_messages do
+          post :acknowledge, on: :member
+        end
+        resources :responder_recruitments
+        
+        collection do
+          get :needs_report
+          get :activity
+          match :link_cas, via: [:get, :post], as: :link_cas
+        end
+        member do
+          match :mark_invalid, via: [:get, :post, :put, :patch]
+          match :close, via: [:post, :put, :patch]
+          match :reopen, via: [:post, :put, :patch]
+        end
+      end
+      resources :cas_incidents, only: :index do
+        resources :cases, controller: 'cas_cases' do
+          get :narrative, on: :member
+        end
+      end
+      resources :cas_link, only: [:index], controller: :cas_link do
+        member do
+          post :link
+          post :promote
+          post :ignore
+        end
+      end
+
+      scope "responses", controller: :responses do
+        root to: :responders, as: 'responders'
+      end
+      resources :report_subscription, controller: 'notification_subscriptions', notification_type: 'report'
     end
 
     namespace :api do

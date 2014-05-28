@@ -5,8 +5,16 @@ class Roster::Chapter < ActiveRecord::Base
   has_many :people
   has_many :roles
 
+  has_many :incidents, class_name: "Incidents::Incident"
+  has_many :event_logs, class_name: "Incidents::EventLog"
+  has_many :cas_incidents, class_name: "Incidents::CasIncident"
+
   def time_zone
     @_tz ||= ActiveSupport::TimeZone[self.time_zone_raw]
+  end
+
+  def to_param
+    url_slug || id
   end
 
   serialized_accessor :config, :incidents_map_center_lat, :decimal

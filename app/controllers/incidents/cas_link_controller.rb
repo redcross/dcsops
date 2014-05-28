@@ -1,6 +1,7 @@
 class Incidents::CasLinkController < Incidents::BaseController
   inherit_resources
-  defaults resource_class: Incidents::CasIncident, finder: :find_by_cas_incident_number!
+  belongs_to :chapter, parent_class: Roster::Chapter, finder: :find_by_url_slug!, collection_name: :cas_incidents
+  defaults resource_class: Incidents::CasIncident, finder: :find_by_cas_incident_number!, collection_name: :cas_incidents
   actions only: [:index]
   custom_actions resource: [:link, :promote, :ignore]
   load_and_authorize_resource class: 'Incidents::CasIncident'
@@ -19,7 +20,7 @@ class Incidents::CasLinkController < Incidents::BaseController
   end
 
   def promote
-    resource.create_incident_from_cas! current_chapter
+    resource.create_incident_from_cas! chapter
     flash[:info] = 'Incident Promoted'
     redirect_to collection_path
   end
@@ -38,21 +39,16 @@ class Incidents::CasLinkController < Incidents::BaseController
       redirect_to collection_path
     end
   end
-
-  def end_of_association_chain
-    super.for_chapter(current_chapter)
-  end
-
   helper_method :collection
   def collection 
-    @collection ||= super.to_link_for_chapter(current_chapter)
+    @collection ||= super.to_link_for_chapter(chapter)
   end
 
   def incident
     @incident ||= Incidents::Incident.find params[:incident_id]
   end
 
-  expose(:county_names) { current_chapter.counties.map(&:name) }
+  expose(:county_names) { chapter.counties.map(&:name) }
 
   def link_date_window(date)
     (date - 7)..(date + 7)
@@ -60,7 +56,7 @@ class Incidents::CasLinkController < Incidents::BaseController
 
   helper_method :incidents_for_cas
   def incidents_for_cas(cas)
-    scope = Incidents::Incident.for_chapter(cas.chapter_id)
+    scope = Incidents::Incident.for_chapter(chapter)
                                .without_cas
                                .with_date_in(link_date_window(cas.incident_date))
                                .valid.order{date.desc}
@@ -68,6 +64,11 @@ class Incidents::CasLinkController < Incidents::BaseController
       scope = scope.with_county_name(cas.county_name)
     end
     scope.to_a
+  end
+
+  def chapter
+    association_chain
+    @chapter
   end
 
 end

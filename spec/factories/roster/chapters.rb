@@ -5,6 +5,7 @@ FactoryGirl.define do
     name 'Some Chapter'
     short_name 'ARCBA'
     code '12345'
+    url_slug { "test#{SecureRandom.random_number 10000}"}
 
     time_zone_raw 'America/Los_Angeles'
 

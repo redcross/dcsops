@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_chapter
-    @current_chapter ||= current_user.chapter
+    @current_chapter ||= current_user.chapter if current_user
   end
 
   def impersonating_user

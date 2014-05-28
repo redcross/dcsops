@@ -1,7 +1,7 @@
 %h1 Listing #{pluralize collection.total_count, 'Incident'}
 
 .well#filter-form
-  =search_form_for search, class: "form", style: "margin-bottom: 0" do |f|
+  =search_form_for search, url: url_for(), class: "form", style: "margin-bottom: 0" do |f|
     - proto = Incidents::Incident.new chapter: current_chapter
     /%table
     /  %tr
@@ -49,7 +49,7 @@
   .row
     .col-sm-5
       - stats = collection_for_stats.valid.incident_stats
-      - resources = Incidents::Incident.count_resources(collection_for_stats.valid, current_chapter.incidents_resources_tracked_array)
+      - resources = Incidents::Incident.count_resources(collection_for_stats.valid, @chapter.incidents_resources_tracked_array)
       %table.table.table-bordered
         %tr
           %th Responses

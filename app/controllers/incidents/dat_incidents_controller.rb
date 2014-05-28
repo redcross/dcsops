@@ -1,10 +1,13 @@
 class Incidents::DatIncidentsController < Incidents::BaseController
   inherit_resources
   respond_to :html, :json
-  #load_and_authorize_resource :incident, find_by: :find_by_incident_number!
-  load_and_authorize_resource :dat_incident, class: Incidents::DatIncident
-  defaults singleton: true
+  
+  belongs_to :chapter, finder: :find_by_url_slug!, parent_class: Roster::Chapter
   belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident
+  
+  defaults singleton: true, route_instance_name: :dat
+  load_and_authorize_resource :dat_incident, class: Incidents::DatIncident
+ 
 
   actions :all, except: [:destroy]
 
@@ -53,7 +56,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   def update
     action = params[:action] == 'create' ? :create! : :update!
     self.send(action) do |success, failure|
-      success.html {notify(params[:action] == 'create'); redirect_to resource.incident}
+      success.html {notify(params[:action] == 'create'); redirect_to parent_path}
       success.js { notify(params[:action] == 'create'); render action: 'update' }
       failure.html { flash.now[:error] = "The incident report is incomplete.  Please correct the fields highlighted in red and try again."; render action: 'edit'}
       failure.js { pp resource.errors; render action: 'panel', layout: nil}
@@ -69,10 +72,10 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
   helper_method :form_url
   def form_url
-    params[:incident_id] ? incidents_incident_dat_path(params[:incident_id]) : incidents_dat_incidents_path
+    resource_path
   end
 
-  expose(:scheduler_service) { Scheduler::SchedulerService.new(current_chapter) }
+  expose(:scheduler_service) { Scheduler::SchedulerService.new(@chapter) }
 
   def prepare_resource(obj)
     inc_attrs = incident_params
@@ -108,12 +111,17 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     @resource ||= super.tap{|obj| prepare_resource(obj) }
   end
 
-  def end_of_association_chain
-    Incidents::Incident.includes{[dat_incident.completed_by, dat_incident.vehicles, responder_assignments.person]}
-                       .for_chapter(current_chapter)
-                       .where{(incident_number == my{params[:incident_id]})}
-                       .first!
+  # Inherited Resources reverses the chain for a singleton.  Not sure why, but it breaks everything...
+  def symbols_for_association_chain
+    super.reverse
   end
+
+  #def end_of_association_chain
+  #  Incidents::Incident.includes{[dat_incident.completed_by, dat_incident.vehicles, responder_assignments.person]}
+  #                     .for_chapter(current_chapter)
+  #                     .where{(incident_number == my{params[:incident_id]})}
+  #                     .first!
+  #end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params

@@ -2,6 +2,7 @@ class Incidents::Ability
   include CanCan::Ability
 
   def initialize(person)
+    can :manage, Roster::Chapter
     can :read, :incidents
     can [:read], Incidents::Incident
     can :read_details, Incidents::Incident

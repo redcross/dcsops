@@ -9,7 +9,7 @@ describe "Invalid Incident Report" do
     @chapter = @person.chapter
     @incident = FactoryGirl.create :raw_incident, chapter: @person.chapter, area: @person.counties.first
 
-    visit "/incidents"
+    visit "/incidents/#{@chapter.url_slug}"
 
     click_link "Submit Incident Report"
     within :xpath, "//td[text()='#{@incident.incident_number}']/ancestor::tr" do

@@ -1,11 +1,13 @@
 class Incidents::EventLogsController < Incidents::EditPanelController
   self.panel_name = 'timeline'
+  belongs_to :chapter, finder: :find_by_url_slug!, parent_class: Roster::Chapter
   belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident, optional: true
-  defaults route_prefix: nil
+  #defaults route_prefix: nil
   before_filter :require_parent_or_global_log
   include Searchable
   responders :partial
   respond_to :html, :js
+
 
   has_scope :event_scope do |controller, scope, val|
     case val
@@ -38,12 +40,12 @@ class Incidents::EventLogsController < Incidents::EditPanelController
   end
 
   def notify
-    Incidents::UpdatePublisher.new(current_chapter, parent).publish_timeline
+    Incidents::UpdatePublisher.new(@chapter, parent).publish_timeline
   end
 
   def collection
     @collection ||= begin
-      coll = super.includes{[incident, person]}.where{chapter_id==my{current_chapter}}.order{event_time.desc}
+      coll = super.includes{[incident, person, incident.chapter]}.order{event_time.desc}
       coll = coll.page(params[:page]) if paginate?
       coll
     end
@@ -62,7 +64,7 @@ class Incidents::EventLogsController < Incidents::EditPanelController
   end
 
   def chapter_id
-    parent? ? parent.chapter_id : current_chapter.id
+    @chapter.id
   end
 
   def smart_collection_url
@@ -70,8 +72,8 @@ class Incidents::EventLogsController < Incidents::EditPanelController
   end
 
   def require_parent_or_global_log
-    unless parent? || current_chapter.incidents_use_global_log
-      redirect_to incidents_root_path
+    unless parent? || @chapter.incidents_use_global_log
+      redirect_to parent_path
     end
   end
 
@@ -79,5 +81,43 @@ class Incidents::EventLogsController < Incidents::EditPanelController
   def valid_partial? name
     name == 'table'
   end
+
+  def resource_path res=nil, *args
+    res ||= resource
+    if @incident
+      incidents_chapter_incident_event_log_path(@chapter, @incident, res, *args)
+    else
+      incidents_chapter_event_log_path(@chapter, res, *args)
+    end
+  end
+
+  def new_resource_path *args
+    if @incident
+      new_incidents_chapter_incident_event_log_path(@chapter, @incident, *args)
+    else
+      new_incidents_chapter_event_log_path(@chapter, *args)
+    end
+  end
+
+  def collection_path *args
+    if @incident
+      incidents_chapter_incident_event_logs_path(@chapter, @incident, *args)
+    else
+      incidents_chapter_event_logs_path(@chapter, *args)
+    end
+  end
+
+  def parent_path *args
+    if @incident
+      incidents_chapter_incident_path @chapter, @incident, *args
+    else
+      incidents_chapter_root_path @chapter, *args
+    end
+  end
+
+  def original_url
+    request.original_url
+  end
+  helper_method :original_url
 
 end

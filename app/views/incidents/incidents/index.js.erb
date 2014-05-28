@@ -1,1 +1,1 @@
-$('.incidents-table').html(<%= raw render('index_table').to_json %>);
+$('.incidents-table').html(<%= raw render('index_table').to_json %>); window.history.pushState({}, '', <%= raw original_url.to_json %>);

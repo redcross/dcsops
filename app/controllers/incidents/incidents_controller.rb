@@ -5,10 +5,33 @@ class Incidents::IncidentsController < Incidents::BaseController
   respond_to :js, only: :index
   defaults finder: :find_by_incident_number!
   load_and_authorize_resource except: [:needs_report, :activity]
+  belongs_to :chapter, parent_class: Roster::Chapter, finder: :find_by_url_slug!
   helper Incidents::MapHelper
   responders :partial
 
   include Searchable
+
+  def self.has_many *names
+    names = names.flatten
+    names.each do |name|
+      name = name.to_s
+      generate_url_and_path_helpers(nil, :"resource_#{name}", [:incidents, :chapter, :incident, name], ['@chapter', '@incident'])
+      helper_method :"resource_#{name}_path"
+
+      name = name.singularize
+      actions = [nil, :edit, :new]
+      actions.each do |action|
+        if action == :new
+          ivars = ['@chapter', '(given_args.first || @incident)']
+        else
+          ivars = ['@chapter', '@incident', 'nil']
+        end
+        generate_url_and_path_helpers(action, :"resource_#{name}", [:incidents, :chapter, :incident, name], ivars)
+        helper_method :"#{action ? "#{action}_" : ''}resource_#{name}_path"
+      end
+    end
+  end
+  has_many :responder_messages, :dat, :event_logs, :responders, :attachments, :notifications
 
   custom_actions collection: [:needs_report, :activity, :map], resource: [:mark_invalid, :close, :reopen]
 
@@ -34,19 +57,20 @@ class Incidents::IncidentsController < Incidents::BaseController
 
   def close
     if resource.close!
-      redirect_to resource
+      redirect_to resource_path
     else
-      redirect_to edit_incidents_incident_dat_path(resource, status: 'closed')
+      redirect_to edit_resource_dat_path(status: 'closed')
     end
   end
 
   def reopen
     resource.update_attribute :status, 'open'
     resource.update_attribute :last_no_incident_warning, 1.hour.ago
-    redirect_to resource
+    redirect_to resource_path
   end
 
   def activity
+    association_chain # To load the @chapter variable
     authorize! :read_case_details, resource_class
   end
 
@@ -74,7 +98,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
   private
   def after_create_path
-    current_chapter.incidents_report_editable ? resource_path(resource) : new_incidents_incident_dat_path(resource)
+    resource.chapter.incidents_report_editable ? resource_path(resource) : new_resource_dat_path(resource.to_param||"")
   end
 
   def mark_invalid_params
@@ -121,7 +145,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     expose(:needs_report_collection) { end_of_association_chain.needs_incident_report.includes{area}.order{incident_number} }
 
     expose(:resource_changes) {
-      changes = PaperTrail::Version.order{created_at.desc}.for_chapter(current_chapter).includes{[root, item]}
+      changes = PaperTrail::Version.order{created_at.desc}.for_chapter(@chapter).includes{[root, item]}
       if params[:id] # we have a single resource
         changes = changes.for_root(resource.__getobj__)
       else
@@ -136,13 +160,13 @@ class Incidents::IncidentsController < Incidents::BaseController
     expose(:show_version_root) { params[:action] == 'activity' }
 
     def default_search_params
-      {status_in: ['open', 'closed']}
+      {status_in: ['open', 'closed'], date_gteq: FiscalYear.current.start_date}
     end
 
     def should_paginate; params[:page] != 'all'; end
 
     def end_of_association_chain
-      super.where{chapter_id == my{current_chapter}}
+      super#.where{chapter_id == my{current_chapter}}
     end
 
     def build_resource
@@ -159,12 +183,17 @@ class Incidents::IncidentsController < Incidents::BaseController
 
       keys = [:area_id, :date, :incident_type, :status, :narrative, :address, :city, :state, :zip, :neighborhood, :county, :lat, :lng, :recruitment_message]
 
-      keys << :incident_number if params[:action] == 'create' && !current_chapter.incidents_sequence_enabled
+      keys << :incident_number if params[:action] == 'create' && !parent.incidents_sequence_enabled
 
       attrs = params.require(:incidents_incident).permit(*keys)
-      attrs.merge!({chapter_id: current_chapter.id, status: 'open'})
+      attrs.merge!({status: 'open'})
 
       [attrs]
     end
+
+    def original_url
+      request.original_url
+    end
+    helper_method :original_url
 
 end
