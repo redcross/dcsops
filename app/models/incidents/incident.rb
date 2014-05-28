@@ -64,16 +64,19 @@ class Incidents::Incident < ActiveRecord::Base
       count(id).as(:incident_count),
       sum(num_cases).as(:case_count),
       sum(num_families).as(:family_count),
-      sum(num_adults + num_children).as(:client_count)
+      sum(num_adults + num_children).as(:client_count),
+      sum(num_adults).as(:num_adults),
+      sum(num_children).as(:num_children)
     ]}.take
   end
 
   def self.count_resources scope, resources
-    scope.joins{dat_incident}.unscope(:order).select do
+    rec = scope.joins{dat_incident}.unscope(:order).select do
       resources.map do |res|
         sum(coalesce(cast(dat_incident.resources.op('->', res).as(integer)), 0)).as(res)
       end
-    end.take.attributes.slice(*resources)
+    end.take
+    rec && rec.attributes.slice(*resources) || {}
   end
 
   assignable_values_for :incident_type, allow_blank: true do

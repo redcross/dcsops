@@ -13,7 +13,7 @@
   .form-group
     %label.form-label Other Assistance
     .form-wrapper
-      - {"Mental Health Support" => 'mental_health', 'Translation' => 'translation', "Snacks for Clients" => 'client_snacks'}.each do |label, val|
+      - {"Mental Health Support" => 'mental_health', 'Translation' => 'translation', "Snacks for Clients" => 'client_snacks', "Spiritual Care" => 'spiritual_care'}.each do |label, val|
         - local_services << val
         .checkbox
           %label
