@@ -42,3 +42,7 @@
     position: absolute;
   }
 }
+
+.datetimepicker {
+  z-index: 2000 !important;
+}

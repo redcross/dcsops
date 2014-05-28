@@ -31,6 +31,11 @@ class window.IncidentLocationController
       evt.preventDefault();
       this.inputField('search_for_address').blur()
 
+    $(document).on 'click', '.manual-address', (evt) =>
+      #if confirm("Are you sure you want to ")
+      this.allowDirectEntry()
+      evt.preventDefault()
+
   maybeInitMap: () ->
     if ($(@dom).is(':visible'))
       this.initMap()
@@ -78,6 +83,10 @@ class window.IncidentLocationController
       strOrNothing.replace(' County', '')
     else
       strOrNothing
+
+  allowDirectEntry: () ->
+    ['address', 'city', 'state', 'zip', 'county', 'neighborhood'].forEach (field) =>
+      this.inputField(field).prop('editable', true).prop('readonly', false).prop('disabled', false)
 
   updateMap: () ->
     vals = @fields.map (fname) =>

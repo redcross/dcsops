@@ -40,6 +40,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_report_advanced_details, :boolean
   serialized_accessor :config, :incidents_use_escalation_levels, :boolean
   serialized_accessor :config, :incidents_use_global_log, :boolean
+  serialized_accessor :config, :incidents_report_allow_manual_address, :boolean
 
   serialized_accessor :config, :scheduler_flex_day_start, :integer
   serialized_accessor :config, :scheduler_flex_night_start, :integer

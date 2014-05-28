@@ -6,6 +6,11 @@
           %a{href: needs_report_incidents_incidents_path}
             Submit Incident Report
             %i.fa.fa-chevron-right
+      -if current_chapter.incidents_use_global_log && can?(:read, Incidents::EventLog)
+        %li
+          =link_to incidents_event_logs_path do
+            ECC Log
+            %i.fa.fa-chevron-right
       -if can? :link_cas, Incidents::Incident
         %li
           %a{href: incidents_cas_link_index_path}
@@ -21,37 +26,31 @@
       -if can? :create, Incidents::NotificationSubscription.new(person: current_user, notification_type: 'report')
         %li
           %a{href: incidents_notification_subscription_report_path(current_user)}
-            Manage Subscription
+            Daily/Weekly Report
             %i.fa.fa-chevron-right
       -if can? :show, :responders
         %li
           %a{href: incidents_responders_path}
-            Show Responder Info
+            Responder History
             %i.fa.fa-chevron-right
-      -if current_chapter.incidents_use_global_log && can?(:read, Incidents::EventLog)
-        %li
-          =link_to incidents_event_logs_path do
-            ECC Log
-            %i.fa.fa-chevron-right
-  %table.col-sm-8
-    %tr
-      %td{colspan: incident_stats_boxes.count}
-        %h2.center
-          #{current_chapter.short_name} DAT Incidents
-    %tr
-      - incident_stats_boxes.each_with_index do |(title, stats), idx|
-        %td{class: (idx != 0) && 'hidden-phone'}
-          %h3.center=title
-          %p.center.lead
-            %small
-              %i.fa.fa-fire
-              =pluralize stats.incident_count, "Incident"
-              %br
-              %i.fa.fa-group
-              =pluralize stats.family_count, "Family"
-              %br
-              %i.fa.fa-user
-              =pluralize stats.client_count, "Client"
+  .col-sm-8
+    %h1.center
+      #{current_chapter.short_name} DAT Incidents
+    %table(style="width: 100%")
+      %tr
+        - incident_stats_boxes.each_with_index do |(title, stats), idx|
+          %td{class: (idx != 0) && 'hidden-phone'}
+            %h3.center=title
+            %p.center.lead
+              %small
+                %i.fa.fa-fire
+                =pluralize stats.incident_count, "Incident"
+                %br
+                %i.fa.fa-group
+                =pluralize stats.family_count, "Family"
+                %br
+                %i.fa.fa-user
+                =pluralize stats.client_count, "Client"
 
 
 .row

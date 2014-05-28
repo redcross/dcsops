@@ -55,6 +55,10 @@ class Incidents::Incident < ActiveRecord::Base
     where{county == name}
   }
 
+  assignable_values_for :area do
+    chapter.counties
+  end
+
   def self.incident_stats
     valid.order(nil).select{[
       count(id).as(:incident_count),
