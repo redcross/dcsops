@@ -43,7 +43,7 @@ class Incidents::ResponderRecruitmentsController < Incidents::EditPanelControlle
   helper_method :incident
 
   def after_create_url
-    incidents_incident_responders_path(incident)
+    incidents_chapter_incident_responders_path(parent, incident)
   end
 
 end

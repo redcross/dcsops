@@ -43,7 +43,7 @@
         %td=cas.cases_closed
         %td(style="white-space: nowrap")
           -if cas.incident
-            %a.btn.btn-mini{href: incidents_incident_path(cas.incident)} Show Incident
+            %a.btn.btn-mini{href: incidents_chapter_incident_path(cas.incident.chapter, cas.incident)} Show Incident
           %a.btn.btn-mini(data-toggle="collapse" data-target="##{cas.id}-cases") Show Cases
       %tr
         %td(colspan=8)

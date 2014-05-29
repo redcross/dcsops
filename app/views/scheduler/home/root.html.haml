@@ -136,7 +136,7 @@
       %tbody
         - responses.each do |response|
           %tr
-            %td=link_to response.incident.to_label, response.incident
+            %td=link_to response.incident.to_label, incidents_chapter_incident_path(response.incident.chapter, response.incident)
             %td=response.humanized_role
     If this information is incomplete or incorrect, please contact your DAT Administrator.
 

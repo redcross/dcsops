@@ -31,7 +31,7 @@
       %td.incident-list(style="vertical-align: top; overflow: visible")
         - @incidents.each do |inc|
           .incident-header
-            %a{href:incidents_incident_url(inc)}
+            %a{href:incidents_chapter_incident_url(inc.chapter, inc)}
               =inc.date.to_s :dow_short
               ==-
               #{inc.city}, #{inc.state}

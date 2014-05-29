@@ -15,4 +15,4 @@
           ago
         %td
           .incoming-message-preview=msg.message
-        %td=link_to 'View', '#', class: 'btn btn-mini', data: {edit_panel: incidents_incident_responder_message_path(incident, msg)}
+        %td=link_to 'View', '#', class: 'btn btn-mini', data: {edit_panel: incidents_chapter_incident_responder_message_path(incident.chapter, incident, msg)}

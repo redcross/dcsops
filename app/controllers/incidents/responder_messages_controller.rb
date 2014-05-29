@@ -75,7 +75,7 @@ class Incidents::ResponderMessagesController < Incidents::EditPanelController
   helper_method :incident
 
   def after_create_url
-    incidents_incident_responders_path(incident)
+    incidents_chapter_incident_responders_path(incident.chapter, incident)
   end
 
   def acknowledge_resource_path

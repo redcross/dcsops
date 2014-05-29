@@ -1,7 +1,7 @@
 %h3 
   Cases
   -if can? :create, resource.cases.build
-    %button.btn.btn-primary{data: {edit_panel: new_incidents_incident_case_path(resource)}} Add Case
+    %button.btn.btn-primary{data: {edit_panel: new_resource_case_path(resource)}} Add Case
 
 - resource.cases.order{id}.each do |kase|
   .row
@@ -9,7 +9,7 @@
       %table.table.table-bordered
         -if can? :update, kase
           %tr
-            %th(colspan=2)=link_to 'Edit this Case', edit_incidents_incident_case_path(resource, kase), data: {edit_panel: edit_incidents_incident_case_path(resource, kase)}
+            %th(colspan=2)=link_to 'Edit this Case', edit_resource_case_path(resource, kase), data: {edit_panel: edit_incidents_incident_case_path(resource, kase)}
         %tr
           %th Name
           %td #{kase.first_name} #{kase.last_name}
