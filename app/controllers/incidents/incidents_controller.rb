@@ -46,6 +46,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     create! { after_create_path }
     if resource.errors.blank?
       Incidents::Notifications::Notification.create_for_event resource, 'new_incident'
+      publisher.publish_details
     end
   end
 
@@ -59,6 +60,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   def close
     if resource.close!
       redirect_to resource_path
+      publisher.publish_details
     else
       redirect_to edit_resource_dat_path(status: 'closed')
     end
@@ -68,6 +70,8 @@ class Incidents::IncidentsController < Incidents::BaseController
     resource.update_attribute :status, 'open'
     resource.update_attribute :last_no_incident_warning, 1.hour.ago
     redirect_to resource_path
+
+    publisher.publish_details
   end
 
   def activity
@@ -210,5 +214,9 @@ class Incidents::IncidentsController < Incidents::BaseController
       Roster::County.where{chapter_id.in my{delegated_chapter_ids}}
     end
     helper_method :counties_for_create
+
+    def publisher
+      @publisher ||= Incidents::UpdatePublisher.new(resource.chapter, resource)
+    end
 
 end

@@ -33,7 +33,7 @@
         %td=assignments.reject{|r| r.was_available || r.was_flex }.count
         - assignments.first(max_responses).each do |ass|
           %td
-            %a{href: url_for(ass.incident), title: tooltip_for(ass)}(data-toggle="tooltip")
+            %a{href: polymorphic_url(ass.incident.chapter, ass.incident), title: tooltip_for(ass)}(data-toggle="tooltip")
               -if ass.was_available
                 %i.icon-large.fa.fa-check-square.text-success
               -elsif ass.was_flex
