@@ -5,7 +5,7 @@ describe Incidents::EventLogsController do
   render_views
   before(:each) { grant_role! :submit_incident_report }
 
-  let!(:incident) { FactoryGirl.create :incident }
+  let!(:incident) { FactoryGirl.create :incident, chapter: @person.chapter }
 
   let(:modal_name) {'edit-modal'}
 

@@ -67,12 +67,13 @@ class Incidents::EventLog < Incidents::DataModel
 
   def event_time= new_time
     time = case new_time
-    when String then Time.zone.parse(new_time)
+    when String then Timeliness.parse(new_time)
     else new_time
     end
 
     super(time)
-  rescue ArgumentError
+  rescue ArgumentError => e
+    pp e
     super(new_time)
   end
 

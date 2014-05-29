@@ -31,7 +31,7 @@ gem "authlogic", '3.4.0'
 gem "ri_cal" # Ical Rendering
 gem "cancan", github: 'jlaxson/cancan'
 gem "ruby-openid", require: 'openid'
-gem "chronic"
+gem "timeliness"
 gem "roadie", '~> 2.4'
 gem "kaminari"
 gem "paper_trail", '~> 3.0'

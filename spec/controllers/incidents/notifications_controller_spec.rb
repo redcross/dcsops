@@ -6,7 +6,7 @@ describe Incidents::NotificationsController do
   before(:each) { @person.chapter.incidents_use_escalation_levels = true; @person.chapter.save!; grant_role! :submit_incident_report }
   before(:each) { Incidents::Notifications::Notification.stub :create }
 
-  let!(:incident) { FactoryGirl.create :incident }
+  let!(:incident) { FactoryGirl.create :incident, chapter: @person.chapter }
   let(:event) { FactoryGirl.create :event, chapter: incident.chapter }
 
   let(:modal_name) {'edit-modal'}

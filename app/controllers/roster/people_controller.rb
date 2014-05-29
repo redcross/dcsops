@@ -6,11 +6,19 @@ class Roster::PeopleController < Roster::BaseController
   include NamedQuerySupport
   include Searchable
 
+  has_scope :for_chapter
   has_scope :name_contains
   has_scope :in_county
   has_scope :with_position, type: :array
 
-  load_and_authorize_resource
+  load_and_authorize_resource except: :index
+  def index
+    params[:for_chapter] ||= current_chapter.id
+    chapter = Roster::Chapter.find(params[:for_chapter])
+    authorize! :search_people, chapter
+    index!
+  end
+
   def me
     redirect_to roster_person_url(current_user)
   end
@@ -28,7 +36,7 @@ class Roster::PeopleController < Roster::BaseController
     end
 
     def collection
-      @collection ||= apply_scopes(super).where(vc_is_active: true).includes{positions}
+      @collection ||= apply_scopes(super).joins{chapter}.where(vc_is_active: true).includes{positions}
     end
 
     expose(:identify_people) { false }

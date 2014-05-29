@@ -32,9 +32,9 @@ class Incidents::Incident < ActiveRecord::Base
 
   # We always want these to be present
   validates :chapter, :area, :date, presence: true
-  validates :incident_number, presence: true, format: /\A\d{2}-\d{3,}\z/, uniqueness: { scope: :chapter_id }
+  validates :incident_number, presence: true, format: /\A\w*\d{2}-\d{3,}\z/, uniqueness: { scope: :chapter_id }
 
-  scope :for_chapter, -> chapter { where{chapter_id==chapter}}
+  scope :for_chapter, -> chapter { where{chapter_id.in chapter}}
   scope :in_area, -> area {where{area_id == area}}
   scope :valid, lambda {
     where{status != 'invalid'}
@@ -129,7 +129,7 @@ class Incidents::Incident < ActiveRecord::Base
   end
 
   def to_param
-    incident_number
+    persisted? && incident_number
   end
 
   def to_label

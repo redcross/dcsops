@@ -58,6 +58,7 @@ Scheduler::Application.routes.draw do
   end
 
   namespace :incidents do
+    root to: "home#redirect_to_chapter"
     scope ':chapter_id', as: :chapter do
       root to: "home#root"
       get :operations, to: "home#operations"
@@ -116,6 +117,8 @@ Scheduler::Application.routes.draw do
       resources :incidents, only: :index
       post :twilio_incoming, controller: :responder_messages_twilio, action: :incoming
     end
+
+    get '*glob', to: "home#redirect_to_chapter"
   end
 
   namespace :partners do

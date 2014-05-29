@@ -5,7 +5,7 @@ describe Incidents::CasesController do
   render_views
   before(:each) { @person.chapter.incidents_collect_case_details = true; @person.chapter.save!; grant_role! :submit_incident_report }
 
-  let!(:incident) { FactoryGirl.create :incident }
+  let!(:incident) { FactoryGirl.create :incident, chapter: @person.chapter }
 
   let(:modal_name) {'edit-modal'}
 

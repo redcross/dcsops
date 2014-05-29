@@ -1,6 +1,7 @@
 class Incidents::EditPanelController < Incidents::BaseController
 
   inherit_resources
+  load_and_authorize_resource :chapter
   load_and_authorize_resource
   def self.belongs_to_incident
     belongs_to :chapter, finder: :find_by_url_slug!, parent_class: Roster::Chapter

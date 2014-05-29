@@ -2,7 +2,12 @@ class Incidents::Ability
   include CanCan::Ability
 
   def initialize(person)
-    can :manage, Roster::Chapter
+    # This controls what chapters this person can access in the URL
+    can :read, Roster::Chapter, id: person.chapter_id
+    can :read, Roster::Chapter do |chapter|
+        chapter.incidents_delegate_chapter == person.chapter_id
+    end
+    
     can :read, :incidents
     can [:read], Incidents::Incident
     can :read_details, Incidents::Incident

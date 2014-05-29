@@ -2,10 +2,14 @@ class Incidents::HomeController < Incidents::BaseController
   helper Incidents::MapHelper, Incidents::HomeControllerHelper
   responders :partial
   respond_to :html
-  load_and_authorize_resource :chapter, find_by: :url_slug, class: 'Roster::Chapter'
+  load_and_authorize_resource :chapter, find_by: :url_slug, class: 'Roster::Chapter', except: :redirect_to_chapter
 
   def root
     respond_with []
+  end
+
+  def redirect_to_chapter
+    redirect_to incidents_chapter_root_path(current_chapter), status: :moved_permanently
   end
 
   def valid_partial? name

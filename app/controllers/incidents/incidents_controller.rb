@@ -4,6 +4,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   respond_to :json, only: :update
   respond_to :js, only: :index
   defaults finder: :find_by_incident_number!
+  load_and_authorize_resource :chapter
   load_and_authorize_resource except: [:needs_report, :activity]
   belongs_to :chapter, parent_class: Roster::Chapter, finder: :find_by_url_slug!
   helper Incidents::MapHelper
@@ -98,7 +99,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
   private
   def after_create_path
-    resource.chapter.incidents_report_editable ? resource_path(resource) : new_resource_dat_path(resource.to_param||"")
+    Incidents::IncidentPresenter.new(resource).submit_path
   end
 
   def mark_invalid_params
@@ -142,7 +143,9 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
     helper_method :collection_for_stats
 
-    expose(:needs_report_collection) { end_of_association_chain.needs_incident_report.includes{area}.order{incident_number} }
+    expose(:needs_report_collection) { 
+      Incidents::Incident.for_chapter(delegated_chapter_ids).needs_incident_report.includes{area}.order{incident_number} 
+    }
 
     expose(:resource_changes) {
       changes = PaperTrail::Version.order{created_at.desc}.for_chapter(@chapter).includes{[root, item]}
@@ -170,7 +173,10 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
 
     def build_resource
-      super.tap{|i| i.date ||= Date.current}
+      super.tap{|i| 
+        i.date ||= Date.current
+        i.chapter = i.area.chapter if i.area
+      }
     end
 
     def resource
@@ -195,5 +201,14 @@ class Incidents::IncidentsController < Incidents::BaseController
       request.original_url
     end
     helper_method :original_url
+
+    def delegated_chapter_ids
+      @delgated_chapters ||= [@chapter.id] + Roster::Chapter.with_incidents_delegate_chapter_value(@chapter.id).ids
+    end
+
+    def counties_for_create
+      Roster::County.where{chapter_id.in my{delegated_chapter_ids}}
+    end
+    helper_method :counties_for_create
 
 end

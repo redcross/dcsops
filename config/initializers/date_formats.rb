@@ -9,3 +9,5 @@ date_format :dow_long, "%A, %B %-d"
 date_format :mdy, "%B %-d %Y"
 date_format :date_time, "%-m/%-d %-I:%M%P"
 date_format :time, "%-I:%M%P"
+
+Timeliness.default_timezone = :current

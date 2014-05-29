@@ -31,7 +31,7 @@ class ::PersonTypeaheadInput
     <script>
     #{id}_typeahead = new PersonTypeaheadController($('##{id}_text'), 
             function(sel_id) {$('##{id}').val(sel_id)}, 
-            #{{q: filter}.to_json}, 
+            #{filter.to_json}, 
             #{text_value.to_json})
     </script>
     SCRIPT

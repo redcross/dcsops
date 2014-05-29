@@ -5,21 +5,22 @@
     %tr
       %th Incident Number
       %th Address
-      %th County
+      %th Area
       %th Date
       %th Age
       %th Actions
   %tbody
     -needs_report_collection.each do |inc|
+      - inc = Incidents::IncidentPresenter.new inc
       %tr
         %td=inc.incident_number
         %td=inc.address
-        %td=inc.area.try(:name) || inc.county
+        %td=inc.area.try(:display_name) || inc.county
         %td=inc.date.to_s :dow_short
         %td=time_ago_in_words inc.created_at
         %td
-          %a.btn.btn-primary{href: @chapter.incidents_report_editable ? resource_path(inc) : new_resource_dat_path(inc)} Submit Incident Information
-          %a.btn.btn-danger{href: mark_invalid_resource_path(inc)} No Response / Mark Invalid
+          %a.btn.btn-primary{href: inc.submit_path} Submit Incident Information
+          %a.btn.btn-danger{href: inc.invalid_path} No Response / Mark Invalid
 
 -unless current_chapter.incidents_report_editable
   %h3 Don't see your incident?
@@ -27,4 +28,4 @@
 
 -if can? :create, Incidents::Incident
   %h3 Create New Incident
-  %a.btn.btn-warning{href: new_resource_path} Create New Incident Report
+  %a.btn.btn-warning{href: new_resource_path} Create New Incident

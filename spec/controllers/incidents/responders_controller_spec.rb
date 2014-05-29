@@ -32,7 +32,7 @@ describe Incidents::RespondersController do
   # Incidents::RespondersController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
-  let(:incident) { FactoryGirl.create :incident }
+  let(:incident) { FactoryGirl.create :incident, chapter: @person.chapter }
   let(:person) { FactoryGirl.create :person, work_phone_carrier: FactoryGirl.create(:cell_carrier), chapter: incident.chapter }
 
   before :each do

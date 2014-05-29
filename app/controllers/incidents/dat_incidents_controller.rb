@@ -6,6 +6,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident
   
   defaults singleton: true, route_instance_name: :dat
+  load_and_authorize_resource :chapter
   load_and_authorize_resource :dat_incident, class: Incidents::DatIncident
  
 

@@ -18,7 +18,7 @@
             %tr
               =f.semantic_fields_for :team_lead do |f|
                 %td.team-lead-name
-                  =f.input :person, as: :person_typeahead, text_value: lambda{|obj| Roster::Person.where(id: obj.person_id).first.try(:full_name)}, label: "", filter: {chapter_id_eq: f.object.incident.chapter_id}
+                  =f.input :person, as: :person_typeahead, text_value: lambda{|obj| Roster::Person.where(id: obj.person_id).first.try(:full_name)}, label: "", filter: {for_chapter: f.object.incident.chapter_id}
                   =f.input :role, as: :hidden, input_html: {value: "team_lead"}
               %td Team Lead
               /%td Available

@@ -11,7 +11,7 @@ describe "Manually create incident" do
     @incident_number = FactoryGirl.build(:incident).incident_number
 
     click_link "Submit Incident Report"
-    click_link 'Create New Incident Report'
+    click_link 'Create New Incident'
 
     select @person.counties.first.name, from: 'Area*'
     fill_in 'Incident number*', with: @incident_number

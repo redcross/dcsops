@@ -76,4 +76,17 @@ class Incidents::IncidentPresenter < SimpleDelegator
   def map_url
     "https://maps.google.com/maps?q=#{lat}+#{lng}+"
   end
+
+  def routes
+    Rails.application.routes.url_helpers
+  end
+
+  def submit_path
+    param = to_param || "INVALID"
+    chapter.incidents_report_editable ? routes.incidents_chapter_incident_path(chapter, param) : routes.new_incidents_chapter_incident_dat_path(chapter, param)
+  end
+
+  def invalid_path
+    routes.mark_invalid_incidents_chapter_incident_path(chapter, __getobj__)
+  end
 end

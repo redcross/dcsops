@@ -4,6 +4,8 @@ class Incidents::CasLinkController < Incidents::BaseController
   defaults resource_class: Incidents::CasIncident, finder: :find_by_cas_incident_number!, collection_name: :cas_incidents
   actions only: [:index]
   custom_actions resource: [:link, :promote, :ignore]
+
+  load_and_authorize_resource :chapter
   load_and_authorize_resource class: 'Incidents::CasIncident'
 
   before_filter :check_not_linked, only: [:link, :promote]

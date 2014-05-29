@@ -14,6 +14,8 @@ ActiveSupport.on_load :action_controller do
   include Exposure
 end
 
+require 'timeliness/core_ext'
+
 I18n.config.enforce_available_locales = true
 
 module Scheduler

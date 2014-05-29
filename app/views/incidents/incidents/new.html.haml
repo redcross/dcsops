@@ -6,7 +6,7 @@
     - more_details = current_chapter.incidents_capture_more_details_on_create
     =semantic_form_for resource, url: resource_path(resource.to_param || ""), builder: FormtasticBootstrap::FormBuilder, html: {class: "form-horizontal"} do |f|
       =f.inputs "Data" do
-        =f.input :area, collection: f.object.chapter.counties
+        =f.input :area, collection: counties_for_create
         - unless f.object.chapter.incidents_sequence_enabled
           =f.input :incident_number
         
