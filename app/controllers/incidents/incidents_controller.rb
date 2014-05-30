@@ -32,7 +32,7 @@ class Incidents::IncidentsController < Incidents::BaseController
       end
     end
   end
-  has_many :responder_messages, :dat, :event_logs, :responders, :attachments, :notifications
+  has_many :responder_messages, :dat, :event_logs, :responders, :attachments, :notifications, :cases
 
   custom_actions collection: [:needs_report, :activity, :map], resource: [:mark_invalid, :close, :reopen]
 

@@ -1,56 +1,57 @@
-  
-=semantic_form_for [parent, resource], url: form_url, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
-  .modal-header 
-    %a.close(data-dismiss="modal") &times;
-    %h3 Add Case
-  .modal-body
-    .control-group{class: (f.object.errors[:first_name].present? || f.object.errors[:last_name].present?) && 'error'}
-      .control-label Name
-      .controls
-        =f.text_field :first_name, placeholder: 'First', class: 'name-field'
-        =f.text_field :last_name, placeholder: 'Last', class: 'name-field'
-    =f.input :num_adults
-    =f.input :num_children
-    =f.input :unit
-    .address-collapse.in
-      .control-group
-        .control-label 
-          Address 
-          =link_to '(edit)', '#', data: {toggle: 'collapse', target: '.address-collapse'}
-        .controls
-          =f.object.address
-          %br
-          #{f.object.city}, #{f.object.state} #{f.object.zip}
-    .collapse.address-collapse
-      =f.input :address
-      =f.input :city
-      =f.input :state
-      =f.input :zip
-    =f.input :phone_number, as: :string
-    =f.input :notes, input_html: {rows: 5}, label: 'Damage Assessment and Client Notes'
-    =f.input :cas_case_number
-    %table.table.table-bordered#case-assistance-items
-      %thead
-        %tr
-          %th Item
-          %th Quantity
-          %th Subtotal
-          %th
-      %tbody
-        = f.fields_for :case_assistance_items do |item|
-          =render 'case_assistance_item_fields', f: item
-      %tfoot
-        %tr
-          %td(colspan=2) 
-            =link_to_add_association 'Add Assistance Item', f, :case_assistance_items, "data-association-insertion-node" => "#case-assistance-items tbody", "data-association-insertion-method" => "append", class: "btn btn-primary"
-            .pull-right Total:
-          %td(colspan=2)
-            =f.text_field :total_amount, readonly: true, class: 'total'
-    
-  .modal-footer
-    -if f.object.persisted? and can? :destroy, resource
-      =link_to 'Delete', resource_path, method: 'delete', data: {confirm: 'Really delete this case?'}, class: 'btn btn-danger', remote: request.xhr?
-    =f.action :submit, button_html: {class: "btn btn-primary"}
+.modal-dialog
+  .modal-content  
+    =semantic_form_for [parent, resource], url: form_url, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
+      .modal-header 
+        %a.close(data-dismiss="modal") &times;
+        %h3 Add Case
+      .modal-body
+        .form-group{class: (f.object.errors[:first_name].present? || f.object.errors[:last_name].present?) && 'error'}
+          %label.control-label Name
+          .form-wrapper
+            =f.text_field :first_name, placeholder: 'First', class: 'name-field form-control col-xs-5'
+            =f.text_field :last_name, placeholder: 'Last', class: 'name-field form-control col-xs-6 col-xs-offset-1'
+        =f.input :num_adults
+        =f.input :num_children
+        =f.input :unit
+        .address-collapse.in
+          .form-group
+            %label.form-label 
+              Address 
+              =link_to '(edit)', '#', data: {toggle: 'collapse', target: '.address-collapse'}
+            .form-wrapper
+              =f.object.address
+              %br
+              #{f.object.city}, #{f.object.state} #{f.object.zip}
+        .collapse.address-collapse
+          =f.input :address
+          =f.input :city
+          =f.input :state
+          =f.input :zip
+        =f.input :phone_number, as: :string
+        =f.input :notes, input_html: {rows: 5}, label: 'Damage Assessment and Client Notes'
+        =f.input :cas_case_number
+        %table.table.table-bordered#case-assistance-items
+          %thead
+            %tr
+              %th Item
+              %th Quantity
+              %th Subtotal
+              %th
+          %tbody
+            = f.fields_for :case_assistance_items do |item|
+              =render 'case_assistance_item_fields', f: item
+          %tfoot
+            %tr
+              %td(colspan=2) 
+                =link_to_add_association 'Add Assistance Item', f, :case_assistance_items, "data-association-insertion-node" => "#case-assistance-items tbody", "data-association-insertion-method" => "append", class: "btn btn-primary"
+                .pull-right Total:
+              %td(colspan=2)
+                =f.text_field :total_amount, readonly: true, class: 'total'
+        
+      .modal-footer
+        -if f.object.persisted? and can? :destroy, resource
+          =link_to 'Delete', resource_path, method: 'delete', data: {confirm: 'Really delete this case?'}, class: 'btn btn-danger', remote: request.xhr?
+        =f.action :submit, button_html: {class: "btn btn-primary"}
 
-  :javascript
-    window.caseController = window.caseController || new IncidentCaseController()
+:javascript
+  window.caseController = window.caseController || new IncidentCaseController()
