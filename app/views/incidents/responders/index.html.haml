@@ -39,13 +39,13 @@
 - content_for :footer_js do
   :javascript
     $(function() {
+      window.editPanelController = new IncidentEditPanelController();
       window.respondersController = new IncidentRespondersController();
       respondersController.initMap(#{map_config.to_json}, $('.responder-map')[0]);
       respondersController.setIncidentLocation(#{parent.lat.to_json}, #{parent.lng.to_json});
       respondersController.loadTravelTimes();
       respondersController.mapResponders();
       $("[data-toggle=tooltip]").tooltip()
-      window.editPanelController = new IncidentEditPanelController();
-    })
+    });
   = google_maps_javascript
   = incidents_goinstant_setup(parent)

@@ -1,25 +1,6 @@
 class window.IncidentRespondersController
 
   constructor: () ->
-    $(document).on 'click', '[data-assign]', (evt) =>
-      return true
-      evt.preventDefault()
-      person_id = $(evt.target).data('assign')
-
-      $modal = $('#edit-modal')
-
-      $modal.text('Loading').modal('show')
-      $.ajax
-        url: window.location.href + '/new'
-        data:
-          person_id: person_id
-        success: (data, status, xhr) =>
-          $modal.html(data)
-
-    $(document).on 'edit-panel:success', (evt, person) =>
-      console.log(person);
-      $('#edit-modal').modal('hide');
-      $("tr[data-person-id=#{person}]").remove()
 
   initMap: (config, dom) ->
     @map = MapFactory.createMap(dom, config)

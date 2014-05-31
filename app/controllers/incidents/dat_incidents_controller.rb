@@ -60,7 +60,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       success.html {notify(params[:action] == 'create'); redirect_to parent_path}
       success.js { notify(params[:action] == 'create'); render action: 'update' }
       failure.html { flash.now[:error] = "The incident report is incomplete.  Please correct the fields highlighted in red and try again."; render action: 'edit'}
-      failure.js { pp resource.errors; render action: 'panel', layout: nil}
+      failure.js { render action: 'panel', layout: nil}
     end
   end
   alias_method :create, :update

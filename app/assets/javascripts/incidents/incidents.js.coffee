@@ -231,20 +231,23 @@ class window.IncidentEditPanelController
       console.log(panels);
       panels = [].concat(panels);
       $('#edit-modal').modal('hide');
-
+      console.log(panels);
       panels.forEach (panel) =>
         this.updateTab(panel)
       if $('#inc-changes').length > 0
         this.updateTab('changes')
 
 
-  updateTab: (tabName) ->
-    #tabName = 'details'
-    return unless tabName
-    return unless $("#inc-#{tabName}").length > 0
-    $.ajax
-      url: window.location.href
-      data:
-        partial: tabName
-      success: (data, status, xhr) =>
-        $("#inc-#{tabName}").html(data)
+  updateTab: (value) ->
+    $targets = $("[data-refresh-name~=\"#{value}\"]")
+    console.log $targets
+    $targets.each (idx, target) =>
+      path = $(target).data('refresh')
+      return unless path
+      $.ajax
+        url: path
+        method: 'GET'
+        success: (data, status, xhr) =>
+          $(target).html(data)
+        error: (xhr, status, error) ->
+          console.log status, error

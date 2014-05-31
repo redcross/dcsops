@@ -9,7 +9,14 @@ class Incidents::HomeController < Incidents::BaseController
   end
 
   def redirect_to_chapter
-    redirect_to incidents_chapter_root_path(current_chapter), status: :moved_permanently
+    glob = params[:glob] || ""
+    new_path = incidents_chapter_root_path(current_chapter) + "/#{glob}"
+    match = Rails.application.routes.recognize_path(new_path)
+    if match && match[:action] != "redirect_to_chapter"
+      redirect_to new_path, status: :moved_permanently
+    else
+      raise ActiveRecord::RecordNotFound
+    end
   end
 
   def valid_partial? name

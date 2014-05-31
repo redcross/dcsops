@@ -1,6 +1,6 @@
 class Incidents::ResponderRecruitmentsController < Incidents::EditPanelController
   belongs_to_incident
-  self.panel_name='responders'
+  self.panel_name='available'
 
   protected
 

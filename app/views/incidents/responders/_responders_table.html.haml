@@ -26,6 +26,6 @@
   %tbody
     %tr
       %th(colspan=8) Decline
-  %tbody.responders-list
+  %tbody.responders-list.not-available
     - collection.reject(&:was_available).each do |ass|
       =person_row(ass)
