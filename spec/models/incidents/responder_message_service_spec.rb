@@ -11,6 +11,7 @@ describe Incidents::ResponderMessageService do
     subject.stub :short_url do |arg|
       arg
     end
+    incoming_message.stub save: true
   }
 
   describe '#reply' do

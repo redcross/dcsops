@@ -53,19 +53,21 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   def on_scene!(user=nil)
     update_attribute :on_scene_at, incident.chapter.time_zone.now unless on_scene_at
 
-    on_scene = incident.event_logs.where{event == 'dat_on_scene'}.exists?
-    unless on_scene
-      incident.event_logs.create!(event: 'dat_on_scene', event_time: incident.chapter.time_zone.now, message: "#{person.full_name} arrived on scene.  (Automatic message)", person: user)
-    end
+    create_event_unless_exists 'dat_on_scene', incident.chapter.time_zone.now, "#{person.full_name} arrived on scene.  (Automatic message)", user
   end
 
   def departed_scene!(user=nil)
     update_attribute :departed_scene_at, incident.chapter.time_zone.now unless departed_scene_at
 
-    responders_still_on_scene = incident.all_responder_assignments.where{departed_scene_at == nil}.select(&:on_scene).present?
-    departed_scene_exists = incident.event_logs.where{event == 'dat_departed_scene'}.exists?
-    if !responders_still_on_scene && !departed_scene_exists
-      incident.event_logs.create!(event: 'dat_departed_scene', event_time: incident.chapter.time_zone.now, message: "#{person.full_name} was the last to depart the scene.  (Automatic message)", person: user)
+    responders_still_on_scene = incident.all_responder_assignments.where{departed_scene_at == nil}.on_scene.exists?
+    if !responders_still_on_scene
+     create_event_unless_exists('dat_departed_scene', incident.chapter.time_zone.now, "#{person.full_name} was the last to depart the scene.  (Automatic message)", user)
+    end
+  end
+
+  def create_event_unless_exists event, time, message, user
+    unless incident.event_logs.where(event: event).exists?
+      incident.event_logs.create!(event: event, event_time: time, message: message, person: user)
     end
   end
 end

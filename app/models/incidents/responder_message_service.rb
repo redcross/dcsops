@@ -16,24 +16,25 @@ class Incidents::ResponderMessageService
     @incoming = message
   end
 
+  def assign_incident inc
+    @incident = incoming.incident = response.incident = inc
+  end
+
   def reply
     @response = Incidents::ResponderMessage.new chapter: incoming.chapter, person: incoming.person
     incoming.acknowledged = true
 
     if @assignment = open_assignment_for_person(incoming.person)
-      @incident = incoming.incident = response.incident = assignment.incident
+      assign_incident assignment.incident
       handle_command incoming.message.downcase, ASSIGNMENT_MATCHERS
     elsif @recruitment = open_recruitment_for_person(incoming.person)
-      @incident = incoming.incident = response.incident = recruitment.incident
+      assign_incident recruitment.incident
       handle_command incoming.message.downcase, RECRUITMENT_MATCHERS
     else
       response.message = "You are not currently assigned to an incident response."
-      return response
     end
 
-    
     incoming.save
-
     response
   end
 

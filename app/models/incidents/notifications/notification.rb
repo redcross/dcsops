@@ -47,12 +47,16 @@ module Incidents::Notifications
       end
     end
 
-    def plan_messages roles
-      messages = roles.flat_map do |data|
+    def flatten roles
+      roles.flat_map do |data|
         data[:people].map do |person|
           data.slice(:template, :use_sms).merge(person: person)
         end
       end
+    end
+
+    def plan_messages roles
+      messages = flatten roles
 
       # Uniq messages, preferring certain templates
       messages.group_by{|d| d[:person] }.map do |person, data|

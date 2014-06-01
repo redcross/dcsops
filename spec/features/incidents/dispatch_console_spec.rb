@@ -30,7 +30,7 @@ describe "Incident Dispatch Console" do
     @outbound_messages = outbound_messages = []
     client = double(:sms_client)
     client.stub :send_message do |message|
-      puts "SMS: #{message.message}"
+      #puts "SMS: #{message.message}"
       outbound_messages << message.message
     end
     Incidents::SMSClient.stub(new: client)

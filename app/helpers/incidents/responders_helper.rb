@@ -44,17 +44,19 @@ module Incidents::RespondersHelper
   def recruit_action person, editable
     recruitment = recruitments[person.id].try(:first)
     if recruitment
-      if recruitment.unavailable?
-        content_tag(:span, "Not Available", class: "text-danger")
-      elsif recruitment.available?
-        content_tag(:span, "Available", class: "text-success")
-      else
-        "Message Sent"
-      end
+      existing_recruit_status recruitment
+    elsif parent.chapter.incidents_enable_messaging && person.sms_addresses.present? && editable
+      link_to 'Send SMS', incidents_chapter_incident_responder_recruitments_path(parent.chapter, parent, person_id: person.id), method: :post, remote: true, class: 'btn btn-mini'
+    end
+  end
+
+  def existing_recruit_status recruitment
+    if recruitment.unavailable?
+      content_tag(:span, "Not Available", class: "text-danger")
+    elsif recruitment.available?
+      content_tag(:span, "Available", class: "text-success")
     else
-      if parent.chapter.incidents_enable_messaging
-        link_to 'Send SMS', incidents_chapter_incident_responder_recruitments_path(parent.chapter, parent, person_id: person.id), method: :post, remote: true, class: 'btn btn-mini' if person.sms_addresses.present? && editable
-      end
+      "Message Sent"
     end
   end
 

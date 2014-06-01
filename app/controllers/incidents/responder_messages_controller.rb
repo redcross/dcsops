@@ -5,16 +5,13 @@ class Incidents::ResponderMessagesController < Incidents::EditPanelController
   responders :partial
 
   def acknowledge
-    if params[:save_in_timeline]
-      log_message = "SMS From #{resource.person.full_name}: #{resource.message}"
-      parent.event_logs.create event: 'note', event_time:resource.created_at, person: current_user, message: log_message
-    end
+    save_in_timeline if params[:save_in_timeline]
     resource.update_attribute :acknowledged, true
 
     if params[:commit] == 'Reply'
       redirect_to action: :new, recipient: resource.person_id
     else
-    # Let the EditablePanelResponder take care of the normal render/redirect
+      # Let the EditablePanelResponder take care of the normal render/redirect
       respond_with resource, location: parent
     end
     Incidents::UpdatePublisher.new(parent.chapter, parent).publish_incoming
@@ -26,25 +23,31 @@ class Incidents::ResponderMessagesController < Incidents::EditPanelController
 
   protected
 
+  def save_in_timeline
+    log_message = "SMS From #{resource.person.full_name}: #{resource.message}"
+    parent.event_logs.create event: 'note', event_time:resource.created_at, person: current_user, message: log_message
+  end
+
   def create_resource resource
     if resource.person_id.nil?
       to_send = all_recipients.map(&:person).map{|recipient| resource.dup.tap{|r| r.person = recipient }}
-
-      # Just make sure everything but person is good
-      resource.valid?
-      resource.errors.delete :person_id
-      resource.errors.delete :person
-      return false unless resource.errors.blank?
     else
       to_send = [resource]
     end
 
-    if to_send.all?{|msg| super(msg)}
+    if resource_valid_except_person? && to_send.all?{|msg| super(msg)}
       to_send.each{|msg| send_resource msg}
       true
     else
       false
     end
+  end
+
+  def resource_valid_except_person?
+    resource.valid?
+    resource.errors.delete :person_id
+    resource.errors.delete :person
+    resource.errors.blank?
   end
 
   def all_recipients

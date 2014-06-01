@@ -33,16 +33,15 @@ class Incidents::RespondersController < Incidents::BaseController
 
   def update_status
     new_status = params[:status]
-    if %w(dispatched on_scene departed_scene).include? new_status
-      val = resource.send("#{new_status}_at")
-      resource.send("#{new_status}_at=", val || current_chapter.time_zone.now)
-      resource.save
-    end
-    if new_status == 'on_scene'
+    case new_status
+    when 'dispatched'
+      resource.dispatched!
+    when 'on_scene'
       resource.on_scene!
-    elsif new_status == 'departed_scene'
+    when 'departed_scene'
       resource.departed_scene!
     end
+
     Incidents::UpdatePublisher.new(parent.chapter, parent).publish_responders
     respond_with resource, location: smart_resource_url do |fmt|
       fmt.js { render action: :update }
@@ -60,15 +59,19 @@ class Incidents::RespondersController < Incidents::BaseController
     Incidents::UpdatePublisher.new(parent.chapter, parent).publish_responders
     return unless resource.was_available
 
-    if params[:send_assignment_email]
-      Incidents::RespondersMailer.assign_email(resource).deliver
-      flash[:notice] = 'Sent assignment email.'
-    end
-    if params[:send_assignment_sms] and resource.person.sms_addresses.present?
-      message = build_assignment_sms_message
-      sms_client.send_message(message)
-      flash[:notice] = 'Sent assignment SMS.'
-    end
+    send_assignment_email if params[:send_assignment_email]
+    send_assignment_sms if params[:send_assignment_sms] and resource.person.sms_addresses.present?
+  end
+
+  def send_assignment_email
+    Incidents::RespondersMailer.assign_email(resource).deliver
+    flash[:notice] = 'Sent assignment email.'
+  end
+
+  def send_assignment_sms
+    message = build_assignment_sms_message
+    sms_client.send_message(message)
+    flash[:notice] = 'Sent assignment SMS.'
   end
 
   def sms_client
