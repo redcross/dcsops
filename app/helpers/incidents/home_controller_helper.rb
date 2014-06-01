@@ -1,17 +1,17 @@
 module Incidents::HomeControllerHelper
   include Exposure
   expose(:num_incidents_to_link) do
-    Incidents::CasIncident.to_link_for_chapter(@chapter).count
+    Incidents::CasIncident.to_link_for_chapter(scope.chapter).count
   end
 
   def stats(date_range)
-    scope = Incidents::Incident.for_chapter(@chapter).where{date.in(date_range)}.valid
-    scope = scope.with_status 'closed' if @chapter.incidents_report_editable
-    scope.incident_stats
+    stats = scope.incidents.where{date.in(date_range)}.valid
+    stats = stats.with_status 'closed' if current_chapter.incidents_report_editable
+    stats.incident_stats
   end
 
   expose :incident_stats_boxes do
-    today = @chapter.time_zone.today
+    today = current_chapter.time_zone.today
     month_begin = today.at_beginning_of_month
     last_month = month_begin.last_month
 

@@ -7,6 +7,7 @@ describe "Invalid Incident Report" do
     grant_role! 'submit_incident_report'
 
     @chapter = @person.chapter
+    FactoryGirl.create :incidents_scope, chapter: @person.chapter
     @incident = FactoryGirl.create :raw_incident, chapter: @person.chapter, area: @person.counties.first
 
     visit "/incidents/#{@chapter.url_slug}"

@@ -1,41 +1,44 @@
 .row
-  .col-sm-4
-    %ul.nav.nav-tabs.nav-stacked.nav-tabs-small
-      -if can? :needs_report, Incidents::Incident
-        %li
-          %a{href: needs_report_incidents_chapter_incidents_path(@chapter)}
-            Submit Incident Report
-            %i.fa.fa-chevron-right
-      -if current_chapter.incidents_use_global_log && can?(:read, Incidents::EventLog)
-        %li
-          =link_to incidents_chapter_event_logs_path(@chapter) do
-            ECC Log
-            %i.fa.fa-chevron-right
-      -if can? :link_cas, Incidents::Incident
-        %li
-          %a{href: incidents_chapter_cas_link_index_path(@chapter)}
-            Link CAS Incidents
-            -if num_incidents_to_link > 0
-              (#{num_incidents_to_link})
-            %i.fa.fa-chevron-right
-      -if can? :read, Incidents::CasIncident
-        %li
-          %a{href: incidents_chapter_cas_incidents_path(@chapter)}
-            Incident Tracker
-            %i.fa.fa-chevron-right
-      -if can? :create, Incidents::NotificationSubscription.new(person: current_user, notification_type: 'report')
-        %li
-          %a{href: incidents_chapter_report_subscription_path(@chapter, current_user)}
-            Daily/Weekly Report
-            %i.fa.fa-chevron-right
-      -if can? :show, :responders
-        %li
-          %a{href: incidents_chapter_responders_path(@chapter)}
-            Responder History
-            %i.fa.fa-chevron-right
-  .col-sm-8
+  - menu_col = editable? ? 'col-sm-4' : ''
+  - stats_col = editable? ? 'col-sm-8' : 'col-sm-12'
+  %div(class=menu_col)
+    -if editable?
+      %ul.nav.nav-tabs.nav-stacked.nav-tabs-small
+        -if can? :needs_report, Incidents::Incident
+          %li
+            %a{href: needs_report_incidents_chapter_incidents_path(scope)}
+              Submit Incident Report
+              %i.fa.fa-chevron-right
+        -if current_chapter.incidents_use_global_log && can?(:read, Incidents::EventLog)
+          %li
+            =link_to incidents_chapter_event_logs_path(scope) do
+              ECC Log
+              %i.fa.fa-chevron-right
+        -if can? :link_cas, Incidents::Incident
+          %li
+            %a{href: incidents_chapter_cas_link_index_path(scope)}
+              Link CAS Incidents
+              -if num_incidents_to_link > 0
+                (#{num_incidents_to_link})
+              %i.fa.fa-chevron-right
+        -if can? :read, Incidents::CasIncident
+          %li
+            %a{href: incidents_chapter_cas_incidents_path(scope)}
+              Incident Tracker
+              %i.fa.fa-chevron-right
+        -if can? :create, Incidents::NotificationSubscription.new(person: current_user, notification_type: 'report')
+          %li
+            %a{href: incidents_chapter_report_subscription_path(scope, current_user)}
+              Daily/Weekly Report
+              %i.fa.fa-chevron-right
+        -if can? :show, :responders
+          %li
+            %a{href: incidents_chapter_responders_path(scope)}
+              Responder History
+              %i.fa.fa-chevron-right
+  %div(class=stats_col)
     %h1.center
-      #{@chapter.short_name} DAT Incidents
+      #{scope.short_name} DAT Incidents
     %table(style="width: 100%")
       %tr
         - incident_stats_boxes.each_with_index do |(title, stats), idx|
@@ -59,10 +62,10 @@
       =render 'recent_table'
     -if can? :index, Incidents::Incident
       %h5
-        =link_to 'More Incidents&hellip;'.html_safe, incidents_chapter_incidents_path(@chapter)
+        =link_to 'More Incidents&hellip;'.html_safe, incidents_chapter_incidents_path(scope)
     -if can? :read_case_details, Incidents::Incident and current_chapter.incidents_report_editable
       %h5
-        =link_to 'Current Activity&hellip;'.html_safe, activity_incidents_chapter_incidents_path(@chapter)
+        =link_to 'Current Activity&hellip;'.html_safe, activity_incidents_chapter_incidents_path(scope)
 
   .col-sm-7.col-md-8
     .map-container
@@ -71,7 +74,7 @@
 - content_for :footer_js do
   = google_maps_javascript
   :javascript
-    config = #{map_config(@chapter).to_json};
+    config = #{map_config(scope).to_json};
     allIncidentsMapController = new AllIncidentsMapController(#{map_json_for(recent_incidents).to_json}, config);
   =chapter_goinstant_setup(current_chapter)
 

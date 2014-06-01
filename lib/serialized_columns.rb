@@ -45,7 +45,7 @@ module SerializedColumns
     end
 
     def content_columns
-      super.reject{|c| store_attribute_columns.include? c.name }
+      super.reject{|c| store_attribute_columns.include? c.name.to_sym }
     end
 
     def columns

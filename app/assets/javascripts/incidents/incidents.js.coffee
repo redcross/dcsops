@@ -144,6 +144,8 @@ class window.AllIncidentsHeatmapController
     dom = $('.all-incidents-map')[0]
     @map = MapFactory.createMap dom, config,
       draggable: true
+      enableHover: false
+      disableDefaultUI: false
     @coder = new google.maps.Geocoder()
     @bounds = new google.maps.LatLngBounds
 

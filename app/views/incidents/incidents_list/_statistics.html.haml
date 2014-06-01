@@ -1,0 +1,58 @@
+.row
+  .col-sm-5
+    - stats = collection_for_stats.valid.incident_stats
+    - resources = collection_for_stats.valid.count_resources_old( Incidents::DatIncident::TRACKED_RESOURCE_TYPES )
+    %table.table.table-bordered
+      %tr
+        %th Responses
+        %td=num stats.incident_count
+      %tr
+        %th No Response
+        %td=num collection_for_stats.with_status('invalid').where{incident_type.in(['not_eligible_for_services', 'no_response_needed'])}.count
+      %tr
+        %th Clients
+        %td=num stats.client_count
+      %tr
+        %th Adults
+        %td=num stats.num_adults
+      %tr
+        %th Children
+        %td
+          =num stats.num_children
+          -if stats.num_children && stats.client_count
+            (#{number_to_percentage (stats.num_children.to_f/stats.client_count)*100, precision: 0})
+      %tr
+        %th Responder Miles Driven
+        %td=num total_miles_driven(collection_for_stats.valid)
+      %tr
+        %th Average Response Time
+        %td=average_response_time(collection_for_stats.valid)
+      -if current_chapter.incidents_collect_case_details
+        - assistance = assistance_totals(collection_for_stats.valid)
+        %tr
+          %th Assistance
+          %td=number_to_currency assistance.map(&:total_assistance).sum, precision: 0
+        %tr
+          %th Cases
+          %td=num assistance.map(&:num_cases).sum
+        %tr
+          - with_assistance = assistance.detect{|a| a.total_assistance > 0}
+          %th Case Average
+          %td
+            -if with_assistance
+              =number_to_currency with_assistance.total_assistance/with_assistance.num_cases, precision: 0
+      -else
+        %tr
+          %th Cases
+          %td=num stats.case_count
+      %tr
+        %th Items Given
+        %td.table-nested-container
+          %table.table.table-bordered.table-condensed.table-nested
+            - resources.each do |res, val|
+              - next unless val && val > 0
+              %tr
+                %th=res.titleize
+                %td=val
+  .col-sm-7
+    .all-incidents-map{style: "height: 500px"}

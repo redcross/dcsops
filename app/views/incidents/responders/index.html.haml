@@ -41,7 +41,7 @@
     $(function() {
       window.editPanelController = new IncidentEditPanelController();
       window.respondersController = new IncidentRespondersController();
-      respondersController.initMap(#{map_config.to_json}, $('.responder-map')[0]);
+      respondersController.initMap({}, $('.responder-map')[0]);
       respondersController.setIncidentLocation(#{parent.lat.to_json}, #{parent.lng.to_json});
       respondersController.loadTravelTimes();
       respondersController.mapResponders();

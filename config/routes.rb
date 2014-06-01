@@ -63,10 +63,11 @@ Scheduler::Application.routes.draw do
       root to: "home#root"
       get :operations, to: "home#operations"
       resources :event_logs
-      resources :incidents do
-        collection do
-          get :map
-        end
+      controller :incidents_list do
+        get 'incidents', as: :incidents, action: :index
+        get 'incidents/map', as: :incidents_map, action: :map
+      end
+      resources :incidents, except: :index do
 
         resource :dat, controller: :dat_incidents
         resource :notification, only: [:new, :create] do

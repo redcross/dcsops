@@ -8,6 +8,7 @@ window.MapFactory =
     draggable: false
     disableDefaultUI: true
     styles: this.stylers
+    enableHover: true
 
   stylers: [
       {
@@ -37,7 +38,8 @@ window.MapFactory =
 
     map = new google.maps.Map(dom, mapOpts)
 
-    this.setupHover(map, dom)
+    if mapOpts.enableHover
+      this.setupHover(map, dom)
 
     return map
 

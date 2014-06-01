@@ -3,6 +3,8 @@ class Incidents::Ability
 
   def initialize(person)
     # This controls what chapters this person can access in the URL
+    can :read, Incidents::Scope#, chapter_id: person.chapter_id
+
     can :read, Roster::Chapter, id: person.chapter_id
     can :read, Roster::Chapter do |chapter|
         chapter.incidents_delegate_chapter == person.chapter_id
@@ -64,4 +66,5 @@ class Incidents::Ability
     end
     
   end
+
 end

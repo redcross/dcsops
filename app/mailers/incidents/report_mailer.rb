@@ -105,7 +105,7 @@ private
   }
 
   expose(:incident_statistics) {
-    Incidents::Incident.count_resources(@incident_scope, chapter.incidents_resources_tracked_array)
+    @incident_scope.count_resources(chapter.incidents_resources_tracked_array)
   }
 
   expose(:map_width) { 250 }

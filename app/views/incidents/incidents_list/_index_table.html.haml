@@ -14,7 +14,7 @@
     %tr
       %td
         =link_to resource_path(resource) do
-          %span.label{class: (case resource.status; when 'open' then 'label-success'; when 'closed' then 'label-info'; when 'invalid' then 'label-important'; end)}=resource.humanized_status
+          %span.label{class: (case resource.status; when 'open' then 'label-success'; when 'closed' then 'label-info'; when 'invalid' then 'label-danger'; end)}=resource.humanized_status
       %td{class: "incident-number-#{resource.status}"}
         = link_to resource.incident_number, resource_path(resource)
       %td= resource.date

@@ -7,6 +7,7 @@ describe "View Timeline" do
     @chapter = @person.chapter
     @chapter.incidents_use_global_log = true
     @chapter.save!
+    FactoryGirl.create :incidents_scope, chapter: @person.chapter
 
     @incident = FactoryGirl.create :raw_incident, chapter: @person.chapter, area: @person.counties.first, date: Date.current
     @log = FactoryGirl.create :event_log, chapter: @chapter, person: @person, incident: @incident

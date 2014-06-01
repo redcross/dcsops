@@ -10,7 +10,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   helper Incidents::MapHelper
   responders :partial
 
-  include Searchable
+  actions :all, except: :index
 
   def self.has_many *names
     names = names.flatten
@@ -33,14 +33,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
   end
   has_many :responder_messages, :dat, :event_logs, :responders, :attachments, :notifications, :cases
-
   custom_actions collection: [:needs_report, :activity, :map], resource: [:mark_invalid, :close, :reopen]
-
-  has_scope :in_area, as: :area_id_eq
-  has_scope :county_state_eq do |controller, scope, val|
-    county_name, state_name = val.split ", "
-    scope.where{(lower(county) == county_name.downcase) & (state == state_name)}
-  end
 
   def create
     create! { after_create_path }
@@ -88,15 +81,6 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
   end
 
-  def map
-    params[:q] = {
-      date_gteq: '2012-07-01',
-      lat_not_null: true,
-      lng_not_null: true
-    }.merge(params[:q] || {})
-    params[:page] = 'all'
-  end
-
   def valid_partial? partial
     tab_authorized? partial
   end
@@ -134,19 +118,6 @@ class Incidents::IncidentsController < Incidents::BaseController
       end
     end
 
-    def collection
-      @_incidents ||= begin
-        scope = apply_scopes(super).order{[date.desc, incident_number.desc]}#.preload{[area, dat_incident, team_lead.person]}
-        scope = scope.page(params[:page]) if should_paginate
-        scope
-      end
-    end
-
-    def collection_for_stats
-      @stats_collection ||= collection.unscope(:limit, :offset, :order, :includes, :joins)
-    end
-    helper_method :collection_for_stats
-
     expose(:needs_report_collection) { 
       Incidents::Incident.for_chapter(delegated_chapter_ids).needs_incident_report.includes{area}.order{incident_number} 
     }
@@ -165,16 +136,6 @@ class Incidents::IncidentsController < Incidents::BaseController
       people = Hash[Roster::Person.where{id.in(ids)}.map{|p| [p.id, p]}]
     }
     expose(:show_version_root) { params[:action] == 'activity' }
-
-    def default_search_params
-      {status_in: ['open', 'closed'], date_gteq: FiscalYear.current.start_date}
-    end
-
-    def should_paginate; params[:page] != 'all'; end
-
-    def end_of_association_chain
-      super#.where{chapter_id == my{current_chapter}}
-    end
 
     def build_resource
       super.tap{|i| 
@@ -201,11 +162,6 @@ class Incidents::IncidentsController < Incidents::BaseController
       [attrs]
     end
 
-    def original_url
-      request.original_url
-    end
-    helper_method :original_url
-
     def delegated_chapter_ids
       @delgated_chapters ||= [@chapter.id] + Roster::Chapter.with_incidents_delegate_chapter_value(@chapter.id).ids
     end
@@ -218,5 +174,10 @@ class Incidents::IncidentsController < Incidents::BaseController
     def publisher
       @publisher ||= Incidents::UpdatePublisher.new(resource.chapter, resource)
     end
+
+    def scope
+      @scope ||= Incidents::Scope.for_chapter(resource.chapter_id)
+    end
+    helper_method :scope
 
 end

@@ -6,6 +6,10 @@ describe Incidents::WeeklyReportJob do
   let(:job) { Incidents::WeeklyReportJob.new(chapter.id).tap{|j| j.stub chapter: chapter } }
   let(:today) { chapter.time_zone.today }
 
+  after :each do
+    ActionMailer::Base.deliveries.clear
+  end
+
   describe "#current_send_date" do
     after(:each) { Delorean.back_to_1985 }
     it "is today if the cutoff is nil" do

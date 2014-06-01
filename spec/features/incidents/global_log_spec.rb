@@ -7,6 +7,7 @@ describe "View Global Log" do
     @chapter = @person.chapter
     @chapter.incidents_use_global_log = true
     @chapter.save!
+    FactoryGirl.create :incidents_scope, chapter: @person.chapter
 
     @log = FactoryGirl.create :event_log, chapter: @chapter, person: @person
 

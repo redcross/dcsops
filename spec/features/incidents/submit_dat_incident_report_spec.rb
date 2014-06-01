@@ -7,6 +7,7 @@ describe "DAT Incident Report", versions: true do
     grant_role! 'submit_incident_report'
 
     @chapter = @person.chapter
+    FactoryGirl.create :incidents_scope, chapter: @person.chapter
 
     @team_lead = FactoryGirl.create :person, chapter: @person.chapter, counties: @person.counties
     @responder = FactoryGirl.create :person, chapter: @person.chapter, counties: @person.counties

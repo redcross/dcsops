@@ -1,0 +1,58 @@
+%h1 Listing #{pluralize collection.total_count, 'Incident'}
+
+.well#filter-form
+  =search_form_for search, url: url_for(), class: "form", style: "margin-bottom: 0" do |f|
+    - proto = Incidents::Incident.new chapter: current_chapter
+    /%table
+    /  %tr
+    .row.collapse
+      .col-sm-2=f.label :address_cont
+      .col-sm-2=f.label :city_cont
+      .col-sm-2=f.label :county_cont
+      .col-sm-2=f.label :date_gteq, 'After'
+      .col-sm-2=f.label :date_lteq, 'Before'
+    /%tr
+    .row
+      %div
+        .form-group
+          .col-sm-2
+            =f.text_field :address_cont, class: 'form-control', placeholder: 'Address'
+        .form-group
+          .col-sm-2
+            =f.text_field :city_cont,    class: 'form-control', placeholder: 'City'
+        .form-group
+          .col-sm-2
+            =f.text_field :county_cont,  class: 'form-control', placeholder: 'County'
+        .form-group
+          .col-sm-3
+            =f.date_field :date_gteq,    class: 'form-control', placeholder: 'After YYYY-MM-DD'
+        .form-group
+          .col-sm-3
+            =f.date_field :date_lteq,    class: 'form-control', placeholder: 'Before YYYY-MM-DD'
+    .row(style="margin-top: 15px")
+      .col-sm-5
+        =f.label :incident_type_in
+        =f.select :incident_type_in, options_from_collection_for_select(proto.humanized_incident_types, :value, :humanized, search.incident_type_in), {include_blank: true}, class: 'form-control'
+      .col-sm-4
+        =label_tag :show_statistics
+        =check_box_tag :show_statistics, '1', params[:show_statistics]
+        %br
+        =f.label :status_in
+        - proto.humanized_statuses.each do |status|
+          - id="q_status_in_#{status.value}"
+          =check_box_tag 'q[status_in][]', status.value, search.status_in.try(:include?, status.value), {id: id}
+          =label_tag id, status.humanized
+      .col-sm-2
+        =f.submit class: 'btn btn-primary'
+
+-if params[:show_statistics]
+  =render 'statistics'
+
+.incidents-table
+  =render 'index_table'
+
+- content_for :footer_js do
+  = google_maps_javascript
+  :javascript
+    config = #{map_config(scope).to_json};
+    allIncidentsMapController = new AllIncidentsHeatmapController(#{map_json_for(collection_for_stats).to_json}, 'marker', config);

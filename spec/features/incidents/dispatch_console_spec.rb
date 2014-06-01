@@ -7,6 +7,7 @@ describe "Incident Dispatch Console" do
     @chapter = @person.chapter
     @chapter.incidents_enable_dispatch_console = true
     @chapter.save!
+    FactoryGirl.create :incidents_scope, chapter: @person.chapter
     county = @person.counties.first
 
     @responders = (1..3).map{|x|

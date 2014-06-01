@@ -53,7 +53,7 @@
         });
       }
 
-      config = #{map_config.to_json};
+      config = #{map_config(scope).to_json};
       incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json}, config);
       editPanelController = new IncidentEditPanelController();
 

@@ -8,6 +8,7 @@ describe "Invalid Incident Report" do
     @chapter = @person.chapter
     @chapter.incidents_report_editable = true
     @chapter.save!
+    FactoryGirl.create :incidents_scope, chapter: @person.chapter
   end
 
   it "Should be submittable" do

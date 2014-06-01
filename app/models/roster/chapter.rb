@@ -17,9 +17,6 @@ class Roster::Chapter < ActiveRecord::Base
     url_slug || id
   end
 
-  serialized_accessor :config, :incidents_map_center_lat, :decimal
-  serialized_accessor :config, :incidents_map_center_lng, :decimal
-  serialized_accessor :config, :incidents_map_zoom, :integer
   serialized_accessor :config, :incidents_map_framing_points, :string
   serialized_accessor :config, :incidents_geocode_bounds, :string
   serialized_accessor :config, :incidents_resources_tracked, :string

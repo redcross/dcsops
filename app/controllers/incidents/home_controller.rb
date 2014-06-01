@@ -2,7 +2,7 @@ class Incidents::HomeController < Incidents::BaseController
   helper Incidents::MapHelper, Incidents::HomeControllerHelper
   responders :partial
   respond_to :html
-  load_and_authorize_resource :chapter, find_by: :url_slug, class: 'Roster::Chapter', except: :redirect_to_chapter
+  load_and_authorize_resource :scope, find_by: :url_slug, id_param: :chapter_id, class: 'Incidents::Scope', except: :redirect_to_chapter
 
   def root
     respond_with []
@@ -27,12 +27,18 @@ class Incidents::HomeController < Incidents::BaseController
 
   helper_method :recent_incidents
   expose(:recent_incidents) {
-    Incidents::Incident.for_chapter(@chapter).valid.includes{[dat_incident, event_logs]}.order(:date, :incident_number).reverse_order.limit(15)
+    scope.incidents.valid.includes{[dat_incident, event_logs]}.order(:date, :incident_number).reverse_order.limit(15)
   }
 
   def incident_path(inc)
-    incidents_chapter_incident_path(@chapter, inc)
+    incidents_chapter_incident_path(inc.chapter, inc)
   end
   helper_method :incident_path
+
+  attr_reader :scope
+  def editable?
+    scope.editable?
+  end
+  helper_method :scope, :editable?
 
 end

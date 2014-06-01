@@ -1,0 +1,49 @@
+- content_for :footer_js do
+  .fixed-map.all-incidents-map
+.map-filter-wrapper
+  .panel.panel-default
+    .panel-heading
+      =link_to '#', data: {target: ".panel-body", toggle: 'collapse'} do
+        Showing 
+        =pluralize collection.count, 'Incident'
+        %span.caret
+    .panel-body.collapse
+      =search_form_for search, html: {class: 'form-inline'}, url: '' do |f|
+        .field
+          %h5 Incident Number:
+          =f.text_field :incident_number_cont, class: "form-control input-sm input-block"
+        .field
+          %h5 County:
+          =f.select :area_id_eq, options_from_collection_for_select(current_chapter.counties, :id, :name, params[:q].try(:[], :area_id_eq)), {include_blank: true}, class: "form-control input-sm"
+        .field
+          %h5 City:
+          =f.text_field :city_cont, class: "form-control input-sm"
+        .field
+          %h5 Incidents Between
+          .input-group
+            %span.input-group-addon
+              %i.fa.fa-calendar
+            =f.text_field :date_gteq, class: "form-control input-sm", "data-provide" => "datepicker", "data-date-format" => "yyyy-mm-dd"
+          and
+          %br
+          .input-group
+            %span.input-group-addon
+              %i.fa.fa-calendar
+            =f.text_field :date_lteq, class: "form-control input-sm", "data-provide" => "datepicker", "data-date-format" => "yyyy-mm-dd"
+        .field
+          %h5 Display As:
+          %label.radio
+            =radio_button_tag :map_marker_type, 'marker', (params[:map_marker_type] == 'marker'), id: "map_marker_type_marker"
+            =label 'map_marker_type_marker', 'Marker'
+          %label.radio
+            =radio_button_tag :map_marker_type, 'heatmap', (params[:map_marker_type] != 'marker'), id: "map_marker_type_heatmap"
+            =label 'map_marker_type_heatmap', 'Heatmap'
+        
+        .field
+          %br
+          =f.submit 'Search', class: "btn btn-primary"
+
+- content_for :footer_js do
+  = google_maps_javascript('visualization')
+  :javascript
+    allIncidentsMapController = new AllIncidentsHeatmapController(#{map_json_for(collection).to_json}, #{(params[:map_marker_type] || 'heatmap').to_json}, #{map_config(scope).to_json}, {draggable: true})

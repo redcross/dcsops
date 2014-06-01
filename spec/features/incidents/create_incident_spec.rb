@@ -5,6 +5,7 @@ describe "Manually create incident" do
   it "Should be submittable" do
     grant_role! :submit_incident_report
     grant_role! :incidents_admin
+    FactoryGirl.create :incidents_scope, chapter: @person.chapter
 
     visit "/incidents/#{@person.chapter.url_slug}"
 

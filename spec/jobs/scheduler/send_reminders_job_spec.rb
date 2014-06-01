@@ -5,6 +5,10 @@ describe Scheduler::SendRemindersJob do
   let(:person) { mock_model Roster::Person, chapter: chapter }
   let(:job) { Scheduler::SendRemindersJob.new(chapter.id).tap{|j| j.stub chapter: chapter } }
 
+  after :each do
+    ActionMailer::Base.deliveries.clear
+  end
+
   it 'enqueues for active chapters' do
     Roster::Chapter.should_receive(:all).and_return([chapter])
     job = double(:job)

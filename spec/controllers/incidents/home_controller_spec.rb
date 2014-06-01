@@ -4,6 +4,7 @@ describe Incidents::HomeController do
   include LoggedIn
   before(:each) do
     @person.update_attribute :last_name, 'Laxson'
+    FactoryGirl.create :incidents_scope, chapter: @person.chapter
   end
 
   describe "GET 'root'" do
