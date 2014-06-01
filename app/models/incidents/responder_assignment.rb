@@ -45,6 +45,9 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   def self.for_incident inc
     where{incident_id == inc}
   end
+  def self.driving_distance
+    on_scene.pluck(:driving_distance).flatten.select(&:present?).map{|dist| [50, dist * 2].min}.sum.round
+  end
 
   def dispatched!(user=nil)
     update_attribute :dispatched_at, incident.chapter.time_zone.now unless dispatched_at

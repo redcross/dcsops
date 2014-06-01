@@ -20,15 +20,7 @@ module Incidents::IncidentsListHelper
   end
 
   def total_miles_driven(collection)
-    collection.joins{responder_assignments.person}.where{responder_assignments.role.in(Incidents::ResponderAssignment::ON_SCENE_ROLES)}
-      .where{{responder_assignments: {person: sift(:with_position)}} }
-      .select{
-        sum(least(degrees(acos(cos(radians(responder_assignments.person.lat)) *
-                               cos(radians(lat)) *
-                               cos(radians(responder_assignments.person.lng) - radians(lng)) +
-                               sin(radians(responder_assignments.person.lat)) *
-                               sin(radians(lat)))) * Geokit::Mappable::MILES_PER_LATITUDE_DEGREE * 2, 50)).as(:distance)
-      }.take.distance
+    Incidents::ResponderAssignment.where{incident_id.in(collection.select{id})}.was_available.driving_distance
   end
 
   def average_response_time(collection)
