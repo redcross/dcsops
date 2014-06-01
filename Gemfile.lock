@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/Sija/dotiw.git
+  revision: b109980005bf3114b8ebf876ef63173e451e0f67
+  specs:
+    dotiw (1.2)
+      actionpack (>= 3)
+      i18n
+
+GIT
   remote: git://github.com/activerecord-hackery/squeel.git
   revision: 2c4f90511d811032d8927028aa99343d2f9127b4
   specs:
@@ -489,6 +497,7 @@ DEPENDENCIES
   database_cleaner (~> 1.0.1)
   delayed_job_active_record
   delorean
+  dotiw!
   factory_girl_rails
   faker
   formtastic (~> 2.3.0rc3)

@@ -1,7 +1,7 @@
 .row
   .col-sm-5
     - stats = collection_for_stats.valid.incident_stats
-    - resources = collection_for_stats.valid.count_resources_old( Incidents::DatIncident::TRACKED_RESOURCE_TYPES )
+    - resources = collection_for_stats.valid.count_resources( Incidents::DatIncident::TRACKED_RESOURCE_TYPES )
     %table.table.table-bordered
       %tr
         %th Responses

@@ -21,3 +21,9 @@
 
 en:
   hello: "Hello world"
+
+  datetime:
+    dotiw:
+      words_connector: " "
+      two_words_connector: " "
+      last_word_connector: " "

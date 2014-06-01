@@ -35,6 +35,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     if resource.close!
       redirect_to resource_path
       publisher.publish_details
+      Incidents::Notifications::Notification.create_for_event resource, 'incident_report_filed'
     else
       redirect_to edit_resource_dat_path(status: 'closed')
     end

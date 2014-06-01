@@ -40,10 +40,7 @@ module Incidents::IncidentsListHelper
 
     if durations.present?
       mean = durations.sum / durations.size
-      seconds = mean % 3600
-      minutes = (seconds / 60).floor
-      hours = ((mean - seconds) / 3600).floor
-      "#{pluralize hours, 'hour'} #{pluralize minutes, 'minute'}"
+      distance_of_time mean, include_seconds: false
     end
   end
 end
