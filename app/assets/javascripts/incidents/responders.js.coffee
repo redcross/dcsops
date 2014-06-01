@@ -7,9 +7,10 @@ class window.IncidentRespondersController
     return unless @map? # If loading the maps library failed somehow
     @coder = new google.maps.Geocoder()
     @incidentMarker = new google.maps.Marker
-    @bounds = new google.maps.LatLngBounds new google.maps.LatLng(config.geocode_bounds[0], config.geocode_bounds[1]), new google.maps.LatLng(config.geocode_bounds[2], config.geocode_bounds[3])
 
-    @map.fitBounds @bounds
+    if config.geocode_bounds?
+      @bounds = new google.maps.LatLngBounds new google.maps.LatLng(config.geocode_bounds[0], config.geocode_bounds[1]), new google.maps.LatLng(config.geocode_bounds[2], config.geocode_bounds[3])
+      @map.fitBounds @bounds
 
     @responderIcon =
       url: 'https://mts.googleapis.com/vt/icon/name=icons/spotlight/spotlight-waypoint-a.png&text=%20&psize=16&font=fonts/Roboto-Regular.ttf&color=ffff3333&ax=44&ay=48&scale=2'

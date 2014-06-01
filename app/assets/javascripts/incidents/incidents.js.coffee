@@ -60,7 +60,8 @@ class window.IncidentLocationController
     return unless window.google
     @coder = new google.maps.Geocoder()
     @marker = new google.maps.Marker
-    @bounds = new google.maps.LatLngBounds new google.maps.LatLng(@config.geocode_bounds[0], @config.geocode_bounds[1]), new google.maps.LatLng(@config.geocode_bounds[2], @config.geocode_bounds[3])
+    if @config.geocode_bounds?
+      @bounds = new google.maps.LatLngBounds new google.maps.LatLng(@config.geocode_bounds[0], @config.geocode_bounds[1]), new google.maps.LatLng(@config.geocode_bounds[2], @config.geocode_bounds[3])
 
   inputField: (fname) ->
     $("[id$=incident_#{fname}],[id$=incident_attributes_#{fname}]")
