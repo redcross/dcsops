@@ -1,10 +1,14 @@
-
+- logs = resource.event_logs.to_a
+-#- missing_timeline_entries.each do |event|
+-#  - logs << resource.event_logs.build event: event
 %h3 
   Timeline
   -if can?(:create, resource.event_logs.build) && resource.open_incident?
     %button.btn.btn-primary{data: {edit_panel: new_resource_event_log_path}} Add Log
 
-- resource.event_logs(true).each do |evt|
+
+
+- logs.each do |evt|
   %h5
     =evt.event_time.to_s :time
     \-
@@ -22,5 +26,12 @@
     %pre=evt.message
   -else
     =simple_format evt.message
-%hr
 
+-if inline_editable?
+  - missing_timeline_entries.reverse.each do |event|
+    - log = resource.event_logs.build event: event
+    %h5.text-danger
+      =log.humanized_event
+      \-
+      Not Entered Yet
+    =link_to "Log This Event", new_resource_event_log_path(incidents_event_log: {event: event}), data: {edit_panel: resource_event_logs_path(incidents_event_log: {event: event})}

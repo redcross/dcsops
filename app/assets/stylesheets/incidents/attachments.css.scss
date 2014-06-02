@@ -1,0 +1,54 @@
+.drag-top, .drag-left, .drag-bottom, .drag-right {
+  position: fixed;
+  display: none;
+  background-color: rgba(66,139,202,1);
+
+  body.drag-hover & {
+    display: block;
+  }
+}
+
+$frame-width: 10px;
+@mixin frame-gradient($start, $stop) {
+  // needs latest Compass, add '@import "compass"' to your scss
+  
+  background: -moz-linear-gradient($start,    rgba(66,139,202,1) 0%,rgba(66,139,202,0) 100%); /* FF3.6+ */
+  background: -webkit-linear-gradient($start, rgba(66,139,202,1) 0%,rgba(66,139,202,0) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient($start,      rgba(66,139,202,1) 0%,rgba(66,139,202,0) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient($start,     rgba(66,139,202,1) 0%,rgba(66,139,202,0) 100%); /* IE10+ */
+  background: linear-gradient(to $stop,       rgba(66,139,202,1) 0%,rgba(66,139,202,0) 100%); /* W3C */
+
+}
+
+.drag-top {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $frame-width;
+  @include frame-gradient(top, bottom);
+}
+
+.drag-right {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: $frame-width;
+  @include frame-gradient(right, left);
+}
+
+.drag-left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: $frame-width;
+  @include frame-gradient(left, right);
+}
+
+.drag-bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: $frame-width;
+  @include frame-gradient(bottom, top);
+}
+

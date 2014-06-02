@@ -4,6 +4,10 @@ class Incidents::AttachmentsController < Incidents::EditPanelController
 
   protected
 
+  def create_resource res
+    super(res).tap{ pp res.errors }
+  end
+
   def resource_params
     request.get? ? [] : [params.require(:incidents_attachment).permit(:file, :attachment_type, :name, :description)]
   end

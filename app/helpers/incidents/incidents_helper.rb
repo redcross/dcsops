@@ -55,4 +55,10 @@ module Incidents::IncidentsHelper
     end
   end
 
+  def missing_timeline_entries
+    needed = resource.chapter.incidents_timeline_mandatory_array
+    have = resource.event_logs.map(&:event)
+    needed - have
+  end
+
 end

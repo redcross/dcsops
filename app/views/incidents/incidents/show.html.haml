@@ -38,6 +38,11 @@
   .modal-footer
     %a.btn.btn-primary(data-dismiss="modal") Close
 
+.drag-top
+.drag-right
+.drag-left
+.drag-bottom
+
 - content_for :footer_js do
   = google_maps_javascript
   
@@ -54,9 +59,9 @@
       }
 
       config = #{map_config(scope).to_json};
-      incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json}, config);
-      editPanelController = new IncidentEditPanelController();
-
+      window.incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json}, config);
+      window.editPanelController = new IncidentEditPanelController();
+      window.attachmentController = new AttachmentsDragAndDropController(#{resource_attachments_path(format: :js).to_json});
       
     });
 

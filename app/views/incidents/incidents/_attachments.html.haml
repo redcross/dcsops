@@ -9,7 +9,7 @@
     \-
     =att.humanized_attachment_type
     -if can? :update, att
-      %small=link_to '(edit)', edit_resource_attachment_path(resource, att), data: {edit_panel: edit_resource_attachment_path(resource, att)}
+      %small=link_to '(edit)', edit_resource_attachment_path(att), data: {edit_panel: edit_resource_attachment_path(att)}
 
   -if att.image?
     =link_to att.file.expiring_url(3600), data: {image_well: true} do
