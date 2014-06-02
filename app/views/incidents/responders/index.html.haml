@@ -18,7 +18,8 @@
     .col-sm-12
       %h4 
         Available Responders
-        %small=link_to 'Add Other Person', new_resource_path
+        -if can? :create, collection.build
+          %small=link_to 'Add Other Person', new_resource_path
         -#=form_tag '', method: :get, class: 'form-inline', style: 'display: inline' do
         -#  =label_tag :ignore_area
         -#  =check_box_tag :ignore_area, '1', ignore_area

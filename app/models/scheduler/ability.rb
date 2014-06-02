@@ -1,78 +1,68 @@
 class Scheduler::Ability
   include CanCan::Ability
 
+  attr_reader :person
+
   def initialize(person)
+    @person = person
 
-    county_ids = person.county_ids
-
-    #can :read, Roster::Person, id: person.id
-    #can :read, Scheduler::ShiftAssignment, shift: {county_id: county_ids}
-    can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], {id: person.id}
-    can [:read, :destroy, :create, :swap], Scheduler::ShiftAssignment, person: {id: person.id}
-    can :manage, Scheduler::ShiftSwap, assignment: {person: {chapter_id: person.chapter_id}}
+    personal
 
     county_ids = person.scope_for_role('county_roster')
-    if county_ids.present?
-        can :index, [Scheduler::FlexSchedule], {person: {county_memberships: {county_id: county_ids}}}
-        can :index, Roster::Person, {county_memberships: {county_id: county_ids}}
-    end
+    county_roster(county_ids) if county_ids.present?
 
     admin_county_ids = person.scope_for_role('county_scheduler')
     if person.has_role 'chapter_scheduler'
-        admin_county_ids = admin_county_ids + person.chapter.county_ids
+        admin_county_ids.concat person.chapter.county_ids
     end
     admin_county_ids.uniq!
-    if admin_county_ids.present?
-        can :read, Roster::Person, county_memberships: {county_id: admin_county_ids}
-        can :manage, Scheduler::ShiftAssignment, {person: {county_memberships: {county_id: admin_county_ids}}}
-    end
+    scheduler admin_county_ids if admin_county_ids.present?
 
-    if person.has_role 'chapter_dat_admin'
-        can :read, Roster::Person, chapter_id: person.chapter_id
-        can :manage, Scheduler::ShiftAssignment, {person: {chapter_id: person.chapter_id}}
-        can :manage, Scheduler::DispatchConfig, id: person.chapter.county_ids
-        can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], person: {chapter_id: person.chapter_id}
-        can [:read, :update, :update_shifts], Scheduler::Shift, shift_group: {chapter_id: person.chapter_id}
+    chapter_dat_admin person.chapter_id if person.has_role 'chapter_dat_admin'
 
-        can :receive_admin_notifications, Scheduler::NotificationSetting, id: person.id
-    end
+    dat_admin_counties = person.scope_for_role('county_dat_admin')
+    county_dat_admin dat_admin_counties if dat_admin_counties.present? # is dat county admin
 
-    admin_county_ids = person.scope_for_role('county_dat_admin')
-    if admin_county_ids.present? # is dat county admin
-        can :read, Roster::Person, county_memberships: {county_id: admin_county_ids}
-        can :manage, Scheduler::ShiftAssignment, {person: {county_memberships: {county_id: admin_county_ids}}}
-        can :manage, Scheduler::DispatchConfig, id: admin_county_ids
-        can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], person: {county_memberships: {county_id: admin_county_ids}}
-        can [:read, :update, :update_shifts], Scheduler::Shift, county_id: admin_county_ids
+    read_only if ENV['READ_ONLY']
+  end
 
-        can :receive_admin_notifications, Scheduler::NotificationSetting, id: person.id
-    end
+  def personal
+    can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], {id: person.id}
+    can [:read, :destroy, :create, :swap], Scheduler::ShiftAssignment, person: {id: person.id}
+    can :manage, Scheduler::ShiftSwap, assignment: {person: {chapter_id: person.chapter_id}}
+  end
 
-    # Define abilities for the passed in user here. For example:
-    #
-    #   user ||= User.new # guest user (not logged in)
-    #   if user.admin?
-    #     can :manage, :all
-    #   else
-    #     can :read, :all
-    #   end
-    #
-    # The first argument to `can` is the action you are giving the user 
-    # permission to do.
-    # If you pass :manage it will apply to every action. Other common actions
-    # here are :read, :create, :update and :destroy.
-    #
-    # The second argument is the resource the user can perform the action on. 
-    # If you pass :all it will apply to every resource. Otherwise pass a Ruby
-    # class of the resource.
-    #
-    # The third argument is an optional hash of conditions to further filter the
-    # objects.
-    # For example, here the user can only update published articles.
-    #
-    #   can :update, Article, :published => true
-    #
-    # See the wiki for details:
-    # https://github.com/ryanb/cancan/wiki/Defining-Abilities
+  def scheduler ids
+    can :read, Roster::Person, county_memberships: {county_id: ids}
+    can :manage, Scheduler::ShiftAssignment, {person: {county_memberships: {county_id: ids}}}
+  end
+
+  def county_roster ids
+    can :index, [Scheduler::FlexSchedule], {person: {county_memberships: {county_id: ids}}}
+    can :index, Roster::Person, {county_memberships: {county_id: ids}}
+  end
+
+  def chapter_dat_admin id
+    can :read, Roster::Person, chapter_id: id
+    can :manage, Scheduler::ShiftAssignment, {person: {chapter_id: id}}
+    can :manage, Scheduler::DispatchConfig, id: id
+    can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], person: {chapter_id: id}
+    can [:read, :update, :update_shifts], Scheduler::Shift, shift_group: {chapter_id: id}
+
+    can :receive_admin_notifications, Scheduler::NotificationSetting, id: person.id
+  end
+
+  def county_dat_admin ids
+    can :read, Roster::Person, county_memberships: {county_id: ids}
+    can :manage, Scheduler::ShiftAssignment, {person: {county_memberships: {county_id: ids}}}
+    can :manage, Scheduler::DispatchConfig, id: ids
+    can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], person: {county_memberships: {county_id: ids}}
+    can [:read, :update, :update_shifts], Scheduler::Shift, county_id: ids
+
+    can :receive_admin_notifications, Scheduler::NotificationSetting, id: person.id
+  end
+
+  def read_only
+    cannot [:update, :create, :destroy], :all
   end
 end

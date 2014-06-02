@@ -19,8 +19,10 @@
         %td=inc.date.to_s :dow_short
         %td=time_ago_in_words inc.created_at
         %td
-          %a.btn.btn-primary{href: inc.submit_path} Submit Incident Information
-          %a.btn.btn-danger{href: inc.invalid_path} No Response / Mark Invalid
+          -if can? :update, inc
+            %a.btn.btn-primary{href: inc.submit_path} Submit Incident Information
+          -if can? :mark_invalid, inc
+            %a.btn.btn-danger{href: inc.invalid_path} No Response / Mark Invalid
 
 -unless current_chapter.incidents_report_editable
   %h3 Don't see your incident?

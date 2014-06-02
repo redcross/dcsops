@@ -1,5 +1,9 @@
 module EditableHelper
-  def editable_select(resource, name, options, is_boolean: false, url: nil)
+  def editable_select(resource, name, options, is_boolean: false, url: nil, editable: nil)
+    if editable==nil
+      editable = can? :update, resource
+    end
+    
     model_name = resource.class.model_name.param_key
     attr_name = "#{model_name}_#{name}"
     value = resource.send(name)
@@ -11,8 +15,13 @@ module EditableHelper
     
     url ||= send "#{model_name}_path", resource
 
-    content_tag(:a, "", href: "#", id: attr_name, data: {name: name, type: 'select', resource: model_name, url: url}) <<
-    javascript_tag("$('##{attr_name}').editable({ source: #{options.to_json}, value: #{value.to_json} })")
+    if editable
+      content_tag(:a, "", href: "#", id: attr_name, data: {name: name, type: 'select', resource: model_name, url: url}) <<
+      javascript_tag("$('##{attr_name}').editable({ source: #{options.to_json}, value: #{value.to_json} })")
+    else
+      current = options.detect{|opt| opt[:value] == value }
+      current[:text] if current
+    end
   end
 
   def editable_assignable_select(resource, name, *args)
@@ -21,11 +30,18 @@ module EditableHelper
     editable_select(resource, name, options, *args)
   end
 
-  def editable_string(resource, name, url: nil)
-    model_name = resource.class.model_name.param_key
-    attr_name = "#{model_name}_#{name}"
-    url ||= send "#{model_name}_path", resource
-    link_to((resource.send(name) || ""), "#", id: attr_name, data: {name: name, type: 'text', resource: model_name, url: url}) <<
-    javascript_tag("$('##{attr_name}').editable()")
+  def editable_string(resource, name, url: nil, editable: nil)
+    if editable==nil
+      editable = can? :update, resource
+    end
+    if editable
+      model_name = resource.class.model_name.param_key
+      attr_name = "#{model_name}_#{name}"
+      url ||= send "#{model_name}_path", resource
+      link_to((resource.send(name) || ""), "#", id: attr_name, data: {name: name, type: 'text', resource: model_name, url: url}) <<
+      javascript_tag("$('##{attr_name}').editable()")
+    else
+      resource.send(name)
+    end
   end
 end

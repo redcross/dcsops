@@ -74,15 +74,16 @@
           %small=link_to "Spreadsheet", calendar_month(month, display: :spreadsheet)
         - month = month.next_month
     %br
-    -if can? :read, Scheduler::Shift
+    -if can? :update, Scheduler::Shift
       %div
         %a{href: scheduler_shifts_path}
           %i.fa.fa-cog
           Manage Calendars
-    %div
-      %a{href: scheduler_flex_schedules_path}
-        %i.fa.fa-time
-        Show Flex Schedule Calendar
+    -if can? :read, Scheduler::FlexSchedule
+      %div
+        %a{href: scheduler_flex_schedules_path}
+          %i.fa.fa-time
+          Show Flex Schedule Calendar
     -if can? :read, Roster::Person
       %div
         %a{href: scheduler_people_path}

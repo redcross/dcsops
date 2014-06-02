@@ -1,6 +1,6 @@
 %h4 
   Responders
-  -if enable_messaging
+  -if enable_messaging && can?(:create, Incidents::ResponderMessage)
     =link_to 'Message All', '#', class: 'btn btn-default', data: {edit_panel: new_incidents_chapter_incident_responder_message_path(parent.chapter, parent)}
 %table.table.table-bordered.table-condensed
   %tr
@@ -20,13 +20,14 @@
           %span.label.label-success SMS
       %td=assignment_status(assignment)
       %td
-        .btn-group
-          =link_to '#', class: "btn btn-default btn-sm dropdown-toggle", data: {toggle: 'dropdown'} do
-            Actions
-            %span.caret
-          %ul.dropdown-menu{role: "menu", aria_labelledby: "dropdownMenu"}
-            %li.disabled=link_to assignment.person.full_name, '#'
-            %li=link_to 'Edit…', edit_resource_path(assignment), tabindex: "-1"
-            %li=next_status_link assignment
-            -if enable_messaging && has_sms
-              %li=link_to 'Send Message', '#', data: {edit_panel: new_incidents_chapter_incident_responder_message_path(parent.chapter, parent, recipient: assignment.person_id)}
+        -if can? :update, assignment
+          .btn-group
+            =link_to '#', class: "btn btn-default btn-sm dropdown-toggle", data: {toggle: 'dropdown'} do
+              Actions
+              %span.caret
+            %ul.dropdown-menu{role: "menu", aria_labelledby: "dropdownMenu"}
+              %li.disabled=link_to assignment.person.full_name, '#'
+              %li=link_to 'Edit…', edit_resource_path(assignment), tabindex: "-1"
+              %li=next_status_link assignment
+              -if enable_messaging && has_sms
+                %li=link_to 'Send Message', '#', data: {edit_panel: new_incidents_chapter_incident_responder_message_path(parent.chapter, parent, recipient: assignment.person_id)}

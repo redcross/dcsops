@@ -3,7 +3,7 @@
   =resource.incident_number
   #{resource.city}, #{resource.state}
   %small
-    -if can? :incident_details, resource
+    -if can? :read_details, resource
       =resource.address
     -if resource.open_incident?
       -if can? :close, resource
@@ -61,7 +61,9 @@
       config = #{map_config(scope).to_json};
       window.incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json}, config);
       window.editPanelController = new IncidentEditPanelController();
-      window.attachmentController = new AttachmentsDragAndDropController(#{resource_attachments_path(format: :js).to_json});
+      if (#{can?(:create, resource.attachments.build).to_json}) {
+        window.attachmentController = new AttachmentsDragAndDropController(#{resource_attachments_path(format: :js).to_json});
+      }
       
     });
 
