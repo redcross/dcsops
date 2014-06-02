@@ -13,5 +13,5 @@
         =f.input :message, input_html: {rows: 4}
       .modal-footer
         -if f.object.persisted?
-          =link_to 'Delete', resource_path, method: 'delete', data: {confirm: 'Really delete this event?'}, class: 'btn btn-danger'
+          =link_to 'Delete', resource_path, method: 'delete', remote: true, data: {confirm: 'Really delete this event?'}, class: 'btn btn-danger'
         =f.action :submit, button_html: {class: "btn btn-primary", data: {disable_with: "Creating…"}}
