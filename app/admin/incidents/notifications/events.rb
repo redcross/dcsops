@@ -22,9 +22,7 @@ ActiveAdmin.register Incidents::Notifications::Event, as: 'Event' do
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:first_name, :last_name, 
-        county_memberships_attributes: [:id, :_destroy, :persistent, :county_id],
-        position_memberships_attributes: [:id, :_destroy, :persistent, :position_id])]
+      [params.fetch(resource_request_name, {}).permit(:chapter_id, :name, :description, :event_type, :event, :ordinal)]
     end
   end
 end
