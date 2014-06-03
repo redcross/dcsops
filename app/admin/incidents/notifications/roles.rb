@@ -20,7 +20,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
     f.inputs
     f.inputs do
       f.has_many :triggers, allow_destroy: true do |rf|
-        rf.input :event
+        rf.input :event, collection: Incidents::Notifications::Event.for_chapter(f.object.chapter)
         rf.input :template, as: :assignable_select_admin
         rf.input :use_sms
       end
