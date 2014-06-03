@@ -1,0 +1,76 @@
+%p
+  Welcome to DCSOps!
+
+%p
+  DCSOps is the new DAT Scheduling and Incident Management tool for #{@chapter.name}.
+
+%p
+  This email is to verify that your contact information and positions are up to date.  You are receiving it because you are listed as having at least one active position in the DCSOps system.  If this is in error, please contact your supervisor or the Volunteer Resources department.
+
+%p
+  %strong Contact Details
+
+%p
+  Address:
+  %br
+  -if @person.address1.present?
+    #{@person.address1}
+    %br
+    -if @person.address2.present?
+      #{@person.address2}
+      %br
+    #{@person.city}, #{@person.state} #{@person.zip}
+  -else
+    %em No Address On File
+
+%p
+  Phone:
+  %br
+  - @person.phone_order.each do |ph|
+    #{ph[:label].to_s.titleize}: #{ph[:number]}
+    -if ph[:carrier]
+      (SMS - #{ph[:carrier].name})
+    -else
+      (No SMS)
+    %br
+
+%p
+  Email:
+  %br
+  #{@person.email}
+
+%p
+  Update your address and phone numbers in Volunteer Connection at 
+  =link_to vc_profile_url + ".", vc_profile_url
+  Change SMS/Pager settings in DCSOPs at
+  =link_to dcsops_profile_url, dcsops_profile_url
+
+%p
+  %strong Positions
+  %br
+  The DCSOps positions you currently hold:
+
+%p
+  - positions.each do |pos|
+    =pos
+    %br
+
+%p
+  %strong Shifts
+  %br
+  The DCSOps shifts you can sign up for:
+
+%p
+  - shifts.each do |shift|
+    =shift
+    %br
+
+%p
+  %strong Notifications
+  %br
+  The incident notifications you'll receive from DCSOps:
+
+%p
+  - events.each do |event|
+    =event
+    %br
