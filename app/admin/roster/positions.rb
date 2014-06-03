@@ -10,9 +10,6 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
   actions :all, except: [:destroy]
 
   controller do
-    def create
-      create! { redirect_to :back }
-    end
 
     def update
       update! { url_for(action: :index)}

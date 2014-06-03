@@ -50,6 +50,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
           end
           table_for role.shifts do
             column("Shift") { |s| s.name }
+            column("County") { |s| s.county.name }
             column("Shift Group") { |shift| shift.shift_group.name }
           end
         end
@@ -92,7 +93,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
   controller do
 
     def collection
-      @col ||= super.includes{[positions,shifts]}
+      @col ||= super.includes{[positions,shifts.shift_group, shifts.county]}
     end
 
     def resource_params

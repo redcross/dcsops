@@ -144,6 +144,6 @@ class Scheduler::Shift < ActiveRecord::Base
   end
 
   def display_name
-    "#{shift_group.chapter_id} - #{shift_group.name} - #{name}"
+    "#{shift_group.chapter_id} - #{shift_group.name} - #{county.try(:abbrev)} #{name}"
   end
 end
