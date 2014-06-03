@@ -67,7 +67,9 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
   private
   def notify(is_new=true)
-    Incidents::Notifications::Notification.create_for_event resource.incident, 'incident_report_filed', is_new: is_new
+    if resource.incident.status == 'closed'
+      Incidents::Notifications::Notification.create_for_event resource.incident, 'incident_report_filed', is_new: is_new
+    end
     Incidents::UpdatePublisher.new(parent.chapter, parent).publish_details
   end
 
