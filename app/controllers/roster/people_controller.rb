@@ -13,9 +13,11 @@ class Roster::PeopleController < Roster::BaseController
 
   load_and_authorize_resource except: :index
   def index
-    params[:for_chapter] ||= current_chapter.id
-    chapter = Roster::Chapter.find(params[:for_chapter])
-    authorize! :search_people, chapter
+    unless named_query
+      params[:for_chapter] ||= current_chapter.id
+      chapter = Roster::Chapter.find(params[:for_chapter])
+      authorize! :search_people, chapter
+    end
     index!
   end
 
@@ -27,12 +29,11 @@ class Roster::PeopleController < Roster::BaseController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      [params.require(:roster_person).permit(:first_name, :last_name, :email, 
+      [params.require(:roster_person).permit(
               :home_phone, :cell_phone, :work_phone, :alternate_phone, :sms_phone, 
               :home_phone_carrier_id, :cell_phone_carrier_id, :work_phone_carrier_id, :alternate_phone_carrier_id, :sms_phone_carrier_id, 
               :home_phone_disable, :cell_phone_disable, :work_phone_disable, :alternate_phone_disable, :sms_phone_disable, 
-              :phone_1_preference, :phone_2_preference, :phone_3_preference, :phone_4_preference, 
-              :address, :city, :state, :zip, :vc_id)]
+              :phone_1_preference, :phone_2_preference, :phone_3_preference, :phone_4_preference)]
     end
 
     def collection
