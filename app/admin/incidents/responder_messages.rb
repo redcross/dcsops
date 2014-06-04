@@ -3,6 +3,9 @@ ActiveAdmin.register Incidents::ResponderMessage, as: 'Responder Message' do
 
   actions :index, :show
 
+  filter :chapter
+  filter :message
+
   index do
     column("CID") { |msg| msg.chapter_id }
     column("Person") { |msg| msg.person.full_name }
