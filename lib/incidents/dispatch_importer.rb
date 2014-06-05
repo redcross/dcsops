@@ -79,6 +79,8 @@ class Incidents::DispatchImporter
       log_object.create_incident! incident_number: log_object.incident_number, 
                                           chapter: @chapter,
                                              date: incident_date_for(log_object),
+                                           county: log_object.county_name,
+                                            state: 'CA'
                                              area: @chapter.counties.find_by(name: log_object.county_name),
                                            status: 'open'
       
