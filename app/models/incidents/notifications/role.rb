@@ -3,9 +3,9 @@ module Incidents::Notifications
     belongs_to :chapter, class_name: 'Roster::Chapter'
     has_and_belongs_to_many :positions, class_name: 'Roster::Position'
     has_and_belongs_to_many :shifts, class_name: 'Scheduler::Shift'
-    has_many :triggers, inverse_of: :role
+    has_many :triggers, inverse_of: :role, dependent: :delete_all
     has_many :events, through: :triggers
-    has_many :role_scopes
+    has_many :role_scopes, dependent: :delete_all
 
     validates :name, :chapter, presence: true
 

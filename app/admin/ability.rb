@@ -47,6 +47,9 @@ class AdminAbility
       can :new, Incidents::NotificationSubscription
       can :manage, Incidents::NotificationSubscription, person: {chapter_id: chapter}
       can [:test_report, :send_report, :new], Incidents::NotificationSubscription
+
+      can :manage, Incidents::Notifications::Event, chapter_id: chapter
+      can :manage, Incidents::Notifications::Role, chapter_id: chapter
     end
   end
 

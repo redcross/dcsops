@@ -6,12 +6,19 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
 
   menu parent: 'Incidents'
 
+  filter :chapter
+  filter :name
+  filter :events
+
   index do 
     id_column
     column :chapter_id
     column :name
     column(:members) { |r|
-      (r.positions.map(&:name) + r.shifts.map(&:name)).join ", "
+      safe_join(r.positions.map(&:name) + r.shifts.map(&:name), tag(:br))
+    }
+    column(:counties) { |r|
+      safe_join(r.role_scopes.map(&:value), tag(:br))
     }
     actions
   end
@@ -98,6 +105,11 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
 
     def resource_params
       [params.fetch(resource_request_name, {}).permit(:name, :chapter_id, position_ids: [], shift_ids: [], triggers_attributes: [:id, :event_id, :template, :use_sms, :_destroy], role_scopes_attributes: [:id, :_destroy, :level, :value])]
+    end
+
+    after_build :set_chapter
+    def set_chapter resource
+      resource.chapter = current_chapter
     end
   end
 end
