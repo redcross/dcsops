@@ -37,7 +37,7 @@ class Incidents::HomeController < Incidents::BaseController
 
   attr_reader :scope
   def editable?
-    scope.editable?
+    scope.editable? && can?(:read, scope.chapter)
   end
   helper_method :scope, :editable?
 

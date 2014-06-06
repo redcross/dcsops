@@ -27,5 +27,6 @@ class Incidents::Scope < ActiveRecord::Base
   serialized_accessor :config, :incidents_map_center_lat, :decimal
   serialized_accessor :config, :incidents_map_center_lng, :decimal
   serialized_accessor :config, :incidents_map_zoom, :integer
+  serialized_accessor :config, :summary_show_state, :boolean
 
 end

@@ -24,6 +24,26 @@ module Incidents::HomeControllerHelper
     "5 Years" => stats(five_fy_begin..today)}
   end
 
+  def incident_link(incident)
+    str = incident.date.strftime "%-m/%-d "
+    loc = [incident.city]
+    loc << incident.state if scope.summary_show_state
+    str << loc.compact.join(", ")
+    if can?(:read, incident) && can?(:read, incident.chapter)
+      link_to str, incident_path(incident)
+    else
+      str
+    end
+  end
+
+  def time_on_at time
+    if time.to_date == Date.current
+      time.to_s :at_time
+    else
+      time.to_s :on_date_at_time
+    end
+  end
+
   def map_json_for(incidents)
     incidents.joins{chapter}.pluck(:incident_number, :lat, :lng, :num_adults, :num_children, :status, "roster_chapters.url_slug").map do |inc|
       {id: inc[0], lat: inc[1], lng: inc[2], clients: [inc[3], inc[4]].compact.sum, status: inc[5], url: incidents_chapter_incident_path(inc[6], inc[0])}
