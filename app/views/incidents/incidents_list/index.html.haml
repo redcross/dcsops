@@ -5,12 +5,12 @@
     - proto = Incidents::Incident.new chapter: current_chapter
     /%table
     /  %tr
-    .row.collapse
-      .col-sm-2=f.label :address_cont
-      .col-sm-2=f.label :city_cont
-      .col-sm-2=f.label :county_cont
-      .col-sm-2=f.label :date_gteq, 'After'
-      .col-sm-2=f.label :date_lteq, 'Before'
+    .row.collapase
+      .col-sm-2=f.label :address_cont, 'Address'
+      .col-sm-2=f.label :city_cont, 'City'
+      .col-sm-2=label_tag :county_state_eq, 'County'
+      .col-sm-3=f.label :date_gteq, 'After'
+      .col-sm-3=f.label :date_lteq, 'Before'
     /%tr
     .row
       %div
@@ -22,7 +22,7 @@
             =f.text_field :city_cont,    class: 'form-control', placeholder: 'City'
         .form-group
           .col-sm-2
-            =f.text_field :county_cont,  class: 'form-control', placeholder: 'County'
+            =select_tag :county_state_eq, options_for_select(counties_for_menu(collection_for_stats), current_scopes[:county_state_eq]), prompt: 'County', class: 'form-control'
         .form-group
           .col-sm-3
             =f.date_field :date_gteq,    class: 'form-control', placeholder: 'After YYYY-MM-DD'
