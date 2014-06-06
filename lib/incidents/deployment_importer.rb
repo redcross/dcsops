@@ -2,17 +2,17 @@ class Incidents::DeploymentImporter
   include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
   def self.get_deployments(chapter)
-    ImportLog.capture(self.to_s, "Get-#{chapter.id}") do |logger|
+    ImportLog.capture(self.to_s, "Get-#{chapter.id}") do |logger, counter|
       logger.level = 0
       query = Vc::QueryTool.new chapter.vc_username, chapter.vc_password, logger
       file = query.get_disaster_query '38613', {return_jid: 4942232, prompt0: chapter.vc_unit}, :csv
       StringIO.open file.body do |io|
-        self.new.import_data(chapter, io)
+        self.new.import_data(chapter, io, counter)
       end
     end
   end
 
-  def import_data(chapter, io)
+  def import_data(chapter, io, counter)
     @chapter = chapter
     workbook = CSV.parse(io)
 
@@ -20,6 +20,7 @@ class Incidents::DeploymentImporter
 
     Incidents::Deployment.transaction do
       errs = import_people workbook do |s|
+        counter.row!
         yield s if block_given?
       end
     end
