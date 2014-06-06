@@ -36,7 +36,7 @@ describe AutoGeocode do
   }
 
   let(:result) {
-    double(:geocode_result, lat: Faker::Address.latitude, lng: Faker::Address.longitude)
+    double(:geocode_result, lat: Faker::Address.latitude, lng: Faker::Address.longitude, success?: true)
   }
 
   let(:geocoder) {Geokit::Geocoders::GoogleGeocoder}

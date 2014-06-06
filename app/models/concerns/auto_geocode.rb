@@ -15,9 +15,21 @@ module AutoGeocode
     self.enabled && (!Rails.env.test? || AutoGeocode.enabled_in_test)
   end
 
-  def self.count!(fail)
+  def self.count!(fail, attempted_address=nil)
     self.geocodes += 1
     self.failed += 1 if fail
+
+    Rails.logger.warn "measure#geocode.success=#{fail ? '0' : '1'} address=\"#{attempted_address}\""
+    ::NewRelic::Agent.record_metric('Custom/Geocode/success', fail ? 0 : 1 )
+  end
+
+  def self.geocode address
+    res = Geokit::Geocoders::GoogleGeocoder.geocode(address)
+    AutoGeocode.count! false, address
+    res
+  rescue Geokit::Geocoders::TooManyQueriesError
+    AutoGeocode.count! true, address
+    raise
   end
 
   included do
@@ -33,19 +45,17 @@ module AutoGeocode
     cols = self.class.geocode_columns
     return if cols.any?{|c| %w(Address City).include? self[c] }
     
-    if force or lat.nil? or lng.nil? or (changed & cols).present?
+    if force or ((lat.nil? or lng.nil? or (changed & cols).present?) && ((changed & ['lat', 'lng']).blank? || lat.nil? || lng.nil?) )
       address = cols.map{|c| self[c] }.compact.join " "
       if address.present?
         Rails.logger.info "Geocoding: #{address}"
-        res = Geokit::Geocoders::GoogleGeocoder.geocode(address)
-        if res
+        res = AutoGeocode.geocode address
+        if res && res.success?
           (self.lat, self.lng) = res.lat, res.lng
         else
           self.lat = nil
           self.lng = nil
         end
-
-        AutoGeocode.count! false
       end
     end
 
@@ -53,9 +63,6 @@ module AutoGeocode
   rescue Geokit::Geocoders::TooManyQueriesError
     self.lat = nil
     self.lng = nil
-
-    AutoGeocode.count! true
-
     return true
   end
 

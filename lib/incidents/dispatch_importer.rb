@@ -1,6 +1,6 @@
 class Incidents::DispatchImporter
   class_attribute :geocoder
-  self.geocoder = Geokit::Geocoders::GoogleGeocoder
+  self.geocoder = AutoGeocode
 
   def parse_ampm(date, time)
     m = /(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}) (AM|PM)/.match("#{date} #{time}")
@@ -76,19 +76,20 @@ class Incidents::DispatchImporter
       
       created = false
     else
-      log_object.create_incident! incident_number: log_object.incident_number, 
-                                          chapter: @chapter,
-                                             date: incident_date_for(log_object),
-                                           county: log_object.county_name,
-                                            state: 'CA',
-                                             area: @chapter.counties.find_by(name: log_object.county_name),
-                                           status: 'open'
+      log_object.build_incident incident_number: log_object.incident_number, 
+                                         chapter: @chapter,
+                                            date: incident_date_for(log_object),
+                                          county: log_object.county_name,
+                                           state: 'CA',
+                                            area: @chapter.counties.find_by(name: log_object.county_name),
+                                          status: 'open'
       
       created = true
     end
 
-    log_object.save!
     geocode_incident(log_object, log_object.incident)
+    log_object.save!
+    
 
     created
   end
