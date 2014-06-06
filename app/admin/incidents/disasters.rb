@@ -3,4 +3,8 @@ ActiveAdmin.register Incidents::Disaster, as: 'Disaster' do
 
   actions :index, :show
 
+  filter :dr_number
+  filter :fiscal_year
+  filter :name
+
 end
