@@ -55,8 +55,8 @@ class Incidents::Incident < ActiveRecord::Base
     where{county == name}
   }
 
-  assignable_values_for :area do
-    chapter.counties
+  def self.with_location
+    where{(lat != nil) & (lng != nil) & (lat != 0) & (lng != 0)}
   end
 
   def self.incident_stats
@@ -85,6 +85,10 @@ class Incidents::Incident < ActiveRecord::Base
 
   assignable_values_for :status do
     %w(open closed invalid)
+  end
+
+  assignable_values_for :area do
+    chapter.counties
   end
 
   delegated_validator Incidents::Validators::IncidentValidator, if: :valid_incident?

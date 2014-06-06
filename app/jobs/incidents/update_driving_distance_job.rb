@@ -5,6 +5,10 @@ class Incidents::UpdateDrivingDistanceJob
   end
 
   def perform
+    real_perform unless Rails.env.test?
+  end
+
+  def real_perform
     collection.find_each do |responder_assignment|
       next unless responder_assignment.person.lat && responder_assignment.incident.lat
       distance = Incidents::DirectionsServiceClient.driving_distance responder_assignment.person, responder_assignment.incident
@@ -18,4 +22,19 @@ class Incidents::UpdateDrivingDistanceJob
   def collection
     @collection ||= Incidents::ResponderAssignment.includes{[person, incident]}.where{(driving_distance == nil) & (updated_at > 3.days.ago)}
   end
+
+  class ForIncident
+    def initialize incident
+      @incident_id = incident
+    end
+
+    def incident
+      @incident ||= Incidents::Incident.find @incident_id
+    end
+
+    def perform
+      Incidents::UpdateDrivingDistanceJob.new(incident.all_responder_assignments).perform
+    end
+  end
+
 end

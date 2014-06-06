@@ -43,7 +43,7 @@ class Incidents::IncidentsListController < Incidents::BaseController
   end
 
   def collection_for_stats
-    @stats_collection ||= collection.unscope(:limit, :offset, :order, :includes, :joins)
+    @stats_collection ||= collection.unscope(:limit, :offset, :order, :includes, :joins).with_location
   end
   helper_method :collection_for_stats
 

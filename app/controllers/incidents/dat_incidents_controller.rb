@@ -69,6 +69,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   def notify(is_new=true)
     if resource.incident.status == 'closed'
       Incidents::Notifications::Notification.create_for_event resource.incident, 'incident_report_filed', is_new: is_new
+      Delayed::Job.enqueue Incidents::UpdateDrivingDistanceJob::ForIncident.new(resource.incident_id)
     end
     Incidents::UpdatePublisher.new(parent.chapter, parent).publish_details
   end

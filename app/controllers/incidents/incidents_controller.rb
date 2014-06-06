@@ -36,6 +36,7 @@ class Incidents::IncidentsController < Incidents::BaseController
       redirect_to resource_path
       publisher.publish_details
       Incidents::Notifications::Notification.create_for_event resource, 'incident_report_filed'
+      Delayed::Job.enqueue Incidents::UpdateDrivingDistanceJob::ForIncident.new(resource.id)
     else
       redirect_to edit_resource_dat_path(status: 'closed')
     end

@@ -80,7 +80,7 @@ class Incidents::DispatchImporter
                                           chapter: @chapter,
                                              date: incident_date_for(log_object),
                                            county: log_object.county_name,
-                                            state: 'CA'
+                                            state: 'CA',
                                              area: @chapter.counties.find_by(name: log_object.county_name),
                                            status: 'open'
       
