@@ -12,6 +12,10 @@ module Incidents::Notifications
     accepts_nested_attributes_for :triggers, allow_destroy: true
     accepts_nested_attributes_for :role_scopes, allow_destroy: true
 
+    def self.for_chapter(chapter)
+      where{chapter_id == chapter}
+    end
+
     validate :validates_relations_in_same_chapter
     def validates_relations_in_same_chapter
     end
