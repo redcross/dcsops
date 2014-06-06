@@ -9,6 +9,10 @@
   %tr
     %th Total Units
     %td=dat.units_total
+  - if resource.chapter.incidents_report_advanced_details
+    %tr
+      %th Undefined Units
+      %td=dat.units_unknown
   %tr
     %td.table-nested-container(colspan="2")
       %table.table.table-bordered.table-condensed.table-nested
