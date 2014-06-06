@@ -31,7 +31,7 @@ namespace :incidents_periodic do
       Roster::Chapter.where{vc_username != nil}.each do |chapter|
         next unless chapter.vc_username.present?
         Incidents::DisastersImporter.get_disasters chapter
-        break # For now, this only needs to run for one chapter since it pulls national data
+        #break # For now, this only needs to run for one chapter since it pulls national data
       end
     end
   end
