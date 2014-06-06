@@ -32,7 +32,7 @@ module Incidents::IncidentsListHelper
 
     if durations.present?
       mean = durations.sum / durations.size
-      distance_of_time mean, include_seconds: false
+      time_ago_in_words (Time.now-mean), include_seconds: false
     end
   end
 end

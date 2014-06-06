@@ -13,7 +13,7 @@
     %th Time to On Scene
     %td
       -if resource.time_to_on_scene
-        =distance_of_time_in_words resource.time_to_on_scene
+        =time_ago_in_words (Time.now-resource.time_to_on_scene), include_seconds: false
   %tr
     %th=passthrough_edit_link 'basic', 'Type of Incident'
     %td=resource.humanized_incident_type
