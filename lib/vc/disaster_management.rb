@@ -1,9 +1,13 @@
 module Vc
   class DisasterManagement < Client
+
     def get_active_disasters
       response = self.get '/', query: {nd: "vms_form_5266"}
       dom = Nokogiri::HTML(response.body)
-      options = dom.css "select#incident_id option[value]"
+      select = dom.css "select#incident_id"
+      raise Vc::QueryTool::QueryRetrievalException, "Could not find disaster list" unless select.present?
+
+      options = select.css "option[value]"
       disasters = options.map do |node|
         next unless (value=node.attr('value')).present?
         components = node.text.strip.split(" ", 2)
