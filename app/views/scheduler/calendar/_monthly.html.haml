@@ -1,6 +1,6 @@
 - calendar.monthly_groups.each do |group, shifts|
   - my_shifts = calendar.my_shifts_for_group_on_day(group.id, date)
-  - shifts = shifts.select{|sh|sh.active_on_day?(date)}
+  - shifts = shifts.select{|sh|sh.active_on_day?(date, group)}
   - next if shifts.blank?
   %div{class: my_shifts.present? && 'my-shift'}
     %strong=group.name

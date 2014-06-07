@@ -2,20 +2,22 @@
   %tr
     %th.date-header(colspan=2)=date.day
   - calendar.daily_groups.each_with_index do |(group, shifts), group_idx|
-    - is_last_group = (group_idx == calendar.daily_groups.size-1)
-    - shifts = shifts.select{|sh|sh.active_on_day?(date)}
-    - next if shifts.blank?
-    - my_shifts = nil
-    -if person
-      - my_shifts = calendar.my_shifts_for_group_on_day(group.id, date)
-    - group_class = my_shifts.present? ? 'my-shift' : ''
-    %tr
-      %th.shift-header-normal.shift-side{class: [group_class, is_last_group && 'last-group'], rowspan: shifts.count+1}=group.name
-      %th.shift-header-normal.shift-top{class: group_class}=group.name
-    
-    - render_shifts group, shifts, date, editable do |idx, is_first, is_last, needs_signups, row_html|
-      %tr{class: [group_class, (!is_last_group && is_last && 'end-group')]}
-        %td{class: needs_signups&&'open'}=row_html
+    - assignments = calendar.assignments_for_group_on_day group, date
+    - cache [group, shifts, assignments, date] do
+      - is_last_group = (group_idx == calendar.daily_groups.size-1)
+      - shifts = shifts.select{|sh|sh.active_on_day?(date, group)}
+      - next if shifts.blank?
+      - my_shifts = nil
+      -if person
+        - my_shifts = calendar.my_shifts_for_group_on_day(group.id, date)
+      - group_class = my_shifts.present? ? 'my-shift' : ''
+      %tr
+        %th.shift-header-normal.shift-side{class: [group_class, is_last_group && 'last-group'], rowspan: shifts.count+1}=group.name
+        %th.shift-header-normal.shift-top{class: group_class}=group.name
+      
+      - render_shifts group, shifts, date, editable do |idx, is_first, is_last, needs_signups, row_html|
+        %tr{class: [group_class, (!is_last_group && is_last && 'end-group')]}
+          %td{class: needs_signups&&'open'}=row_html
 
 -if request.xhr?
   :javascript

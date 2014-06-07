@@ -20,7 +20,7 @@ class Scheduler::SwapMailer < ActionMailer::Base
     @from = old_shift
     @to = new_shift
 
-    subject = "Shift Swap Confirmed for #{new_shift.date.to_s :dow_short} #{new_shift.shift.shift_group.name} #{new_shift.shift.name}"
+    subject = "Shift Swap Confirmed for #{new_shift.date.to_s :dow_short} #{new_shift.shift_group.name} #{new_shift.shift.name}"
 
     tag :scheduler, :swap, :swap_confirmed
     mail to: format_address(recipient), subject: subject
@@ -29,6 +29,6 @@ class Scheduler::SwapMailer < ActionMailer::Base
   private
 
   def swap_invite_subject
-    subject = "Shift Swap Requested for #{@shift.date.to_s :dow_short} #{@shift.shift.shift_group.name} #{@shift.shift.name}"
+    subject = "Shift Swap Requested for #{@shift.date.to_s :dow_short} #{@shift.shift_group.name} #{@shift.shift.name}"
   end
 end

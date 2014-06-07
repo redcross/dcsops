@@ -1,16 +1,14 @@
 - all_shifts = calendar.all_groups.values.flatten
 - shifts_available = Scheduler::Shift.shifts_available_by_day(all_shifts, month)
-- calendar.all_groups.each do |group, shifts|
-  %h4=group.name
-  - shifts.each do |shift|
+- shifts_available.each do |shift, group_dates|
+  %h4
+    -if show_county_name?
+      =shift.county.name
+      ==-
+    =shift.name
+  - group_dates.each do |group, dates|
     %div
-      / Get a hash of date->number of registrations in one query
-      - counts = shifts_available[shift]
-      %strong
-        -if show_county_name?
-          =shift.county.name
-          ==-
-        =shift.name
-      - counts.each do |date, avail|
+      %strong=group.name
+      - dates.each do |date, avail|
         -if avail and date >= Date.current
           = date.day

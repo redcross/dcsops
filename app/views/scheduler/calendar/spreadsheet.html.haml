@@ -28,7 +28,7 @@
                 %td=date.strftime "%d-%a"
                 %td=group.name
                 - shifts.each do |shift|
-                  - assignments = calendar.assignments_for_shift_on_day(shift, date)
+                  - assignments = calendar.assignments_for_shift_on_day_in_group(shift, date, group)
                   -#- if ass.count > 1
                   -#  %td="#{ass.count} Registered"
                   -#  %td

@@ -7,8 +7,8 @@ module Scheduler::CalendarHelper
     today = current_chapter.time_zone.today
 
     shifts.each_with_index do |shift, idx|
-      assignments=calendar.assignments_for_shift_on_day(shift, date)
-      row_html = render_shift_assignment_info(editable, person, shift, my_shifts, date, assignments, group_to_period(group))
+      assignments=calendar.assignments_for_shift_on_day_in_group(shift, date, group)
+      row_html = render_shift_assignment_info(editable, person, shift, group, my_shifts, date, assignments, group_to_period(group))
       is_first = (idx == 0)
       is_last = (idx == (shifts.size-1))
       needs_signups = assignments.size < shift.min_desired_signups && date >= today
@@ -33,19 +33,19 @@ module Scheduler::CalendarHelper
   # date: Date for this shift instance
   # assignments: Any shift assignments for the given shift on the given date (may include my_shift if appropriate)
   # period: day/week/month, so the javascript knows what to reload if the shift is edited
-  def render_shift_assignment_info(editable, person, shift, my_shifts, date, assignments, period)
+  def render_shift_assignment_info(editable, person, shift, shift_group, my_shifts, date, assignments, period)
     can_take = person && shift.can_be_taken_by?(person)
-    can_sign_up = shift.can_sign_up_on_day(date, assignments.count)
-    can_remove = shift.can_remove_on_day(date)
-    is_signed_up = my_shifts && my_shifts.any?{|sa| sa.shift == shift}
-    this_assignment = my_shifts && my_shifts.detect{|sa| sa.shift == shift}
+    can_sign_up = shift.can_sign_up_on_day(date, shift_group, assignments.count)
+    can_remove = shift.can_remove_on_day(date, shift_group)
+    this_assignment = my_shifts && my_shifts.detect{|sa| sa.shift == shift && sa.shift_group == shift_group}
+    is_signed_up = this_assignment.present?
 
     cbid = "#{date.to_s}-#{shift.id}"
 
     my_shifts_exclusive = my_shifts.present? && my_shifts.any?{|sa| sa.shift.exclusive }
     can_take_exclusive = editable && (this_assignment || !shift.exclusive || !my_shifts_exclusive)
 
-    #pp my_shifts
+    #pp shift_group, my_shifts
     #puts "Editable: #{editable}; Can take #{can_take}; can_sign_up: #{can_sign_up}, can_remove: #{can_remove}, is_signed_up: #{is_signed_up}, my_shifts_exclusive: #{my_shifts_exclusive}, can_take_exclusive: #{can_take_exclusive}"
 
     s = ActiveSupport::SafeBuffer.new
@@ -59,14 +59,22 @@ module Scheduler::CalendarHelper
       s << check_box_tag(shift.id.to_s, # Name
                          date.to_s,     # Value
                          is_signed_up,  # Checked?
-                         class: 'shift-checkbox', 
-                          :"data-assignment" => this_assignment.try(:id), 
-                          id: cbid, 
-                          :"data-period" => period) << " "
+                         id: cbid, 
+                         class: 'shift-checkbox',
+                          data: {
+                            :assignment => this_assignment.try(:id), 
+                            :period => period,
+                            params: create_params(person, shift, shift_group, date)
+                          }) << " "
+
     end
     s << render_assignments_label(assignments, cbid)
 
     s
+  end
+
+  def create_params person, shift, shift_group, date
+    JSON.generate({person_id: person.id, shift_id: shift.id, shift_group_id: shift_group.id, date: date})
   end
 
   def render_assignments_label(assignments, cbid)

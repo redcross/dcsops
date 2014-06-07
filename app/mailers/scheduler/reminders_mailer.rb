@@ -104,7 +104,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     @assignment
   end
 
-  expose(:related_shifts) {Scheduler::ShiftAssignment.for_day(item.date).for_counties(item.shift.county).for_groups(item.shift.shift_group_id).includes{shift}}
+  expose(:related_shifts) {Scheduler::ShiftAssignment.for_day(item.date).for_counties(item.shift.county).for_groups(item.shift_group_id).includes{shift}}
 
   def shift_lead
     @shift_lead ||= related_shifts.where{shift.dispatch_role != nil}.order{shift.dispatch_role}.first

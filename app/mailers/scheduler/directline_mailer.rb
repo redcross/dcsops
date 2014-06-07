@@ -10,7 +10,8 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   #   en.scheduler.reminders_mailer.email_invite.subject
   #
 
-  def export(start_date, end_date)
+  def export(chapter, start_date, end_date)
+    @chapter = chapter
     start_date = start_date.to_date
     end_date = end_date.to_date
     @people = []
@@ -19,7 +20,7 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
     attachments["roster.csv"] = people_csv
 
     tag :export
-    mail to: ENV['DISPATCH_ROSTER_RECIPIENT'], subject: "Red Cross Export", body: "Export processed at #{Time.zone.now}"
+    mail to: chapter.scheduler_dispatch_export_recipient, subject: "Red Cross Export", body: "Export processed at #{Time.zone.now}"
   end
 
   private
@@ -27,9 +28,9 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   def schedule_csv(start_date, end_date)
     shift_data = CSV.generate(row_sep: "\r\n") do |csv|
       csv << ["County", "Start", "End", "On Call Person IDs"] + (1..20).map{|x| "On Call #{x}"}
-      Scheduler::DispatchConfig.active.includes{county.chapter}.each do |config|
+      Scheduler::DispatchConfig.active.for_chapter(@chapter).includes{county.chapter}.each do |config|
         county = config.county
-        chapter = county.chapter
+        chapter = @chapter
 
         @people = @people + config.backup_list
         generate_shifts_for_county(csv, chapter, county, config.name, start_date, end_date, config.backup_list.map(&:id))
@@ -69,12 +70,12 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
     shifts = other_groups.flat_map{|grp| map_shifts grp, grp.start_date}
     shifts = shifts.select{|sh| sh[:shift].county_id == county.id }.sort_by{|sh| sh[:role]}
 
-    assignments = shifts.map{|sh| Scheduler::ShiftAssignment.where(date: sh[:date], shift_id: sh[:shift]).first }.compact
+    assignments = shifts.map{|sh| Scheduler::ShiftAssignment.where(date: sh[:date], shift_id: sh[:shift], shift_group_id: sh[:group]).first }.compact
   end
 
   def map_shifts(group, date)
-    group.shifts.select(&:dispatch_role).select{|sh| sh.active_on_day? date }.map do |shift|
-      {shift: shift, date: date, role: shift.dispatch_role}
+    group.shifts.select(&:dispatch_role).select{|sh| sh.active_on_day? date, group }.map do |shift|
+      {shift: shift, date: date, role: shift.dispatch_role, group: group}
     end
   end
 

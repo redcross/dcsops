@@ -18,4 +18,8 @@ class Scheduler::DispatchConfig < ActiveRecord::Base
   def backup_list
     [backup_first, backup_second, backup_third, backup_fourth].compact
   end
+
+  def self.for_chapter chapter
+    joins{county}.where{county.chapter_id == chapter}
+  end
 end

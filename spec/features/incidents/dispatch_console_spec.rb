@@ -21,7 +21,7 @@ describe "Incident Dispatch Console" do
     @committed_responder = @responders.second
     @committed_responder.update_attributes work_phone_carrier: FactoryGirl.create( :cell_carrier)
     group = FactoryGirl.create :shift_group, chapter: @chapter
-    shift = FactoryGirl.create :shift, shift_group: group, county: county, positions: @committed_responder.positions
+    shift = FactoryGirl.create :shift, shift_groups: [group], county: county, positions: @committed_responder.positions
     assignment = FactoryGirl.create :shift_assignment, person: @committed_responder, shift: shift, date: @chapter.time_zone.today
 
     @incident = FactoryGirl.create :raw_incident, chapter: @person.chapter, area: county, date: Date.current

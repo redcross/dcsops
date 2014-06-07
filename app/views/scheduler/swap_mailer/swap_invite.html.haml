@@ -9,7 +9,7 @@ Hello, #{ @recipient.first_name }
 %p
   Date: #{ @shift.date.to_s :dow_long }
   %br
-  Shift: #{ @shift.shift.shift_group.name } #{ @shift.shift.name }
+  Shift: #{ @shift.shift_group.name } #{ @shift.shift.name }
 
 %p
   - if @person == @recipient

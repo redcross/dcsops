@@ -23,7 +23,7 @@ class Scheduler::ShiftSwap
       notify_swap_confirmed
 
       # Give it a chance to update the dispatch roster if this shift is coming soon...
-      Scheduler::SendDispatchRosterJob.enqueue false if new_assignment.shift.dispatch_role
+      Scheduler::SendDispatchRosterJob.enqueue new_assignment.person.chapter, false if new_assignment.shift.dispatch_role
     end
 
     return success
@@ -64,7 +64,8 @@ class Scheduler::ShiftSwap
   def perform_swap(destination)
     assignment.transaction do
       @new_assignment = Scheduler::ShiftAssignment.new date: assignment.date, 
-                                                      shift: assignment.shift, 
+                                                      shift: assignment.shift,
+                                                shift_group: assignment.shift_group, 
                                                      person: destination, 
                                            swapping_from_id: assignment.id
       if valid? && new_assignment.save

@@ -5,7 +5,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
   respond_to :html, :pdf
   responders :pdf
 
-  before_filter :require_xhr, only: [:day, :month]
+  #before_filter :require_xhr, only: [:day, :month]
 
   def show
     @date = @month = month_param

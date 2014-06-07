@@ -11,6 +11,10 @@ class NestedHash
     default_hash(Hash)
   end
 
+  def self.hash_hash_hash
+    Hash.new{|h, k| h[k] = hash_hash}
+  end
+
   def self.hash_array
     default_hash(Array)
   end
@@ -21,5 +25,9 @@ class NestedHash
 
   def self.hash_hash_array
     Hash.new{|h, k| h[k] = hash_array}
+  end
+
+  def self.hash_hash_hash_array
+    Hash.new{|h, k| h[k] = hash_hash_array}
   end
 end

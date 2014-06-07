@@ -58,6 +58,13 @@ module SerializedColumns
 
       serialized_columns[name] = [store_attribute, column]
 
+      sql_type = case type
+      when :string then 'varchar'
+      when :double then 'float'
+      when :time then 'timestamp'
+      else type.to_s
+      end
+
       define_method name do
         raw = read_store_attribute store_attribute, name
         column.type_cast(raw)
@@ -72,13 +79,11 @@ module SerializedColumns
         write_store_attribute store_attribute, name, raw
       end
 
+      scope :"with_#{name}_present", -> do
+        where{cast(Squeel::Nodes::Stub.new(store_attribute).op('->', name.to_s).as(sql_type)) != nil}
+      end
+
       scope :"with_#{name}_value", ->(val) do
-        sql_type = case type
-        when :string then 'varchar'
-        when :double then 'float'
-        when :time then 'timestamp'
-        else type.to_s
-        end
         where{cast(Squeel::Nodes::Stub.new(store_attribute).op('->', name.to_s).as(sql_type)) == val}
       end
 

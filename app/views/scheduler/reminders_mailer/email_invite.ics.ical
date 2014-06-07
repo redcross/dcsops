@@ -1,7 +1,7 @@
 assignment = item
 cal.event do
   description assignment.shift.name
-  if assignment.shift.shift_group.period == 'daily'
+  if assignment.shift_group.period == 'daily'
     dtstart (assignment.local_start_time)
     dtend (assignment.local_end_time)
   else
@@ -9,7 +9,7 @@ cal.event do
     dtend (assignment.local_end_time.to_date)
   end
   location assignment.shift.county.name
-  summary("#{assignment.shift.name}\n\n" + assignment.shift.shift_group.shifts.where(county_id: assignment.shift.county).map{|shift|
+  summary("#{assignment.shift.name}\n\n" + assignment.shift_group.shifts.where(county_id: assignment.shift.county).map{|shift|
     assignments = shift.shift_assignments.for_day(assignment.date)
     shift.abbrev + " - " + if assignments.blank?
       "OPEN"

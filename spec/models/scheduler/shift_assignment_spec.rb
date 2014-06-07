@@ -7,15 +7,15 @@ describe Scheduler::ShiftAssignment do
   let(:counties) { (1..2).map{|i| FactoryGirl.create :county, name: "County #{i}", chapter: chapter} }
   let(:positions) { (1..2).map{|i| FactoryGirl.create :position, name: "Position #{i}", chapter: chapter} }
 
-  let(:first_shift) { FactoryGirl.create :shift, shift_group: group, name: "Shift 1", positions: [positions.first], county: counties.first }
-  let(:second_shift) { FactoryGirl.create :shift, shift_group: group, name: "Shift 2", positions: [positions.last], county: counties.last }
+  let(:first_shift) { FactoryGirl.create :shift, shift_groups: [group], name: "Shift 1", positions: [positions.first], county: counties.first }
+  let(:second_shift) { FactoryGirl.create :shift, shift_groups: [group], name: "Shift 2", positions: [positions.last], county: counties.last }
 
   let(:person) { FactoryGirl.create :person, chapter: chapter, positions: [positions.first], counties: [counties.first] }
 
   let(:zone) {chapter.time_zone}
 
   it "should be createable and destroyable" do
-    item = Scheduler::ShiftAssignment.create! person: person, shift: first_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create! person: person, shift: first_shift, date: Date.today, shift_group: group
     item.should be_persisted
     item.destroy.should be_true
   end
@@ -25,10 +25,10 @@ describe Scheduler::ShiftAssignment do
   it { should validate_presence_of(:date) }
   #end
   it "should validate that a person is allowed to take the shift" do
-    item = Scheduler::ShiftAssignment.new person: person, shift: first_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.new person: person, shift: first_shift, date: Date.today, shift_group: group
     item.should be_valid
 
-    item = Scheduler::ShiftAssignment.new person: person, shift: second_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.new person: person, shift: second_shift, date: Date.today, shift_group: group
     item.should_not be_valid
     item.errors[:shift].to_s.should include "not allowed to take this shift"
   end
@@ -37,7 +37,7 @@ describe Scheduler::ShiftAssignment do
     first_shift.update_attribute :county, counties.second
 
     first_shift.update_attribute :ignore_county, true
-    item = Scheduler::ShiftAssignment.new person: person, shift: first_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.new person: person, shift: first_shift, date: Date.today, shift_group: group
     item.should be_valid
   end
 
@@ -47,47 +47,57 @@ describe Scheduler::ShiftAssignment do
     end
 
     it "should prevent a person from taking multiple shifts in the same group in the same day" do
-      item = Scheduler::ShiftAssignment.create! person: person, shift: first_shift, date: Date.today
+      item = Scheduler::ShiftAssignment.create! person: person, shift: first_shift, date: Date.today, shift_group: group
 
-      item = Scheduler::ShiftAssignment.new person: person, shift: first_shift, date: Date.today
+      item = Scheduler::ShiftAssignment.new person: person, shift: first_shift, date: Date.today, shift_group: group
       item.should_not be_valid
       item.errors[:shift].to_s.should include "already signed up"
     end
 
+    it "should allow a person to take the same shift in different groups in the same day" do
+      second_group = FactoryGirl.create :shift_group, chapter: group.chapter
+      first_shift.shift_groups += [second_group]
+      first_shift.save
+
+      item = Scheduler::ShiftAssignment.create! person: person, shift: first_shift, date: Date.today, shift_group: group
+      item = Scheduler::ShiftAssignment.new person: person, shift: first_shift, date: Date.today, shift_group: second_group
+      item.should be_valid
+    end
+
     it "should allow a person to take multiple shifts if the new shift is not exclusive" do
-      item = Scheduler::ShiftAssignment.create! person: person, shift: first_shift, date: Date.today
+      item = Scheduler::ShiftAssignment.create! person: person, shift: first_shift, date: Date.today, shift_group: group
 
       second_shift.update_attribute :exclusive, false
-      item = Scheduler::ShiftAssignment.new person: person, shift: second_shift, date: Date.today
+      item = Scheduler::ShiftAssignment.new person: person, shift: second_shift, date: Date.today, shift_group: group
       item.should be_valid
     end
     it "should allow a person to take multiple shifts if the other shift is not exclusive" do
       first_shift.update_attribute :exclusive, false
-      item = Scheduler::ShiftAssignment.create! person: person, shift: first_shift, date: Date.today
+      item = Scheduler::ShiftAssignment.create! person: person, shift: first_shift, date: Date.today, shift_group: group
 
-      item = Scheduler::ShiftAssignment.new person: person, shift: second_shift, date: Date.today
+      item = Scheduler::ShiftAssignment.new person: person, shift: second_shift, date: Date.today, shift_group: group
       item.should be_valid
     end
   end
 
   it "should allow a person to have multiple shifts in a day" do
     second_group = FactoryGirl.create :shift_group, name: "Group 2", chapter: group.chapter
-    second_shift = FactoryGirl.create :shift, county: person.counties.first, positions: [positions.first], shift_group: second_group
+    second_shift = FactoryGirl.create :shift, county: person.counties.first, positions: [positions.first], shift_groups: [second_group]
 
-    item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: Date.today, shift_group: group
     item.should be_valid
 
-    item = Scheduler::ShiftAssignment.create person: person, shift: second_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: person, shift: second_shift, date: Date.today, shift_group: second_group
     item.should be_valid
   end
 
   it "should validate that the shift is not full with max_signups=1" do
     person2 = FactoryGirl.create :person, chapter: chapter,  positions: [positions.first], counties: [counties.first]
 
-    item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: Date.today, shift_group: group
     item.should be_valid
 
-    item = Scheduler::ShiftAssignment.create person: person2, shift: first_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: person2, shift: first_shift, date: Date.today, shift_group: group
     item.should_not be_valid
   end
 
@@ -97,13 +107,13 @@ describe Scheduler::ShiftAssignment do
 
     first_shift.tap{|s| s.max_signups = 2; s.save}
 
-    item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: Date.today, shift_group: group
     item.should be_valid
 
-    item = Scheduler::ShiftAssignment.create person: person2, shift: first_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: person2, shift: first_shift, date: Date.today, shift_group: group
     item.should be_valid
 
-    item = Scheduler::ShiftAssignment.create person: person3, shift: first_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: person3, shift: first_shift, date: Date.today, shift_group: group
     item.should_not be_valid
   end
 
@@ -113,37 +123,37 @@ describe Scheduler::ShiftAssignment do
 
     first_shift.tap{|s| s.max_signups = 0; s.save}
 
-    item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: Date.today, shift_group: group
     item.should be_valid
 
-    item = Scheduler::ShiftAssignment.create person: person2, shift: first_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: person2, shift: first_shift, date: Date.today, shift_group: group
     item.should be_valid
 
-    item = Scheduler::ShiftAssignment.create person: person3, shift: first_shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: person3, shift: first_shift, date: Date.today, shift_group: group
     item.should be_valid
   end
 
   it "should not allow signups outside of the valid dates" do
     shift = first_shift
 
-    item = Scheduler::ShiftAssignment.create person: person, shift: shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: person, shift: shift, date: Date.today, shift_group: group
     item.should be_valid
 
     shift.shift_begins = Date.tomorrow; shift.save
 
-    item = Scheduler::ShiftAssignment.create person: person, shift: shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: person, shift: shift, date: Date.today, shift_group: group
     item.should_not be_valid
 
     shift.shift_begins = nil; shift.shift_ends = Date.yesterday; shift.save
 
-    item = Scheduler::ShiftAssignment.create person: person, shift: shift, date: Date.today
+    item = Scheduler::ShiftAssignment.create person: person, shift: shift, date: Date.today, shift_group: group
     item.should_not be_valid
   end
 
   it "should not allow cancellation before the frozen date" do
     shift = first_shift
 
-    item = Scheduler::ShiftAssignment.create person: person, shift: shift, date: zone.today
+    item = Scheduler::ShiftAssignment.create person: person, shift: shift, date: zone.today, shift_group: group
     item.should be_valid
 
     shift.signups_frozen_before = zone.today.tomorrow; shift.save
@@ -157,7 +167,7 @@ describe Scheduler::ShiftAssignment do
 
     shift.signups_frozen_before = zone.today.tomorrow; shift.save
 
-    item = Scheduler::ShiftAssignment.create person: person, shift: shift, date: zone.today
+    item = Scheduler::ShiftAssignment.create person: person, shift: shift, date: zone.today, shift_group: group
     item.should_not be_valid
   end
 
@@ -171,7 +181,7 @@ describe Scheduler::ShiftAssignment do
     describe "needs_email_invite" do
       before(:each) do
         @prefs.update_attribute :send_email_invites, true
-        @item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: zone.today.tomorrow
+        @item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: zone.today.tomorrow, shift_group: group
       end
 
       it "should want to send an invite" do
@@ -193,7 +203,7 @@ describe Scheduler::ShiftAssignment do
     describe "needs_email_reminder" do
       before(:each) do
         @prefs.update_attribute :email_advance_hours, 7200 # 2 hours ahead of time
-        @item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: zone.today.tomorrow
+        @item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: zone.today.tomorrow, shift_group: group
       end
 
       it "should not want to send the reminder ahead of time" do
@@ -221,7 +231,7 @@ describe Scheduler::ShiftAssignment do
     describe "needs_sms_reminder" do
       before(:each) do
         @prefs.update_attribute :sms_advance_hours, 2.hours # 2 hours ahead of time
-        @item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: zone.today.tomorrow
+        @item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: zone.today.tomorrow, shift_group: group
       
         person.cell_phone_carrier = Roster::CellCarrier.create name: 'Test', sms_gateway: '@example.com'
         person.cell_phone = Faker::PhoneNumber.phone_number

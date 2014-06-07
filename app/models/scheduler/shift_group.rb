@@ -1,6 +1,6 @@
 class Scheduler::ShiftGroup < ActiveRecord::Base
   belongs_to :chapter, class_name: 'Roster::Chapter'
-  has_many :shifts, -> {order(:ordinal)}, class_name: 'Scheduler::Shift'
+  has_and_belongs_to_many :shifts, -> {order(:ordinal)}, class_name: 'Scheduler::Shift'
 
   validates_inclusion_of :period, in: %w(daily weekly monthly)
   validates :start_offset, :end_offset, presence: true, numericality: true

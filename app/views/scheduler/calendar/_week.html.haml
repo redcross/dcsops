@@ -28,7 +28,7 @@
       %td.week{colspan: prev_week_len, :"data-prev-week" => "#{this_date.to_s}-#{group.id}"}
         - this_my_shift = calendar.my_shifts_for_group_on_day(group.id, this_date)
         %div{class: this_my_shift.present? && 'my-shift'}
-          - active_shifts = shifts.select{|sh|sh.active_on_day?(this_date)}
+          - active_shifts = shifts.select{|sh|sh.active_on_day?(this_date, group)}
           - render_shifts group, active_shifts, this_date, false  do |idx, is_first, is_last, needs_signups, row_html|
             %div{class: needs_signups && 'open'}
               =row_html
@@ -39,7 +39,7 @@
 
     %td.week{colspan: wday_length, :"data-this-week" => week_group_key}
       %div{class: my_shifts.present? && 'my-shift'}
-        - shifts = shifts.select{|sh|sh.active_on_day?(date)}
+        - shifts = shifts.select{|sh|sh.active_on_day?(date, group)}
         - render_shifts group, shifts, date, editable  do |idx, is_first, is_last, needs_signups, row_html|
           %div{class: needs_signups && 'open'}
             =row_html

@@ -1,3 +1,6 @@
+Rails.logger.level = 0
+ActiveSupport::Cache::Store.logger = Rails.logger
+
 if Rails.env.production?
 
   ActionController::Instrumentation.send(:define_method, "process_action") do |arg|

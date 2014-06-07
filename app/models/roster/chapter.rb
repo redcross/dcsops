@@ -47,9 +47,6 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_use_global_log, :boolean
   serialized_accessor :config, :incidents_report_allow_manual_address, :boolean
 
-  serialized_accessor :config, :scheduler_flex_day_start, :integer
-  serialized_accessor :config, :scheduler_flex_night_start, :integer
-
   serialized_accessor :config, :salesforce_sso_url, :string
 
   serialized_accessor :config, :cas_host, :string
@@ -62,6 +59,10 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_enable_messaging, :boolean
   serialized_accessor :config, :incidents_enable_chat, :boolean
   serialized_accessor :config, :incidents_delegate_chapter, :integer
+
+  serialized_accessor :config, :scheduler_dispatch_export_recipient, :string
+  serialized_accessor :config, :scheduler_flex_day_start, :integer
+  serialized_accessor :config, :scheduler_flex_night_start, :integer
 
   def self.array_accessor *syms
     syms.each do |sym|

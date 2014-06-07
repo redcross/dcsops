@@ -57,10 +57,10 @@ describe Scheduler::RemindersMailer do
       @chapter = FactoryGirl.create :chapter
       @admin = FactoryGirl.create :person, chapter: @chapter
       @group = FactoryGirl.create(:shift_group, chapter: @chapter, period: 'daily', start_offset: 0.hours, end_offset: 24.hours)
-      @shift = FactoryGirl.create :shift, shift_group: @group, county: @admin.counties.first, positions: @admin.positions
+      @shift = FactoryGirl.create :shift, shift_groups: [@group], county: @admin.counties.first, positions: @admin.positions
 
       @person = FactoryGirl.create :person, chapter: @chapter, positions: @shift.positions, counties: [@shift.county]
-      @ass = FactoryGirl.create :shift_assignment, shift: @shift, date: Date.current, person: @person
+      @ass = FactoryGirl.create :shift_assignment, shift: @shift, date: Date.current, person: @person, shift_group: @group
     
       @setting = Scheduler::NotificationSetting.create id: @admin.id
     end

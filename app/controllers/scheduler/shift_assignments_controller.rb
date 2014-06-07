@@ -64,7 +64,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   end
 
   def collection
-    @shift_assignments ||= apply_scopes(super).order(:date).includes{[person, shift.shift_group.chapter, shift.county, person.counties, person.chapter]}.uniq
+    @shift_assignments ||= apply_scopes(super).order(:date).includes{[person, shift_group.chapter, shift.county, person.counties, person.chapter]}.uniq
   end
 
   helper_method :grouped_collection
@@ -72,34 +72,34 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   # only useful when querying all, as we'll get multiple assignments per shift and should only have
   # one event on the calendar.  The associated shifts query will get all the rest [again... should look into that].
   def grouped_collection
-    @grouped_collection ||= collection.sort_by{|s| s.shift.ordinal}.group_by{|s| [s.date, s.shift.shift_group_id, s.shift.county_id]}.values.map(&:first)
+    @grouped_collection ||= collection.sort_by{|s| s.shift.ordinal}.uniq{|s| [s.date, s.shift_group_id, s.shift.county_id]}
   end
 
   # This builds a query with pairs of shift group/date
   def other_shifts
     return @other_shifts if @other_shifts
 
-    groups = collection.map{|ass| ass.shift.shift_group.tap{|g| g.start_date = ass.date }}
-
-    @other_shifts = Scheduler::ShiftAssignment.for_active_groups(groups).includes{[person, shift.county]}.includes_person_carriers.group_by{|s| [s.date, s.shift_id]}
+    groups = collection.map{|ass| {start_date: ass.date, id: ass.shift_group_id} }.uniq
+    @other_shifts = Scheduler::ShiftAssignment.for_active_groups_raw(groups).includes{[person, shift.county]}.includes_person_carriers.group_by{|s| [s.date, s.shift_id, s.shift_group_id]}
   end
 
   def assignments_for(shift, item)
-    other_shifts[[item.date, shift.id]]
+    other_shifts[[item.date, shift.id, item.shift_group_id]]
   end
 
   helper_method :associated_shifts
   def associated_shifts(item)
     @shifts_by_shift_group ||= begin
-      groups = collection.map{|s| s.shift.shift_group}.uniq
-      shifts = Scheduler::Shift.where{shift_group_id.in groups}.order{ordinal}.active_on_day(item.date)
-    end.group_by(&:shift_group_id)
+      groups = collection.map{|s| s.shift_group}.uniq
+      shifts = Scheduler::Shift.for_groups(groups).order{ordinal}.active_on_day(item.date).includes{shift_groups}
+      shifts.reduce(NestedHash.hash_array) { |arr, shift| shift.shift_group_ids.each { |gid| arr[gid] << shift }; arr }
+    end
 
-    @shifts_by_shift_group[item.shift.shift_group_id].select{|s| s.county_id == item.shift.county_id}.map{|s| [s, assignments_for(s, item)]}
+    @shifts_by_shift_group[item.shift_group_id].select{|s| s.county_id == item.shift.county_id}.map{|s| [s, assignments_for(s, item)]}
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def resource_params
-    [params.require(:shift_assignment).permit(:person_id, :shift_id, :date)]
+    [params.require(:shift_assignment).permit(:person_id, :shift_id, :shift_group_id, :date)]
   end
 end

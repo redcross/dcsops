@@ -73,7 +73,6 @@ class Incidents::EventLog < Incidents::DataModel
 
     super(time)
   rescue ArgumentError => e
-    pp e
     super(new_time)
   end
 

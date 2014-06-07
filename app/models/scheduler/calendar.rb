@@ -17,23 +17,27 @@ class Scheduler::Calendar
   end
 
   def daily_groups
-    @_daily_groups ||= filter_shifts(shifts_by_period 'daily')
+    @_daily_groups ||= filter_shifts(groups_by_period 'daily')
   end
 
   def weekly_groups
-    @_weekly_groups ||= filter_shifts(shifts_by_period 'weekly')
+    @_weekly_groups ||= filter_shifts(groups_by_period 'weekly')
   end
 
   def monthly_groups
-    @_monthly_groups ||= filter_shifts(shifts_by_period 'monthly')
+    @_monthly_groups ||= filter_shifts(groups_by_period 'monthly')
   end
 
   def all_groups
     daily_groups.merge(weekly_groups).merge(monthly_groups)
   end
 
-  def assignments_for_shift_on_day(shift, date)
-    @all_shifts[shift.id][date] || []
+  def assignments_for_group_on_day(group, date)
+    (@all_shifts[group.id][date] || {}).values.flatten
+  end
+
+  def assignments_for_shift_on_day_in_group(shift, date, group)
+    @all_shifts[group.id][date][shift.id] || []
   end
 
   def my_shifts_for_group_on_day(group_id, date)
@@ -58,18 +62,18 @@ class Scheduler::Calendar
   end
 
   def date_range
-    start_date.at_beginning_of_week.advance(weeks: -1)..end_date
+    start_date.at_beginning_of_week.advance(weeks: -0)..end_date
   end
 
   def load_all_shifts
     shifts = all_groups.values.flatten
-    @all_assignments = Scheduler::ShiftAssignment.includes_person_carriers
-        .includes{[person.counties, shift.county, shift.positions, shift.shift_group]}
+    @all_assignments = Scheduler::ShiftAssignment#.includes_person_carriers
+        .includes{[person, shift.county, shift.positions, shift_group]} # person.counties, 
         .for_shifts(shifts).where{date.in(my{date_range})}
     
-    @all_shifts = Hash.new{|h,k| h[k] = NestedHash.default_hash(Array) }
+    @all_shifts = NestedHash.hash_hash_hash_array
     @all_assignments.each do |assignment|
-      @all_shifts[assignment.shift_id][assignment.date] << assignment
+      @all_shifts[assignment.shift_group_id][assignment.date][assignment.shift_id] << assignment
     end
   end
 
@@ -79,18 +83,18 @@ class Scheduler::Calendar
       group_ids = all_groups.keys
       pid = person.id
 
-      Scheduler::ShiftAssignment.joins{shift}.includes{shift}
-          .where{(shift.shift_group_id.in(group_ids)) & (person_id == pid) & date.in(my{date_range})}
+      Scheduler::ShiftAssignment.includes{[shift.shift_groups, shift_group]}
+          .where{(shift_group_id.in(group_ids)) & (person_id == pid) & date.in(my{date_range})}
           .each do |assignment|
-        @my_shifts[assignment.shift.shift_group_id][assignment.date] << assignment
+        @my_shifts[assignment.shift_group_id][assignment.date] << assignment
       end
     end
   end
 
-  def shifts_by_period(period)
-    @_unfiltered_shifts ||= Scheduler::ShiftGroup.includes{[shifts.positions, shifts.county, shifts.shift_group.chapter]}.where(chapter_id: chapter).order(:start_offset).to_a
+  def groups_by_period(period)
+    @_unfiltered_groups ||= Scheduler::ShiftGroup.includes{[shifts.positions, shifts.county, shifts.shift_groups]}.where(chapter_id: chapter).order(:start_offset).to_a
 
-    @_unfiltered_shifts.select{|sh| sh.period == period}
+    @_unfiltered_groups.select{|sh| sh.period == period}
   end
 
   def filter_shifts(groups)
@@ -110,7 +114,7 @@ class Scheduler::Calendar
 
   def load_by_day_group
     @by_day_group ||= Hash.new{|h,k| h[k] = Hash.new{|h,k| h[k] = Hash.new }}
-    @all_assignments.each { |shift| @by_day_group[shift.person][shift.date][shift.shift.shift_group] = shift; }
+    @all_assignments.each { |ass| @by_day_group[ass.person][ass.date][ass.shift.shift_group] = ass; }
   end
 
 end

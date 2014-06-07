@@ -8,7 +8,9 @@ namespace :scheduler_periodic do
 
   task :send_dispatch_roster => [:environment] do
     Raven.capture do
-      Scheduler::SendDispatchRosterJob.new(ENV['IF_NEEDED']!='true').perform
+      Roster::Chapter.with_scheduler_dispatch_export_recipient_present.each do |chapter|
+        Scheduler::SendDispatchRosterJob.new(chapter, ENV['IF_NEEDED']!='true').perform
+      end
     end
   end
 

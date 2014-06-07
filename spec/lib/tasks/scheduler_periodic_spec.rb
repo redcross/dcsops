@@ -26,24 +26,24 @@ describe "" do
 
   describe "scheduler_periodic:send_dispatch_roster" do
     before(:each) do
-      @chapter.update_attribute :code, '05503'
+      @chapter.update_attributes code: '05503', scheduler_dispatch_export_recipient: Faker::Internet.email
     end
 
     it "should trigger the mailer with no env" do
-      Scheduler::SendDispatchRosterJob.should_receive(:new).with(true).and_call_original
+      Scheduler::SendDispatchRosterJob.should_receive(:new).with(@chapter, true).and_call_original
       Scheduler::SendDispatchRosterJob.any_instance.should_receive :perform
       subject.invoke
     end
 
     it "should trigger the mailer with IF_NEEDED=false and run the mailer with force=false" do
       ENV.stub(:[]).with("IF_NEEDED").and_return("true")
-      Scheduler::SendDispatchRosterJob.should_receive(:new).with(false).and_call_original
+      Scheduler::SendDispatchRosterJob.should_receive(:new).with(@chapter, false).and_call_original
       Scheduler::SendDispatchRosterJob.any_instance.should_receive :perform
       subject.invoke
     end
 
     it "should work all the way through" do
-      Scheduler::DirectlineMailer.any_instance.should_receive(:export).with(anything, anything).and_return(double deliver: true)
+      Scheduler::DirectlineMailer.any_instance.should_receive(:export).with(@chapter, anything, anything).and_return(double deliver: true)
       subject.invoke
     end
   end

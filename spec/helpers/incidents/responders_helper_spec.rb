@@ -55,7 +55,7 @@ describe Incidents::RespondersHelper do
     end
 
     it "should provide the shift assignment name" do
-      assignment = FactoryGirl.create :shift_assignment, person: person
+      assignment = FactoryGirl.build_stubbed :shift_assignment, person: person
       res = helper.person_row(assignment, true)
       res.should match(assignment.shift.name)
     end

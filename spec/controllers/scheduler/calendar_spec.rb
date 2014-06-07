@@ -17,13 +17,13 @@ describe Scheduler::CalendarController do
       @wg = FactoryGirl.create :shift_group, chapter: @ch, period: 'weekly', start_offset: 0, end_offset: 7.days
       @mg = FactoryGirl.create :shift_group, chapter: @ch, period: 'monthly', start_offset: 0, end_offset: 31
 
-      @ds = FactoryGirl.create :shift, shift_group: @dg, county: @person.counties.first, positions: @person.positions, spreadsheet_ordinal: 1
-      @ws = FactoryGirl.create :shift, shift_group: @wg, county: @person.counties.first, positions: @person.positions
-      @ms = FactoryGirl.create :shift, shift_group: @mg, county: @person.counties.first, positions: @person.positions
+      @ds = FactoryGirl.create :shift, shift_groups: [@dg], county: @person.counties.first, positions: @person.positions, spreadsheet_ordinal: 1
+      @ws = FactoryGirl.create :shift, shift_groups: [@wg], county: @person.counties.first, positions: @person.positions
+      @ms = FactoryGirl.create :shift, shift_groups: [@mg], county: @person.counties.first, positions: @person.positions
 
-      FactoryGirl.create :shift_assignment, shift: @ds, person: @person, date: date
-      FactoryGirl.create :shift_assignment, shift: @ws, person: @person, date: weekly_date
-      FactoryGirl.create :shift_assignment, shift: @ms, person: @person, date: monthly_date
+      FactoryGirl.create :shift_assignment, shift: @ds, shift_group: @dg, person: @person, date: date
+      FactoryGirl.create :shift_assignment, shift: @ws, shift_group: @wg, person: @person, date: weekly_date
+      FactoryGirl.create :shift_assignment, shift: @ms, shift_group: @mg, person: @person, date: monthly_date
     end
 
     it "should render the whole calendar" do
@@ -155,8 +155,8 @@ describe Scheduler::CalendarController do
         next_date: weekly_date.next_week,
         later_date: weekly_date.next_week.next_week,
         shift_period: 'weekly',
-        shift_start_offset: 0,
-        shift_end_offset: 7.days
+        shift_start_offset: -1.day,
+        shift_end_offset: 6.days
       },
       'monthly' => {
         date: monthly_date,
@@ -174,8 +174,8 @@ describe Scheduler::CalendarController do
       before :each do
         @ch = @person.chapter
         @group = FactoryGirl.create :shift_group, chapter: @ch, period: values[:shift_period], start_offset: values[:shift_start_offset], end_offset: values[:shift_end_offset]
-        @shift = FactoryGirl.create :shift, shift_group: @group, county: @person.counties.first, positions: @person.positions
-        @assignment = FactoryGirl.create :shift_assignment, shift: @shift, person: @person, date: values[:date]
+        @shift = FactoryGirl.create :shift, shift_groups: [@group], county: @person.counties.first, positions: @person.positions
+        @assignment = FactoryGirl.create :shift_assignment, shift: @shift, shift_group: @group, person: @person, date: values[:date]
       end
 
       it "should render" do
@@ -256,7 +256,7 @@ describe Scheduler::CalendarController do
       end
 
       it "should highlight if the shift has less than desired signups" do
-        FactoryGirl.create :shift_assignment, shift: @shift, person: @person, date: values[:prev_date]
+        FactoryGirl.create :shift_assignment, shift: @shift, shift_group: @group, person: @person, date: values[:prev_date]
         @shift.update_attribute :min_desired_signups, 2
         xhr :get, :day, date: values[:date].to_s, period: partial_name
         response.should be_success
@@ -264,7 +264,7 @@ describe Scheduler::CalendarController do
       end
 
       it "should not highlight if the shift has the desired signups" do
-        FactoryGirl.create :shift_assignment, shift: @shift, person: @person, date: values[:prev_date]
+        FactoryGirl.create :shift_assignment, shift: @shift, shift_group: @group, person: @person, date: values[:prev_date]
         xhr :get, :day, date: values[:date].to_s, period: partial_name
         response.should be_success
         response.body.should_not match(/class=['"]open/)
@@ -279,7 +279,7 @@ describe Scheduler::CalendarController do
 
       it "should not render an empty group's name" do
         @empty_group = FactoryGirl.create :shift_group, name: "EmptyGroup", chapter: @ch, period: values[:shift_period], start_offset: values[:shift_start_offset], end_offset: values[:shift_end_offset]
-        @old_shift = FactoryGirl.create :shift, shift_group: @empty_group, county: @person.counties.first, positions: @person.positions, shift_ends: values[:date]-5
+        @old_shift = FactoryGirl.create :shift, shift_groups: [@empty_group], county: @person.counties.first, positions: @person.positions, shift_ends: values[:date]-5
         xhr :get, :day, date: values[:date].to_s, period: partial_name
         response.body.should_not match(@empty_group.name)
       end

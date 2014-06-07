@@ -13,14 +13,12 @@ describe Scheduler::DirectlineMailer do
     @day = FactoryGirl.create :shift_group, chapter: @chapter, start_offset: 7.hours, end_offset: 19.hours
     @night = FactoryGirl.create :shift_group, chapter: @chapter, start_offset: 19.hours, end_offset: 31.hours
 
-    @leadshift = FactoryGirl.create :shift, shift_group: @day, dispatch_role: 1, positions: [@position], county: @county1
-    @othershift = FactoryGirl.create :shift, shift_group: @day, positions: [@position], county: @county1
+    @leadshift = FactoryGirl.create :shift, shift_groups: [@day, @night], dispatch_role: 1, positions: [@position], county: @county1
+    @othershift = FactoryGirl.create :shift, shift_groups: [@day, @night], positions: [@position], county: @county1
 
-    @leadnight = FactoryGirl.create :shift, shift_group: @night, dispatch_role: 1, positions: [@position], county: @county1
-    @othernight = FactoryGirl.create :shift, shift_group: @night, positions: [@position], county: @county1
-
-    @leadass = FactoryGirl.create :shift_assignment, person: @people1.first, date: today, shift: @leadshift
-    FactoryGirl.create :shift_assignment, person: @people1[1], date: today, shift: @othershift
+    @leadass = FactoryGirl.create :shift_assignment, person: @people1.first, date: today, shift: @leadshift, shift_group: @day
+    FactoryGirl.create :shift_assignment, person: @people1[1], date: today, shift: @othershift, shift_group: @day
+    FactoryGirl.create :shift_assignment, person: @people1[2], date: today, shift: @leadshift, shift_group: @night
 
     @config = Scheduler::DispatchConfig.new county: @county1, name: @county1.name
     @config.is_active = true
@@ -29,7 +27,7 @@ describe Scheduler::DirectlineMailer do
   end
 
   let(:today) { @chapter.time_zone.today }
-  let(:mail) { Scheduler::DirectlineMailer.export(today, today.tomorrow)}
+  let(:mail) { Scheduler::DirectlineMailer.export(@chapter, today, today.tomorrow)}
   let(:shift_filename) { "shift_data.csv"}
   let(:roster_filename) { "roster.csv"}
 
@@ -56,6 +54,12 @@ describe Scheduler::DirectlineMailer do
       row[3..row.count].should =~ [@people1.first.id.to_s, @config.backup_first.id.to_s]
     end
 
+    it "Should have the night person plus backups" do
+      row = csv[2]
+      row[1].should eq (@chapter.time_zone.now.at_beginning_of_day.advance(seconds: @night.start_offset).iso8601)
+      row[3..row.count].should =~ [@people1[2].id.to_s, @config.backup_first.id.to_s]
+    end
+
     it "Should have the backups when no on call person" do
       row = csv[3]
       row[1].should eq (@chapter.time_zone.now.at_beginning_of_day.advance(days: 1, seconds: @day.start_offset).iso8601)
@@ -64,9 +68,9 @@ describe Scheduler::DirectlineMailer do
 
     it "Should include a weekly backup shift" do
       @week = FactoryGirl.create :shift_group, chapter: @chapter, start_offset: 7.hours, end_offset: ((24 * 7) + 7).hours, period: 'weekly'
-      @weekshift = FactoryGirl.create :shift, shift_group: @week, dispatch_role: 3, positions: [@position], county: @county1
+      @weekshift = FactoryGirl.create :shift, shift_groups: [@week], dispatch_role: 3, positions: [@position], county: @county1
       @weekperson = @people1[3]
-      @weekass = FactoryGirl.create :shift_assignment, person: @weekperson, date: today.at_beginning_of_week, shift: @weekshift
+      @weekass = FactoryGirl.create :shift_assignment, person: @weekperson, date: today.at_beginning_of_week, shift: @weekshift, shift_group: @week
 
       row = csv[1]
       row[3..row.count].should =~ [@people1.first.id.to_s, @weekperson.id.to_s, @config.backup_first.id.to_s]
@@ -87,7 +91,7 @@ describe Scheduler::DirectlineMailer do
     let (:csv) {CSV.parse(mail.attachments[roster_filename].body.raw_source)}
 
     it "should have rows for everyone plus header" do
-      csv.count.should eq 2 + 1
+      csv.count.should eq 3 + 1
     end 
 
     it "should identify an SMS number" do

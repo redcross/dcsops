@@ -1,11 +1,10 @@
 module Scheduler::ShiftAssignmentsHelper
   def shift_title(item)
-    title = ""
     if current_scopes[:show_shifts]=='all'
-      title << item.shift.county.name << " - "
+      item.shift.county.name
+    else
+      item.shift.name
     end
-    title << item.shift.name
-    title
   end
 
   def shift_summary(item)

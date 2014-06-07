@@ -16,8 +16,8 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
 
   class ShiftIsAvailable < ActiveModel::Validator
     def validate(record)
-      return false unless record.shift and record.date
-      assignments = record.shift.shift_assignments.where(date: record.date)
+      return false unless record.shift and record.date and record.shift_group
+      assignments = record.shift.shift_assignments.where(date: record.date, shift_group_id: record.shift_group_id)
       if record.id
         assignments = assignments.where("scheduler_shift_assignments.id <> ?", record.id)
       end
@@ -29,7 +29,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
       unless record.shift.max_signups == 0 || assignments.count < record.shift.max_signups
         record.errors[:shift] = "This shift is not available"
       end
-      unless record.shift.active_on_day? record.date
+      unless record.shift.active_on_day? record.date, record.shift_group
         record.errors[:shift] = "This shift does not happen on this day."
       end
     end
@@ -39,7 +39,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     def validate(record)
       return false unless record.shift and record.date and record.person
       return true unless record.shift.exclusive
-      assignments = Scheduler::ShiftAssignment.includes(:shift).where(shift: {shift_group_id: record.shift.shift_group, exclusive: true}, date: record.date, person_id: record.person)
+      assignments = Scheduler::ShiftAssignment.includes(:shift).where(shift: {exclusive: true}, shift_group_id: record.shift_group, date: record.date, person_id: record.person)
       if record.id
         assignments = assignments.where("scheduler_shift_assignments.id <> ?", record.id)
       end
@@ -51,9 +51,9 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
 
   class ShiftDateIsValid < ActiveModel::Validator
     def validate(record)
-      return unless record.shift and record.shift.shift_group
+      return unless record.shift and record.shift_group
 
-      valid = case record.shift.shift_group.period
+      valid = case record.shift_group.period
       when 'daily' then true
       when 'weekly' then record.date == record.date.at_beginning_of_week
       when 'monthly' then record.date.day == 1
@@ -65,13 +65,25 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     end
   end
 
+  class ShiftGroupIsValid < ActiveModel::Validator
+    def validate(record)
+      return unless record.shift and record.shift.shift_group
+
+      valid = record.shift.shift_group_ids.include? record.shift_group_id
+      if !valid 
+        record.errors[:shift_group] = "That is not a valid group for this shift"
+      end
+    end
+  end
+
   before_destroy :check_frozen_shift
 
   belongs_to :person, class_name: 'Roster::Person'
   belongs_to :shift, class_name: 'Scheduler::Shift'
+  belongs_to :shift_group, class_name: 'Scheduler::ShiftGroup'
   belongs_to :notification_setting, foreign_key: 'person_id'
 
-  validates :person, :shift, :date, presence: true
+  validates :person, :shift, :shift_group, :date, presence: true
   validates_with PersonAllowedToTakeShift, ShiftIsAvailable, PersonIsAvailable, ShiftDateIsValid
 
   attr_accessor :swapping_from_id, :is_swapping_to
@@ -79,15 +91,18 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   scope :for_day, lambda {|day| where(date: day)}
 
   scope :for_active_groups, -> (groups) {
-    groups=groups.uniq{|group| [group.start_date, group.id]}
-
-    joins{shift}.where{
-      row(date, shift.shift_group_id).in(groups.map{|group| row(group.start_date, group.id) })
-    }
+    groups=groups.map{|group| {start_date: group.start_date, id: group.id}}.uniq
+    for_active_groups_raw groups
   }
 
+  def self.for_active_groups_raw tuples
+    where{
+      row(date, shift_group_id).in(tuples.map{|hash| row(hash[:start_date], hash[:id]) })
+    }
+  end
+
   scope :for_chapter, -> (chapter) {
-    joins{person}.where{person.chapter_id == chapter.id}
+    joins{person}.where{person.chapter_id == chapter}
   }
 
   scope :for_shifts, -> (shifts) {
@@ -99,7 +114,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   }
 
   scope :for_groups, -> (groups) {
-    joins{shift}.where{shift.shift_group_id.in(groups)}
+    where{shift_group_id.in(groups)}
   }
 
   scope :with_active_person, -> {
@@ -140,7 +155,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
 
   def self.normalized_date_on_or_after time
     in_date = time.to_date
-    joins{shift.shift_group}.where(<<-SQL)
+    joins{shift_group}.where(<<-SQL)
     scheduler_shift_assignments.date >= (CASE scheduler_shift_groups.period
     WHEN 'daily' THEN '#{in_date}'::date
     WHEN 'weekly' THEN date_trunc('week', '#{in_date}'::date) - '7 days'::interval
@@ -152,7 +167,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
 
   scope :starts_after, ->(time){
     start_date = time.to_date
-    joins{shift.shift_group}.where{(date > start_date) | ((date == start_date) & (shift.shift_group.end_offset > time.in_time_zone.seconds_since_midnight))}
+    joins{shift_group}.where{(date > start_date) | ((date == start_date) & (shift_group.end_offset > time.in_time_zone.seconds_since_midnight))}
   }
 
   scope :available_for_swap, -> (chapter) {
@@ -164,11 +179,11 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   }
 
   def local_start_time
-    local_offset(date, shift.shift_group.start_offset)
+    local_offset(date, shift_group.start_offset)
   end
 
   def local_end_time
-    local_offset(date, shift.shift_group.end_offset)
+    local_offset(date, shift_group.end_offset)
   end
 
   def check_frozen_shift
@@ -185,8 +200,8 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   def local_offset(date, offset)
     #date.in_time_zone.at_beginning_of_day.advance( seconds: offset).iso8601
 
-    beginning_of_day = date.in_time_zone(shift.shift_group.chapter.time_zone).at_beginning_of_day
-    key = (shift.shift_group.period == 'monthly' ? :days : :seconds)
+    beginning_of_day = date.in_time_zone(shift_group.chapter.time_zone).at_beginning_of_day
+    key = (shift_group.period == 'monthly' ? :days : :seconds)
     offset_time = beginning_of_day.advance(key => offset)
 
     # advance counts every instant that elapses, not just calendar seconds.  so

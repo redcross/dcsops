@@ -10,15 +10,13 @@ class window.CalendarController
     @params = params
     @avail_url = avail_url
     $(document).on 'click', 'input.shift-checkbox', (evt) =>
-      date = $(evt.target).val()
-      period = $(evt.target).data('period')
-      shift = $(evt.target).attr('name')
-      register = $(evt.target).is(':checked')
-      assignment = $(evt.target).data('assignment')
-      body = 
-        date: date
-        shift_id: shift
-        person_id: @params.person_id
+      $target = $(evt.target)
+      date = $target.val()
+      period = $target.data('period')
+      shift = $target.attr('name')
+      register = $target.is(':checked')
+      assignment = $target.data('assignment')
+      body = $target.data('params')
       $.ajax
         url: '/scheduler/shift_assignments' + (if register then '' else '/'+assignment)
         data: JSON.stringify(if register then body else {})
