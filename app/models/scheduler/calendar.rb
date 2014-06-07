@@ -114,7 +114,7 @@ class Scheduler::Calendar
 
   def load_by_day_group
     @by_day_group ||= Hash.new{|h,k| h[k] = Hash.new{|h,k| h[k] = Hash.new }}
-    @all_assignments.each { |ass| @by_day_group[ass.person][ass.date][ass.shift.shift_group] = ass; }
+    @all_assignments.each { |ass| @by_day_group[ass.person][ass.date][ass.shift_group] = ass; }
   end
 
 end

@@ -118,7 +118,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
   controller do
 
     before_filter only: :index do
-      params['q'] ||= {counties_id_in: current_user.county_ids}
+      #params['q'] ||= {counties_id_in: current_user.county_ids}
     end
 
     def resource

@@ -10,7 +10,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   filter :dispatch_role
   
   scope :all, default: true do |shifts|
-    shifts.includes([:shift_groups, :county]).order(:county_id, :shift_group_id, :ordinal)
+    shifts.includes([:shift_groups, :county]).order(:county_id, :ordinal)
   end
 
   index do

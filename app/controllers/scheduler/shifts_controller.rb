@@ -34,12 +34,11 @@ class Scheduler::ShiftsController < Scheduler::BaseController
 
   def by_county_group_shift
     return @tree if @tree
-    @tree = collection.reduce({}) do |hash, shift|
-      hash[shift.county] ||= {}
-      hash[shift.county][shift.shift_group] ||= []
-      hash[shift.county][shift.shift_group] << shift
-      hash
-    end
+    @tree = collection.sort_by{|sh| sh.ordinal || Float::INFINITY}.group_by(&:county)
+  end
+
+  def collection
+    @collection ||= super.includes{[county, shift_groups]}
   end
 
   def dates_for_count

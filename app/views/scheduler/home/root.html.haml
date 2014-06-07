@@ -14,11 +14,11 @@
       -unless upcoming_shifts.blank?
         %strong Upcoming shifts:
         %br
-        - upcoming_shifts.each do |shift|
-          = shift.shift.name
+        - upcoming_shifts.each do |ass|
+          = ass.shift.name
           on
-          = shift.date.to_s :dow_long
-          = shift.shift.shift_group.name
+          = ass.date.to_s :dow_long
+          = ass.shift_group.name
           %br
         %small=link_to "All Upcoming Shifts", scheduler_shift_assignments_path(my_shifts: true)
       - else
@@ -119,7 +119,7 @@
           %tr
             %td=shift.date.to_s :dow_short
             %td
-              =shift.shift.shift_group.name
+              =shift.shift_group.name
               =shift.shift.name
             %td=shift.shift.county.abbrev
             %td=shift.person.full_name

@@ -1,6 +1,6 @@
 %h1 Shifts
 
-- by_county_group_shift.each do |county, groups|
+- by_county_group_shift.each do |county, shifts|
   =form_tag '', method: :put do
     %h3=county.name
     %table.table-condensed.table-bordered.table-striped
@@ -18,31 +18,29 @@
           %th From
           %th To
           %th Max Advance Signup 
-      - groups.each_with_index do |(group, shifts), group_idx|
-        -avail_data = dates_for_count.map{|d| Scheduler::Shift.shifts_available_by_day(shifts, d)}
-        - shifts.each_with_index do |shift, shift_idx|
-          = fields_for "shifts[#{shift.id}]", shift do |f|
-            %tr{class: (shift_idx == (shifts.count-1)) && 'end-group'}
-              -if shift_idx == 0
-                %th{rowspan: shifts.count, class: 'end-group'}=group.name
-              %th=shift.name
-              %td=shift.abbrev
-              - dates_for_count.each_with_index do |date, idx|
-                %td=avail_data[idx][shift].map{|date, avail| avail ? 1 : 0}.sum
-              %td
-                .input-group
-                  =f.date_field :signups_frozen_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', class: "frozen form-control"
-                  .input-group-btn
-                    %a.btn.clearbtn.btn-default Clear
-              %td
-                .input-group
-                  =f.date_field :signups_available_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', class: "available form-control"
-                  .input-group-btn
-                    %button.btn.clearbtn.btn-default Clear
-              %td
-                .input-group
-                  =f.text_field :max_advance_signup, type: :number, class: 'max-signup form-control'
-                  %span.input-group-addon days
+      -avail_data = dates_for_count.map{|d| Scheduler::Shift.count_shifts_available_by_shift(shifts, d)}
+      - shifts.each_with_index do |shift, shift_idx|
+        = fields_for "shifts[#{shift.id}]", shift do |f|
+          %tr
+            %th=safe_join shift.shift_groups.map(&:name), tag(:br)
+            %th=shift.name
+            %td=shift.abbrev
+            - dates_for_count.each_with_index do |date, idx|
+              %td=avail_data[idx][shift]
+            %td
+              .input-group
+                =f.date_field :signups_frozen_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', class: "frozen form-control"
+                .input-group-btn
+                  %a.btn.clearbtn.btn-default Clear
+            %td
+              .input-group
+                =f.date_field :signups_available_before, 'data-provide' => 'datepicker', 'data-date-format' => 'yyyy-mm-dd', class: "available form-control"
+                .input-group-btn
+                  %button.btn.clearbtn.btn-default Clear
+            %td
+              .input-group
+                =f.text_field :max_advance_signup, type: :number, class: 'max-signup form-control'
+                %span.input-group-addon days
       %tfoot
         %tr.all-shifts
           = fields_for "county_shifts[#{county.id}]" do |f|

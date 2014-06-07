@@ -47,7 +47,7 @@ class Scheduler::Ability
     can :manage, Scheduler::ShiftAssignment, {person: {chapter_id: id}}
     can :manage, Scheduler::DispatchConfig, id: id
     can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], person: {chapter_id: id}
-    can [:read, :update, :update_shifts], Scheduler::Shift, shift_group: {chapter_id: id}
+    can [:read, :update, :update_shifts], Scheduler::Shift, county: {chapter_id: id}
 
     can :receive_admin_notifications, Scheduler::NotificationSetting, id: person.id
   end

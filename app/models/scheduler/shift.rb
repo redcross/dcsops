@@ -148,10 +148,17 @@ class Scheduler::Shift < ActiveRecord::Base
     ret
   end
 
+  def self.count_shifts_available_by_shift(shifts, month, include_partial: true, only_future: true)
+    hash = shifts_available_by_day(shifts, month)
+    hash.merge!(hash) do |shift, group_dates, _|
+      group_dates.map do |group, dates|
+        dates.map{|date, avail| (!only_future or date >= Date.current) && avail ? 1 : 0}
+      end.flatten.sum
+    end
+  end
+
   def self.count_shifts_available_for_month(shifts, month, include_partial: true, only_future: true)
-    shifts_available_by_day(shifts, month).map do |shift, dates|
-      dates.map{|date, avail| (!only_future or date >= Date.current) && avail ? 1 : 0}.sum
-    end.sum
+    count_shifts_available_by_shift(shifts, month).values.flatten.sum
   end
 
   def total_shifts_for_month(month)
