@@ -21,7 +21,7 @@ class Scheduler::SendDispatchRosterJob
   end
 
   def run!
-    ImportLog.capture(self.class.to_s, "DirectlineExport") do |logger, import_log|
+    ImportLog.capture(self.class.to_s, "DirectlineExport-#{chapter.id}") do |logger, import_log|
       ImportLog.cache do # Enable the query cache here.
         day = Date.current
         Scheduler::DirectlineMailer.export(chapter, day - 1, day + 60).deliver
@@ -31,6 +31,7 @@ class Scheduler::SendDispatchRosterJob
 
   def shifts_needing_update?
     end_window = Date.current.advance days: trigger_within
-    Scheduler::ShiftAssignment.for_chapter(chapter).joins{shift}.where{(shift.dispatch_role != nil) & (date <= end_window.to_date) & (synced != true)}.lock.exists?
+    dispatch_shifts = Scheduler::DispatchConfig.for_chapter(chapter).active.flat_map(&:shift_list)
+    Scheduler::ShiftAssignment.for_chapter(chapter).for_shifts(dispatch_shifts).where{(date <= end_window.to_date) & (synced != true)}.lock.exists?
   end
 end

@@ -11,21 +11,30 @@
         =image_tag 'glyphicons_028_cars.png', style: 'height: 1em; margin-bottom: 3px; display: none', class: 'traffic-icon' 
       %th Recruit
       %th Assign
+  -if service.have_dispatch?
+    %tbody
+      %tr
+        %th(colspan=8) Dispatch
+    %tbody
+      - service.dispatch_shifts.each do |assignment|
+        =person_schedule_row(assignment)
+      - service.dispatch_backup.each do |person|
+        =person_row("Backup", person)
   %tbody
     %tr
       %th(colspan=8) Scheduled
-  %tbody.responders-list
+  %tbody.responders-list.sort
     - service.scheduled_responders.each do |schedule|
-      =person_row(schedule)
+      =person_schedule_row(schedule)
   %tbody
     %tr
       %th(colspan=8) Flex
-  %tbody.responders-list
+  %tbody.responders-list.sort
     - service.flex_responders.each do |flex|
-      =person_row(flex)
+      =person_schedule_row(flex)
   %tbody
     %tr
       %th(colspan=8) Decline
-  %tbody.responders-list.not-available
+  %tbody.responders-list.not-available.sort
     - collection.reject(&:was_available).each do |ass|
-      =person_row(ass)
+      =person_schedule_row(ass)

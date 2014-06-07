@@ -81,7 +81,7 @@ class window.IncidentRespondersController
       duration = result['duration_in_traffic'] || result['duration']
       duration['value']
 
-    $('tbody.responders-list').each (idx, body) =>
+    $('tbody.responders-list.sort').each (idx, body) =>
       $(body).find('> tr').sortElements (a, b) =>
         travelTime(a) - travelTime(b)
 

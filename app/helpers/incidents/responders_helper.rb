@@ -13,8 +13,11 @@ module Incidents::RespondersHelper
     end
   end
 
-  def person_row(obj, editable = nil)
-    person = obj.person
+  def person_schedule_row obj, editable = nil
+    person_row(obj, obj.person, editable)
+  end
+
+  def person_row(obj, person, editable = nil)
     editable = can?( :create, parent.responder_assignments.build( person: person)) if editable == nil
 
     content_tag :tr, class: 'person', data: {person: person_json(person, obj, editable), person_id: person.id} do
@@ -74,6 +77,7 @@ module Incidents::RespondersHelper
     case obj
     when Scheduler::ShiftAssignment then obj.shift.name
     when Incidents::ResponderAssignment then obj.humanized_role
+    when String then obj
     end
   end
 

@@ -15,6 +15,18 @@ class Incidents::RespondersService
     end
   end
 
+  def dispatch_shifts
+    @dispatch_shifts ||= have_dispatch? ? dispatch_responders[:assignments].reject{|a| collection_people.include? a.person_id} : []
+  end
+
+  def dispatch_backup
+    @dispatch_backup ||= have_dispatch? ? dispatch_responders[:backup].reject{|p| collection_people.include?(p.id) || dispatch_shifts.detect{|sh| sh.person_id == p.id } } : []
+  end
+
+  def have_dispatch?
+    dispatch_responders[:present]
+  end
+
   def scheduled_responders
     service.scheduled_responders(area: scheduled_area, exclude: exclude_scheduled)
   end
@@ -25,6 +37,10 @@ class Incidents::RespondersService
 
   private
 
+  def dispatch_responders
+    @dispatch ||= (incident.area && service.dispatch_assignments(area: incident.area))
+  end
+
   def area
     incident.area
   end
@@ -34,8 +50,12 @@ class Incidents::RespondersService
     self.limit_flex = 15
   end
 
+  def collection_people
+    @people ||= collection.map(&:person_id)
+  end
+
   def exclude_scheduled
-    collection.map(&:person_id)
+    collection_people + dispatch_shifts.map(&:person_id)
   end
 
   def scheduled_area

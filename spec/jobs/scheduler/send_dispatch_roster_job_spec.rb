@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe Scheduler::SendDispatchRosterJob do
   let(:chapter) { person.chapter }
-  let(:shift) { FactoryGirl.create :shift_with_positions, dispatch_role: 1 }
+  let(:shift) { FactoryGirl.create :shift_with_positions }
+  let!(:config) { Scheduler::DispatchConfig.create! name: 'Config', chapter: chapter, shift_first: shift, is_active: true }
   let(:person) { FactoryGirl.create :person, chapter: shift.county.chapter, positions: shift.positions, counties: [shift.county]}
   let(:assignment) { FactoryGirl.create :shift_assignment, date: Date.today, person: person, shift: shift }
 
@@ -65,7 +66,7 @@ describe Scheduler::SendDispatchRosterJob do
     end
 
     it "should ignore non-dispatch shifts" do
-      shift.update_attribute :dispatch_role, nil
+      config.update_attribute :shift_first_id, nil
       subject.shifts_needing_update?.should be_false
     end
   end

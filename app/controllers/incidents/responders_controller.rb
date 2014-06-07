@@ -131,4 +131,5 @@ class Incidents::RespondersController < Incidents::BaseController
     @scope ||= Incidents::Scope.for_chapter(parent.chapter_id)
   end
   helper_method :scope
+
 end

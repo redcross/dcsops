@@ -37,7 +37,10 @@ describe Scheduler::ShiftSwap do
 
     it "can confirm a swap" do
       expect {
-        shift.update_attribute :dispatch_role, 1
+        config = Scheduler::DispatchConfig.new chapter: person.chapter, name: "Config"
+        config.shift_first = shift
+        config.save!
+
         Scheduler::SendDispatchRosterJob.should_receive(:enqueue).with(person.chapter, false)
         success = swap.confirm_swap! other_person
         success.should be_true

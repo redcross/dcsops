@@ -36,12 +36,16 @@ class Scheduler::SchedulerService
     people.to_a
   end
 
-  def dispatch_assignments(time: chapter.time_zone.now, area: nil)
-    groups = Scheduler::ShiftGroup.current_groups_for_chapter(chapter, time)
-    assignments = Scheduler::ShiftAssignment.joins{shift}.for_active_groups(groups).where{(shift.dispatch_role != nil)}
-    if area
-      assignments = assignments.where{(shift.county_id == area)}
+  def dispatch_assignments(time: chapter.time_zone.now, area: )
+    config = Scheduler::DispatchConfig.for_county(area)
+    if config
+      groups = Scheduler::ShiftGroup.current_groups_for_chapter(chapter, time)
+      shifts = config.shift_list
+      assignments = Scheduler::ShiftAssignment.for_active_groups(groups).for_shifts(shifts).includes{shift}.sort_by{|sa| shifts.index(sa.shift) }
+      backup = config.backup_list
+      {present: true, assignments: assignments, backup: backup}
+    else
+      {present: false, assignments: [], backup: []}
     end
-    assignments.to_a
   end
 end
