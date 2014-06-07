@@ -43,4 +43,11 @@ class Scheduler::DispatchConfig < ActiveRecord::Base
       shifts.flat_map{|sh| [__send__(sh).county,__send__(sh).shift_groups] }
     end.includes{chapter}
   end
+
+  def self.with_shift shift
+    shifts = :shift_first_id, :shift_second_id, :shift_third_id, :shift_fourth_id
+    where do
+      shifts.map{|sh| __send__(sh) == shift }.reduce(&:|)
+    end
+  end
 end

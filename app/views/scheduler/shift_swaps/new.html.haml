@@ -5,7 +5,7 @@
 %h4 Swap To:
 If you know who may want to take your shift, type their name here.  They will receive an email asking to confirm the swap.  Otherwise, leave it blank.  Either way, it is still your responsibility to have someone log in and claim the shift.
 =form_tag resource_path, method: 'post' do
-  =text_field_tag :person, "", id: "select-person", style: "width: 200px", autocomplete: 'off'
+  =text_field_tag :person, "", id: "select-person", style: "width: 200px", autocomplete: 'off', class: 'form-control'
   =hidden_field_tag :swap_to_id, "", id: "swap-to-id"
   =hidden_field_tag :is_swap, "1"
   %h4 Save

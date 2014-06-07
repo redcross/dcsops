@@ -10,7 +10,7 @@
   
     -if can_swap_to_others?
       Person to swap to:
-      =text_field_tag :person, current_user.full_name, id: "select-person", style: "width: 200px", autocomplete: 'off'
+      =text_field_tag :person, current_user.full_name, id: "select-person", style: "width: 200px", autocomplete: 'off', class: 'form-control'
       =hidden_field_tag :swap_to_id, current_user.id, id: "swap-to-id"
 
     =hidden_field_tag :accept_swap, "1"
@@ -22,7 +22,7 @@ If you no longer wish to swap this shift:
 =form_tag resource_path, method: 'delete' do
   =hidden_field_tag :cancel_swap, "1"
   %br
-  =submit_tag "Cancel Swap", class: "btn"
+  =submit_tag "Cancel Swap", class: "btn btn-warning"
 
 - content_for :footer_js do
   :javascript
