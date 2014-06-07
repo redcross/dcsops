@@ -13,15 +13,16 @@ describe Scheduler::DirectlineMailer do
     @day = FactoryGirl.create :shift_group, chapter: @chapter, start_offset: 7.hours, end_offset: 19.hours
     @night = FactoryGirl.create :shift_group, chapter: @chapter, start_offset: 19.hours, end_offset: 31.hours
 
-    @leadshift = FactoryGirl.create :shift, shift_groups: [@day, @night], dispatch_role: 1, positions: [@position], county: @county1
+    @leadshift = FactoryGirl.create :shift, shift_groups: [@day, @night], positions: [@position], county: @county1
     @othershift = FactoryGirl.create :shift, shift_groups: [@day, @night], positions: [@position], county: @county1
 
     @leadass = FactoryGirl.create :shift_assignment, person: @people1.first, date: today, shift: @leadshift, shift_group: @day
     FactoryGirl.create :shift_assignment, person: @people1[1], date: today, shift: @othershift, shift_group: @day
     FactoryGirl.create :shift_assignment, person: @people1[2], date: today, shift: @leadshift, shift_group: @night
 
-    @config = Scheduler::DispatchConfig.new county: @county1, name: @county1.name
+    @config = Scheduler::DispatchConfig.new chapter: @chapter, name: @county1.name
     @config.is_active = true
+    @config.shift_first = @leadshift
     @config.backup_first = @people1.last
     @config.save!
   end
@@ -68,7 +69,8 @@ describe Scheduler::DirectlineMailer do
 
     it "Should include a weekly backup shift" do
       @week = FactoryGirl.create :shift_group, chapter: @chapter, start_offset: 7.hours, end_offset: ((24 * 7) + 7).hours, period: 'weekly'
-      @weekshift = FactoryGirl.create :shift, shift_groups: [@week], dispatch_role: 3, positions: [@position], county: @county1
+      @weekshift = FactoryGirl.create :shift, shift_groups: [@week], positions: [@position], county: @county1
+      @config.update_attributes! shift_second_id: @weekshift.id
       @weekperson = @people1[3]
       @weekass = FactoryGirl.create :shift_assignment, person: @weekperson, date: today.at_beginning_of_week, shift: @weekshift, shift_group: @week
 

@@ -1,5 +1,5 @@
 class window.PersonTypeaheadController
-  constructor: (dom, callback, filter={}, @selected=null) ->
+  constructor: (dom, callback, @name, filter={}, @selected=null) ->
     @callback = callback
 
     # This ensures that if you select out of the typeahead without choosing
@@ -51,3 +51,8 @@ class window.PersonTypeaheadController
       console.log evt, evt.target, evt.target.value
       @callback(datum.id, datum)
       @selected = datum.full_name
+
+    $(document).on 'click', "[data-clear-typeahead=#{@name}]", (evt) =>
+      evt.preventDefault()
+      $(dom).typeahead 'val', null
+      @callback(null, null)

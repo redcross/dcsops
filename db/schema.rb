@@ -11,11 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140606172945) do
+ActiveRecord::Schema.define(version: 20140607010947) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
+  enable_extension "pg_stat_statements"
+  enable_extension "tablefunc"
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "resource_id",   null: false
@@ -266,6 +268,7 @@ ActiveRecord::Schema.define(version: 20140606172945) do
   end
 
   add_index "incidents_cas_cases", ["cas_incident_id"], name: "index_incidents_cas_cases_on_cas_incident_id", using: :btree
+  add_index "incidents_cas_cases", ["case_number"], name: "index_incidents_cas_cases_on_case_number", unique: true, using: :btree
 
   create_table "incidents_cas_incidents", force: true do |t|
     t.string   "dr_number"
@@ -489,6 +492,7 @@ ActiveRecord::Schema.define(version: 20140606172945) do
   end
 
   add_index "incidents_incidents", ["cas_incident_number"], name: "index_incidents_incidents_on_cas_incident_number", using: :btree
+  add_index "incidents_incidents", ["chapter_id", "id", "date"], name: "index_incidents_incidents_on_chapter_id_id_date", using: :btree
   add_index "incidents_incidents", ["chapter_id", "incident_number"], name: "index_incidents_incidents_on_chapter_id_incident_number", unique: true, using: :btree
   add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id", using: :btree
   add_index "incidents_incidents", ["incident_number"], name: "index_incidents_incidents_on_incident_number", using: :btree
@@ -778,6 +782,8 @@ ActiveRecord::Schema.define(version: 20140606172945) do
     t.boolean "persistent"
   end
 
+  add_index "roster_county_memberships", ["person_id"], name: "index_roster_county_memberships_on_person_id", using: :btree
+
   create_table "roster_people", force: true do |t|
     t.integer  "chapter_id"
     t.integer  "primary_county_id"
@@ -887,6 +893,11 @@ ActiveRecord::Schema.define(version: 20140606172945) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name",             null: false
+    t.integer  "shift_first_id"
+    t.integer  "shift_second_id"
+    t.integer  "shift_third_id"
+    t.integer  "shift_fourth_id"
+    t.integer  "chapter_id"
   end
 
   add_index "scheduler_dispatch_configs", ["backup_first_id"], name: "index_scheduler_dispatch_configs_on_backup_first_id", using: :btree
@@ -1005,7 +1016,6 @@ ActiveRecord::Schema.define(version: 20140606172945) do
     t.integer  "county_id"
     t.integer  "ordinal"
     t.integer  "spreadsheet_ordinal"
-    t.integer  "dispatch_role"
     t.date     "shift_begins"
     t.date     "shift_ends"
     t.date     "signups_frozen_before"
@@ -1035,6 +1045,7 @@ ActiveRecord::Schema.define(version: 20140606172945) do
     t.integer  "chapter_id",     null: false
   end
 
+  add_index "versions", ["chapter_id", "root_type", "root_id"], name: "index_versions_on_chapter_id_root_type_root_id", using: :btree
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
 end
