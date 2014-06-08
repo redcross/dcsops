@@ -20,7 +20,7 @@ class Incidents::ResponderRecruitmentsController < Incidents::EditPanelControlle
   helper_method :all_recipients
 
   def send_message resource
-    message = resource.build_outbound_message message: recruitment_message
+    message = resource.build_outbound_message message: recruitment_message, chapter: incident.chapter
 
     client = Incidents::SMSClient.new(incident.chapter)
     client.send_message(message)
