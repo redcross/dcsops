@@ -159,7 +159,8 @@ class Roster::MemberPositionsImporter < ImportParser
 
   def parse_time(val)
     if val.present?
-      DateTime.civil(1900, 01, 01) + val.to_f
+      days_since_2000 = val.to_f - 36526
+      DateTime.civil(2000, 01, 01) + days_since_2000
     else
       nil
     end
