@@ -3,14 +3,19 @@
   Casework
   %small
     Incident:
-    -if resource.cas_incident_number.blank?
+    -if resource.cas_event_number.blank?
       %span.invalid 
     -else
-      =resource.cas_incident_number
+      =resource.cas_event_number
   -if resource.cas_incident.blank? and can?(:link_cas, resource)
-    %button.btn.btn-primary.btn-mini{data: {edit_panel: edit_resource_dat_path(panel_name: 'cas')}} Link to CAS Incident
--if resource.cas_incident_number.present? and resource.cas_incident.blank?
-  A CAS Incident has been provided but no data for the incident was found.  If this is a new incident, it may take 12-24 hours for incident data to become available.
+    %button.btn.btn-primary.btn-mini{data: {edit_panel: edit_resource_dat_path(panel_name: 'cas')}} Link to CAS Event
+-#-if resource.cas_event_number.present? and resource.cas_incident.blank?
+-#  A CAS Event has been provided but no data for the incident was found.  If this is a new incident, it may take 12-24 hours for incident data to become available.
+-if resource.cas_event_id
+  =form_tag "https://#{resource.chapter.cas_host}/zf/clientsearch/find", method: :post do
+    =hidden_field_tag :order_by, 'create_stamp_desc'
+    =hidden_field_tag 'client[module][cas_event]', resource.cas_event_id
+    =submit_tag 'View cases for this incident in CAS', class: 'btn btn-default'
 -elsif resource.cas_incident
   - cas = resource.cas_incident
   -if cas.notes.present?
@@ -24,11 +29,11 @@
           %th Total Casework Clients
           %td=cas.num_clients
         %tr
-          %th Incident Name
+          %th Event Name
           %td=cas.cas_name
         %tr
-          %th Incident Number
-          %td=cas.cas_incident_number
+          %th Event Number
+          %td=cas.cas_event_number
         -if cas.is_dr
           %tr
             %th DR Number

@@ -135,7 +135,7 @@ class Incidents::CasImporter
           end
 
           Incidents::CasCase.where(id: case_ids).update_all last_import: Time.now
-          Incidents::Incident.where(cas_incident_number: cas_incident_numbers).each{|i| i.update_from_cas}
+          Incidents::Incident.where(cas_event_number: cas_incident_numbers).each{|i| i.update_from_cas}
         end
       end
     end

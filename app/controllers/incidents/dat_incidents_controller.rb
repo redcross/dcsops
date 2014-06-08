@@ -67,6 +67,9 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
   private
   def notify(is_new=true)
+    if resource.incident.previous_changes.key? 'cas_event_number'
+      Incidents::UpdateCasEventJob.enqueue resource.incident_id
+    end
     if resource.incident.status == 'closed'
       Incidents::Notifications::Notification.create_for_event resource.incident, 'incident_report_filed', is_new: is_new
       Delayed::Job.enqueue Incidents::UpdateDrivingDistanceJob::ForIncident.new(resource.incident_id)
@@ -164,7 +167,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       base = params.require(:incidents_dat_incident)[:incident_attributes]
       if base
         @_incident_params ||= base.permit([
-          :incident_type, :narrative, :status, :cas_incident_number,
+          :incident_type, :narrative, :status, :cas_event_number,
           :address, :city, :state, :zip, :lat, :lng, :county, :neighborhood,
           :num_adults, :num_children, :num_families,
           {:team_lead_attributes => [:id, :person_id, :role, :response]},

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140607025340) do
+ActiveRecord::Schema.define(version: 20140608174454) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -454,7 +454,7 @@ ActiveRecord::Schema.define(version: 20140607025340) do
     t.integer  "chapter_id"
     t.string   "incident_number"
     t.string   "incident_type"
-    t.string   "cas_incident_number"
+    t.string   "cas_event_number"
     t.date     "date"
     t.integer  "num_adults"
     t.integer  "num_children"
@@ -489,9 +489,10 @@ ActiveRecord::Schema.define(version: 20140607025340) do
     t.integer  "notification_level_id"
     t.text     "notification_level_message"
     t.string   "recruitment_message"
+    t.integer  "cas_event_id"
   end
 
-  add_index "incidents_incidents", ["cas_incident_number"], name: "index_incidents_incidents_on_cas_incident_number", using: :btree
+  add_index "incidents_incidents", ["cas_event_number"], name: "index_incidents_incidents_on_cas_event_number", using: :btree
   add_index "incidents_incidents", ["chapter_id", "id", "date"], name: "index_incidents_incidents_on_chapter_id_id_date", using: :btree
   add_index "incidents_incidents", ["chapter_id", "incident_number"], name: "index_incidents_incidents_on_chapter_id_incident_number", unique: true, using: :btree
   add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id", using: :btree
@@ -835,6 +836,7 @@ ActiveRecord::Schema.define(version: 20140607025340) do
     t.datetime "vc_last_profile_update"
   end
 
+  add_index "roster_people", ["chapter_id", "vc_is_active"], name: "index_roster_people_on_chapter_active", using: :btree
   add_index "roster_people", ["vc_id"], name: "idx_vc_id", using: :btree
 
   create_table "roster_position_memberships", force: true do |t|

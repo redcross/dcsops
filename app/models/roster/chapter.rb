@@ -47,6 +47,8 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :salesforce_sso_url, :string
 
   serialized_accessor :config, :cas_host, :string
+  serialized_accessor :config, :cas_username, :string
+  serialized_accessor :config, :cas_password, :string
 
   serialized_accessor :config, :kiosk_show_counties, :string
 

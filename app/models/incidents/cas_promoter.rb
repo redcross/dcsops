@@ -31,7 +31,7 @@ class Incidents::CasPromoter
       inc.num_families = cas_incident.cases.count
       inc.num_cases = cas_incident.cases.count
 
-      inc.cas_incident_number = cas_incident.cas_incident_number
+      inc.cas_event_number = cas_incident.cas_incident_number
       inc.area = chapter.counties.find_by(name: (cas_incident.county_name || 'Region')) || chapter.counties.find_by(name: 'Region')
       return unless inc.area
 
