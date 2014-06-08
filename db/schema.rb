@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140607010947) do
+ActiveRecord::Schema.define(version: 20140607025340) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -618,7 +618,7 @@ ActiveRecord::Schema.define(version: 20140607010947) do
     t.string   "direction"
     t.string   "local_number"
     t.string   "remote_number"
-    t.string   "message"
+    t.text     "message"
     t.boolean  "acknowledged"
     t.string   "status"
     t.datetime "created_at"
