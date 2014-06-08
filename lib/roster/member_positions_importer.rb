@@ -84,7 +84,6 @@ class Roster::MemberPositionsImporter < ImportParser
 
   def handle_row(identity, attrs, preloaded=nil)
     status = attrs[:vc_is_active]
-    pp status
 
     # Parse out the date from VC's weird days-since-1900 epoch
     attrs[:vc_last_login] = parse_time attrs[:vc_last_login] if attrs[:vc_last_login]
