@@ -9,6 +9,18 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
 
   actions :all, except: [:destroy]
 
+  index do
+    id_column
+    column :chapter_id
+    column :name
+    #column :vc_regex_raw
+    column :hidden
+    column :roles do |pos|
+      safe_join(pos.roles.map(&:name), tag(:br))
+    end
+    actions
+  end
+
   controller do
 
     def update
