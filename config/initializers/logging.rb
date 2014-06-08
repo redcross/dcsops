@@ -1,5 +1,6 @@
-Rails.logger.level = 0
-ActiveSupport::Cache::Store.logger = Rails.logger
+if Rails.env.development?
+  ActiveSupport::Cache::Store.logger = Rails.logger
+end
 
 if Rails.env.production?
 
