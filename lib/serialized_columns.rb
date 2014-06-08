@@ -80,7 +80,7 @@ module SerializedColumns
       end
 
       scope :"with_#{name}_present", -> do
-        where{cast(Squeel::Nodes::Stub.new(store_attribute).op('->', name.to_s).as(sql_type)) != nil}
+        where{ length(Squeel::Nodes::Stub.new(store_attribute).op('->', name.to_s)) > 0 }
       end
 
       scope :"with_#{name}_value", ->(val) do
