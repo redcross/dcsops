@@ -28,11 +28,12 @@ class Roster::MemberPositionsImporter < ImportParser
   def get_person(object, identity, attrs, all_attrs)
     vc_id = identity[:vc_id].to_i
     unless @person and @person.vc_id == vc_id
-      attrs[:vc_is_active] = is_active_status(attrs[:vc_is_active])
+      status = attrs[:vc_is_active]
+      attrs[:vc_is_active] = is_active_status(status)
       @person = object 
-      @person ||= Roster::Person.find_or_initialize_by(vc_id: vc_id) if attrs[:vc_is_active]
-      if @person.nil? or (@person.new_record? and !attrs[:vc_is_active])
-        #logger.warn "Skipping because inactive and new: #{attrs.inspect}"
+      @person ||= Roster::Person.find_or_initialize_by(vc_id: vc_id) if is_importable_status(status)
+      if @person.nil? or (@person.new_record? and !is_importable_status(status))
+        #logger.warn "Skipping because inactive and new: #{status}"
         @person = nil
         return
       end
@@ -82,6 +83,9 @@ class Roster::MemberPositionsImporter < ImportParser
   end
 
   def handle_row(identity, attrs, preloaded=nil)
+    status = attrs[:vc_is_active]
+    pp status
+
     # Parse out the date from VC's weird days-since-1900 epoch
     attrs[:vc_last_login] = parse_time attrs[:vc_last_login] if attrs[:vc_last_login]
     attrs[:vc_last_profile_update] = parse_time attrs[:vc_last_profile_update] if attrs[:vc_last_profile_update]
@@ -90,13 +94,14 @@ class Roster::MemberPositionsImporter < ImportParser
     # to the person model.
     person_attrs = attrs.reject{|k, v| POSITION_ATTR_NAMES.include? k }
     get_person(preloaded, identity, person_attrs, attrs)
-    return unless @person and process_row?(attrs)
+    return unless @person
 
     #logger.debug "Matching #{self.class.name.underscore.split("_").first} #{position_name} for #{identity.inspect}"
     @num_positions += 1
-    match_positions attrs
+    match_positions attrs if process_row?(attrs)
     match_languages attrs
     match_county attrs
+    match_position_named status
   end
 
   def match_county attrs
@@ -130,7 +135,7 @@ class Roster::MemberPositionsImporter < ImportParser
     matched_counties = @counties_matcher.match(position_name, @person.id) 
     matched_positions = @positions_matcher.match(position_name, @person.id)
 
-    unless logger.debug? and matched_counties || matched_positions
+    unless !logger.debug? || matched_counties || matched_positions
       logger.debug "Didn't match a record for item #{position_name}"
     end
   end
@@ -155,7 +160,7 @@ class Roster::MemberPositionsImporter < ImportParser
 
   def parse_time(val)
     if val.present?
-      DateTime.civil(1899,12,30) + val.to_f
+      DateTime.civil(1900, 01, 01) + val.to_f
     else
       nil
     end
@@ -163,6 +168,10 @@ class Roster::MemberPositionsImporter < ImportParser
 
   def is_active_status(status_name)
     ['General Volunteer', 'General Partner Member', 'Employee', 'NHQ Reserve Employee'].include? status_name
+  end
+
+  def is_importable_status(status_name)
+    is_active_status(status_name) || (@chapter.roster_import_prospective_members && (status_name == 'Prospective Volunteer'))
   end
 
   def preload_identities(identities)
