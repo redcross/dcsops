@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Manually create incident" do
 
-  it "Should be submittable" do
+  it "Should be submittable to dat incident report" do
     grant_role! :submit_incident_report
     grant_role! :incidents_admin
     FactoryGirl.create :incidents_scope, chapter: @person.chapter
@@ -11,8 +11,8 @@ describe "Manually create incident" do
 
     @incident_number = FactoryGirl.build(:incident).incident_number
 
-    click_link "Submit Incident Report"
-    click_link 'Create New Incident'
+    click_on "Submit Incident Report"
+    click_on 'Create New Incident'
 
     select @person.counties.first.name, from: 'Area*'
     fill_in 'Incident number*', with: @incident_number
@@ -20,9 +20,13 @@ describe "Manually create incident" do
     select Date.today.strftime("%B")
     select Date.today.day.to_s
 
-    click_button 'Create Incident'
+    select 'Fire', from: 'Incident type*'
+    fill_in 'Search for address', with: '1663 market st sf'
+    click_on 'Look Up Address'
+
+    click_on 'Create Incident'
 
     page.should have_text('New DAT Incident Report')
   end
-  
+
 end

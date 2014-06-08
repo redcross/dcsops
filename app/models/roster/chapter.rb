@@ -38,7 +38,6 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_report_send_automatically, :boolean
   serialized_accessor :config, :incidents_report_send_at, :integer, default: 0
   serialized_accessor :config, :incidents_report_include_assistance_amounts, :boolean
-  serialized_accessor :config, :incidents_capture_more_details_on_create, :boolean
   serialized_accessor :config, :incidents_timeline_collect_source, :string
   serialized_accessor :config, :incidents_report_advanced_details, :boolean
   serialized_accessor :config, :incidents_use_escalation_levels, :boolean
