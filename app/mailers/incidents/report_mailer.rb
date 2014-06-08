@@ -45,11 +45,7 @@ private
   end
 
   def date_scope(scope, date_range)
-    if chapter.incidents_report_use_response_date
-      scope.where{response_date.in(date_range)}
-    else
-      scope.where{date.in(date_range)}
-    end
+    scope.where{date.in(date_range)}
   end
 
   def subtitle
