@@ -10,6 +10,10 @@ class Roster::PeopleController < Roster::BaseController
   has_scope :name_contains
   has_scope :in_county
   has_scope :with_position, type: :array
+  has_scope :has_position, type: :boolean
+  has_scope :active, type: :boolean, default: true do |controller, scope|
+    scope.where(vc_is_active: true)
+  end
 
   load_and_authorize_resource except: :index
   def index
@@ -37,7 +41,7 @@ class Roster::PeopleController < Roster::BaseController
     end
 
     def collection
-      @collection ||= apply_scopes(super).joins{chapter}.where(vc_is_active: true).includes{positions}
+      @collection ||= apply_scopes(super).uniq.preload{positions}
     end
 
     expose(:identify_people) { false }

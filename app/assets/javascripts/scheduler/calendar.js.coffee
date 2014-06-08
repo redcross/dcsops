@@ -26,14 +26,9 @@ class window.CalendarController
         complete: (xhr, status) =>
           this.reloadDate(date, period)
 
-    new PersonTypeaheadController $('#select-person'), (id, record) =>
-      @params.person_id = id
-      this.reload()
-
-    $('#clear-person').click (evt) =>
-      $('#select-person').val('')
-      @params.person_id = null
-      this.reload()
+    new PersonTypeaheadController $('#select-person'), ((id, record) => @params.person_id = id; this.reload()), 'select-person', 
+      active: false
+      has_position: true
 
     $(document).on 'click', '#highlighting-group > button', (evt) =>
       active = if ($(evt.target).hasClass('active')) then false else true

@@ -18,7 +18,7 @@
       .row
         .col-xs-8
           =text_field_tag :person, (person and person.full_name), id: "select-person", class: "form-control col-xs-8"
-        %button.btn.btn-default.col-xs-4#clear-person Clear
+        %button.btn.btn-default.col-xs-4#clear-person{data: {clear_typeahead: "select-person"}} Clear
       #choose-counties{style: show_shifts==:county || 'display: none'}
         =select_tag "counties[]", options_from_collection_for_select(current_chapter.counties, :id, :name, show_counties.first), multiple: false, id: 'choose-county', class: "form-control"
         - cats = Scheduler::ShiftCategory.for_chapter(current_chapter).to_a
