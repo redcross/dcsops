@@ -195,6 +195,10 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     end
   end
 
+  def completed?
+    local_end_time < Time.now
+  end
+
   private
 
   def local_offset(date, offset)

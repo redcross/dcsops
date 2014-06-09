@@ -1,10 +1,11 @@
 module Vc
   class Client
     include HTTParty
+    class InvalidCredentials < StandardError; end
 
     base_uri 'https://volunteerconnection.redcross.org'
     headers "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.65 Safari/537.36"
-    #debug_output if Rails.env.development?
+    debug_output if Rails.env.development?
 
     attr_accessor :cookies
     attr_accessor :username, :password
@@ -31,6 +32,9 @@ module Vc
       resp = self.class.post '/', body: {user: username, password: password, fail: 'login', login: 'Login', succeed: 'profile', nd: 'profile'}
 
       # should check if we were successful...
+      if resp.body.include? 'There was a problem with your login.'
+        raise InvalidCredentials
+      end
 
       self.cookies = HTTParty::CookieHash.new
       resp.headers.get_fields('Set-Cookie').each {|h| self.cookies.add_cookies h}
@@ -44,6 +48,10 @@ module Vc
     def post url, opts={}
       login
       self.class.post url, opts.merge({cookies: self.cookies})
+    end
+
+    def hours
+      @hours ||= Hours.new(self)
     end
   end
 end

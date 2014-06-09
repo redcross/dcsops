@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140608174454) do
+ActiveRecord::Schema.define(version: 20140609162021) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -969,6 +969,7 @@ ActiveRecord::Schema.define(version: 20140608174454) do
     t.boolean  "synced",              default: false
     t.integer  "shift_group_id",                      null: false
     t.integer  "shift_id",                            null: false
+    t.boolean  "vc_hours_uploaded",   default: false
   end
 
   add_index "scheduler_shift_assignments", ["date", "person_id", "shift_id", "shift_group_id"], name: "index_scheduler_shift_assignment_fields", unique: true, using: :btree
@@ -1030,6 +1031,7 @@ ActiveRecord::Schema.define(version: 20140608174454) do
     t.integer  "min_advance_signup",       default: 0,     null: false
     t.integer  "shift_category_id"
     t.boolean  "exclusive",                default: true,  null: false
+    t.string   "vc_hours_type"
   end
 
   add_index "scheduler_shifts", ["county_id"], name: "index_scheduler_shifts_on_county_id", using: :btree
