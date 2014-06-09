@@ -3,7 +3,7 @@
     %th.date-header(colspan=2)=date.day
   - calendar.daily_groups.each_with_index do |(group, shifts), group_idx|
     - assignments = calendar.assignments_for_group_on_day group, date
-    - cache [group, shifts, assignments, date] do
+    - cache [group, shifts, assignments, date, ajax_params] do
       - is_last_group = (group_idx == calendar.daily_groups.size-1)
       - shifts = shifts.select{|sh|sh.active_on_day?(date, group)}
       - next if shifts.blank?
