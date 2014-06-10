@@ -58,7 +58,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
           table_for role.shifts do
             column("Shift") { |s| s.name }
             column("County") { |s| s.county.name }
-            column("Shift Group") { |shift| shift.shift_group.name }
+            column("Shift Group") { |shift| safe_join(shift.shift_groups.map(&:name), tag(:br)) }
           end
         end
       end
@@ -100,7 +100,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
   controller do
 
     def collection
-      @col ||= super.includes{[positions,shifts.shift_group, shifts.county]}
+      @col ||= super.includes{[positions,shifts.shift_groups, shifts.county]}
     end
 
     def resource_params
