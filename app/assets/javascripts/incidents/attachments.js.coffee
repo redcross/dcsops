@@ -4,22 +4,24 @@ class window.AttachmentsDragAndDropController
     $(document).bind 'dragenter, dragover', (evt) =>
       this.setDrag(true)
       evt.preventDefault()
-      return false
     $(document).bind 'dragleave', (evt) =>
-      console.log evt.relatedTarget
       this.setDrag(false)
     $(document).on 'drop', (e) =>
       this.setDrag(false)
       e.preventDefault()
-      console.log 'drop!'
       this.handleDrop(e)
-      return false
+
+  acceptDrop: (evt) ->
+    console.log evt.type, evt.dataTransfer
+    evt.dataTransfer.files.length > 0
 
   setDrag: (val) ->
     $('body').toggleClass 'drag-hover', val
 
   handleDrop: (evt) ->
     file = evt.originalEvent.dataTransfer.files[0]
+
+    return unless file?
 
     data = new FormData()
     data.append("incidents_attachment[name]", file.name)
