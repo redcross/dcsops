@@ -33,7 +33,7 @@ module Incidents::Notifications
     end
 
     def position_members
-      Roster::Person.for_chapter(chapter).with_position(position_ids)
+      Roster::Person.with_position(position_ids)
     end
 
   end
