@@ -9,7 +9,7 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
     person = find_person_by_phone params[:From]
 
     unless person
-      respond_with_message "A person with this phone number was not found in the database." and return
+      respond_with_message Incidents::ResponderMessage.new(message: "A person with this phone number was not found in the database.") and return
     end
 
     message = Incidents::ResponderMessage.new chapter: chapter, person: person, message: body, local_number: params[:To], remote_number: params[:From], direction: 'incoming'
@@ -30,7 +30,6 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
     reply.direction = 'reply'
     reply.local_number = params[:To]
     reply.remote_number = params[:From]
-    reply.save
   end
 
   def render_message_string message
