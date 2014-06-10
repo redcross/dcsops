@@ -5,7 +5,7 @@ class Incidents::DatIncident < Incidents::DataModel
   has_many :vehicle_uses, class_name: 'Incidents::VehicleUse', foreign_key: 'incident_id'
   has_many :vehicles, through: :vehicle_uses, class_name: 'Logistics::Vehicle'
 
-  TRACKED_RESOURCE_TYPES = %w(comfort_kits blankets pre_packs toys hydration snacks)
+  TRACKED_RESOURCE_TYPES = %w(comfort_kits blankets pre_packs toys hydration snacks cleanup_kits flood_cleanup_kits cots)
 
   # We put allow_blank: true here so that the delegated validator can decide if it can be blank
   assignable_values_for :incident_call_type, allow_blank: true do
