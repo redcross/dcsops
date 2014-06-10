@@ -9,4 +9,4 @@ class window.SwapController
       in_county: county_id
       with_position: position_ids
 
-    new PersonTypeaheadController $('#select-person'), ((id, record) => $("#swap-to-id").val(id)), filter
+    new PersonTypeaheadController $('#select-person'), ((id, record) => $("#swap-to-id").val(id)), 'shift-swap', filter
