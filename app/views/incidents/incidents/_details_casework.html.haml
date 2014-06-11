@@ -12,10 +12,7 @@
 -#-if resource.cas_event_number.present? and resource.cas_incident.blank?
 -#  A CAS Event has been provided but no data for the incident was found.  If this is a new incident, it may take 12-24 hours for incident data to become available.
 -if resource.cas_event_id
-  =form_tag "https://#{resource.chapter.cas_host}/zf/clientsearch/find", method: :post do
-    =hidden_field_tag :order_by, 'create_stamp_desc'
-    =hidden_field_tag 'client[module][cas_event]', resource.cas_event_id
-    =submit_tag 'View cases for this incident in CAS', class: 'btn btn-default'
+  =cas_event_button(resource)
 -elsif resource.cas_incident
   - cas = resource.cas_incident
   -if cas.notes.present?

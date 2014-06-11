@@ -30,4 +30,5 @@
           %td=dat.num_people_injured
           %td=dat.num_people_hospitalized
           %td=dat.num_people_deceased
-          %td=dat.num_people_missing
+          -if include_missing
+            %td=dat.num_people_missing

@@ -27,6 +27,11 @@
     %tr
       %th=passthrough_edit_link 'basic', 'Hazardous Materials'
       %td=dat.hazardous_materials
+    %tr
+      %th=passthrough_edit_link 'cas', 'CAS Event Number'
+      %td
+        =resource.cas_event_number
+        =cas_event_button(resource)
   -if resource.chapter.incidents_use_escalation_levels
     %tr
       %th=passthrough_edit_link '', "Notification Level", url: new_resource_notification_path
