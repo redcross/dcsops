@@ -11,6 +11,10 @@ class Scheduler::Shift < ActiveRecord::Base
   validates :min_desired_signups, numericality: true, presence: true
   validates_presence_of :name, :abbrev
 
+  assignable_values_for :vc_hours_type, allow_blank: true do
+    %w(oncall worked)
+  end
+
   def check_shift_group group
     #unless shift_group_ids.include? group.id
     #  raise "That shift group does not belong to this shift"

@@ -65,6 +65,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :scheduler_dispatch_export_recipient, :string
   serialized_accessor :config, :scheduler_flex_day_start, :integer
   serialized_accessor :config, :scheduler_flex_night_start, :integer
+  serialized_accessor :config, :scheduler_submit_vc_hours, :boolean
 
   serialized_accessor :config, :roster_import_prospective_members, :boolean
 
