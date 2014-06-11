@@ -73,6 +73,7 @@ gem "twilio-ruby"
 gem 'jbuilder'
 
 gem 'rails_12factor', group: :production
+gem 'rack-zippy', group: :production
 
 gem 'connect', github: 'jlaxson/openid-connect-engine', branch: 'master'
 
