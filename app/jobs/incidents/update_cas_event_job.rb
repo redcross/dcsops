@@ -21,8 +21,12 @@ class Incidents::UpdateCasEventJob
     @client ||= Cas::Client.new(chapter.cas_host, chapter.cas_username, chapter.cas_password)
   end
 
+  def cas_configured?
+    chapter.cas_host.present? && chapter.cas_username.present? && chapter.cas_password.present?
+  end
+
   def perform
-    return unless chapter.cas_host && chapter.cas_username && chapter.cas_password
+    return unless cas_configured?
 
     event_number = incident.cas_event_number
     cas_event = client.events.find_by_event_number(event_number)

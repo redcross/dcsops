@@ -27,7 +27,7 @@ describe Incidents::CasLinkController do
     response.should be_redirect
     flash[:info].should_not be_empty
 
-    inc.reload.cas_incident_number.should == cas.cas_incident_number
+    inc.reload.cas_event_number.should == cas.cas_incident_number
   end
 
   it "won't link if the cas is already linked" do
@@ -40,7 +40,7 @@ describe Incidents::CasLinkController do
       post :link, id: cas2.to_param, incident_id: inc2.id, chapter_id: inc.chapter.to_param
       response.should be_redirect
       flash[:error].should_not be_empty
-    }.to_not change{inc.reload.cas_incident_number}
+    }.to_not change{inc.reload.cas_event_number}
   end
 
   it "can ignore an incident" do
@@ -69,7 +69,7 @@ describe Incidents::CasLinkController do
 
     }.to change(Incidents::Incident, :count).by(1)
 
-    Incidents::Incident.where(cas_incident_number: cas.cas_incident_number).first.should_not be_nil
+    Incidents::Incident.where(cas_event_number: cas.cas_incident_number).first.should_not be_nil
   end
 
 end

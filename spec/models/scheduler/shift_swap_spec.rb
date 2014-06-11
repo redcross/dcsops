@@ -10,6 +10,10 @@ describe Scheduler::ShiftSwap do
 
   let(:swap) { Scheduler::ShiftSwap.new(assignment, delegate) }
 
+  after :each do
+    ActionMailer::Base.deliveries.clear
+  end
+
   it "can be created" do
     Scheduler::ShiftSwap.new(assignment, delegate)
   end

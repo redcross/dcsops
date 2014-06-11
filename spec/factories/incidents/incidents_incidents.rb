@@ -11,7 +11,7 @@ FactoryGirl.define do
   factory :incident, parent: :raw_incident do
     chapter
     
-    cas_incident_number {"1-#{SecureRandom.hex(4).upcase}"}
+    cas_event_number {"1-#{SecureRandom.hex(4).upcase}"}
     
     num_adults 1
     num_children 1

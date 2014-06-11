@@ -146,7 +146,7 @@ class Incidents::Incident < ActiveRecord::Base
 
 
     self.class.transaction do 
-      self.cas_incident_number = cas.cas_incident_number
+      self.cas_event_number = cas.cas_incident_number
       cas.incident = self
       self.save!
       cas.save!

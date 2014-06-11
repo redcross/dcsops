@@ -114,8 +114,8 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     related_shifts.order{shift.ordinal}
   end
 
-  def assignments_for_date_shift(date, shift)
-    Scheduler::ShiftAssignment.for_shifts(shift).for_day(date)
+  def assignments_for_date_shift_group(date, shift, group)
+    Scheduler::ShiftAssignment.for_shifts(shift).for_day(date).for_groups(group)
   end
 
   def format_person(person, count=2)
@@ -124,5 +124,5 @@ class Scheduler::RemindersMailer < ActionMailer::Base
   end
 
 
-  helper_method :item, :shift_lead, :other_assignments, :assignments_for_date_shift, :format_person
+  helper_method :item, :shift_lead, :other_assignments, :assignments_for_date_shift_group, :format_person
 end

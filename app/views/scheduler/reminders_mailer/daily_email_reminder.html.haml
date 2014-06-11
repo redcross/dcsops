@@ -11,7 +11,7 @@
       #{group.name} Shift for #{date.to_s :dow_long}
       %br
       - shifts.each do |shift|
-        - assignments = assignments_for_date_shift(date, shift)
+        - assignments = assignments_for_date_shift_group(date, shift, group)
         #{shift.name}: 
         = assignments.empty? ? "Open" : assignments.map(&:person).map{|person| format_person(person) }.join(", ")
         %br

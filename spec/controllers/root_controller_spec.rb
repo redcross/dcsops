@@ -62,7 +62,7 @@ describe RootController do
 
     it "should return a link where the current user has the correct role" do
       role = FactoryGirl.create :role, chapter: @person.chapter
-      pos = @person.positions.create roles: [role], chapter: @person.chapter
+      pos = FactoryGirl.create :position, roles: [role], chapter: @person.chapter
       @person.positions << pos
       @person.save
 

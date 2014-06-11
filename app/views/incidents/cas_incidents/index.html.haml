@@ -1,20 +1,28 @@
-.modal.hide.fade#narrative-modal
-  .modal-header 
-    %button.close(data-dismiss="modal") &times;
-    %h3 Case Narrative
-  .modal-body
-  .modal-footer
-    %a.btn.btn-primary(data-dismiss="modal") Close
+.modal.fade#narrative-modal
+  .modal-dialog
+    .modal-content
+      .modal-header 
+        %button.close(data-dismiss="modal") &times;
+        %h3.modal-title Case Narrative
+      .modal-body
+      .modal-footer
+        %a.btn.btn-primary(data-dismiss="modal") Close
 
 .well
   =form_for search, url: '', method: :get, class: 'form form-inline' do |f|
-    =f.label :incident_area_id_eq, 'In County', style: 'display: inline'
-    =f.select :incident_area_id_eq, "<option></option>".html_safe+options_from_collection_for_select(current_chapter.counties, :id, :name, params[:area_id_eq]), class: 'span2'
-    =f.label :cas_incident_number_eq, 'CAS Incident Number', style: 'display: inline'
-    =f.text_field :cas_incident_number_eq, class: 'span2'
-    =f.label :cases_case_number_eq, 'CAS Case Number', style: 'display: inline'
-    =f.text_field :cases_case_number_eq, class: 'span2'
-    =f.submit 'Search', class: 'btn'
+    .row
+      .form-group.col-sm-4
+        =f.label :incident_area_id_eq, 'In County', style: 'display: inline'
+        =f.select :incident_area_id_eq, "<option></option>".html_safe+options_from_collection_for_select(current_chapter.counties, :id, :name, params[:area_id_eq]), {}, class: 'form-control'
+      .form-group.col-sm-3
+        =f.label :cas_incident_number_eq, 'CAS Incident Number', style: 'display: inline'
+        =f.text_field :cas_incident_number_eq, class: 'form-control'
+      .form-group.col-sm-3
+        =f.label :cases_case_number_eq, 'CAS Case Number', style: 'display: inline'
+        =f.text_field :cases_case_number_eq, class: 'span2', class: 'form-control'
+      .form-group.col-sm-2
+        %br.hidden-xs
+        =f.submit 'Search', class: 'btn btn-primary btn-block'
 
 %table.table.table-condensed
   %thead
@@ -70,7 +78,7 @@
                     %td=kase.case_last_updated
                     %td
                       -if can? :narrative, kase
-                        %a.btn.narrative-button(data-url="#{narrative_incidents_cas_incident_case_path(cas, kase)}") Show Narrative
+                        %a.btn.narrative-button(data-url="#{narrative_incidents_chapter_cas_incident_case_path(cas.incident.chapter, cas, kase)}") Show Narrative
 
 - content_for :footer_js do
   :javascript
