@@ -29,7 +29,7 @@ class Incidents::UpdateCasEventJob
     return unless cas_configured?
 
     event_number = incident.cas_event_number
-    cas_event = client.events.find_by_event_number(event_number)
+    cas_event = event_number.present? && client.events.find_by_event_number(event_number)
     if cas_event
       incident.cas_event_id = cas_event['id']
       incident.cas_event_number = cas_event['local_event_number']

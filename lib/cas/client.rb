@@ -5,7 +5,6 @@ module Cas
     class OtherSessionsActive < StandardError; end
 
     include HTTParty
-    debug_output
     headers "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/537.75.14"
     attr_reader :hostname, :username, :password, :logger
     attr_accessor :cookies
