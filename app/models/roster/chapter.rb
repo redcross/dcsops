@@ -59,6 +59,9 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_enable_chat, :boolean
   serialized_accessor :config, :incidents_delegate_chapter, :integer
 
+  serialized_accessor :config, :incidents_notifications_reply_to, :string
+  serialized_accessor :config, :incidents_notifications_custom_message, :string
+
   serialized_accessor :config, :scheduler_dispatch_export_recipient, :string
   serialized_accessor :config, :scheduler_flex_day_start, :integer
   serialized_accessor :config, :scheduler_flex_night_start, :integer

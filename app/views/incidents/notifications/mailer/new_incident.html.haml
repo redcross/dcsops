@@ -47,6 +47,9 @@
       #{item.action_type}: #{item.recipient} - #{item.result}
       %br
 
+- if chapter_message(@incident)
+  %p=chapter_message(@incident)
+
 %p
   View in DCSOps:
   =link_to incidents_chapter_incident_url(@incident.chapter, @incident), incidents_chapter_incident_url(@incident.chapter, @incident)

@@ -10,6 +10,9 @@
   %br
   Message: #{@options[:message]}
 
+- if chapter_message(@incident)
+  %p=chapter_message(@incident)
+
 %p
   You are assigned to this event at the level of #{@template}.
   View in DCSOps:

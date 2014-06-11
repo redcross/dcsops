@@ -23,7 +23,12 @@ module Incidents::Notifications
         recipient = format_address(person)
       end
 
-      mail to: recipient, template_name: @render_template_name, subject: @subject, from: (message.from || self.class.default[:from])
+      reply_opts = {}
+      if @incident.chapter.incidents_notifications_reply_to.present?
+        reply_opts[:reply_to] = @incident.chapter.incidents_notifications_reply_to
+      end
+
+      mail {to: recipient, template_name: @render_template_name, subject: @subject, from: (message.from || self.class.default[:from])}.merge reply_opts
     end
 
     def new_incident
@@ -57,6 +62,9 @@ module Incidents::Notifications
       end
       def short_incident_url(inc)
         short_url(incidents_chapter_incident_url(inc.chapter, inc))
+      end
+      def chapter_message(inc)
+        inc.chapter.incidents_notifications_custom_message.try(:presence)
       end
     end
   end
