@@ -28,7 +28,7 @@ module Incidents::Notifications
         reply_opts[:reply_to] = @incident.chapter.incidents_notifications_reply_to
       end
 
-      mail {to: recipient, template_name: @render_template_name, subject: @subject, from: (message.from || self.class.default[:from])}.merge reply_opts
+      mail({to: recipient, template_name: @render_template_name, subject: @subject, from: (message.from || self.class.default[:from])}.merge reply_opts)
     end
 
     def new_incident
