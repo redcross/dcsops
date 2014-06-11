@@ -25,6 +25,8 @@ Scheduler::Application.routes.draw do
     get 'calendar/:date', date: /\d{4}-\d{2}-\d{2}/, to: 'calendar#day', as: 'calendar_day'
     get 'calendar/:month', month: /\d{4}-\d{2}/, to: 'calendar#month'
 
+    resources :shift_notes, only: [:index, :update]
+
     resources :shift_assignments do
       resource :shift_swap do
         post :confirm

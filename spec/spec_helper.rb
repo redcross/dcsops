@@ -94,6 +94,15 @@ RSpec.configure do |config|
     system('rm', '-rf', File.join(Rails.root, 'coverage'))
   end
 
+  # For Debugging mailer spec order issues
+  #config.after(:all) do
+  #  begin
+  #    ActionMailer::Base.deliveries.should be_empty
+  #  rescue
+  #    puts self.class.description
+  #  end
+  #end
+
   #config.before(:each) do
   #  DatabaseCleaner.start
   #end

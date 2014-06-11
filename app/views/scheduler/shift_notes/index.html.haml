@@ -1,0 +1,27 @@
+%h2 
+  Shift Notes
+=form_tag '', method: :get, class: 'form form-inline' do
+  .form-group.col-xs-7
+    .input-group
+      %span.input-group-addon
+        %i.fa.fa-calendar
+      =text_field_tag :date, current_scopes[:date], class: 'form-control', data: {provide: "datepicker", date_format: "yyyy-mm-dd", autoclose: "true"}
+  =submit_tag 'Show', class: 'btn btn-primary'
+
+%table.table.table-bordered.table-condensed
+  %tr
+    %th Period
+    %th Shift
+    %th Person
+    %th Notes
+  - collection.group_by{|ass| ass.shift.county}.each do |county, assignments|
+    %tr
+      %th(colspan=4)=county.name
+    - assignments.each do |ass|
+      %tr
+        %td
+          =ass.date.to_s :dow_short
+          =ass.shift_group.name
+        %td=ass.shift.name
+        %td=ass.person.full_name
+        %td=editable_string ass, :note, url: resource_path(ass), editable: true, emptytext: '&nbsp;' * 20

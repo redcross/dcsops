@@ -30,15 +30,15 @@ module EditableHelper
     editable_select(resource, name, options, *args)
   end
 
-  def editable_string(resource, name, url: nil, editable: nil)
+  def editable_string(resource, name, url: nil, editable: nil, **options)
     if editable==nil
       editable = can? :update, resource
     end
     if editable
       model_name = resource.class.model_name.param_key
-      attr_name = "#{model_name}_#{name}"
+      attr_name = "#{model_name}_#{name}-#{resource.id}"
       url ||= send "#{model_name}_path", resource
-      link_to((resource.send(name) || ""), "#", id: attr_name, data: {name: name, type: 'text', resource: model_name, url: url}) <<
+      link_to((resource.send(name) || ""), "#", id: attr_name, data: {name: name, type: 'text', resource: model_name, url: url}.reverse_merge(options)) <<
       javascript_tag("$('##{attr_name}').editable()")
     else
       resource.send(name)
