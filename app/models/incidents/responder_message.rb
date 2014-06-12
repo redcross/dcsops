@@ -5,7 +5,8 @@ class Incidents::ResponderMessage < ActiveRecord::Base
   belongs_to :responder_assignment, class_name: 'Incidents::ResponderAssignment'
   belongs_to :in_reply_to, class_name: 'Incidents::ResponderMessage'
 
-  validates :chapter, :person, :message, presence: true
+  validates :chapter, :message, presence: true
+  validates :person, presence: {if: ->msg{msg.direction != 'incoming'}}
 
   validate :validate_person_assigned_to_incident
   def validate_person_assigned_to_incident

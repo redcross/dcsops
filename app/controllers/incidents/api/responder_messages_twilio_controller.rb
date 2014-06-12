@@ -8,15 +8,16 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
     body = params[:Body]
     person = find_person_by_phone params[:From]
 
-    unless person
-      respond_with_message Incidents::ResponderMessage.new(message: "A person with this phone number was not found in the database.") and return
-    end
-
-    message = Incidents::ResponderMessage.new chapter: chapter, person: person, message: body, local_number: params[:To], remote_number: params[:From], direction: 'incoming'
+    message = Incidents::ResponderMessage.new chapter: chapter, message: body, person: person, local_number: params[:To], remote_number: params[:From], direction: 'incoming'
     message.save!
 
+    unless person
+      respond_with_message Incidents::ResponderMessage.new(message: "A person with this phone number was not found in the database.")
+      return
+    end
+
     reply = Incidents::ResponderMessageService.new(message).reply
-    if reply.message.present?
+    if reply && reply.message.present?
       respond_with_message reply
     else
       head :no_content
@@ -46,7 +47,8 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
   end
 
   def chapter
-    @chapter ||= Roster::Chapter.with_twilio_account_sid_value(params[:AccountSid]).first!
+    @chapter ||= Roster::Chapter.with_twilio_account_sid_value(params[:AccountSid])
+                                .with_incidents_twilio_number_value(params[:To]).first!
   end
 
   def validate_twilio_incoming
