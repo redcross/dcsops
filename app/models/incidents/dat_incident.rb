@@ -68,9 +68,11 @@ class Incidents::DatIncident < Incidents::DataModel
   end
 
   def cleanup_services
-    without_none = services.reject{|v| v=='none'}
-    if without_none.present?
-      self.services = without_none
+    if services.present?
+      without_none = services.reject{|v| v=='none'}
+      if without_none.present?
+        self.services = without_none
+      end
     end
   end
 

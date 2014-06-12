@@ -44,7 +44,7 @@ ActiveAdmin.register Scheduler::DispatchConfig, as: 'Dispatch Configs' do
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:is_active, :backup_first_id, :backup_second_id, :backup_third_id, :backup_fourth_id, :name, :chapter_id, :shift_first_id, :shift_second_id, :shift_third_id, :shift_fourth_id)]
+      [params.fetch(resource_request_name, {}).permit(:is_active, :backup_first_id, :backup_second_id, :backup_third_id, :backup_fourth_id, :name, :chapter_id, :county_id, :shift_first_id, :shift_second_id, :shift_third_id, :shift_fourth_id)]
     end
   end
 end
