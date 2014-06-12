@@ -28,6 +28,7 @@ class Incidents::DatIncident < Incidents::DataModel
   serialize :languages
 
   before_validation :cleanup_first_responders
+  before_validation :cleanup_services
 
   include SerializedColumns
   TRACKED_RESOURCE_TYPES.each do |type_s|
@@ -55,9 +56,21 @@ class Incidents::DatIncident < Incidents::DataModel
     super(list)
   end
 
+  def services= list
+    list = list.select(&:present?) if list
+    super(list)
+  end
+
   def cleanup_first_responders
     unless services.try(:include?, 'canteened_responders')
       self.num_first_responders = nil
+    end
+  end
+
+  def cleanup_services
+    without_none = services.reject{|v| v=='none'}
+    if without_none.present?
+      self.services = without_none
     end
   end
 
