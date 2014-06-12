@@ -17,6 +17,8 @@ ActiveAdmin.register ImportLog, as: 'Import Logs' do
     column :updated_at
   end
 
+  index as: Admin::Views::LogStatusIndex
+
   show do |r|
     attributes_table do
       row :id
@@ -57,6 +59,13 @@ ActiveAdmin.register ImportLog, as: 'Import Logs' do
   controller do
     def resource_params
       []
+    end
+
+    def collectiona
+      latest_ids = ImportLog.select{[controller, name, max(id)]}.group{[controller, name]}.to_a
+      latest_logs = ImportLog.where{id.in(latest_ids)}.order{[controller, name]}.group_by(&:controller)
+      pp latest_logs
+      pp latest_logs.to_a
     end
   end
 end
