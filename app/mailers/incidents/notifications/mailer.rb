@@ -44,7 +44,7 @@ module Incidents::Notifications
       @subject = "Incident Report #{@options[:is_new] ? 'Filed' : 'Updated'} For #{@incident.county}"
     end
 
-    def incident_report_missing
+    def incident_missing_report
       @subject = "Missing Incident Report For #{@incident.county}"
     end
 
