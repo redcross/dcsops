@@ -17,7 +17,7 @@ ActiveAdmin.register ImportLog, as: 'Import Logs' do
     column :updated_at
   end
 
-  index as: Admin::Views::LogStatusIndex
+  index as: Admin::Views::LogStatusIndex, default: true
 
   show do |r|
     attributes_table do
