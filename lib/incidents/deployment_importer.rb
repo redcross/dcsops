@@ -34,8 +34,8 @@ class Incidents::DeploymentImporter
     sheet.each do |row|
       id = row[15].to_i
 
-      dr_name = row[12]
-      gap = row[13]
+      dr_name = row[4]
+      gap = row[20]
 
       person = Roster::Person.where(vc_member_number: id).first
       unless person
