@@ -1,1 +1,1 @@
-#{@template.titleize} for Incident: #{@incident.humanized_incident_type} at #{@incident.full_address}.  Message: #{@options[:message]} View in DCSOps: #{short_incident_url @incident}  Map: #{short_maps_url @incident}
+#{@template.titleize} at #{@event.name} for Incident: #{@incident.incident_number} #{@incident.humanized_incident_type} at #{@incident.full_address}.  Message: #{@options[:message]} View in DCSOps: #{short_incident_url @incident}  Map: #{short_maps_url @incident}

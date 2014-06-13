@@ -14,7 +14,7 @@ describe Incidents::Notifications::Mailer do
   before(:each) { Bitly.stub(client: double(:shorten => double(short_url: "https://short.url"))) }
 
   describe "no_incident_report" do
-    let(:event) { mock_model Incidents::Notifications::Event, event_type: 'event', event: 'incident_report_missing'}
+    let(:event) { mock_model Incidents::Notifications::Event, event_type: 'event', event: 'incident_missing_report'}
     let(:mail) { subject.notify_event(person, false, event, report, 'notification') }
 
     before(:each) { report.stub dispatch_log: double( delivered_to: "Bob", log_items: log_items) }

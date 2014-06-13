@@ -19,6 +19,7 @@ FactoryGirl.define do
     num_people_hospitalized 5
     num_people_deceased 5
 
+    services ['food']
     #resources( {'comfort_kits' => 1, 'blankets' => 10})
     comfort_kits 1
     blankets 10

@@ -18,7 +18,7 @@ module Incidents::Notifications
         set_sms_delivery
         @subject = ''
         @render_template_name = "#{@render_template_name}_sms"
-        recipient = person.sms_addresses.first
+        recipient = person.sms_addresses
       else
         recipient = format_address(person)
       end
