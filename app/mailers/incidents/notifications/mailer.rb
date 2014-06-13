@@ -16,6 +16,7 @@ module Incidents::Notifications
 
       if sms
         set_sms_delivery
+        sms!
         @subject = ''
         @render_template_name = "#{@render_template_name}_sms"
         recipient = person.sms_addresses
