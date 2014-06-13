@@ -32,7 +32,7 @@ class Roster::LoginService
     update_new_record if @person.new_record?
 
     update_credentials unless @ignore_credentials
-    update_data info unless @ignore_credentials
+    update_data info
     @person.save!
 
     update_deployments info[:dro_history]
@@ -49,7 +49,9 @@ class Roster::LoginService
   end
 
   def update_data info
-    @person.attributes = info.slice(:first_name, :last_name, :address1, :address2, :city, :state, :zip, :email, :vc_member_number)
+    @person.attributes = info.slice(:first_name, :last_name, :address1, :address2, :city, :state, :zip, :email, :vc_member_number, 
+                                    :phone_1_preference, :phone_2_preference, :phone_3_preference, :phone_4_preference,
+                                    :home_phone, :cell_phone, :alternate_phone, :work_phone, :sms_phone)
   end
 
   def update_deployments deployments  
