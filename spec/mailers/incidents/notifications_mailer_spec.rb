@@ -6,7 +6,7 @@ describe Incidents::Notifications::Mailer do
   let(:log_items) { [double(:dispatch_log_item, action_at: Time.zone.now, action_type: 'Dial', recipient: '', result: '')] }
   let(:report) {
     mock_model Incidents::Incident, incident_number: "12-345", area: double(name: 'County'), narrative: 'Test 123', created_at: Time.zone.now,
-                                    address: '123', city: '123', state: '123', zip: '123', county: 'County', chapter: chapter
+                                    address: '123', city: '123', state: '123', zip: '123', county: 'County', chapter: chapter, humanized_incident_type: 'Test'
   }
 
   let(:chapter) { FactoryGirl.build_stubbed :chapter }
@@ -35,12 +35,13 @@ describe Incidents::Notifications::Mailer do
   end
 
   describe "new_incident" do
+    let(:use_sms) { false }
     let(:event) { mock_model Incidents::Notifications::Event, event_type: 'event', event: 'new_incident'}
     let(:dispatch) { double :dispatch_log, incident_type: 'Flood', address: Faker::Address.street_address, displaced: 3, 
       services_requested: "Help!", agency: "Fire Department", contact_name: "Name", contact_phone: "Phone", 
       delivered_at: nil, log_items: log_items
     }
-    let(:mail) { subject.notify_event(person, false, event, report, 'notification') }
+    let(:mail) { subject.notify_event(person, use_sms, event, report, 'notification') }
 
     before(:each) { report.stub dispatch_log: dispatch }
 
@@ -56,6 +57,17 @@ describe Incidents::Notifications::Mailer do
     it "renders the body" do
       mail.body.encoded.should match("Incident Type: Flood")
       mail.body.encoded.should_not match("Delivered At")
+    end
+
+    describe "as sms" do
+      let(:use_sms) { true }
+      let(:from_address) { 'sms@dcsops.org' }
+      before(:each) { person.stub(sms_addresses: ['test@vtext.com']) }
+
+      it "renders" do
+        mail.to.should eq([person.sms_addresses.first])
+        mail.from.should eq([from_address])
+      end
     end
   end
 
