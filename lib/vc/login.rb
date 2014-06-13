@@ -61,10 +61,16 @@ module Vc
                   phone_1_preference: 'phone_preference_1', phone_2_preference: 'phone_preference_2',
                   phone_3_preference: 'phone_preference_3', phone_4_preference: 'phone_preference_4'}
 
-        fields.merge!(fields) do |key, form_attr|
+        attrs = {}
+        fields.each do |key, form_attr|
           input = dom.css("##{form_attr}").first
-          get_input_value input
+          if input
+            val = get_input_value input
+            attrs[key] = val
+          end
         end
+
+        attrs
       end
 
       def get_input_value input
