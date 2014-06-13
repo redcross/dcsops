@@ -68,6 +68,7 @@ module Vc
       end
 
       def get_input_value input
+        return nil unless input
         if input.name == 'input'
           input.attr('value')
         else
