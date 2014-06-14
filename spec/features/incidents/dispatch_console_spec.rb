@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe "Incident Dispatch Console" do
 
+  after :each do
+    ActionMailer::Base.deliveries.clear
+  end
+
   before do
     grant_role! :incidents_admin
     @chapter = @person.chapter
