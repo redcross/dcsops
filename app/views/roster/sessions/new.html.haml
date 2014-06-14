@@ -6,8 +6,9 @@
         Please Sign In
       %p
         -#DCSOps uses the same username and password you use to log into Volunteer Connection.
-
+      = f.label :username, class: 'sr-only'
       = f.text_field :username, class: 'text_field col-sm-6 form-control', placeholder: 'Username'
+      = f.label :password, class: 'sr-only'
       = f.password_field :password, class: 'text_field col-sm-6 form-control', placeholder: 'Password'
       /.control-group
       /  = f.label :remember_me, :class => 'control-label'

@@ -29,6 +29,7 @@ require 'capybara-screenshot'
 require 'capybara-screenshot/rspec'
 require 'database_cleaner'
 require 'paper_trail/frameworks/rspec'
+require 'vcr'
 #require "sauce_helper"
 
 #Capybara.default_driver = SauceConfig.use_sauce? ? :sauce : :selenium
@@ -117,3 +118,12 @@ RSpec.configure do |config|
 end
 
 Zonebie.set_random_timezone
+
+VCR.configure do |c|
+  c.cassette_library_dir     = 'spec/cassettes'
+  c.hook_into                :webmock
+  c.default_cassette_options = { :record => :once }
+  #c.debug_logger = STDERR
+  c.ignore_localhost = true
+  c.configure_rspec_metadata!
+end

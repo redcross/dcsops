@@ -1,0 +1,223 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://volunteerconnection.redcross.org/
+    body:
+      encoding: UTF-8
+      string: user=incorrect_username&password=incorrect_password&fail=login&login=Login&succeed=profile&nd=profile
+    headers:
+      User-Agent:
+      - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/29.0.1547.65 Safari/537.36
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache/2.2.17 (Ubuntu)
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Type:
+      - text/html; charset=UTF-8
+      Vary:
+      - User-Agent
+      Date:
+      - Sat, 14 Jun 2014 02:46:23 GMT
+      Content-Length:
+      - '15917'
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - ServerID=1207; path=/; expires=Sat, 14-Jun-2014 09:16:20 GMT
+      - agent=local; path=/; expires=Mon, 28 Jul 2014 22:46:23 UTC;
+      - day=1; path=/;
+      - uuid=094150232151550; path=/; expires=Sat, 13 Jun 2015 22:46:23 UTC;
+    body:
+      encoding: UTF-8
+      string: "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html
+        xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n\t<meta http-equiv=\"Content-Type\"
+        content=\"text/html; charset=utf-8\" />\n\t<title>Volunteer Connection - Login
+        Here</title>\n\n\n\n\t<meta name=\"description\" content=\"The American Red
+        Cross helps prepare communities for emergencies and keep people safe every
+        day thanks to caring people who support our work. Please support your local
+        Red Cross.\" />\n<meta name=\"keywords\" content=\"red, cross, American Red
+        Cross, American National Red Cross, Red Cross, Red Crescent, IFRC, ICRC, prepare,
+        preparedness, preparing, disaster, disaster preparedness, emergencies, emergency,
+        emergency preparedness, online giving, online fundraising, prepare, \" />\n<meta
+        http-equiv=\"Pragma\" content=\"no-cache\" />\n<meta http-equiv=\"Cache-Control\"
+        content=\"no-store, no-cache, must-revalidate\" />\n<meta http-equiv=\"Cache-Control\"
+        content=\"post-check=1, pre-check=2\" />\n<meta http-equiv=\"Expires\" content=\"-1\"
+        />\n<meta name=\"resource-type\" content=\"document\" />\n<meta name=\"classification\"
+        content=\"Volunteer Organization\" />\n<meta name=\"robots\" content=\"all\"
+        />\n<meta name=\"distribution\" content=\"Global\" />\n<meta name=\"rating\"
+        content=\"Safe For Kids\" />\n<meta name=\"copyright\" content=\"2008, 2013\"
+        />\n<meta name=\"author\" content=\"2008, 2013\" />\n\n\n\n\n\n\t\t\t<script
+        type=\"text/javascript\" src=\"editor/components/jquery/jquery-1.6.4.min.js\"></script>\n\n\t<script
+        type=\"text/javascript\" src=\"/editor/dc.js\"></script>\n\t<script type=\"text/javascript\"
+        src=\"/editor/dcheetah.js\"></script>\n\t<link rel=\"stylesheet\" type=\"text/css\"
+        href=\"/editor/mod.vms/styles/vms_comp.css\" />\n\t<!--removed \"/editor/global.css\"
+        and \"/editor/cmp5.css\" -->\n\t<link rel=\"stylesheet\" type=\"text/css\"
+        href=\"/ama/orig/combined_file_cache/public_combined_css.css\" />\n\t<link
+        rel=\"shortcut icon\" href=\"/ama/images/favicon.png\" type=\"image/x-icon\"
+        />\n\n\n\n\t<script src='/editor/components/jquery/jquery.ui.1.8.16/js/jquery-ui-1.8.16.min.js'
+        type='text/javascript'></script>\n\t<script src='/editor/components/jquery/fullcalendar-1.6.1/fullcalendar/fullcalendar.js'
+        type='text/javascript'></script>\n\t<script type='text/javascript' src=\"/editor/components/jquery/jquery.colorbox-min.js\"></script>\n<!--[if
+        lt IE 7]>\n<script src=\"/editor/components/jquery/pngfix/jquery.pngFix.js\"
+        type=\"text/javascript\" charset=\"utf-8\"></script>\n<script type=\"text/javascript\">\n\t$(document).ready(function(){\n\t\t//
+        Fix all inline PNG images except those in a Google map and anything with class
+        pngfixthis.\n\t\t// Background images set to 'crop' by default. If 'scale'
+        is desired, give the element a class of 'scale'.\n\t\t\t$(\"#container, #footer,
+        .pngfixthis, .pngfixme, :not #map\").pngFix();\n\t});\n</script>\n<![endif]-->\n\t\n\t<script
+        src=\"/ama/site.js\" type=\"text/javascript\"></script>\n\n<!--COMMENT REMOVED-->\n</head>\n<body
+        id=\"nd_login\" class='chrome public arc'>\n<link rel=\"stylesheet\" href=\"/editor/components/dhtmlwindow/windowfiles/dhtmlwindow.css\"
+        type=\"text/css\" />\n<script type=\"text/javascript\" src=\"/editor/components/dhtmlwindow/windowfiles/dhtmlwindow.js\">\n</script>\n\t<div
+        id='page'>\n\t\t<div id='layout'>\n\t\t\t<div id='header'>\n\t\t\t\t<!--LOGIN
+        AND HELP-->\n\t\t\t\t<div id=\"top_nav\">\n\t\t\t\t\t<a href=\"/?nd=login\">Login</a>\n\t\t\t\t</div>\n\t\t\t\t<!--BRANDING-->\n\t\t\t\t<h1
+        id=\"logo\"><a href=\"/?nd=m_home\"></a></h1>\n\t\t\t\t<!--SPONSOR-->\n\t\t\t\t<div
+        id=\"sponsor\">\n\t\t\t\t\t<a target=\"_blank\" href=\"http://www.grainger.com\"
+        title=\"Grainger.com\"><img src=\"/ama/images/vms/grainger-nationalsponsor.png\"></a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!--PRIMARY
+        NAV-->\n\t\t\t<!--xINCLUDE: site-publicmenu.htm-->\n\t\t\t<div id='content'>\n\t\t\t\t<!--CENTER
+        COLUMN-->\n\t\t\t\t<div class='wrapper'>\n<h2 class=\"page_name\">Volunteer
+        Connection - Login Here</h2>\n\t<style>\n\t\t.facebook_options .fb_connected
+        {\n\t\t\tdisplay: none;\n\t\t}\n\t\t.facebook_options.connected .fb_connected
+        {\n\t\t\tdisplay: block;\n\t\t}\n\t\t.facebook_options .not_fb_connected {\n\t\t\tdisplay:
+        block;\n\t\t}\n\t\t.facebook_options.connected .not_fb_connected {\n\t\t\tdisplay:
+        none;\n\t\t}\n\t</style>\n\t<div id=\"fb-root\"></div>\n\t<script type=\"text/javascript\">\n\t\tvar
+        fbid = \"\";\n\t\tfunction delete_facebook_login() {\n\t\t\t$.ajax({\n\t\t\t\turl:'/',\n\t\t\t\tdata:{html:'xmlhttp-facebook_login_setup',
+        delete_access: '1'},\n\t\t\t\tasync:false,\n\t\t\t\tsuccess: function( data
+        ) {\n\t\t\t\t\tresults = $.trim(data);\n\t\t\t\t\tswitch (results) {\n\t\t\t\t\t\tcase
+        \"deleted\":\n\t\t\t\t\t\t\talert(\"Your Facebook account was successfully
+        removed from your account\");\n\t\t\t\t\t\t\t$('.facebook_options').removeClass('connected');\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tdefault:\n\t\t\t\t\t\t\talert(\"Error
+        removing your Facebook account from your account\");\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t\tfunction
+        setup_facebook_login(email, user_id, access_token) {\n\t\t\t$.ajax({\n\t\t\t\turl:'/',\n\t\t\t\tdata:{html:'xmlhttp-facebook_login_setup',
+        user_id: user_id, access_token: access_token, email: email},\n\t\t\t\tasync:false,\n\t\t\t\tsuccess:
+        function( data ) {\n\t\t\t\t\tresults = $.trim(data);\n\t\t\t\t\t//console.log(results);\n\t\t\t\t\tswitch
+        (results) {\n\t\t\t\t\t\tcase \"updated successfully\":\n\t\t\t\t\t\t\talert(\"Your
+        Facebook account was successfully linked to your account.\");\n\t\t\t\t\t\t\t$('.facebook_options').addClass('connected');\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tcase
+        \"invalid\":\n\t\t\t\t\t\t\talert(\"Your Facebook account was unable to be
+        linked to your account. Please try again.\");\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tcase
+        \"duplicate\":\n\t\t\t\t\t\t\talert(\"Your Facebook account is already linked
+        with another account.\");\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tcase \"other
+        duplicate\":\n\t\t\t\t\t\t\talert(\"Your account is already linked with another
+        Facebook account.\");\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tdefault:\n\t\t\t\t\t\t\t//console.log(\"Error
+        linking facebook account to account.\");\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t\t\n\t\twindow.fbAsyncInit
+        = function() {\n\t\t\tFB.init({\n\t\t\t\tappId      : '328037060569665',\n\t\t\t\tstatus
+        \    : true,\n\t\t\t\tcookie     : true,\n\t\t\t\txfbml      : true,\n\t\t\t\toauth
+        \     : true\n\t\t\t});\n\n\t\t\tFB.getLoginStatus(function(response){\n\t\t\t\tif
+        (response.status === 'connected') {\n\t\t\t\t\tfid = response.authResponse.userID;\n\t\t\t\t\tif
+        (fid == fbid) {\n\t\t\t\t\t\t$('.facebook_options').addClass('connected');\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t});\n\t\t\tfunction
+        login_fb_connection(response, depth) {\n\t\t\t\tif (!depth) {\n\t\t\t\t\tdepth
+        = 0;\n\t\t\t\t}\n\t\t\t\tif (depth > 5) {\n\t\t\t\t\talert(\"There was an
+        error logging in with Facebook, please try again later.\");\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\t//console.log(\"fb
+        login_fb \");\n\t\t\t\tif (response.status === 'connected') {\n\t\t\t\t\tFB.api('/me',
+        function(user) {\n\t\t\t\t\t\tif ((user.email != '') && (user.id != '')) {\n\t\t\t\t\t\t\tvar
+        email = user.email;\n\t\t\t\t\t\t\tvar user_id = user.id;\n\t\t\t\t\t\t\tvar
+        access_token = response.authResponse.accessToken;\n\t\t\t\t\t\t\t//console.log(\"access
+        token is: \" + access_token);\n\t\t\t\t\t\t\t$.ajax({\n\t\t\t\t\t\t\t\turl:'/',\n\t\t\t\t\t\t\t\tdata:{html:'xmlhttp-vms_facebook_validate',
+        user_id: user_id, access_token: access_token},\n\t\t\t\t\t\t\t\tasync:false,\n\t\t\t\t\t\t\t\tsuccess:
+        function( data ) {\n\t\t\t\t\t\t\t\t\tresults = $.trim(data);\n\t\t\t\t\t\t\t\t\t//console.log(results);\n\t\t\t\t\t\t\t\t\tif
+        (results != \"invalid\") {\n\t\t\t\t\t\t\t\t\t\tvar cookie_user, quser, qdomain,
+        qexpires, cookie_u, qu, qdomain, qexpires\n\t\t\t\t\t\t\t\t\t\tvar cookie_pieces
+        = results.split(\",\");\n\t\t\t\t\t\t\t\t\t\tvar cookie_user = cookie_pieces[0];\n\t\t\t\t\t\t\t\t\t\tvar
+        quser = cookie_pieces[1];\n\t\t\t\t\t\t\t\t\t\tvar qdomain = cookie_pieces[2];\n\t\t\t\t\t\t\t\t\t\tvar
+        qexpires = cookie_pieces[3];\n\t\t\t\t\t\t\t\t\t\tvar cookie_u = cookie_pieces[4];\n\t\t\t\t\t\t\t\t\t\tvar
+        qu = cookie_pieces[5];\n\t\t\t\t\t\t\t\t\t\tvar qdomain = cookie_pieces[6];\n\t\t\t\t\t\t\t\t\t\tvar
+        qexpires = cookie_pieces[7];\n\t\t\t\t\t\t\t\t\t\tdocument.cookie = cookie_user
+        + \"=\" + quser + \"; \" + \"path=/; \" + qdomain + \" expires=\" + qexpires;\n\t\t\t\t\t\t\t\t\t\tdocument.cookie
+        = cookie_u + \"=\" + qu + \"; \" + \"path=/; \" + qdomain + \" expires=\"
+        + qexpires;\n\t\t\t\t\t\t\t\t\t\twindow.location = \"/?nd=m_home\";\n\t\t\t\t\t\t\t\t\t}
+        else {\n\t\t\t\t\t\t\t\t\t\talert(\"Unable to login with Facebook.  Please
+        make sure your Facebook account has been added to you profile.\");\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\terror:
+        function() {\n\t\t\t\t\t\t\t\t\t//console.log(\"Error\");\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t});\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t\t}
+        else {\n\t\t\t\t\tFB.login(function(response2){\n\t\t\t\t\t\tlogin_fb_connection(response2,
+        depth + 1);\n\t\t\t\t\t}, {scope: 'email,user_checkins,user_birthday'});\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction
+        register_fb_connection(response, depth) {\n\t\t\t\tif (!depth) {\n\t\t\t\t\tdepth
+        = 0;\n\t\t\t\t}\n\t\t\t\tif (depth > 5) {\n\t\t\t\t\talert(\"There was an
+        error registering with Facebook.\");\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tif
+        (response.status === 'connected') {\n\t\t\t\t\tFB.api('/me', function(user)
+        {\n\t\t\t\t\t\tif (user) {\n\t\t\t\t\t\t\tif (user.email) {\n\t\t\t\t\t\t\t\t$('.create_account').hide();\n\t\t\t\t\t\t\t\t$('#username').val(user.email).attr('readonly','readonly');\n\t\t\t\t\t\t\t\t$('#password').val($('#rand').val()).attr('readonly','readonly');\n\t\t\t\t\t\t\t\t$('#verify_password').val($('#rand').val()).attr('readonly','readonly');\n\t\t\t\t\t\t\t\tif
+        ($('#email').val() == '') {\n\t\t\t\t\t\t\t\t\t$('#email').val(user.email).attr('readonly','readonly');\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tif
+        ($('#first_name').val() == '' && user.first_name) {\n\t\t\t\t\t\t\t\t$('#first_name').val(user.first_name);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tif
+        ($('#last_name').val() == '' && user.last_name) {\n\t\t\t\t\t\t\t\t$('#last_name').val(user.last_name);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tif
+        ($('#middle_name').val() == '' && user.middle_name) {\n\t\t\t\t\t\t\t\t$('#middle_name').val(user.middle_name);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tif
+        (user.location && user.location.name) {\n\t\t\t\t\t\t\t\tvar loc = user.location.name.split(',
+        ');\n\t\t\t\t\t\t\t\tif ($('#city').val() == '') {\n\t\t\t\t\t\t\t\t\t$('#city').val(loc[0]);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tif
+        ($('#state').val() == '') {\n\t\t\t\t\t\t\t\t\t$(\"#state option\").filter(function()
+        { return $(this).html().toLowerCase() == loc[1].toLowerCase()}).attr('selected','selected').end().change();\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tif
+        ($('#date_of_birth').val() == '' && user.birthday) {\n\t\t\t\t\t\t\t\t$('#date_of_birth').val(user.birthday.replace(\"/\",\"-\"));\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t$('#token').val(user.id);\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t\t}
+        else {\n\t\t\t\t\tFB.login(function(response2){\n\t\t\t\t\t\tregister_fb_connection(response2,
+        depth + 1);\n\t\t\t\t\t}, {scope: 'email,user_checkins,user_birthday'});\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction
+        check_fb_connection(response, depth) {\n\t\t\t\tif (!depth) {\n\t\t\t\t\tdepth
+        = 0;\n\t\t\t\t}\n\t\t\t\tif (depth > 5) {\n\t\t\t\t\talert(\"There was an
+        error connecting to Facebook, please try again later.\");\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tif
+        (response.status === 'connected') {\n\t\t\t\t\tFB.api('/me', function(user)
+        {\n\t\t\t\t\t\tif ((user.email != '') && (user.id != '')) {\n\t\t\t\t\t\t\tvar
+        email = user.email;\n\t\t\t\t\t\t\tvar user_id = user.id;\n\t\t\t\t\t\t\tvar
+        access_token = response.authResponse.accessToken;\n\t\t\t\t\t\t\t//console.log(\"connected
+        - access token is: \" + access_token);\n\t\t\t\t\t\t\tsetup_facebook_login(email,
+        user_id, access_token);\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t\t} else {\n\t\t\t\t\tFB.login(function(response2){\n\t\t\t\t\t\tcheck_fb_connection(response2,
+        depth + 1);\n\t\t\t\t\t}, {scope: 'email,user_checkins,user_birthday'});\n\t\t\t\t}\n\t\t\t}\n\n\t\t\t$(document).ready(function(){\n\t\t\t\t$('.not_fb_connected').click(function(e){\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\tFB.getLoginStatus(function(response){\n\t\t\t\t\t\tcheck_fb_connection(response);\n\t\t\t\t\t});\n\t\t\t\t});\n\t\t\t\t$('.fb_connected').click(function(e){\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\tdelete_facebook_login();\n\t\t\t\t});\n\t\t\t\t$('.fb_login').click(function(e){\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\tFB.getLoginStatus(function(response){\n\t\t\t\t\t\tlogin_fb_connection(response);\n\t\t\t\t\t});\n\t\t\t\t});\n\t\t\t\t$('.fb_register').click(function(e){\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\tFB.getLoginStatus(function(response){\n\t\t\t\t\t\tregister_fb_connection(response);\n\t\t\t\t\t});\n\t\t\t\t});\n\t\t\t});\n\t\t\t\n\n\t\t};\n\t\t//
+        Load the SDK asynchronously\n\t\t(function(d, s, id){\n\t\t\tvar js, fjs =
+        d.getElementsByTagName(s)[0];\n\t\t\tif (d.getElementById(id)) {return;}\n\t\t\tjs
+        = d.createElement(s); js.id = id;\n\t\t\tjs.src = \"//connect.facebook.net/en_US/all.js\";\n\t\t\tfjs.parentNode.insertBefore(js,
+        fjs);\n\t\t}(document, 'script', 'facebook-jssdk'));\n\t</script>\n\t\t<script
+        type=\"text/javascript\" src=\"/editor/editor_site.js\"></script>\n\t\t<script
+        type=\"text/javascript\" src=\"/editor/validation.js\"></script>\n\t\t\n\t\t\t<div
+        class=\"alert alert-error\">\n\t\t\t\t<strong>There was a problem with your
+        login.</strong><br />\n\t\t\t\tEither your Username or password were incorrect.
+        Please try again.<br />\n\t\t\t\t\tIf you are still having problems you can
+        retrieve your password by <a href=\"/?nd=resetpassword\">clicking here</a>.\n\t\t\t</div>\n\n\n\n\t\t<div
+        class=\"row-fluid usebootstrap\">\n\t\t\t\n\t\t\t<div class=\"span6 block\">\n\t\t\t\t<div
+        class=\"block_body\">\n\t\t\t\t\t\n\t\t\t\t<form method=\"post\" action=\"\"
+        onSubmit=\"return verifyObjects(this);\" name=\"login\" class=\"form-horizontal\">\n\t\t\t\t\t<input
+        type=\"hidden\" name=\"fail\" value=\"login\" />\n\t\t\t\t\t<input type=\"hidden\"
+        name=\"nd\" value=\"m_home\" />\n\t\t\t\t\t<input type=\"hidden\" name=\"expires\"
+        value=\"365 days\" />\n\t\t\t\t\t<input type=\"hidden\" name=\"flag\" value=\"Welcome
+        back!  Please %60a href=/?nd=home%62click here%60/a%62 for our home page.\"
+        />\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\t<input
+        type=\"hidden\" name=\"succeed\" value=\"m_home\" />\n\n\n\t\t\t\t\t\t<!--USERNAME-->\n\t\t\t\t\t\t<div
+        class=\"control-group\">\n\t\t\t\t\t\t\t<label class=\"control-label\" for=\"user\">Username</label>\n\t\t\t\t\t\t\t<div
+        class=\"controls\">\n\t\t\t\t\t\t\t\t<input name=\"user\" type=\"text\" maxlength=\"255\"
+        onChange=\"this.value = this.value.replace(/ /, '')\" placeholder=\"Username\"
+        />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!--PASSWORD-->\n\t\t\t\t\t\t<div
+        class=\"control-group\">\n\t\t\t\t\t\t\t<label class=\"control-label\" for=\"password\">Password</label>\n\t\t\t\t\t\t\t<div
+        class=\"controls\">\n\t\t\t\t\t\t\t\t<input name=\"password\" type=\"password\"
+        size=\"25\" maxlength=\"255\" placeholder=\"Password\" />\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t<!--REMEMBER
+        AND SUBMIT-->\n\t\t\t\t\t\t<div class=\"control-group\">\n\t\t\t\t\t\t    <div
+        class=\"controls\">\n\t\t\t\t\t\t    \t<label class=\"checkbox\">\n\t\t\t\t\t\t\t\t\t<input
+        type=\"checkbox\" name=\"rememberme\" value=\"1\" class=\"checkbox\" />&nbsp;
+        Remember me?\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t<input type=\"submit\"
+        class=\"btn btn-primary\" name=\"login\" value=\"Login\" />\n\t\t\t\t\t\t\t\t\t&nbsp;&nbsp;-
+        OR -&nbsp;&nbsp;\n\t\t\t\t\t\t\t\t\t<button class=\"fb_login\">Login with
+        Facebook</button>\n\t\t\t\t\t\t\t\t<p style=\"margin-top:1em;\"><a href=\"/?nd=resetpassword\">Forgot
+        your password?</a></p>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</form>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\n\n\t\t\t\t<script>\n\t\t\t\tboxes
+        = $('.span6.block');\n\t\t\t\tmaxHeight = Math.max.apply(\n\t\t\t\t  Math,
+        boxes.map(function() {\n\t\t\t\t    return $(this).height();\n\t\t\t\t}).get());\n\t\t\t\tboxes.height(maxHeight);\n\t\t\t\t</script>\n\t\t\t</div>\n\t\t<script
+        type=\"text/javascript\">document.login.user.focus();</script>\n</div><!--
+        close #content .wrapper -->\n</div><!-- close #content -->\n</div>\n<!--\n<div
+        id='sub'>\n\t<ul id='subcontent'>\n\t\t<li class='subsection'>\n\t\t\t<h4>Who
+        We Are</h4>\n<ul>\n<li><a href=\"#\">Mission</a></li>\n<li><a href=\"#\">History</a></li>\n<li><a
+        href=\"#\">Leadership</a></li>\n<li><a href=\"#\">Annual Report</a></li>\n<li><a
+        href=\"#\">Careers</a></li>\n<li><a href=\"#\">Press Releases</a></li>\n</ul>\n\t\t</li>\n\t\t<li
+        class='subsection'>\n\t\t\t<h4></h4>\n<ul></ul>\n\t\t</li>\n\t\t<li class='subsection'>\n\t\t\t<h4></h4>\n<ul></ul>\n\t\t</li>\n\t\t<li
+        class='subsection'>\n\t\t\t<h4>Our Supports</h4>\n<ul>\n<li><a href=\"#\">Corporate</a></li>\n<li><a
+        href=\"#\">Foundations</a></li>\n<li><a href=\"#\">Individuals</a></li>\n<li><a
+        href=\"#\">Community Partners</a></li>\n</ul>\n\t\t</li>\n\t</ul>\n</div>\n-->\n<div
+        id='footer'>\n\t<div id='footercontent'>\n\t\t<a class='twitter' href='http://www.twitter.com/RedCross'
+        target=\"_blank\"></a>\n\t\t<a class='facebook' href='http://www.facebook.com/redcross'
+        target=\"_blank\"></a>\n\t\t<p class='sponsor'>Sponsored by <a href='#'>W.W.
+        Grainger, Inc.</a></p>\n\t\t<p class='copyright'>&copy; 2008, 2013 American
+        Red Cross, All Rights Reserved.</p>\n\t</div>\n</div>\n</div>\n   <!-- google
+        analytics -->\n<script type=\"text/javascript\">\n  var _gaq = _gaq || [];\n
+        \ _gaq.push(['_setAccount', 'UA-34605835-1']);\n  _gaq.push(['_trackPageview']);\n\n
+        \ (function() {\n    var ga = document.createElement('script'); ga.type =
+        'text/javascript'; ga.async = true;\n    ga.src = ('https:' == document.location.protocol
+        ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\n    var
+        s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga,
+        s);\n  })();\n</script>\n   <script type=\"text/javascript\" src=\"/editor/jquery.gaq-track-downloads.js\"></script>\n</body>\n</html>
+        \n"
+    http_version: 
+  recorded_at: Sat, 14 Jun 2014 02:46:22 GMT
+recorded_with: VCR 2.9.2

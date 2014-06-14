@@ -1,0 +1,1375 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Edit Profile</title>
+
+
+
+	<meta name="description" content="The American Red Cross helps prepare communities for emergencies and keep people safe every day thanks to caring people who support our work. Please support your local Red Cross." />
+<meta name="keywords" content="red, cross, American Red Cross, American National Red Cross, Red Cross, Red Crescent, IFRC, ICRC, prepare, preparedness, preparing, disaster, disaster preparedness, emergencies, emergency, emergency preparedness, online giving, online fundraising, prepare, " />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+<meta http-equiv="Cache-Control" content="post-check=1, pre-check=2" />
+<meta http-equiv="Expires" content="-1" />
+<meta name="resource-type" content="document" />
+<meta name="classification" content="Volunteer Organization" />
+<meta name="robots" content="all" />
+<meta name="distribution" content="Global" />
+<meta name="rating" content="Safe For Kids" />
+<meta name="copyright" content="2008, 2013" />
+<meta name="author" content="2008, 2013" />
+
+	<link rel="stylesheet" type="text/css" href="/editor/mod.vms/styles/vms_comp.css" />
+	<!--removed "/editor/global.css" and "/editor/cmp5.css" -->
+
+
+
+
+
+
+	<link rel="stylesheet" type="text/css" href="/ama/orig/combined_file_cache/combined_css_0.css" />
+	
+	
+	<link rel="icon" type="image/png" href="/ama/images/favicon.png" />
+
+	<script src="/ama/orig/combined_file_cache/combined_js_0.js" type="text/javascript"></script>
+	<script type='text/javascript' src="/editor/components/jquery/fullcalendar-1.6.1/fullcalendar/fullcalendar.js"></script>
+
+
+		<script type="text/javascript" defer="defer">dcIpEditor("/", "iphtmlblank", "font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #000000;");</script>
+		<div class="moveme" id="dcheetaheditor">
+			<table cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="editor">&nbsp;Digital Cheetah Editor</td>
+					<td class="editor" align="right">
+						<img src="/editor/close.gif" width="15" height="15" onclick="closeEditor('dcheetaheditor');" style="cursor:hand" />
+					</td>
+				</tr>
+				<tr><td colspan="2" bgcolor="white"><div id='dceditordiv'></div></td></tr>
+			</table>
+			<style type="text/css">
+				#dcheetaheditor {position: absolute; top: 400px; left: 500px; width: 300px; height: 100px; border: 2px outset white;background: buttonface; padding: 3px; margin: 5px; visibility:hidden}
+				.editor {background: activecaption; font: caption;color: captiontext; padding: 3px; margin: 0px;}
+			</style>
+		</div>
+</head>
+<body id="nd_profile_edit" class='chrome member member-article-01 arc'>
+<link rel="stylesheet" href="/editor/components/dhtmlwindow/windowfiles/dhtmlwindow.css" type="text/css" />
+<script type="text/javascript" src="/editor/components/dhtmlwindow/windowfiles/dhtmlwindow.js">
+</script>
+	<div id='page'>
+		<div id='layout'>
+			<div id='header'>
+				<!--LOGIN AND HELP-->
+				<div id="top_nav">
+			<script type="text/javascript">
+				$(document).ready(function() { 
+					$('#hierarchy_change_dropdown').change(function(e) { 
+						document.location = '/?nd=vms_jump&next_nd=m_home&switch_current_hierarchy='+$(this).val(); 
+					}); 
+				});
+			</script>
+			<select class='skin' name="hierarchy_change_dropdown" id="hierarchy_change_dropdown">
+			<option value="">Change Chapter</option>
+				<option value="155" selected>Gateway to the Golden State Region</option>
+<option value="152">Los Angeles Region</option>
+
+			</select> | 
+
+
+
+
+
+							<a href="https://intranet.redcross.org/content/redcross/index.html?auth=saml" target="_blank">Connect to The Exchange</a> |
+
+
+
+					<a href="/?nd=login&logout=1">Sign Out</a>
+				</div>
+				<!--BRANDING-->
+				<h1 id="logo"><a href="/?nd=m_home"><span>Gateway to the Golden State Region</span></a></h1>
+				<!--SPONSOR-->
+				<div id="sponsor">
+					<a target="_blank" href="http://www.grainger.com" title="Grainger.com"><img src="/ama/images/vms/grainger-nationalsponsor.png"></a>
+				</div>
+			</div>
+			<!--PRIMARY NAV-->
+			<nav  class="member_nav" id="primary_nav">
+			</nav>
+			<div id='content'>
+				<!--CENTER COLUMN-->
+				<div class='wrapper'>
+<h2 class="page_name">Edit Profile</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <script type="text/javascript" src="editor/components/jquery/jquery.validate.min.js"></script>
+	<script> 
+		function show_language_options(val, pref) {
+			if(val.length>0) {
+				document.getElementById(pref).style.display = '';
+			}
+			else {
+				document.getElementById(pref).style.display = 'none';
+				$('#second_spoken').val("");
+				$('#second_written').val("");
+				$('#second_read').val("");
+				$('#third_spoken').val("");
+				$('#third_written').val("");
+				$('#third_read').val("");
+			}
+		}
+
+		function isValidDate(value) {
+			value = value.replace(/\//g, '-');
+			value = value.replace(/\\/g, '-');
+			if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(value)){
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	</script>
+
+        <script type="text/javascript">
+        $(document).ready(function(){
+			
+			$('.availability_1').click(function (){
+				$('#availability_start_date_1').val("");
+				$('#availability_end_date_1').val("");
+			});
+
+			$('.availability_2').click(function (){
+				$('#availability_start_date_2').val("");
+				$('#availability_end_date_2').val("");
+			});
+
+			$('.availability_3').click(function (){
+				$('#availability_start_date_3').val("");
+				$('#availability_end_date_3').val("");
+			});
+
+			$('.availability_4').click(function (){
+				$('#availability_start_date_4').val("");
+				$('#availability_end_date_4').val("");
+			});
+
+			function toggle_address() {
+				if($('#mailing_country').val() == 'US'){
+					$('#non_us_address').hide();
+					$('#mailing_address3').val("");
+					$('#mailing_address4').val("");
+					$('#mailing_address5').val("");
+					$('#us_address').show();
+				}
+				else{
+					$('#us_address').hide();
+					$('#mailing_address').val("");
+					$('#mailing_address2').val("");
+					$('#mailing_city').val("");
+					$('#mailing_state').val("");
+					$('#mailing_county').val("");
+					$('#mailing_postal_code').val("");
+					$('#non_us_address').show();
+				}
+			};
+			toggle_address();
+			$('#mailing_country').change(function() {
+				toggle_address();
+			 });
+
+			$('#submit_button').click(function(){
+				var has_double_quotes = false;
+				var the_field = {};
+				$(".no_double_quotes").each(function(){
+						if($(this).val().match(/"/)) {
+							has_double_quotes = true;
+							the_field = $(this);
+						}
+				});
+				if (has_double_quotes) {
+					if($('#name_title').hasClass('expanded') == false){
+						$('#name_title').addClass('expanded');
+						$('#name_body').toggle();
+					}
+					alert("Please avoid double quotes in " + the_field.parent().prev().text());
+					the_field.focus();
+					return false;
+				}
+
+				if ($("#profile_edit").valid() == true){
+					$('#submit_message').text('').hide();
+				}
+				else{
+					$('#submit_message').text('Form is incomplete, please fill out all required fields.').show();
+					
+					// Name Tab
+					if ( $('#first_name').hasClass('error') || $('#last_name').hasClass('error') ){
+						if($('#name_title').hasClass('expanded') == false){
+							$('#name_title').addClass('expanded');
+							$('#name_body').toggle();
+						}
+					}
+					// Primary Address Tab
+					if ($('#address_type').hasClass('error') || $('#mailing_address').hasClass('error') || $('#mailing_city').hasClass('error')  || $('#mailing_state').hasClass('error')  || $('#mailing_county').hasClass('error')  || $('#mailing_postal_code').hasClass('error')  || $('#mailing_address3').hasClass('error') || $('#mailing_address4').hasClass('error') || $('#mailing_address5').hasClass('error')){
+							if($('#primary_address_title').hasClass('expanded') == false){
+								$('#primary_address_title').addClass('expanded');
+								$('#primary_address_body').toggle();
+							}
+						}
+					// Contact Information Tab
+					if ($('#email').hasClass('error') || $('#secondary_email').hasClass('error') || $('#home_phone').hasClass('error') || $('#work_phone').hasClass('error') || $('#cell_phone').hasClass('error') ||  $('#alternate_phone').hasClass('error') || $('#sms_number').hasClass('error')){
+						if($('#contact_info_title').hasClass('expanded') == false){
+							$('#contact_info_title').addClass('expanded');
+                                                	$('#contact_info_body').toggle();
+                                                }
+					}
+					// Directory Options Tab
+					if ($('#show_email').hasClass('error') || $('#show_home_phone').hasClass('error') || $('#show_work_phone').hasClass('error') || $('#show_cell_phone').hasClass('error') || $('#show_address').hasClass('error')){
+						if($('#directory_options_title').hasClass('expanded') == false){
+							$('#directory_options_title').addClass('expanded');
+                                                	$('#direcroty_options_body').toggle();
+                                                }
+					}
+					// Passport Information Tab - Not required/ no validation
+					// Primary Emergency Contact Tab
+					if ($('#ec_home_phone').hasClass('error') || $('#ec_work_phone').hasClass('error') || $('#ec_cell_phone').hasClass('error') || $('#ec_alternate_phone').hasClass('error') || $('#ec_email').hasClass('error') || $('#ec_postal_code').hasClass('error') || $('#ec_first_name').hasClass('error') || $('#ec_last_name').hasClass('error') || $('#ec_relationship').hasClass('error')            || $('#ec2_home_phone').hasClass('error') || $('#ec2_work_phone').hasClass('error') || $('#ec2_cell_phone').hasClass('error') || $('#ec2_alternate_phone').hasClass('error') || $('#ec2_email').hasClass('error') || $('#ec2_postal_code').hasClass('error') || $('#ec2_first_name').hasClass('error') || $('#ec2_last_name').hasClass('error') || $('#ec2_relationship').hasClass('error')){
+						if($('#emergency_contact_title').hasClass('expanded') == false){
+							$('#emergency_contact_title').addClass('expanded');
+                                                	$('#emergency_contact_body').toggle();
+                                                }
+					}
+					// Employment Information Tab - Not required/ no validation
+					// Education Tab
+					if ( $('#graduation_date').hasClass('error')){
+						if($('#education_title').hasClass('expanded') == false){
+							$('#education_title').addClass('expanded');
+                                                	$('#education_body').toggle();
+                                                }
+					}
+					// Resume Tab - not required/no validation
+					// Statistical Information Tab
+					if ( $('#date_of_birth').hasClass('error')){
+						if($('#stat_info_title').hasClass('expanded') == false){
+							$('#stat_info_title').addClass('expanded');
+                                                	$('#stat_info_body').toggle();
+						}
+					}
+					// Life Experience/Skills Tab - not required/ no validation
+					// Additional Languages Tab - not required/ no validation
+					// DSHR Availability Tab
+					if ( $('#availability_start_date_1').hasClass('error') || $('#availability_end_date_1').hasClass('error') || $('#availability_start_date_2').hasClass('error') || $('#availability_end_date_2').hasClass('error') || $('#availability_start_date_3').hasClass('error') || $('#availability_end_date_3').hasClass('error') || $('#availability_start_date_4').hasClass('error') || $('#availability_end_date_4').hasClass('error') ){
+						if($('#dshr_availability_title').hasClass('expanded') == false){
+							$('#dshr_availability_title').addClass('expanded');
+                                                	$('#dshr_availability_body').toggle();
+                                                }
+					}
+				}
+			});
+		
+			//MAKE BLOCKS COLLAPSIBLE
+			$('.block_title').addClass('block_toggle').next('.block_body').addClass('cantoggle');
+		
+			$('#second_language_name').change(function(e){show_language_options(this.value, 'second_language_options')});
+			$('#third_language_name').change(function(e){show_language_options(this.value, 'third_language_options')});
+
+                        $('.opencalendar').datepicker({
+				changeMonth: true, 
+				changeYear: true, 
+				dateFormat: 'mm-dd-yy', 
+				yearRange: '-115:+1',  
+
+
+				onClose: function(dateText, inst){
+					$(this).attr("disabled", false);
+				},
+				beforeShow: function(input, inst){
+					$(this).attr("disabled", true);
+				},
+
+				onSelect: function(dateStr) {
+				 	$('#profile_edit').validate().element(this); 
+				}	
+			});
+
+			$.validator.addMethod('dateMDY', function(value, element) { 
+				value = value.replace(/\//g, '-');
+				value = value.replace(/\\/g, '-');
+				$(element).val(value);
+				return this.optional(element) || /^\d{1,2}-\d{1,2}-\d{4}$/.test(value); 
+			}, 'Invalid Date Format use mm-dd-yyyy');
+
+
+                        $.validator.addMethod('phoneNumber', function(value, element) { return this.optional(element) || /^(\+.*|\d{3,3}[-]\d{3,3}[-]\d{4,4}($|x\d*$))/.test(value); },'The phone number you have entered is in an invalid format. Please reenter it as ###-###-####. If the phone number you are entering has an extension, then please reenter it as ###-###-####x###.');
+
+
+			$.validator.addMethod('validGAP', function(value, element) {
+				if ($('input:checked[name="secondary_gap"]').val() == $('input:checked[name="tertiary_gap"]').val() && $('input:checked[name="secondary_gap"]').val() != '' && $('input:checked[name="secondary_gap"]').val() != undefined){
+					return false;
+				}
+				return true;
+			}, 'The same GAP can not be both Secondary & Tertiary');
+
+			
+			$.validator.addMethod('validEmail', function(value, element) {
+				var is_valid_email = '';
+				var account_id = '123123';
+				$.ajax({
+					url:'/',
+					data:{
+						html:'xmlhttp-vms_validate_unique_email',
+						email:value,
+						account_id:account_id,
+						allow_duplicate:'Yes'
+					},
+					async:false,
+					success: function( data ) { is_valid_email = $.trim(data); }
+				});
+				if(is_valid_email == 'true' || value == 'noemail@redcross.org') return true;
+				else return false;
+			}, 'Email is invalid.');
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -- birthday date range ---
+// --------------------------
+	
+	if ($('#date_of_birth').val() != '') {
+		$.validator.addMethod('check_birthday_date_range', function(value, element) {
+			value = value.replace(/\//g, '-');
+			value = value.replace(/\\/g, '-');
+			$(element).val(value);
+			// Do some very crude validation on the date
+			var date_split = value.split("-");
+			var current_date_split = '06-13-2014'.split("-");
+
+			// Ensure that the month has a value between 1 and 12
+			if (parseInt(date_split[0], 10) < 1 || parseInt(date_split[0], 10) > 12){
+				return false;
+			}
+
+			// Ensure that the day is between 1 and 31
+			if (parseInt(date_split[1], 10) < 1 || parseInt(date_split[1], 10) > 31){
+				return false;
+			}
+
+			// Ensure that the year is beween 1900 and this year
+			if (parseInt(date_split[2], 10) < 1900 || parseInt(date_split[2], 10) > parseInt(current_date_split[2], 10)){
+				return false;
+			}
+
+			// Ensure that the date entered in not past today's date
+			var current_date_parsed = $.datepicker.parseDate('mm-dd-yy', '06-13-2014');
+			var date_parsed = $.datepicker.parseDate('mm-dd-yy', value);
+
+			if (date_parsed > current_date_parsed){
+				return false;
+			}
+
+			var birthday = $.datepicker.parseDate( 'mm-dd-yy', $('#date_of_birth').val());
+			return true;
+		}, 'Birthday is on an unrealistic date.');
+	}
+
+			$.validator.addMethod('checkOverlap', function(value, element) { 
+
+
+
+				if (isValidDate($('#availability_start_date_1').val())){
+					var start_1 = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_start_date_1').val());
+				}
+				else {
+					var start_1 = "";
+				}
+
+				if (isValidDate($('#availability_end_date_1').val())){
+					var end_1 = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_end_date_1').val());
+				}
+				else {
+					var end_1 = "";
+				}
+				if (isValidDate($('#availability_start_date_2').val())){
+					var start_2 = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_start_date_2').val());
+				}
+				else {
+					var start_2 = "";
+				}
+
+				if (isValidDate($('#availability_end_date_2').val())){
+					var end_2 = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_end_date_2').val());
+				}
+				else {
+					var end_2 = "";
+				}
+				if (isValidDate($('#availability_start_date_3').val())){
+					var start_3 = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_start_date_3').val());
+				}
+				else {
+					var start_3 = "";
+				}
+
+				if (isValidDate($('#availability_end_date_3').val())){
+					var end_3 = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_end_date_3').val());
+				}
+				else {
+					var end_3 = "";
+				}
+				if (isValidDate($('#availability_start_date_4').val())){
+					var start_4 = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_start_date_4').val());
+				}
+				else {
+					var start_4 = "";
+				}
+
+				if (isValidDate($('#availability_end_date_4').val())){
+					var end_4 = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_end_date_4').val());
+				}
+				else {
+					var end_4 = "";
+				}
+
+				if(start_1 && end_1){
+					
+					if(start_2 && end_2){ 
+						if(start_2 < start_1 && start_1 < end_2) return false; 			// start_1 not within times for availability 2
+						if(start_2 < end_1 && end_1 < end_2) return false;   			// end_1 not within times for availability 2
+					}
+					
+					if(start_3 && end_3){
+						if(start_3 < start_1 && start_1 < end_3) return false;   		// start_1 not within times for availability 3
+						if(start_3 < end_1 && end_1 < end_3) return false;   			// end_1 not within times for availability 3
+					}
+
+					if(start_4 && end_4){
+						if(start_4 < start_1 && start_1 < end_4) return false;  		// start_1 not within times for availability 4
+						if(start_4 < end_1 && end_1 < end_4) return false;   			// end_1 not within times for availability 4
+					}
+				}
+				if(start_2 && end_2){
+					
+					if(start_1 && end_1){ 
+						if(start_1 < start_2 && start_2 < end_1) return false; 			// start_2 not within times for availability 1
+						if(start_1 < end_2 && end_2 < end_1) return false;   			// end_2 not within times for availability 1
+					}
+					
+					if(start_3 && end_3){
+						if(start_3 < start_2 && start_2 < end_3) return false;   		// start_2 not within times for availability 3
+						if(start_3 < end_2 && end_2 < end_3) return false;   			// end_2 not within times for availability 3
+					}
+
+					if(start_4 && end_4){
+						if(start_4 < start_2 && start_2 < end_4) return false;  		// start_2 not within times for availability 4
+						if(start_4 < end_2 && end_2 < end_4) return false;   			// end_2 not within times for availability 4
+					}
+				}
+				if(start_3 && end_3){
+					
+					if(start_1 && end_1){ 
+						if(start_1 < start_3 && start_3 < end_1) return false; 			// start_3 not within times for availability 1
+						if(start_1 < end_3 && end_3 < end_1) return false;   			// end_3 not within times for availability 1
+					}
+					
+					if(start_2 && end_2){
+						if(start_2 < start_3 && start_3 < end_2) return false;   		// start_3 not within times for availability 2
+						if(start_2 < end_3 && end_3 < end_2) return false;   			// end_3 not within times for availability 2
+					}
+
+					if(start_4 && end_4){
+						if(start_4 < start_3 && start_3 < end_4) return false;  		// start_3 not within times for availability 4
+						if(start_4 < end_3 && end_3 < end_4) return false;   			// end_3 not within times for availability 4
+					}
+				}
+				if(start_4 && end_4){
+					
+					if(start_1 && end_1){ 
+						if(start_1 < start_4 && start_4 < end_1) return false; 			// start_4 not within times for availability 1
+						if(start_1 < end_4 && end_4 < end_1) return false;   			// end_4 not within times for availability 1
+					}
+					
+					if(start_2 && end_2){
+						if(start_2 < start_4 && start_4 < end_2) return false;   		// start_4 not within times for availability 2
+						if(start_2 < end_4 && end_4 < end_2) return false;   			// end_4 not within times for availability 2
+					}
+
+					if(start_3 && end_3){
+						if(start_3 < start_4 && start_4 < end_3) return false;  		// start_4 not within times for availability 3
+						if(start_3 < end_4 && end_4 < end_3) return false;   			// end_4 not within times for availability 3
+					}
+				}
+				return true;
+			}, 'Dates overlap another date range.');
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -- range is less than 92 days (31 + 30 + 31) or 3 months --
+// ----------------------------------------------------------- 
+                        $.validator.addMethod('checkRange1', function(value, element) {
+                                var start_date = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_start_date_1').val());
+                                var end_date =   $.datepicker.parseDate( 'mm-dd-yy', $('#availability_end_date_1').val());
+                                if(start_date && end_date){
+                                        if( (Date.parse(end_date) - Date.parse(start_date)) > 7948800000  ) return false;       // spans less than 92 days (31+30+31)
+                                }
+                                return true;
+                        }, 'Start and end dates can be no greater than 3 months apart');
+
+                        $.validator.addMethod('checkRange2', function(value, element) {
+                                var start_date = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_start_date_2').val());
+                                var end_date =   $.datepicker.parseDate( 'mm-dd-yy', $('#availability_end_date_2').val());
+                                if(start_date && end_date){
+                                        if( (Date.parse(end_date) - Date.parse(start_date)) > 7948800000  ) return false;       // spans less than 92 days (31+30+31)
+                                }
+                                return true;
+                        }, 'Start and end dates can be no greater than 3 months apart');
+
+                        $.validator.addMethod('checkRange3', function(value, element) {
+                                var start_date = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_start_date_3').val());
+                                var end_date =   $.datepicker.parseDate( 'mm-dd-yy', $('#availability_end_date_3').val());
+                                if(start_date && end_date){
+                                        if( (Date.parse(end_date) - Date.parse(start_date)) > 7948800000  ) return false;       // spans less than 92 days (31+30+31)
+                                }
+                                return true;
+                        }, 'Start and end dates can be no greater than 3 months apart');
+
+                        $.validator.addMethod('checkRange4', function(value, element) {
+                                var start_date = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_start_date_4').val());
+                                var end_date =   $.datepicker.parseDate( 'mm-dd-yy', $('#availability_end_date_4').val());
+                                if(start_date && end_date){
+                                        if( (Date.parse(end_date) - Date.parse(start_date)) > 7948800000  ) return false;       // spans less than 92 days (31+30+31)
+                                }
+                                return true;
+                        }, 'Start and end dates can be no greater than 3 months apart');
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -- start date must come before end date --
+// ------------------------------------------
+			$.validator.addMethod('checkStartEnd1', function(value, element) { 
+				var start_date = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_start_date_1').val());
+				var end_date =   $.datepicker.parseDate( 'mm-dd-yy', $('#availability_end_date_1').val());
+
+				if(start_date && end_date){
+					if(start_date >= end_date) return false;						// start date comes after end date
+				}
+				return true;
+			}, 'Start date must come before end date.');
+
+			$.validator.addMethod('checkStartEnd2', function(value, element) { 
+				var start_date = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_start_date_2').val());
+				var end_date =   $.datepicker.parseDate( 'mm-dd-yy', $('#availability_end_date_2').val());
+
+				if(start_date && end_date){
+					if(start_date >= end_date) return false;						// start date comes after end date
+				}
+				return true;
+			}, 'Start date must come before end date.');
+
+			$.validator.addMethod('checkStartEnd3', function(value, element) { 
+				var start_date = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_start_date_3').val());
+				var end_date =   $.datepicker.parseDate( 'mm-dd-yy', $('#availability_end_date_3').val());
+
+				if(start_date && end_date){
+					if(start_date >= end_date) return false;						// start date comes after end date
+				}
+				return true;
+			}, 'Start date must come before end date.');
+
+			$.validator.addMethod('checkStartEnd4', function(value, element) { 
+				var start_date = $.datepicker.parseDate( 'mm-dd-yy', $('#availability_start_date_4').val());
+				var end_date =   $.datepicker.parseDate( 'mm-dd-yy', $('#availability_end_date_4').val());
+
+				if(start_date && end_date){
+					if(start_date >= end_date) return false;						// start date comes after end date
+				}
+				return true;
+			}, 'Start date must come before end date.');
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -- end date must be today or later --
+// ------------------------------------------
+			$.validator.addMethod('futureDate', function(value, element) { 
+				var start_date = $.datepicker.parseDate( 'mm-dd-yy', value);
+				var today = new Date();
+				if(start_date != undefined) {
+					if(start_date < today){
+						if(start_date.getDate() == today.getDate())return true;
+						else return false;
+					}
+				}
+				return true;
+			}, 'Date cannot be in the past.');
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			$('#profile_edit').validate({
+				groups: {
+					availability_1: "availability_end_date_1 availability_start_date_1",
+					availability_2: "availability_end_date_2 availability_start_date_2",
+					availability_3: "availability_end_date_3 availability_start_date_3",
+					availability_4: "availability_end_date_4 availability_start_date_4",
+					gap: "gap_type"
+				},
+				
+				errorPlacement: function(error, element) {
+     					if (element.attr("name") == "availability_start_date_1" || element.attr("name") == "availability_end_date_1" )
+					       error.insertAfter("#availability_end_date_1");
+     					else if (element.attr("name") == "availability_start_date_2" || element.attr("name") == "availability_end_date_2" )
+					       error.insertAfter("#availability_end_date_2");
+     					else if (element.attr("name") == "availability_start_date_3" || element.attr("name") == "availability_end_date_3" )
+					       error.insertAfter("#availability_end_date_3");
+     					else if (element.attr("name") == "availability_start_date_4" || element.attr("name") == "availability_end_date_4" )
+					       error.insertAfter("#availability_end_date_4");
+					else if (element.attr("name") == "secondary_gap")
+						error.insertAfter("input:checked[name='secondary_gap']");
+     					else
+					       error.insertAfter(element);
+   				},
+ 
+                                rules: {
+                                        second_spoken: {required: function(element) { return $("#second_language_name").val() != ""; }},
+                                        second_written: {required: function(element) { return $("#second_language_name").val() != ""; }},
+                                        second_read: {required: function(element) { return $("#second_language_name").val() != ""; }},
+
+                                        third_spoken: {required: function(element) { return $("#third_language_name").val() != ""; }},
+                                        third_written: {required: function(element) { return $("#third_language_name").val() != ""; }},
+                                        third_read: {required: function(element) { return $("#third_language_name").val() != ""; }},
+
+
+
+                                        availability_start_date_1: {required: function(element) { return $("#availability_end_date_1").val() != ""; }},
+                                        availability_end_date_1: {required: function(element) { return $("#availability_start_date_1").val() != ""; }},
+
+                                        availability_start_date_2: {required: function(element) { return $("#availability_end_date_2").val() != ""; }},
+                                        availability_end_date_2: {required: function(element) { return $("#availability_start_date_2").val() != ""; }},
+
+                                        availability_start_date_3: {required: function(element) { return $("#availability_end_date_3").val() != ""; }},
+                                        availability_end_date_3: {required: function(element) { return $("#availability_start_date_3").val() != ""; }},
+
+                                        availability_start_date_4: {required: function(element) { return $("#availability_end_date_4").val() != ""; }},
+                                        availability_end_date_4: {required: function(element) { return $("#availability_start_date_4").val() != ""; }}
+
+                                },
+                                submitHandler: function(form) {
+					$("#profile_edit").validate().form();
+
+
+					$('.opencalendar').each(function(){
+						$(this).val($.datepicker.formatDate( 'yy-mm-dd', $(this).datepicker('getDate')));
+					});
+
+					// This will prevent the date_of_birth from accidentally getting set to '0000-00-00' in the db
+					if ($('#date_of_birth').val() != '') {
+						var new_dob_array = $('#date_of_birth').val().split("-", 3);
+						var new_dob = new_dob_array[2] + "-" + new_dob_array[0] + "-" + new_dob_array[1];
+						$('#date_of_birth').val(new_dob);
+					}
+  
+                                      form.submit();
+                                }
+                        });
+			if(location.hash){
+				window.location=location.hash;
+			}
+                });
+        </script>
+
+
+
+	<div class='block'>
+		<div class='block_title expanded'>
+			<h3>Photo</h3>
+		</div>
+		<div class='block_body cantoggle' style='display:block'>
+			<iframe src='?nd=profile_photo_upload&account_id=123123&view=' width='200' height="170" frameBorder='0'></iframe>
+		</div>
+	</div>
+	<!--xx$INCLUDE: fragment-vms_profile_photo.htm|hide_title=1-->
+
+<form action="/" method="post" name='profile_edit' id='profile_edit' enctype="multipart/form-data">
+        <input type="hidden" name="nd" id="nd" value="jump" />
+	<input type="hidden" name="uweprefix" id="uweprefix" value="profileSave.profileSave()" />
+
+		<input type="hidden" name="next_nd" id="next_nd" value="profile" />
+
+
+
+	 <input type="hidden" name="contact_sku" id="contact_sku" value="123123" />
+	 <input type="hidden" name="address_sku" id="address_sku" value="48599" />
+	 <input type="hidden" name="address_sku_1" id="address_sku_1" value="" />
+	 <input type="hidden" name="address_sku_2" id="address_sku_2" value="" />
+	 <input type="hidden" name="dc_member_sku" id="dc_member_sku" value="48516" />
+	 <input type="hidden" name="relationship_sku" id="relationship_sku" value="48600" />
+
+	 <input type="hidden" name="primary_ec_sku" id="primary_ec_sku" value="44561" />
+	 <input type="hidden" name="secondary_ec_sku" id="secondary_ec_sku" value="263497" />
+
+	 <input type="hidden" name="second_language_sku" id="second_language_sku" value="" />
+	 <input type="hidden" name="third_language_sku" id="third_language_sku" value="" />
+
+	 <input type="hidden" name="account_id" id="account_id" value="123123" />
+
+
+<div class='block'>
+<a name="name"></a>
+<div class='block_title expanded' id="name_title"><h3>Name</h3></div>
+<div class='block_body cantoggle' style='display:block' id="name_body">
+<ul class='form_list inline'>
+        <li>
+        	<label for="title_lookup">Title</label>
+          <div>
+			<select name="title_lookup" id="title_lookup"    >
+					<option value="">Select ...</option>
+				<option value="Congressman">Congressman</option>
+<option value="Congresswoman">Congresswoman</option>
+<option value="Commisioner">Commisioner</option>
+<option value="Dame">Dame</option>
+<option value="Dr.">Dr.</option>
+<option value="Judge">Judge</option>
+<option value="Justice">Justice</option>
+<option value="Mr.">Mr.</option>
+<option value="Ms.">Ms.</option>
+<option value="Mrs.">Mrs.</option>
+<option value="Rev.">Rev.</option>
+<option value="Senator">Senator</option>
+<option value="Sir">Sir</option>
+<option value="The Honorable">The Honorable</option>
+
+			</select>
+          </div>
+				</li>
+				<li class='newline'>
+          <label for="first_name">*First Name</label>
+					<div><input name="first_name" id="first_name" value="Bob" class="required no_double_quotes" /></div>
+				</li>
+        <li>
+					<label for="middle_name">Middle Name</label>
+					<div><input name="middle_name"  id="middle_name" value="" class="no_double_quotes"/></div>
+				</li>
+				<li>
+					<label for="last_name">*Last Name</label>
+					<div><input name="last_name" id="last_name" value="Boberson" class="required no_double_quotes" /></div>
+				</li>
+        <li>
+           <label for="suffix_lookup">Suffix</label>
+					 <div>
+			<select name="suffix_lookup" id="suffix_lookup"    >
+					<option value="">Select ...</option>
+				<option value="Jr.">Jr.</option>
+<option value="Sr.">Sr.</option>
+<option value="III">III</option>
+<option value="IV">IV</option>
+<option value="V">V</option>
+<option value="VI">VI</option>
+<option value="D.D.S.">D.D.S.</option>
+<option value="M.D.">M.D.</option>
+<option value="Ph.D.">Ph.D.</option>
+<option value="Esq.">Esq.</option>
+
+			</select>
+                </div>
+        </li>
+        <li class='newline'>
+        	<label for="preferred_name">Preferred Name/Nickname</label>
+					<div><input name="preferred_name" id="" value="" class="no_double_quotes" /></div>
+        </li>
+</ul>
+</div>
+</div>
+
+<div class='block'>
+	<div id="primary_address_title"  class='block_title'><h3>Primary Address</h3></div>
+	<div id="primary_address_body"   class='block_body'>
+		<a name="address"></a>
+		<ul class='form_list inline'>
+			<li>
+				<label for="address_type">*Address Type</label>
+				<div>
+			<select name="address_type" id="address_type"    >
+					<option value="">Select ...</option>
+				<option value="Home">Home</option>
+<option value="Mailing" selected>Mailing</option>
+<option value="Work">Work</option>
+<option value="University">University</option>
+<option value="Seasonal">Seasonal</option>
+
+			</select>
+				</div>
+			</li>
+			<li class="newline">
+				<label for="mailing_country">*Country</label>
+				<div>
+			<select name="mailing_country" id="mailing_country" class="required"   >
+					<option value="">Select ...</option>
+				<option value="AF">AFGHANISTAN</option>
+<option value="AX">ALAND ISLANDS</option>
+<option value="AL">ALBANIA</option>
+<option value="DZ">ALGERIA</option>
+<option value="AD">ANDORRA</option>
+<option value="AO">ANGOLA</option>
+<option value="AI">ANGUILLA</option>
+<option value="AQ">ANTARCTICA</option>
+<option value="AG">ANTIGUA AND BARBUDA</option>
+<option value="AR">ARGENTINA</option>
+<option value="AM">ARMENIA</option>
+<option value="AW">ARUBA</option>
+<option value="AU">AUSTRALIA</option>
+<option value="AT">AUSTRIA</option>
+<option value="AZ">AZERBAIJAN</option>
+<option value="BS">BAHAMAS</option>
+<option value="BH">BAHRAIN</option>
+<option value="BD">BANGLADESH</option>
+<option value="BB">BARBADOS</option>
+<option value="BY">BELARUS</option>
+<option value="BE">BELGIUM</option>
+<option value="BZ">BELIZE</option>
+<option value="BJ">BENIN</option>
+<option value="BM">BERMUDA</option>
+<option value="BT">BHUTAN</option>
+<option value="BO">BOLIVIA, PLURINATIONAL STATE OF</option>
+<option value="BQ">BONAIRE, SINT EUSTATIUS AND SABA</option>
+<option value="BA">BOSNIA AND HERZEGOVINA</option>
+<option value="BW">BOTSWANA</option>
+<option value="BV">BOUVET ISLAND</option>
+<option value="BR">BRAZIL</option>
+<option value="IO">BRITISH INDIAN OCEAN TERRITORY</option>
+<option value="BN">BRUNEI DARUSSALAM</option>
+<option value="BG">BULGARIA</option>
+<option value="BF">BURKINA FASO</option>
+<option value="BI">BURUNDI</option>
+<option value="KH">CAMBODIA</option>
+<option value="CM">CAMEROON</option>
+<option value="CA">CANADA</option>
+<option value="CV">CAPE VERDE</option>
+<option value="KY">CAYMAN ISLANDS</option>
+<option value="CF">CENTRAL AFRICAN REPUBLIC</option>
+<option value="TD">CHAD</option>
+<option value="CL">CHILE</option>
+<option value="CN">CHINA</option>
+<option value="CX">CHRISTMAS ISLAND</option>
+<option value="CC">COCOS (KEELING) ISLANDS</option>
+<option value="CO">COLOMBIA</option>
+<option value="KM">COMOROS</option>
+<option value="CG">CONGO</option>
+<option value="CD">CONGO, THE DEMOCRATIC REPUBLIC OF THE</option>
+<option value="CK">COOK ISLANDS</option>
+<option value="CR">COSTA RICA</option>
+<option value="CI">COTE D'IVOIRE</option>
+<option value="HR">CROATIA</option>
+<option value="CU">CUBA</option>
+<option value="CW">CURA</option>
+<option value="CY">CYPRUS</option>
+<option value="CZ">CZECH REPUBLIC</option>
+<option value="DK">DENMARK</option>
+<option value="DJ">DJIBOUTI</option>
+<option value="DM">DOMINICA</option>
+<option value="DO">DOMINICAN REPUBLIC</option>
+<option value="EC">ECUADOR</option>
+<option value="EG">EGYPT</option>
+<option value="SV">EL SALVADOR</option>
+<option value="GQ">EQUATORIAL GUINEA</option>
+<option value="ER">ERITREA</option>
+<option value="EE">ESTONIA</option>
+<option value="ET">ETHIOPIA</option>
+<option value="FK">FALKLAND ISLANDS (MALVINAS)</option>
+<option value="FO">FAROE ISLANDS</option>
+<option value="FJ">FIJI</option>
+<option value="FI">FINLAND</option>
+<option value="FR">FRANCE</option>
+<option value="GF">FRENCH GUIANA</option>
+<option value="PF">FRENCH POLYNESIA</option>
+<option value="TF">FRENCH SOUTHERN TERRITORIES</option>
+<option value="GA">GABON</option>
+<option value="GM">GAMBIA</option>
+<option value="GE">GEORGIA</option>
+<option value="DE">GERMANY</option>
+<option value="GH">GHANA</option>
+<option value="GI">GIBRALTAR</option>
+<option value="GR">GREECE</option>
+<option value="GL">GREENLAND</option>
+<option value="GD">GRENADA</option>
+<option value="GP">GUADELOUPE</option>
+<option value="GU">GUAM</option>
+<option value="GT">GUATEMALA</option>
+<option value="GG">GUERNSEY</option>
+<option value="GN">GUINEA</option>
+<option value="GW">GUINEA-BISSAU</option>
+<option value="GY">GUYANA</option>
+<option value="HT">HAITI</option>
+<option value="HM">HEARD ISLAND AND MCDONALD ISLANDS</option>
+<option value="VA">HOLY SEE (VATICAN CITY STATE)</option>
+<option value="HN">HONDURAS</option>
+<option value="HK">HONG KONG</option>
+<option value="HU">HUNGARY</option>
+<option value="IS">ICELAND</option>
+<option value="IN">INDIA</option>
+<option value="ID">INDONESIA</option>
+<option value="IR">IRAN, ISLAMIC REPUBLIC OF</option>
+<option value="IQ">IRAQ</option>
+<option value="IE">IRELAND</option>
+<option value="IM">ISLE OF MAN</option>
+<option value="IL">ISRAEL</option>
+<option value="IT">ITALY</option>
+<option value="JM">JAMAICA</option>
+<option value="JP">JAPAN</option>
+<option value="JE">JERSEY</option>
+<option value="JO">JORDAN</option>
+<option value="KZ">KAZAKHSTAN</option>
+<option value="KE">KENYA</option>
+<option value="KI">KIRIBATI</option>
+<option value="KP">KOREA, DEMOCRATIC PEOPLE'S REPUBLIC OF</option>
+<option value="KR">KOREA, REPUBLIC OF</option>
+<option value="KW">KUWAIT</option>
+<option value="KG">KYRGYZSTAN</option>
+<option value="LA">LAO PEOPLE'S DEMOCRATIC REPUBLIC</option>
+<option value="LV">LATVIA</option>
+<option value="LB">LEBANON</option>
+<option value="LS">LESOTHO</option>
+<option value="LR">LIBERIA</option>
+<option value="LY">LIBYA</option>
+<option value="LI">LIECHTENSTEIN</option>
+<option value="LT">LITHUANIA</option>
+<option value="LU">LUXEMBOURG</option>
+<option value="MO">MACAO</option>
+<option value="MK">MACEDONIA, THE FORMER YUGOSLAV REPUBLIC OF</option>
+<option value="MG">MADAGASCAR</option>
+<option value="MW">MALAWI</option>
+<option value="MY">MALAYSIA</option>
+<option value="MV">MALDIVES</option>
+<option value="ML">MALI</option>
+<option value="MT">MALTA</option>
+<option value="MH">MARSHALL ISLANDS</option>
+<option value="MQ">MARTINIQUE</option>
+<option value="MR">MAURITANIA</option>
+<option value="MU">MAURITIUS</option>
+<option value="YT">MAYOTTE</option>
+<option value="MX">MEXICO</option>
+<option value="FM">MICRONESIA, FEDERATED STATES OF</option>
+<option value="MD">MOLDOVA, REPUBLIC OF</option>
+<option value="MC">MONACO</option>
+<option value="MN">MONGOLIA</option>
+<option value="ME">MONTENEGRO</option>
+<option value="MS">MONTSERRAT</option>
+<option value="MA">MOROCCO</option>
+<option value="MZ">MOZAMBIQUE</option>
+<option value="MM">MYANMAR</option>
+<option value="NA">NAMIBIA</option>
+<option value="NR">NAURU</option>
+<option value="NP">NEPAL</option>
+<option value="NL">NETHERLANDS</option>
+<option value="NC">NEW CALEDONIA</option>
+<option value="NZ">NEW ZEALAND</option>
+<option value="NI">NICARAGUA</option>
+<option value="NE">NIGER</option>
+<option value="NG">NIGERIA</option>
+<option value="NU">NIUE</option>
+<option value="NF">NORFOLK ISLAND</option>
+<option value="MP">NORTHERN MARIANA ISLANDS</option>
+<option value="NO">NORWAY</option>
+<option value="OM">OMAN</option>
+<option value="PK">PAKISTAN</option>
+<option value="PW">PALAU</option>
+<option value="PS">PALESTINIAN TERRITORY, OCCUPIED</option>
+<option value="PA">PANAMA</option>
+<option value="PG">PAPUA NEW GUINEA</option>
+<option value="PY">PARAGUAY</option>
+<option value="PE">PERU</option>
+<option value="PH">PHILIPPINES</option>
+<option value="PN">PITCAIRN</option>
+<option value="PL">POLAND</option>
+<option value="PT">PORTUGAL</option>
+<option value="PR">PUERTO RICO</option>
+<option value="QA">QATAR</option>
+<option value="RE">REUNION</option>
+<option value="RO">ROMANIA</option>
+<option value="RU">RUSSIAN FEDERATION</option>
+<option value="RW">RWANDA</option>
+<option value="BL">SAINT BARTH</option>
+<option value="SH">SAINT HELENA, ASCENSION AND TRISTAN DA CUNHA</option>
+<option value="KN">SAINT KITTS AND NEVIS</option>
+<option value="LC">SAINT LUCIA</option>
+<option value="MF">SAINT MARTIN (FRENCH PART)</option>
+<option value="PM">SAINT PIERRE AND MIQUELON</option>
+<option value="VC">SAINT VINCENT AND THE GRENADINES</option>
+<option value="WS">SAMOA</option>
+<option value="SM">SAN MARINO</option>
+<option value="ST">SAO TOME AND PRINCIPE</option>
+<option value="SA">SAUDI ARABIA</option>
+<option value="SN">SENEGAL</option>
+<option value="RS">SERBIA</option>
+<option value="SC">SEYCHELLES</option>
+<option value="SL">SIERRA LEONE</option>
+<option value="SG">SINGAPORE</option>
+<option value="SX">SINT MAARTEN (DUTCH PART)</option>
+<option value="SK">SLOVAKIA</option>
+<option value="SI">SLOVENIA</option>
+<option value="SB">SOLOMON ISLANDS</option>
+<option value="SO">SOMALIA</option>
+<option value="ZA">SOUTH AFRICA</option>
+<option value="GS">SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS</option>
+<option value="SS">SOUTH SUDAN</option>
+<option value="ES">SPAIN</option>
+<option value="LK">SRI LANKA</option>
+<option value="SD">SUDAN</option>
+<option value="SR">SURINAME</option>
+<option value="SJ">SVALBARD AND JAN MAYEN</option>
+<option value="SZ">SWAZILAND</option>
+<option value="SE">SWEDEN</option>
+<option value="CH">SWITZERLAND</option>
+<option value="SY">SYRIAN ARAB REPUBLIC</option>
+<option value="TW">TAIWAN, PROVINCE OF CHINA</option>
+<option value="TJ">TAJIKISTAN</option>
+<option value="TZ">TANZANIA, UNITED REPUBLIC OF</option>
+<option value="TH">THAILAND</option>
+<option value="TL">TIMOR-LESTE</option>
+<option value="TG">TOGO</option>
+<option value="TK">TOKELAU</option>
+<option value="TO">TONGA</option>
+<option value="TT">TRINIDAD AND TOBAGO</option>
+<option value="TN">TUNISIA</option>
+<option value="TR">TURKEY</option>
+<option value="TM">TURKMENISTAN</option>
+<option value="TC">TURKS AND CAICOS ISLANDS</option>
+<option value="TV">TUVALU</option>
+<option value="UG">UGANDA</option>
+<option value="UA">UKRAINE</option>
+<option value="AE">UNITED ARAB EMIRATES</option>
+<option value="GB">UNITED KINGDOM</option>
+<option value="US" selected>UNITED STATES</option>
+<option value="UM">UNITED STATES MINOR OUTLYING ISLANDS</option>
+<option value="UY">URUGUAY</option>
+<option value="UZ">UZBEKISTAN</option>
+<option value="VU">VANUATU</option>
+<option value="VE">VENEZUELA, BOLIVARIAN REPUBLIC OF</option>
+<option value="VN">VIET NAM</option>
+<option value="VG">VIRGIN ISLANDS, BRITISH</option>
+<option value="VI">VIRGIN ISLANDS, U.S.</option>
+<option value="WF">WALLIS AND FUTUNA</option>
+<option value="EH">WESTERN SAHARA</option>
+<option value="YE">YEMEN</option>
+<option value="ZM">ZAMBIA</option>
+<option value="ZW">ZIMBABWE</option>
+
+			</select>
+				</div>
+			</li>
+			<div id="us_address">
+				<li class='newline'><label for="mailing_address">*Address</label><div><input name="mailing_address" id="mailing_address" value="555 ANY ST" class="" /></div></li>
+				<li><label for="mailing_address2">Apt/Suite</label><div><input name="mailing_address2" id="mailing_address2" value="APT 555" /></div></li>
+				<li><label for="mailing_city">*City</label> <div><input name="mailing_city" id="mailing_city" value="SOME CITY" class="" /></div></li>
+				<li class='newline'>
+					<label for="mailing_state">*State</label>
+					<div>
+			<select name="mailing_state" id="mailing_state"    >
+					<option value="">Select ...</option>
+				<option value="AL">Alabama</option>
+<option value="AK">Alaska</option>
+<option value="AZ">Arizona</option>
+<option value="AR">Arkansas</option>
+<option value="CA" selected>California</option>
+<option value="CO">Colorado</option>
+<option value="CT">Connecticut</option>
+<option value="DE">Delaware</option>
+<option value="DC">District of Columbia</option>
+<option value="FL">Florida</option>
+<option value="GA">Georgia</option>
+<option value="GU">Guam</option>
+<option value="HI">Hawaii</option>
+<option value="ID">Idaho</option>
+<option value="IL">Illinois</option>
+<option value="IN">Indiana</option>
+<option value="IA">Iowa</option>
+<option value="KS">Kansas</option>
+<option value="KY">Kentucky</option>
+<option value="LA">Louisiana</option>
+<option value="ME">Maine</option>
+<option value="MD">Maryland</option>
+<option value="MA">Massachusetts</option>
+<option value="MI">Michigan</option>
+<option value="MN">Minnesota</option>
+<option value="MS">Mississippi</option>
+<option value="MO">Missouri</option>
+<option value="MT">Montana</option>
+<option value="NE">Nebraska</option>
+<option value="NV">Nevada</option>
+<option value="NH">New Hampshire</option>
+<option value="NJ">New Jersey</option>
+<option value="NM">New Mexico</option>
+<option value="NY">New York</option>
+<option value="NC">North Carolina</option>
+<option value="ND">North Dakota</option>
+<option value="NMI">Northern Marianas Islands</option>
+<option value="OH">Ohio</option>
+<option value="OK">Oklahoma</option>
+<option value="OR">Oregon</option>
+<option value="PA">Pennsylvania</option>
+<option value="PR">Puerto Rico</option>
+<option value="RI">Rhode Island</option>
+<option value="SC">South Carolina</option>
+<option value="SD">South Dakota</option>
+<option value="TN">Tennessee</option>
+<option value="TX">Texas</option>
+<option value="UT">Utah</option>
+<option value="VT">Vermont</option>
+<option value="VA">Virginia</option>
+<option value="WA">Washington</option>
+<option value="WV">West Virginia</option>
+<option value="WI">Wisconsin</option>
+<option value="WY">Wyoming</option>
+<option value="AA">AA/Armed Forces Americas</option>
+<option value="AE">AE/Armed Forces Europe</option>
+<option value="AP">AP/Armed Forces Pacific</option>
+<option value="AS">American Samoa</option>
+<option value="VI">Virgin Islands</option>
+
+			</select>
+					</div>
+				</li>
+				<li>
+					<label for="mailing_county">*County</label>
+					<div>
+
+
+
+			<script type="text/javascript">
+				$(document).ready(function(){
+					$("#mailing_state").change(function(e){
+						if($(this).val() != '') {
+							$("#mailing_county").load('/', {html:'xmlhttp-vms_dropdown_filter', text: "", code:"County", 'default':"San Francisco County", filter:$(this).val()});
+						} else {
+							$("#mailing_county").html('<option value="">Please select a state first.</option>')
+						}
+					});
+					if($("#mailing_state").val() != '') {
+						$("#mailing_county").load('/', {html:'xmlhttp-vms_dropdown_filter', text: "", code:"County", 'default':"San Francisco County", filter:$("#mailing_state").val()});
+					}
+				});
+			</script>
+			<select name="mailing_county" id="mailing_county"    >
+				<option value="">Please select a state first.</option>
+			</select>
+					</div>
+				</li>
+				<li><label for="mailing_postal_code">*Zip Code</label><div><input name="mailing_postal_code" id="mailing_postal_code" value="55555"  class=""/></div></li>
+			</div>
+			<div id="non_us_address">
+				<li class="newline"><label for="mailing_address3">Address 3</label><div><input name="mailing_address3" id="mailing_address3" value="" /></div></li>
+				<li><label for="mailing_address4">Address 4</label><div><input name="mailing_address4" id="mailing_address4" value="" /></div></li>
+				<li><label for="mailing_address5">Address 5</label><div><input name="mailing_address5" id="mailing_address5" value="" /></div></li>
+			</div>
+		</ul>
+	</div>
+</div>
+
+<div class='block'>
+	<a name="contact"></a>
+	<div id="contact_info_title"  class='block_title'><h3>Contact Information</h3></div>
+	<div id="contact_info_body"   class='block_body'>
+		<ul class='form_list inline'>
+			<li>
+				<label for="email">*Email Address</label>
+				<div><input name="email" id="email" value="bob@example.org" class="required email validEmail"/></div>
+			</li>
+			<li>
+				<label for="secondary_email">Secondary Email Address</label>
+				<div><input name="secondary_email" id="secondary_email" value=""class="email"/></div>
+			</li>
+			<li class='newline'>
+				<label for="home_phone">Home Phone</label>
+				<div><input name="home_phone" id="home_phone" value="555-555-1214" class="phoneNumber" /></div>
+			</li>
+			<li>
+				<label for="work_phone">Work Phone</label>
+				<div><input name="work_phone" id="work_phone" value="555-555-1213" class="phoneNumber" /></div>
+			</li>
+			<li>
+				<label for="cell_phone">Cell Phone</label>
+				<div><input name="cell_phone" id="cell_phone" value="555-555-1212" class="phoneNumber" /></div>
+			</li>
+			<li class='note'>*One phone number is required. For international phone numbers please put a + before your number.</li>
+			<li class='newline'>
+				<label for="alternate_phone">Alternate Phone Number</label>
+				<div><input name="alternate_phone" id="alternate_phone" value="555-555-1215" class="phoneNumber" /></div>
+			</li>
+			<li>
+				<label for="sms_number">SMS/Text Number**</label>
+				<div><input name="sms_number" id="sms_number" value="555-555-1216" class="phoneNumber" /></div>
+			</li>
+			<li class='note'>**By providing an sms/text number, you agree to receive text messages from American Red Cross. Carrier charges may apply.</li>
+			<li class='newline'>
+				<label for="phone_preference_1">Phone Preference 1</label>
+				<div>
+			<select name="phone_preference_1" id="phone_preference_1"    >
+					<option value="">Select ...</option>
+				<option value="Home">Home</option>
+<option value="Work">Work</option>
+<option value="Cell" selected>Cell</option>
+<option value="Alternate">Alternate</option>
+
+			</select>
+				</div>
+			</li>
+			<li>
+				<label for="phone_preference_2">Phone Preference 2</label>
+				<div>
+			<select name="phone_preference_2" id="phone_preference_2"    >
+					<option value="">Select ...</option>
+				<option value="Home">Home</option>
+<option value="Work">Work</option>
+<option value="Cell">Cell</option>
+<option value="Alternate" selected>Alternate</option>
+
+			</select>
+				</div>
+			</li>
+			<li>
+				<label for="phone_preference_3">Phone Preference 3</label>
+				<div>
+			<select name="phone_preference_3" id="phone_preference_3"    >
+					<option value="">Select ...</option>
+				<option value="Home">Home</option>
+<option value="Work" selected>Work</option>
+<option value="Cell">Cell</option>
+<option value="Alternate">Alternate</option>
+
+			</select>
+				</div>
+			</li>
+			<li>
+				<label for="phone_preference_4">Phone Preference 4</label>
+				<div>                 
+			<select name="phone_preference_4" id="phone_preference_4"    >
+					<option value="">Select ...</option>
+				<option value="Home" selected>Home</option>
+<option value="Work">Work</option>
+<option value="Cell">Cell</option>
+<option value="Alternate">Alternate</option>
+
+			</select>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>
+
+	<div class='page_actions'>
+		<a href="#" onclick="history.back(); return false;" tabindex="999" class='button'>Go Back</a>
+		<input type="submit" class="button" id="submit_button" value='Submit'/>
+		<span id='submit_message' style='display:none'></span>
+ 	</div>
+
+</form>
+
+</div><!-- close #content .wrapper -->
+</div><!-- close #content -->
+</div>
+<!--
+<div id='sub'>
+	<ul id='subcontent'>
+		<li class='subsection'>
+			<link rel='stylesheet' href='/editor/components/dhtmlwindow/windowfiles/dhtmlwindow.css' type='text/css' />
+<script type='text/javascript' src='/editor/components/dhtmlwindow/windowfiles/dhtmlwindow.js'></script>
+<script type='text/javascript' src='/editor/mod.template/mod.util/editor5_window.js'></script>
+<div id="mpip_1" style="display:inline"><h4>Who We Are</h4>
+<ul>
+<li><a href="#">Mission</a></li>
+<li><a href="#">History</a></li>
+<li><a href="#">Leadership</a></li>
+<li><a href="#">Annual Report</a></li>
+<li><a href="#">Careers</a></li>
+<li><a href="#">Press Releases</a></li>
+</ul></div>&nbsp;<a href="#" title="Edit: id=mpip_1, table=mp_content, field=subsection1, key=global" onclick="open_dceditor_window(this.id,'mp_content','global','subsection1','mpip_1',true); return false;" id="mpip_1_e"><img border=0 src="/editor/images/icons/editkey-generic.gif" width="15" height="13" class="greene"></a>
+		</li>
+		<li class='subsection'>
+			<div id="mpip_2" style="display:inline"><h4></h4>
+<ul></ul></div>&nbsp;<a href="#" title="Edit: id=mpip_2, table=mp_content, field=subsection2, key=global" onclick="open_dceditor_window(this.id,'mp_content','global','subsection2','mpip_2',true); return false;" id="mpip_2_e"><img border=0 src="/editor/images/icons/editkey-generic.gif" width="15" height="13" class="greene"></a>
+		</li>
+		<li class='subsection'>
+			<div id="mpip_3" style="display:inline"><h4></h4>
+<ul></ul></div>&nbsp;<a href="#" title="Edit: id=mpip_3, table=mp_content, field=subsection3, key=global" onclick="open_dceditor_window(this.id,'mp_content','global','subsection3','mpip_3',true); return false;" id="mpip_3_e"><img border=0 src="/editor/images/icons/editkey-generic.gif" width="15" height="13" class="greene"></a>
+		</li>
+		<li class='subsection'>
+			<div id="mpip_4" style="display:inline"><h4>Our Supports</h4>
+<ul>
+<li><a href="#">Corporate</a></li>
+<li><a href="#">Foundations</a></li>
+<li><a href="#">Individuals</a></li>
+<li><a href="#">Community Partners</a></li>
+</ul></div>&nbsp;<a href="#" title="Edit: id=mpip_4, table=mp_content, field=subsection4, key=global" onclick="open_dceditor_window(this.id,'mp_content','global','subsection4','mpip_4',true); return false;" id="mpip_4_e"><img border=0 src="/editor/images/icons/editkey-generic.gif" width="15" height="13" class="greene"></a>
+		</li>
+	</ul>
+</div>
+-->
+<div id='footer'>
+	<div id='footercontent'>
+		<a class='twitter' href='http://www.twitter.com/RedCross' target="_blank"></a>
+		<a class='facebook' href='http://www.facebook.com/redcross' target="_blank"></a>
+		<p class='sponsor'>Sponsored by <a href='#'>W.W. Grainger, Inc.</a></p>
+		<p class='copyright'>&copy; 2008, 2013 American Red Cross, All Rights Reserved.</p>
+	</div>
+</div>
+</div>
+   <!-- google analytics -->
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-34605835-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+   <script type="text/javascript" src="/editor/jquery.gaq-track-downloads.js"></script>
+</body>
+</html> 

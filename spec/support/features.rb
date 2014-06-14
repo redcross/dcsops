@@ -20,6 +20,7 @@ module FeatureSpec
     end
 
     before(:each) do
+      next if example.metadata[:logged_in] == false
       secret = Rails.application.config.secret_token
       cookies = ActionDispatch::Cookies::CookieJar.new(secret)
       cookies.stub(:close!)

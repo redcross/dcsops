@@ -90,7 +90,7 @@ group :assets do
 end
 
 
-group :development, :test do
+group :test do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'faker'
@@ -108,6 +108,9 @@ group :development, :test do
   gem 'database_cleaner', '~> 1.0.1', require: false # Current 1.1.1 version has catastrophic issue that breaks DB adapters.  Can upgrade when fixed
   #gem 'sauce' # Quite possibly the most annoying, complex, fragile gem in existence
   gem 'parallel_tests'
+
+  gem 'webmock'
+  gem 'vcr'
 end
 
 group :development do

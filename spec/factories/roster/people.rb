@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :person, :class => 'Roster::Person' do
-    association :chapter
+    chapter { |f| f.association :chapter }
 
     first_name {Faker::Name.first_name}
     last_name {Faker::Name.last_name}
