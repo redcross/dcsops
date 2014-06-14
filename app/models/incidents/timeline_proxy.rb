@@ -3,7 +3,7 @@ class Incidents::TimelineProxy
 
   #validates_with Incidents::Validators::TimesInCorrectOrderValidator
 
-  attr_accessor :incident, :fields
+  attr_reader :incident, :fields
 
   validate :validate_fields
 
@@ -11,7 +11,7 @@ class Incidents::TimelineProxy
 
   def initialize(incident, mandatory_fields=[])
     @incident = incident
-    @fields = mandatory_fields
+    @fields = incident.chapter.incidents_timeline_mandatory_array(EVENT_TYPES)
   end
 
   def event_log_for(type, create: false)

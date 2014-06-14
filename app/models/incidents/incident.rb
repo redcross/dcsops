@@ -153,16 +153,8 @@ class Incidents::Incident < ActiveRecord::Base
     end
   end
 
-  def timeline_collect_keys
-    chapter.try(:incidents_timeline_collect_array, Incidents::TimelineProxy::EVENT_TYPES) || []
-  end
-
-  def timeline_mandatory_keys
-    chapter.try(:incidents_timeline_mandatory_array, Incidents::TimelineProxy::EVENT_TYPES) || []
-  end
-
   def timeline
-    @timeline ||= Incidents::TimelineProxy.new(self, timeline_mandatory_keys)
+    @timeline ||= Incidents::TimelineProxy.new(self)
   end
 
   def timeline_attributes=(attrs)
