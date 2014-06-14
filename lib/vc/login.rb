@@ -33,7 +33,10 @@ module Vc
 
     def save_cookies resp
       self.cookies = HTTParty::CookieHash.new
-      resp.headers.get_fields('Set-Cookie').each {|h| self.cookies.add_cookies h}
+      cookies = resp.headers.get_fields('Set-Cookie')
+      if cookies.present?
+        cookies.each {|h| self.cookies.add_cookies h}
+      end
     end
 
     def login_request
@@ -54,6 +57,12 @@ module Vc
 
       attr_reader :dom
 
+      def extract_uneditable_name
+        first_name = dom.xpath("//label[normalize-space(text())='First Name']/following-sibling::div/text()").try :text
+        last_name =  dom.xpath("//label[normalize-space(text())='Last Name']/following-sibling::div/text()").try :text
+        {first_name: first_name, last_name: last_name}
+      end
+
       def extract_data
         fields = {first_name: 'first_name', last_name: 'last_name', address1: 'mailing_address', address2: 'mailing_address2', 
                   city: 'mailing_city', state: 'mailing_state', zip: 'mailing_postal_code',
@@ -61,7 +70,7 @@ module Vc
                   phone_1_preference: 'phone_preference_1', phone_2_preference: 'phone_preference_2',
                   phone_3_preference: 'phone_preference_3', phone_4_preference: 'phone_preference_4'}
 
-        attrs = {}
+        attrs = extract_uneditable_name
         fields.each do |key, form_attr|
           input = dom.css("##{form_attr}").first
           if input
