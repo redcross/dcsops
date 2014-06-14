@@ -1,19 +1,25 @@
 module Admin
   module Views
     class LogStatusIndex < ActiveAdmin::Component
+      #run_counts = base.select{[controller, name, count(id).as(:count)]}.group{[controller, name]}.group_by{|r| [r.controller, r.name]}
+
+      def base
+         ImportLog.where{created_at > 1.month.ago}
+       end
+
+      def latest_ids
+        base.select{[controller, name, max(id).as('id')]}.group{[controller, name]}.to_a
+      end
 
       def latest_logs
-        latest_ids = ImportLog.select{[controller, name, max(id).as(id)]}.group{[controller, name]}.where{created_at > 1.month.ago}.to_a
-        run_counts = ImportLog.select{[controller, name, count(id).as(:count)]}.group{[controller, name]}.where{created_at > 1.month.ago}.group_by{|r| [r.controller, r.name]}
-        latest_logs = ImportLog.where{id.in(latest_ids)}.order{[controller, name]}.group_by(&:controller)
+        latest_logs = ImportLog.where{id.in(my{latest_ids})}.order{[controller, name]}.group_by(&:controller)
       end
 
       def headers
         tr do
           th "Controller", colspan: 3
-          th "Status", colspan: 2
-          th colspan: 1
-          th "Most Recent Run", colspan: 2
+          th "Status", colspan: 3
+          th "Most Recent Run", colspan: 2, rowspan: 2
         end
         tr do
           th
@@ -22,25 +28,25 @@ module Admin
           th "Result"
           th "# Rows"
           th "Runtime"
-          th "Most Recent Run", colspan: 2
         end
       end
 
       def group_row controller, group
         total = group.count
-        last_run = group.map(&:created_at).max
+        last_run = group.map(&:created_at).min
         success = group.count{|log| log.result == 'success' }
         state = (total == success) ? 'success' : 'error'
+
         tbody class: 'controller-group' do
           tr class: 'even' do
             td colspan: 3 do
-              link_to controller, {q: {controller_eq: controller}}
+              controller_link controller
             end
             td state
             td "#{success}/#{total}"
             td
             td last_run.to_s(:date_time)
-            td time_ago_in_words(last_run, include_seconds: false)
+            td format_time(last_run)
           end
         end
       end
@@ -49,22 +55,28 @@ module Admin
         dur.present? && ("%0.1fs" % dur)
       end
 
+      def format_time time
+        time_ago_in_words(time, include_seconds: false)
+      end
+
+      def controller_link controller
+        link_to controller, {q: {controller_eq: controller}, as: 'table'}
+      end
+
+      def action_link log
+        link_to log.name, {q: {controller_eq: log.controller, name_eq: log.name}, as: 'table'}
+      end
+
       def status_row log
         tr class: 'odd' do
           td
-          td do
-            link_to log.id, [:scheduler_admin, log]
-          end
-          td do
-            link_to log.name, {q: {controller_eq: log.controller, name_eq: log.name}}
-          end
-          #td run_counts[[log.controller, log.name]].try(:count)
+          td link_to(log.id, resource_path(log))
+          td action_link(log)
           td log.result
           td log.num_rows
-          #td log.exception_message
           td format_duration(log.runtime)
           td log.created_at.to_s(:date_time)
-          td time_ago_in_words(log.created_at, include_seconds: false)
+          td format_time(log.created_at)
         end
       end
 
