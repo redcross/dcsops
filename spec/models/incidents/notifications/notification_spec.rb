@@ -8,6 +8,8 @@ describe Incidents::Notifications::Notification do
   let(:message) { "Test Message" }
   let(:notification) { Incidents::Notifications::Notification.new(incident, event, message) }
 
+  after(:each) { ActionMailer::Base.deliveries.clear }
+
   describe '#roles_for_event' do
     let(:trigger) { FactoryGirl.build_stubbed :trigger, role: role }
     let(:role) { FactoryGirl.build_stubbed :notification_role, chapter: chapter }

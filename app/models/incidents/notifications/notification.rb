@@ -22,6 +22,7 @@ module Incidents::Notifications
         deliver_message msg
       end
     end
+    #alias_method :perform, :send
 
     def triggers_for_event event
       event.triggers.includes{role.role_scopes}
@@ -71,9 +72,18 @@ module Incidents::Notifications
     end
 
     def deliver_message opts
-      Mailer.notify_event(opts[:person], false, @event, @incident, opts[:template],@options).deliver
-      if opts[:use_sms] and (sms = opts[:person].sms_addresses).present?
-        Mailer.notify_event(opts[:person], true, @event, @incident, opts[:template],@options).deliver
+      Delayed::Job.enqueue Message.new(@incident, @event, opts, @options)
+    end
+
+    class Message < Struct.new(:incident, :event, :delivery_options, :message_options)
+      def perform
+        person = delivery_options[:person]
+        template = delivery_options[:template]
+
+        Mailer.notify_event(person, false, event, incident, template, message_options).deliver
+        if delivery_options[:use_sms] and (sms = person.sms_addresses).present?
+          Mailer.notify_event(person, true, event, incident, template, message_options).deliver
+        end
       end
     end
   end
