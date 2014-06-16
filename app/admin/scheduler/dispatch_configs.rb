@@ -19,9 +19,10 @@ ActiveAdmin.register Scheduler::DispatchConfig, as: 'Dispatch Configs' do
 
   form do |f|
     f.inputs do
-      f.input :chapter
-      f.input :name
-      f.input :county, collection: f.object.chapter.try(:counties)
+      f.input :chapter, input_html: {disabled: !allow_edit_names?}
+      f.input :name, input_html: {disabled: !allow_edit_names?}
+      f.input :county, collection: f.object.chapter.try(:counties), input_html: {disabled: !allow_edit_names?}
+      f.input :is_active, input_html: {disabled: !allow_edit_names?}
       if f.object.chapter
         shifts = Scheduler::Shift.for_chapter(f.object.chapter).joins{county}.order{[county.name, name]}.includes{[shift_groups, county]}
         f.input :shift_first, collection: shifts
@@ -39,12 +40,19 @@ ActiveAdmin.register Scheduler::DispatchConfig, as: 'Dispatch Configs' do
 
 
   controller do
+    def allow_edit_names?
+      authorized? :update_names, resource
+    end
+    helper_method :allow_edit_names?
+
     def collection
       @coll ||= super.includes_everything
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:is_active, :backup_first_id, :backup_second_id, :backup_third_id, :backup_fourth_id, :name, :chapter_id, :county_id, :shift_first_id, :shift_second_id, :shift_third_id, :shift_fourth_id)]
+      permitted_keys = [:backup_first_id, :backup_second_id, :backup_third_id, :backup_fourth_id, :shift_first_id, :shift_second_id, :shift_third_id, :shift_fourth_id]
+      permitted_keys += [:name, :chapter_id, :county_id, :is_active] if allow_edit_names?
+      [params.fetch(resource_request_name, {}).permit(*permitted_keys)]
     end
   end
 end

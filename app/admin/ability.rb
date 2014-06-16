@@ -50,6 +50,8 @@ class AdminAbility
 
       can :manage, Incidents::Notifications::Event, chapter_id: chapter
       can :manage, Incidents::Notifications::Role, chapter_id: chapter
+
+      can [:read, :update], Scheduler::DispatchConfig, chapter_id: chapter
     end
   end
 
