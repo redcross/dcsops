@@ -51,7 +51,7 @@ class Incidents::ResponderMessagesController < Incidents::EditPanelController
   end
 
   def all_recipients
-    incident.all_responder_assignments.select{|a| a.person.sms_addresses.present? && a.departed_scene_at == nil}
+    incident.all_responder_assignments.was_available.select{|a| a.person.sms_addresses.present? && a.departed_scene_at == nil}
   end
   helper_method :all_recipients
 
