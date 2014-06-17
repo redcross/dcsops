@@ -33,8 +33,10 @@ module Scheduler
     # config.i18n.default_locale = :de
     config.i18n.enforce_available_locales = true
 
-    config.autoload_paths << "#{Rails.root}/app/inputs"
-    config.autoload_paths << "#{Rails.root}/lib"
+    ["#{Rails.root}/app/inputs", "#{Rails.root}/lib"].each do |path|
+      config.autoload_paths << path
+      config.eager_load_paths << path
+    end
 
     config.roadie.provider = Roadie::AssetPipelineProvider.new
 
