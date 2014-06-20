@@ -40,7 +40,7 @@ module Scheduler::CalendarHelper
     this_assignment = my_shifts && my_shifts.detect{|sa| sa.shift == shift && sa.shift_group == shift_group}
     is_signed_up = this_assignment.present?
 
-    cbid = "#{date.to_s}-#{shift.id}"
+    cbid = "#{date.to_s}-#{shift.id}-#{shift_group.id}"
 
     my_shifts_exclusive = my_shifts.present? && my_shifts.any?{|sa| sa.shift.exclusive }
     can_take_exclusive = editable && (this_assignment || !shift.exclusive || !my_shifts_exclusive)
