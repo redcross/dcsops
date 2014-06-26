@@ -65,6 +65,7 @@ class Incidents::Ability
     can :manage, Incidents::Attachment, {incident: {status: 'open'}}
     today = person.chapter.time_zone.today
     can :update, Incidents::DatIncident, {incident: {date: ((today-5)..(today+1))}}
+    can :update, Incidents::DatIncident, {incident: {status: 'open'}}
     can :manage, Incidents::ResponderAssignment, {incident: {status: 'open'}} if person.chapter.incidents_enable_dispatch_console
     can :manage, Incidents::Case, {incident: {status: 'open'}} if person.chapter.incidents_collect_case_details
     can [:create, :recipients], Incidents::Notifications::Message
