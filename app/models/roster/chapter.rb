@@ -68,6 +68,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :scheduler_submit_vc_hours, :boolean
 
   serialized_accessor :config, :roster_import_prospective_members, :boolean
+  serialized_accessor :config, :directline_account_number, :string
 
   def self.array_accessor *syms
     syms.each do |sym|

@@ -46,13 +46,21 @@ class Incidents::ImportController < ApplicationController
   end
 
   def import_dispatch_body_handler(message, body, import_log)
-    importer = Incidents::DispatchImporter.new
-
-    chapter = Roster::Chapter.where(code: '05503').first!
+    # Todo: move this to the importer where it belongs
+    matches = body.match(/Account: (\d+)/i)
+    if matches
+      account_number = matches[1]
+      chapter = Roster::Chapter.with_directline_account_number_value(account_number).first!
+    end
+    chapter ||= Roster::Chapter.find(1)
 
     Incidents::DispatchLog.transaction do
       importer.import_data(chapter, body)
     end
+  end
+
+  def importer
+    @importer ||= Incidents::DispatchImporter.new
   end
 
 end
