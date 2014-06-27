@@ -76,12 +76,15 @@ class Incidents::DispatchImporter
       
       created = false
     else
+      area = @chapter.counties.find_by(name: log_object.county_name)
+      area ||= @chapter.counties.find_by name: 'Region'
+      area ||= @chapter.counties.first
       log_object.build_incident incident_number: log_object.incident_number, 
                                          chapter: @chapter,
                                             date: incident_date_for(log_object),
                                           county: log_object.county_name,
                                            state: 'CA',
-                                            area: @chapter.counties.find_by(name: log_object.county_name),
+                                            area: area,
                                           status: 'open'
       
       created = true
