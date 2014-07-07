@@ -8,16 +8,14 @@ module Vc
     end
 
     def xml_token
-      @token ||= begin
-        resp = client.get '/', query: {nd: 'vms_hours_add_admin'}
-        body = Nokogiri::HTML(resp)
-        {xmlhttp_token: body.css('#xmlhttp_token').attr('value'),
-         hierarchy_id: body.css('#hierarchy_id').attr('value')}
-      end
+      resp = client.get '/', query: {nd: 'vms_hours_add_admin'}
+      body = Nokogiri::HTML(resp)
+      {xmlhttp_token: body.css('#xmlhttp_token').attr('value'),
+       hierarchy_id: body.css('#hierarchy_id').attr('value')}
     end
 
     def submit_hours account_id, description, number_of_hours, hours_type: 'oncall', status: 'approved', date: Date.current, comments: nil, admin_comments: nil
-      raise ArgumentError, "Not a valid hours_type: #{hours_type}" unless %w(oncall approved).include? hours_type
+      raise ArgumentError, "Not a valid hours_type: #{hours_type}" unless %w(oncall worked).include? hours_type
       raise ArgumentError, "Not a valid status: #{status}" unless %w(rejected pending approved).include? status
 
       hours_type = hours_type.titleize

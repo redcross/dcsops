@@ -31,7 +31,7 @@ class Scheduler::SubmitHoursJob
     if @assignment_ids
       Scheduler::ShiftAssignment.where{id.in my{@assignment_ids}}
     else
-      Scheduler::ShiftAssignment.joins{shift}.includes{[person, shift_group, shift]}.readonly(false).where{(shift.vc_hours_type != nil) & (vc_hours_uploaded != true)}
+      Scheduler::ShiftAssignment.joins{shift}.includes{[person, shift_group, shift]}.for_chapter(chapter).readonly(false).where{(shift.vc_hours_type != nil) & (vc_hours_uploaded != true) & (date < my{chapter.time_zone.today})}
     end
   end
 
