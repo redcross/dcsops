@@ -90,15 +90,16 @@
           %i.fa.fa-user
           Show Roster
   .col-sm-4
-    %h5 
-      %i.fa.fa-group
-      Current On-Call Team:
-      %small=link_to 'See All', scheduler_on_call_path
-    - groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_chapter)
-    - groups.select{|g| g.period == 'daily' }.each do |grp| 
-      %strong=grp.start_date.to_s(:dow_long) + " - " + grp.name
-    %br
-    = render partial: 'current_shifts', locals: {counties: current_person.counties, groups: groups}
+    -if can? :read, :on_call
+      %h5 
+        %i.fa.fa-group
+        Current On-Call Team:
+        %small=link_to 'See All', scheduler_on_call_path
+      - groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_chapter)
+      - groups.select{|g| g.period == 'daily' }.each do |grp| 
+        %strong=grp.start_date.to_s(:dow_long) + " - " + grp.name
+      %br
+      = render partial: 'current_shifts', locals: {counties: current_person.counties, groups: groups}
 
 .row
   .col-sm-6

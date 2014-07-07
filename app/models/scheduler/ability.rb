@@ -30,6 +30,7 @@ class Scheduler::Ability
     can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], {id: person.id}
     can [:read, :destroy, :create, :swap], Scheduler::ShiftAssignment, person: {id: person.id}
     can :manage, Scheduler::ShiftSwap, assignment: {person: {chapter_id: person.chapter_id}}
+    can :read, :on_call unless person.chapter.scheduler_restrict_on_call_contacts
   end
 
   def scheduler ids
@@ -50,6 +51,7 @@ class Scheduler::Ability
     can [:read, :update, :update_shifts], Scheduler::Shift, county: {chapter_id: id}
 
     can :receive_admin_notifications, Scheduler::NotificationSetting, id: person.id
+    can :read, :on_call
   end
 
   def county_dat_admin ids
@@ -60,6 +62,7 @@ class Scheduler::Ability
     can [:read, :update, :update_shifts], Scheduler::Shift, county_id: ids
 
     can :receive_admin_notifications, Scheduler::NotificationSetting, id: person.id
+    can :read, :on_call
   end
 
   def read_only

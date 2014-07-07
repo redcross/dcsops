@@ -6,7 +6,7 @@ class Scheduler::HomeController < Scheduler::BaseController
   end
 
   def on_call
-
+    authorize! :read, :on_call
   end
 
   private

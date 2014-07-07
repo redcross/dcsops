@@ -66,6 +66,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :scheduler_flex_day_start, :integer
   serialized_accessor :config, :scheduler_flex_night_start, :integer
   serialized_accessor :config, :scheduler_submit_vc_hours, :boolean
+  serialized_accessor :config, :scheduler_restrict_on_call_contacts, :boolean
 
   serialized_accessor :config, :roster_import_prospective_members, :boolean
   serialized_accessor :config, :directline_account_number, :string
