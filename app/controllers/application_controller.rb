@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
 
   def require_active_user!
     person = current_user_session.try(:person) || current_user
-    if person and person.vc_is_active == false
+    if person and (person.vc_is_active == false || filtered_person?(person))
       respond_with_redirect_or_status inactive_user_path, :forbidden
     end
   end
@@ -93,5 +93,17 @@ class ApplicationController < ActionController::Base
       response.headers.delete('X-Frame-Options')
     end
   end
+
+  def filtered_person? person
+    filter = ENV['LOGIN_FILTER']
+    if filter && person.email
+      regex = Regexp.new(filter)
+      regex.match(person.email).present?
+    else
+      false
+    end
+  end
+
+
 
 end
