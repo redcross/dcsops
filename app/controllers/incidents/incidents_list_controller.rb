@@ -5,7 +5,7 @@ class Incidents::IncidentsListController < Incidents::BaseController
   load_and_authorize_resource :scope
   belongs_to :scope, parent_class: Incidents::Scope, finder: :find_by_url_slug!, param: :chapter_id
   helper Incidents::MapHelper
-  include Searchable
+  include Searchable, Paginatable
 
   actions :index
 
@@ -37,7 +37,6 @@ class Incidents::IncidentsListController < Incidents::BaseController
   def collection
     @_incidents ||= begin
       scope = apply_scopes(super).order{[date.desc, incident_number.desc]}#.preload{[area, dat_incident, team_lead.person]}
-      scope = scope.page(params[:page]) if should_paginate
       scope
     end
   end
@@ -50,8 +49,6 @@ class Incidents::IncidentsListController < Incidents::BaseController
   def default_search_params
     {status_in: ['open', 'closed'], date_gteq: FiscalYear.current.start_date}
   end
-
-  def should_paginate; params[:page] != 'all'; end
 
   def original_url
     request.original_url

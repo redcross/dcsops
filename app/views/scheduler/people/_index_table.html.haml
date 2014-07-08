@@ -1,0 +1,48 @@
+.text-center= paginate collection, :theme => 'twitter-bootstrap-3', remote: true
+
+%table.table.table-striped.table-condensed
+  %thead
+    %tr
+      %th Name
+      %th Num Shifts
+      %th Prev Shift
+      %th Next Shift
+      %th Last Login
+      %th Flex Schedule
+      %th=t '.actions', :default => t("helpers.actions")
+  %tbody
+    - collection.each do |person|
+      %tr
+        %td{style: "max-width: 20em"}
+          = link_to person.full_name, roster_person_path(person)
+          %br
+          %small
+            = person.positions.select{|p|!p.hidden}.map(&:name).join ", "
+        %td
+          = pluralize person.num_shifts, 'shift'
+        %td
+          -if d = person.prev_shift
+            =d.to_s :dow_short
+            %br
+            (#{(Date.current-d).to_i} days ago)
+        %td
+          -if d = person.next_shift
+            =d.to_s :dow_short
+        %td
+          -if d = person.last_login
+            =d.to_s :dow_short
+            %br
+            (#{(Date.current-d.to_date).to_i} days ago)
+        %td
+          = flex_schedule_for(person.id).try(:num_shifts)
+        %td.small
+          -if flex = can?( :update, Scheduler::FlexSchedule.new(person: person))
+            = link_to "Flex Schedule", scheduler_flex_schedule_path(person), :class => 'btn btn-xs btn-default'
+          -if reminders = can?( :update, Scheduler::NotificationSetting.new(person: person))
+            = link_to "Reminders", scheduler_notification_setting_path(person), :class => 'btn btn-xs btn-default'
+          - if flex or reminders
+            %br
+          = link_to "Shifts", scheduler_person_shift_assignments_path(person), :class => 'btn btn-xs btn-default'
+          = link_to "Email", person.vc_email_url, :class => 'btn btn-xs btn-default'
+
+.text-center= paginate collection, :theme => 'twitter-bootstrap-3', remote: true

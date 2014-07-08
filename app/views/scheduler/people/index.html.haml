@@ -1,14 +1,29 @@
 - model_class = Roster::Person
 .page-header
   %h1=t '.title', :default => model_class.model_name.human.pluralize
-=form_tag '', method: :get do
+=form_tag scheduler_people_path, method: :get, remote: true do
+  =hidden_field_tag 'page', ''
   %table.table.table-condensed.noprint
     %tr
       %th County
       %td=select_tag "county", options_from_collection_for_select(current_chapter.counties, :id, :name, current_scopes[:county]), multiple: false, id: 'choose-county', prompt: "All", class: "form-control"
     %tr
       %th Position
-      %td=select_tag "with_position", options_from_collection_for_select(current_chapter.positions.visible, :id, :name, current_scopes[:with_position]), multiple: true, include_blank: true, class: "form-control"
+      %td
+        %table(style="width: 100%")
+          - current_chapter.positions.visible.each_slice(2) do |first, second|
+            %tr
+              %td
+                %label
+                  - checked = current_scopes[:with_position] && current_scopes[:with_position].include?(first.id.to_s)
+                  =check_box_tag "with_position[]", first.id, checked
+                  = first.name
+              %td
+                - if second
+                  %label
+                    - checked = current_scopes[:with_position] && current_scopes[:with_position].include?(second.id.to_s)
+                    =check_box_tag "with_position[]", second.id, checked
+                    = second.name
     %tr
       %th Last Shift Taken
       %td=select_tag "last_shift", options_for_select(date_ranges, current_scopes[:last_shift].try(:to_i)), prompt: "Any Time", class: "form-control"
@@ -18,49 +33,6 @@
     %tr
       %th
       %td=submit_tag 'Show', class: 'btn btn-primary'
-%table.table.table-striped.table-condensed
-  %thead
-    %tr
-      %th Name
-      %th Num Shifts
-      %th Prev Shift
-      %th Next Shift
-      %th Last Login
-      %th Flex Schedule
-      %th=t '.actions', :default => t("helpers.actions")
-  %tbody
-    - collection.each do |person|
-      %tr
-        %td{style: "max-width: 20em"}
-          = link_to person.full_name, roster_person_path(person)
-          %br
-          %small
-            = person.positions.select{|p|!p.hidden}.map(&:name).join ", "
-        %td
-          = pluralize person.num_shifts, 'shift'
-        %td
-          -if d = person.prev_shift
-            =d.to_s :dow_short
-            %br
-            (#{(Date.current-d).to_i} days ago)
-        %td
-          -if d = person.next_shift
-            =d.to_s :dow_short
-        %td
-          -if d = person.last_login
-            =d.to_s :dow_short
-            %br
-            (#{(Date.current-d.to_date).to_i} days ago)
-        %td
-          = flex_schedule_for(person.id).try(:num_shifts)
-        %td
-          -if flex = can?( :update, Scheduler::FlexSchedule.new(person: person))
-            = link_to "Flex Schedule", scheduler_flex_schedule_path(person), :class => 'btn btn-mini'
-          -if reminders = can?( :update, Scheduler::NotificationSetting.new(person: person))
-            = link_to "Reminders", scheduler_notification_setting_path(person), :class => 'btn btn-mini'
-          - if flex or reminders
-            %br
-          = link_to "Shifts", scheduler_person_shift_assignments_path(person), :class => 'btn btn-mini'
-          = link_to "Email", person.vc_email_url, :class => 'btn btn-mini'
 
-
+.people-table
+  =render 'index_table'

@@ -1,5 +1,8 @@
 class Scheduler::PeopleController < Scheduler::BaseController
   inherit_resources
+  include Paginatable
+  respond_to :html
+  respond_to :js, only: :index
 
   defaults resource_class: Roster::Person
 
@@ -11,7 +14,9 @@ class Scheduler::PeopleController < Scheduler::BaseController
   #  positions = Scheduler::Shift.where(county_id: val).map{|sh| sh.positions}.flatten
   #  scope.in_county(val)
   #end
-  has_scope :with_position, type: :array, default: Proc.new {|controller| controller.current_chapter.positions.where{name.in(['DAT Team Lead', 'DAT Technician', 'DAT Trainee', 'DAT Dispatcher'])}.map(&:id)}
+
+  # , default: Proc.new {|controller| controller.current_chapter.positions.where{name.in(['DAT Team Lead', 'DAT Technician', 'DAT Trainee', 'DAT Dispatcher'])}.map(&:id)}
+  has_scope :with_position, type: :array, default: []
   has_scope :last_shift do |controller, scope, val|
     scope.where(Scheduler::ShiftAssignment.where{(person_id == roster_people.id) & (date > (Date.current-val.to_i))}.exists.not)
   end
@@ -36,5 +41,10 @@ class Scheduler::PeopleController < Scheduler::BaseController
       ["6 Months", 180]
     ]
   end
+
+  def original_url
+    request.original_url
+  end
+  helper_method :original_url
 
 end
