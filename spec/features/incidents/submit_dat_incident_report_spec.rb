@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "DAT Incident Report", versions: true do
+describe "DAT Incident Report", type: :feature, versions: true do
   #self.use_transactional_fixtures = false
 
   it "Should be submittable" do
@@ -34,15 +34,15 @@ describe "DAT Incident Report", versions: true do
 
     click_button 'Submit Incident Information'
     click_link "Details"
-    page.should have_text 'DAT Details'
-    page.should have_text 'Demographics'
+    expect(page).to have_text 'DAT Details'
+    expect(page).to have_text 'Demographics'
 
-    @incident.reload.dat_incident.should_not be_nil
-    @incident.all_responder_assignments.should have(3).items
-    @incident.all_responder_assignments.map(&:person).should =~ [@team_lead, @responder, @flex_responder]
+    expect(@incident.reload.dat_incident).not_to be_nil
+    expect(@incident.all_responder_assignments.size).to eq(3)
+    expect(@incident.all_responder_assignments.map(&:person)).to match_array([@team_lead, @responder, @flex_responder])
 
-    @incident.address.should == "1663 Market Street"
-    @incident.status.should == 'closed'
+    expect(@incident.address).to eq("1663 Market Street")
+    expect(@incident.status).to eq('closed')
 
   end
 
@@ -107,7 +107,7 @@ describe "DAT Incident Report", versions: true do
 
     within "#responder-table tbody" do
       within "tr:last-child" do
-        find(:xpath, ".//input[@type='checkbox']").should be_checked
+        expect(find(:xpath, ".//input[@type='checkbox']")).to be_checked
         select 'Responder'
       end
     end
@@ -119,7 +119,7 @@ describe "DAT Incident Report", versions: true do
         fill_in 'person_text', with: @responder.first_name
         find('p', text: @responder.full_name).click
 
-        find(:xpath, ".//input[@type='checkbox']").should_not be_checked
+        expect(find(:xpath, ".//input[@type='checkbox']")).not_to be_checked
         select 'Team Lead Trainee'
       end
     end

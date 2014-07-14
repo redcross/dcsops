@@ -1,24 +1,24 @@
 require "spec_helper"
 
-describe Scheduler::RemindersMailer do
+describe Scheduler::RemindersMailer, :type => :mailer do
   let(:from_address) {["scheduling@dcsops.org"]}
   describe "email_invite" do
     let(:assignment) { FactoryGirl.create :shift_assignment}
     let(:mail) { Scheduler::RemindersMailer.email_invite(assignment) }
   
     it "renders the headers" do
-      mail.subject.should include(assignment.shift.name)
-      mail.to.should eq([assignment.person.email])
-      mail.from.should eq(from_address)
+      expect(mail.subject).to include(assignment.shift.name)
+      expect(mail.to).to eq([assignment.person.email])
+      expect(mail.from).to eq(from_address)
     end
   
     it "renders the body" do
-      mail.body.encoded.should match(assignment.shift.name)
+      expect(mail.body.encoded).to match(assignment.shift.name)
     end
 
     it "has an ics part" do
-      mail.body.parts.count.should == 2
-      mail.body.encoded.should match("text/calendar")
+      expect(mail.body.parts.count).to eq(2)
+      expect(mail.body.encoded).to match("text/calendar")
     end
   end
 
@@ -27,13 +27,13 @@ describe Scheduler::RemindersMailer do
     let(:mail) { Scheduler::RemindersMailer.email_reminder(assignment) }
   
     it "renders the headers" do
-      mail.subject.should include(assignment.shift.name)
-      mail.to.should eq([assignment.person.email])
-      mail.from.should eq(from_address)
+      expect(mail.subject).to include(assignment.shift.name)
+      expect(mail.to).to eq([assignment.person.email])
+      expect(mail.from).to eq(from_address)
     end
   
     it "renders the body" do
-      mail.body.encoded.should match(assignment.shift.name)
+      expect(mail.body.encoded).to match(assignment.shift.name)
     end
   end
 
@@ -42,13 +42,13 @@ describe Scheduler::RemindersMailer do
     let(:mail) { Scheduler::RemindersMailer.sms_reminder(assignment) }
   
     it "renders the headers" do
-      mail.subject.should eq(nil)
-      mail.to.should eq(assignment.person.sms_addresses)
-      mail.from.should eq(["sms@dcsops.org"])
+      expect(mail.subject).to eq(nil)
+      expect(mail.to).to eq(assignment.person.sms_addresses)
+      expect(mail.from).to eq(["sms@dcsops.org"])
     end
   
     it "renders the body" do
-      mail.body.encoded.should match(assignment.shift.name)
+      expect(mail.body.encoded).to match(assignment.shift.name)
     end
   end
 
@@ -69,13 +69,13 @@ describe Scheduler::RemindersMailer do
       let(:mail) { Scheduler::RemindersMailer.daily_email_reminder(@setting) }
     
       it "renders the headers" do
-        mail.subject.should match("DAT Shifts")
-        mail.to.should eq([@admin.email])
-        mail.from.should eq(from_address)
+        expect(mail.subject).to match("DAT Shifts")
+        expect(mail.to).to eq([@admin.email])
+        expect(mail.from).to eq(from_address)
       end
     
       it "renders the body" do
-        mail.body.encoded.should match(@shift.name)
+        expect(mail.body.encoded).to match(@shift.name)
       end
     end
 
@@ -83,13 +83,13 @@ describe Scheduler::RemindersMailer do
       let(:mail) { Scheduler::RemindersMailer.daily_sms_reminder(@setting) }
     
       it "renders the headers" do
-        mail.subject.should be_nil
-        mail.to.should eq(@admin.sms_addresses)
-        mail.from.should eq(["sms@dcsops.org"])
+        expect(mail.subject).to be_nil
+        expect(mail.to).to eq(@admin.sms_addresses)
+        expect(mail.from).to eq(["sms@dcsops.org"])
       end
     
       it "renders the body" do
-        mail.body.encoded.should match(@shift.abbrev)
+        expect(mail.body.encoded).to match(@shift.abbrev)
       end
     end
 
@@ -104,13 +104,13 @@ describe Scheduler::RemindersMailer do
       describe "with a shift to swap" do
 
         it "renders the headers" do
-          mail.subject.should match("Daily Shift Swaps Reminder")
-          mail.to.should eq([@admin.email])
-          mail.from.should eq(from_address)
+          expect(mail.subject).to match("Daily Shift Swaps Reminder")
+          expect(mail.to).to eq([@admin.email])
+          expect(mail.from).to eq(from_address)
         end
       
         it "renders the body" do
-          mail.body.encoded.should match(@ass.person.full_name)
+          expect(mail.body.encoded).to match(@ass.person.full_name)
         end      
 
       end
@@ -119,7 +119,7 @@ describe Scheduler::RemindersMailer do
 
         it "should not deliver" do
           @ass.update_attribute :available_for_swap, false
-          mail.perform_deliveries.should be_false
+          expect(mail.perform_deliveries).to be_falsey
         end
 
       end

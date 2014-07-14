@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe Scheduler::HomeController do
+describe Scheduler::HomeController, :type => :controller do
   include LoggedIn
   render_views
 
   it "should render" do
     get :root
-    response.code.should eq "200"
+    expect(response.code).to eq "200"
   end
 
   it "should render when the person has no counties" do
@@ -14,6 +14,6 @@ describe Scheduler::HomeController do
     @person.save
 
     get :root
-    response.should be_success
+    expect(response).to be_success
   end
 end

@@ -10,10 +10,10 @@ require 'spec_helper'
 #     end
 #   end
 # end
-describe Incidents::IncidentsHelper do
+describe Incidents::IncidentsHelper, :type => :helper do
   before do
     helper.stub_chain(:resource, :to_param) { "IncidentURLParam" }
-    helper.stub :edit_resource_dat_path do |*arg|
+    allow(helper).to receive :edit_resource_dat_path do |*arg|
       "path_here?#{arg.first.to_query}"
     end
   end
@@ -21,70 +21,70 @@ describe Incidents::IncidentsHelper do
   describe '#edit_link' do
     it "is empty when not editable" do
       helper.stub inline_editable?: false
-      helper.edit_link('test').should be_blank
+      expect(helper.edit_link('test')).to be_blank
     end
 
     it "returns a link when editable" do
       helper.stub inline_editable?: true
       str = helper.edit_link('test-panel')
-      str.should_not be_blank
-      str.should be_a(ActiveSupport::SafeBuffer)
-      str.should match('(edit)')
-      str.should match('test-panel')
-      str.should match('<a')
+      expect(str).not_to be_blank
+      expect(str).to be_a(ActiveSupport::SafeBuffer)
+      expect(str).to match('(edit)')
+      expect(str).to match('test-panel')
+      expect(str).to match('<a')
     end
   end
 
   describe '#passthrough_edit_link' do
     it "is just the title text when not editable" do
       helper.stub inline_editable?: false
-      helper.passthrough_edit_link('test', 'Some Title').should == 'Some Title'
+      expect(helper.passthrough_edit_link('test', 'Some Title')).to eq('Some Title')
     end
 
     it "returns a link when editable" do
       helper.stub inline_editable?: true
       str = helper.passthrough_edit_link('test-panel', 'Some Title')
-      str.should_not be_blank
-      str.should be_a(ActiveSupport::SafeBuffer)
-      str.should match('Some Title')
-      str.should match('test-panel')
-      str.should match('<a')
+      expect(str).not_to be_blank
+      expect(str).to be_a(ActiveSupport::SafeBuffer)
+      expect(str).to match('Some Title')
+      expect(str).to match('test-panel')
+      expect(str).to match('<a')
     end
   end
 
   describe '#version_ignore_fields' do
     it "should return an array" do
       %w(Incidents::Incident Incidents::DatIncident Incidents::EventLog Incidents::Case).each do |item_type|
-        helper.version_ignore_fields(double item_type: item_type).should be_a(Array)
+        expect(helper.version_ignore_fields(double item_type: item_type)).to be_a(Array)
       end
     end
   end
   describe '#always_show_fields' do
     it "should return an array" do
       %w(Incidents::Incident Incidents::DatIncident Incidents::EventLog Incidents::Case).each do |item_type|
-        helper.always_show_fields(double item_type: item_type).should be_a(Array)
+        expect(helper.always_show_fields(double item_type: item_type)).to be_a(Array)
       end
     end
   end
 
   describe '#format_change_value' do
     it "handles nil" do
-      helper.format_change_value(double(:incident), '', nil).should == nil
+      expect(helper.format_change_value(double(:incident), '', nil)).to eq(nil)
     end
     it "returns a string as itself" do
-      helper.format_change_value(double(:incident), '', 'Some String').should == 'Some String'
+      expect(helper.format_change_value(double(:incident), '', 'Some String')).to eq('Some String')
     end
     it "formats a date" do
-      helper.format_change_value(double(:incident), '', DateTime.now).should be_a(String)
+      expect(helper.format_change_value(double(:incident), '', DateTime.now)).to be_a(String)
     end
     it "formats a YAML list for certain attributes" do
       yaml = YAML.dump ['service_one', 'service_two']
-      helper.format_change_value(double(:incident), 'services', yaml).should == 'Service One and Service Two'
+      expect(helper.format_change_value(double(:incident), 'services', yaml)).to eq('Service One and Service Two')
     end
     it "formats the cac number" do
       cac = Faker::Business.credit_card_number
-      helper.format_change_value(double(:incident), 'cac_number', cac).should == "xxxx-xxxx-xxxx-#{cac.slice(-4, 4)}"
-      helper.format_change_value(double(:incident), 'cac_number', '').should == ''
+      expect(helper.format_change_value(double(:incident), 'cac_number', cac)).to eq("xxxx-xxxx-xxxx-#{cac.slice(-4, 4)}")
+      expect(helper.format_change_value(double(:incident), 'cac_number', '')).to eq('')
     end
   end
 end

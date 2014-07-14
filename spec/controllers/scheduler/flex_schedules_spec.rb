@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Scheduler::FlexSchedulesController do
+describe Scheduler::FlexSchedulesController, :type => :controller do
   include LoggedIn
   render_views
 
@@ -12,31 +12,31 @@ describe Scheduler::FlexSchedulesController do
 
     it "should render" do
       get :index
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "should filter by county" do
       get :index, county: @person.county_ids.first
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "should render when the person has no county" do
       @person.counties = []; @person.save
       get :index
-      response.should be_success
+      expect(response).to be_success
     end
   end
 
   describe "#show" do
     it "should render" do
       get :show, id: @person.id
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "should allow updating" do
       put :update, id: @person.id, scheduler_flex_schedule: {available_monday_day: true}, format: 'json'
-      response.should be_success
-      @sched.reload.available_monday_day.should eq true
+      expect(response).to be_success
+      expect(@sched.reload.available_monday_day).to eq true
     end
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Scheduler::DirectlineMailer do
+describe Scheduler::DirectlineMailer, :type => :mailer do
 
   before(:each) do
     @chapter = FactoryGirl.create(:chapter)
@@ -34,37 +34,37 @@ describe Scheduler::DirectlineMailer do
 
   context "Shift Data" do
     it "Should attach the file" do
-      mail.attachments[shift_filename].should_not be_nil
+      expect(mail.attachments[shift_filename]).not_to be_nil
     end
 
     it "should parse as csv" do
       expect {
-        CSV.parse(mail.attachments[shift_filename].body.raw_source).should_not be_nil
+        expect(CSV.parse(mail.attachments[shift_filename].body.raw_source)).not_to be_nil
       }.to_not raise_error
     end
 
     let (:csv) {CSV.parse(mail.attachments[shift_filename].body.raw_source)}
 
     it "should include a line for each day/shift group plus header" do
-      csv.count.should eq 4 + 1
+      expect(csv.count).to eq 4 + 1
     end
 
     it "Should have the on call person plus backups" do
       row = csv[1]
-      row[1].should eq (@chapter.time_zone.now.at_beginning_of_day.advance(seconds: @day.start_offset).iso8601)
-      row[3..row.count].should =~ [@people1.first.id.to_s, @config.backup_first.id.to_s]
+      expect(row[1]).to eq (@chapter.time_zone.now.at_beginning_of_day.advance(seconds: @day.start_offset).iso8601)
+      expect(row[3..row.count]).to match_array([@people1.first.id.to_s, @config.backup_first.id.to_s])
     end
 
     it "Should have the night person plus backups" do
       row = csv[2]
-      row[1].should eq (@chapter.time_zone.now.at_beginning_of_day.advance(seconds: @night.start_offset).iso8601)
-      row[3..row.count].should =~ [@people1[2].id.to_s, @config.backup_first.id.to_s]
+      expect(row[1]).to eq (@chapter.time_zone.now.at_beginning_of_day.advance(seconds: @night.start_offset).iso8601)
+      expect(row[3..row.count]).to match_array([@people1[2].id.to_s, @config.backup_first.id.to_s])
     end
 
     it "Should have the backups when no on call person" do
       row = csv[3]
-      row[1].should eq (@chapter.time_zone.now.at_beginning_of_day.advance(days: 1, seconds: @day.start_offset).iso8601)
-      row[3..row.count].should =~ [@config.backup_first.id.to_s]
+      expect(row[1]).to eq (@chapter.time_zone.now.at_beginning_of_day.advance(days: 1, seconds: @day.start_offset).iso8601)
+      expect(row[3..row.count]).to match_array([@config.backup_first.id.to_s])
     end
 
     it "Should include a weekly backup shift" do
@@ -75,25 +75,25 @@ describe Scheduler::DirectlineMailer do
       @weekass = FactoryGirl.create :shift_assignment, person: @weekperson, date: today.at_beginning_of_week, shift: @weekshift, shift_group: @week
 
       row = csv[1]
-      row[3..row.count].should =~ [@people1.first.id.to_s, @weekperson.id.to_s, @config.backup_first.id.to_s]
+      expect(row[3..row.count]).to match_array([@people1.first.id.to_s, @weekperson.id.to_s, @config.backup_first.id.to_s])
     end
   end
 
   context "Person data" do
     it "Should attach the file" do
-      mail.attachments[roster_filename].should_not be_nil
+      expect(mail.attachments[roster_filename]).not_to be_nil
     end
 
     it "should parse as csv" do
       expect {
-        CSV.parse(mail.attachments[roster_filename].body.raw_source).should_not be_nil
+        expect(CSV.parse(mail.attachments[roster_filename].body.raw_source)).not_to be_nil
       }.to_not raise_error
     end
 
     let (:csv) {CSV.parse(mail.attachments[roster_filename].body.raw_source)}
 
     it "should have rows for everyone plus header" do
-      csv.count.should eq 3 + 1
+      expect(csv.count).to eq 3 + 1
     end 
 
     it "should identify an SMS number" do
@@ -102,13 +102,13 @@ describe Scheduler::DirectlineMailer do
       person.update_attribute :work_phone_carrier, carrier
 
       row = csv.detect{|row| row[0].to_i == person.id}
-      row.should_not be_nil
+      expect(row).not_to be_nil
 
       number = person.work_phone.gsub /[^0-9]/, ''
 
-      row[3].should == number # Primary Phone
-      row[5].should == number # correctly detected SMS carrier
-      row[8].should == 'phone'
+      expect(row[3]).to eq(number) # Primary Phone
+      expect(row[5]).to eq(number) # correctly detected SMS carrier
+      expect(row[8]).to eq('phone')
     end
 
     it "should identify a pager number" do
@@ -117,13 +117,13 @@ describe Scheduler::DirectlineMailer do
       person.update_attribute :work_phone_carrier, carrier
 
       row = csv.detect{|row| row[0].to_i == person.id}
-      row.should_not be_nil
+      expect(row).not_to be_nil
 
       number = person.work_phone.gsub /[^0-9]/, ''
 
-      row[3].should == number # Primary Phone
-      row[5].should_not be_present # when carrier is a pager, don't present as SMS
-      row[8].should == 'pager'
+      expect(row[3]).to eq(number) # Primary Phone
+      expect(row[5]).not_to be_present # when carrier is a pager, don't present as SMS
+      expect(row[8]).to eq('pager')
     end
   end
   

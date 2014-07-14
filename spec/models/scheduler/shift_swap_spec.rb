@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Scheduler::ShiftSwap do
+describe Scheduler::ShiftSwap, :type => :model do
 
   let(:delegate) { double :auth_delegate, can?: true }
   let(:shift) { FactoryGirl.create :shift_with_positions}
@@ -45,11 +45,11 @@ describe Scheduler::ShiftSwap do
         config.shift_first = shift
         config.save!
 
-        Scheduler::SendDispatchRosterJob.should_receive(:enqueue).with(person.chapter, false)
+        expect(Scheduler::SendDispatchRosterJob).to receive(:enqueue).with(person.chapter, false)
         success = swap.confirm_swap! other_person
-        success.should be_true
-        swap.new_assignment.should_not be_nil
-        swap.new_assignment.should be_persisted
+        expect(success).to be_truthy
+        expect(swap.new_assignment).not_to be_nil
+        expect(swap.new_assignment).to be_persisted
       }.to_not change{Scheduler::ShiftAssignment.count}
       expect {
         assignment.reload
@@ -60,31 +60,31 @@ describe Scheduler::ShiftSwap do
       expect {
         shift.update_attribute :signups_frozen_before, assignment.date + 10
         success = swap.confirm_swap! other_person
-        success.should be_true
+        expect(success).to be_truthy
       }.to_not change{Scheduler::ShiftAssignment.count}
     end
 
     it "rejects a swap between the same person" do
       success = swap.confirm_swap! person
-      success.should be_false
-      swap.new_assignment.should_not be_persisted
+      expect(success).to be_falsey
+      expect(swap.new_assignment).not_to be_persisted
       expect {
         assignment.reload
       }.to_not raise_exception
-      swap.error_message.should include('swap a shift to yourself')
+      expect(swap.error_message).to include('swap a shift to yourself')
     end
 
     it "rejects a swap if the auth delegate returns false" do
       delegate.stub can?: false
       success = swap.confirm_swap! person
-      success.should be_false
+      expect(success).to be_falsey
     end
 
     it "rejects a swap if the shift is otherwise invalid" do
       other_person.position_ids = []
       other_person.save!
       success = swap.confirm_swap! other_person
-      success.should be_false
+      expect(success).to be_falsey
     end
 
   end

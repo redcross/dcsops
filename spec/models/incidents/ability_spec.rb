@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe Incidents::Ability do
+describe Incidents::Ability, :type => :model do
 
   let(:roles) {[]}
   let(:chapter) {FactoryGirl.create :chapter}
   let(:person) {
     double(:person, chapter: chapter, id: 10, chapter_id: chapter.id).tap{|p|
-      p.stub(:has_role) do |role|
+      allow(p).to receive(:has_role) do |role|
         roles.include? role
       end
     }
@@ -19,11 +19,11 @@ describe Incidents::Ability do
   end
 
   def can! *args
-    subject.can?(*args).should be_true
+    expect(subject.can?(*args)).to be_truthy
   end
 
   def cannot! *args
-    subject.can?(*args).should be_false
+    expect(subject.can?(*args)).to be_falsey
   end
 
   context "DatIncident" do

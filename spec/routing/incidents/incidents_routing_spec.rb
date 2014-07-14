@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Incidents::IncidentsController do
+describe Incidents::IncidentsController, :type => :routing do
   describe "routing" do
 
     #it "routes to #index" do
@@ -8,16 +8,16 @@ describe Incidents::IncidentsController do
     #end
 
     it "routes to #show" do
-      get("/incidents/slug/incidents/15-555").should route_to("incidents/incidents#show", :id => "15-555", chapter_id: 'slug')
+      expect(get("/incidents/slug/incidents/15-555")).to route_to("incidents/incidents#show", :id => "15-555", chapter_id: 'slug')
     end
 
     it "routes to #link_cas" do
-      get("/incidents/slug/incidents/link_cas").should route_to("incidents/incidents#link_cas", chapter_id: 'slug')
-      post("/incidents/slug/incidents/link_cas").should route_to("incidents/incidents#link_cas", chapter_id: 'slug')
+      expect(get("/incidents/slug/incidents/link_cas")).to route_to("incidents/incidents#link_cas", chapter_id: 'slug')
+      expect(post("/incidents/slug/incidents/link_cas")).to route_to("incidents/incidents#link_cas", chapter_id: 'slug')
     end
 
     it "routes to #needs_report" do
-      get("/incidents/slug/incidents/needs_report").should route_to("incidents/incidents#needs_report", chapter_id: 'slug')
+      expect(get("/incidents/slug/incidents/needs_report")).to route_to("incidents/incidents#needs_report", chapter_id: 'slug')
     end
 
     #it "routes to #edit" do

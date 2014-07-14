@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Scheduler::CalendarController do
+describe Scheduler::CalendarController, :type => :controller do
   include LoggedIn
   render_views
 
@@ -28,33 +28,33 @@ describe Scheduler::CalendarController do
 
     it "should render the whole calendar" do
       get :show, month: 'august', year: '2013'
-      response.should be_success
-      response.body.should match(@ds.name)
-      response.body.should match(@ws.name)
-      response.body.should match(@ms.name)
+      expect(response).to be_success
+      expect(response.body).to match(@ds.name)
+      expect(response.body).to match(@ws.name)
+      expect(response.body).to match(@ms.name)
     end
 
 
     it "should render the month" do
       xhr :get, :month, month: "2013-08"
-      response.should be_success
-      response.body.should match(@ds.name)
-      response.body.should match(@ws.name)
-      response.body.should match(@ms.name)
+      expect(response).to be_success
+      expect(response.body).to match(@ds.name)
+      expect(response.body).to match(@ws.name)
+      expect(response.body).to match(@ms.name)
     end
 
     it "should render open shifts" do
       get :show, month: 'august', year: '2013', display: 'open_shifts'
-      response.should be_success
-      response.body.should match(@ds.name)
-      response.body.should match(@ws.name)
-      response.body.should match(@ms.name)
+      expect(response).to be_success
+      expect(response.body).to match(@ds.name)
+      expect(response.body).to match(@ws.name)
+      expect(response.body).to match(@ms.name)
     end
 
     it "should render the spreadsheet" do
       get :show, month: 'august', year: '2013', display: 'spreadsheet'
-      response.should be_success
-      response.body.should match(@ds.name)
+      expect(response).to be_success
+      expect(response.body).to match(@ds.name)
     end
 
     args = {
@@ -74,23 +74,23 @@ describe Scheduler::CalendarController do
 
         it "should render the whole calendar" do
           get :show, extra_params.merge({month: 'august', year: '2013'})
-          response.should be_success
+          expect(response).to be_success
         end
 
 
         it "should render the month" do
           xhr :get, :month, extra_params.merge({month: "2013-08"})
-          response.should be_success
+          expect(response).to be_success
         end
 
         it "should render open shifts" do
           xhr :get, :show, extra_params.merge({month: 'august', year: '2013', display: 'open_shifts'})
-          response.should be_success
+          expect(response).to be_success
         end
 
         it "should render the spreadsheet" do
           get :show, extra_params.merge({month: 'august', year: '2013', display: 'spreadsheet'})
-          response.should be_success
+          expect(response).to be_success
         end
       end
     end
@@ -103,34 +103,34 @@ describe Scheduler::CalendarController do
 
       it "should render the whole calendar" do
         get :show, month: 'august', year: '2013'
-        response.should be_success
+        expect(response).to be_success
       end
 
       it "should render the month" do
         xhr :get, :month, month: "2013-08"
-        response.should be_success
+        expect(response).to be_success
       end
 
       it "should render open shifts" do
         xhr :get, :show, month: 'august', year: '2013', display: 'open_shifts'
-        response.should be_success
+        expect(response).to be_success
       end
 
       it "should render the spreadsheet" do
         get :show, month: 'august', year: '2013', display: 'spreadsheet'
-        response.should be_success
+        expect(response).to be_success
       end
     end
 
     context "specifying empty counties" do
       it "should render the whole calendar" do
         get :show, month: 'august', year: '2013', counties: [], show_shifts: 'county'
-        response.should be_success
+        expect(response).to be_success
       end
 
       it "should render the spreadsheet" do
         get :show, month: 'august', year: '2013', display: 'spreadsheet', counties: [], show_shifts: 'county'
-        response.should be_success
+        expect(response).to be_success
       end
     end
   end
@@ -180,62 +180,62 @@ describe Scheduler::CalendarController do
 
       it "should render" do
         xhr :get, :day, date: values[:date].to_s, period: partial_name
-        response.should be_success
-        response.body.should match(@shift.name)
+        expect(response).to be_success
+        expect(response.body).to match(@shift.name)
       end
 
       it "should be possible to sign up" do
         xhr :get, :day, date: values[:next_date].to_s, period: partial_name
-        response.should be_success
-        response.body.should match("checkbox")
+        expect(response).to be_success
+        expect(response.body).to match("checkbox")
       end
 
       it "should be possible to un-sign up" do
         xhr :get, :day, date: values[:date].to_s, period: partial_name
-        response.should be_success
-        response.body.should match("checkbox")
+        expect(response).to be_success
+        expect(response.body).to match("checkbox")
       end
 
       it "should not show shift if the shift has ended" do
         @shift.update_attribute(:shift_ends, values[:prev_date])
         xhr :get, :day, date: values[:date].to_s, period: partial_name
-        response.should be_success
-        response.body.should_not match(@shift.name)
+        expect(response).to be_success
+        expect(response.body).not_to match(@shift.name)
       end
 
       it "should not show shift if the shift hasn't started" do
         @shift.update_attribute(:shift_begins, values[:next_date])
         xhr :get, :day, date: values[:prev_date].to_s, period: partial_name
-        response.should be_success
-        response.body.should_not match(@shift.name)
+        expect(response).to be_success
+        expect(response.body).not_to match(@shift.name)
       end
 
       it "should not be possible to un-sign up if the shift is frozen" do
         @shift.update_attribute(:signups_frozen_before, values[:later_date])
         xhr :get, :day, date: values[:date].to_s, period: partial_name
-        response.should be_success
-        response.body.should_not match("checkbox")
+        expect(response).to be_success
+        expect(response.body).not_to match("checkbox")
       end
 
       it "should be possible to un-sign up after the shift is frozen" do
         @shift.update_attribute(:signups_frozen_before, values[:next_date])
         xhr :get, :day, date: values[:later_date].to_s, period: partial_name
-        response.should be_success
-        response.body.should match("checkbox")
+        expect(response).to be_success
+        expect(response.body).to match("checkbox")
       end
 
       it "should not be possible to sign up after the shift available day" do
         @shift.update_attribute(:signups_available_before, values[:next_date])
         xhr :get, :day, date: values[:later_date].to_s, period: partial_name
-        response.should be_success
-        response.body.should_not match("checkbox")
+        expect(response).to be_success
+        expect(response.body).not_to match("checkbox")
       end
 
       it "should be possible to sign up before the shift available day" do
         @shift.update_attribute(:signups_available_before, values[:later_date])
         xhr :get, :day, date: values[:next_date].to_s, period: partial_name
-        response.should be_success
-        response.body.should match("checkbox")
+        expect(response).to be_success
+        expect(response.body).to match("checkbox")
       end
 
       it "should be possible to sign up in less than the advance days" do
@@ -243,37 +243,37 @@ describe Scheduler::CalendarController do
 
         @shift.update_attribute(:max_advance_signup, days_to + 5)
         xhr :get, :day, date: values[:next_date].to_s, period: partial_name
-        response.should be_success
-        response.body.should match("checkbox")
+        expect(response).to be_success
+        expect(response.body).to match("checkbox")
       end
 
       it "should not be possible to sign up in more than the advance days" do
         days_to = (values[:next_date] - @ch.time_zone.today)
         @shift.update_attribute(:max_advance_signup, days_to - 5)
         xhr :get, :day, date: values[:next_date].to_s, period: partial_name
-        response.should be_success
-        response.body.should_not match("checkbox")
+        expect(response).to be_success
+        expect(response.body).not_to match("checkbox")
       end
 
       it "should highlight if the shift has less than desired signups" do
         FactoryGirl.create :shift_assignment, shift: @shift, shift_group: @group, person: @person, date: values[:prev_date]
         @shift.update_attribute :min_desired_signups, 2
         xhr :get, :day, date: values[:date].to_s, period: partial_name
-        response.should be_success
-        response.body.should match(/class=['"]open/)
+        expect(response).to be_success
+        expect(response.body).to match(/class=['"]open/)
       end
 
       it "should not highlight if the shift has the desired signups" do
         FactoryGirl.create :shift_assignment, shift: @shift, shift_group: @group, person: @person, date: values[:prev_date]
         xhr :get, :day, date: values[:date].to_s, period: partial_name
-        response.should be_success
-        response.body.should_not match(/class=['"]open/)
+        expect(response).to be_success
+        expect(response.body).not_to match(/class=['"]open/)
       end
 
       if partial_name != 'week'
         it "should render the shift group name" do
           xhr :get, :day, date: values[:date].to_s, period: partial_name
-          response.body.should match(@group.name)
+          expect(response.body).to match(@group.name)
         end
       end
 
@@ -281,7 +281,7 @@ describe Scheduler::CalendarController do
         @empty_group = FactoryGirl.create :shift_group, name: "EmptyGroup", chapter: @ch, period: values[:shift_period], start_offset: values[:shift_start_offset], end_offset: values[:shift_end_offset]
         @old_shift = FactoryGirl.create :shift, shift_groups: [@empty_group], county: @person.counties.first, positions: @person.positions, shift_ends: values[:date]-5
         xhr :get, :day, date: values[:date].to_s, period: partial_name
-        response.body.should_not match(@empty_group.name)
+        expect(response.body).not_to match(@empty_group.name)
       end
     end
 

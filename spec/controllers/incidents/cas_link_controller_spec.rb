@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Incidents::CasLinkController do
+describe Incidents::CasLinkController, :type => :controller do
   include LoggedIn
   before(:each) { grant_role! 'cas_admin' }
   render_views
@@ -15,8 +15,8 @@ describe Incidents::CasLinkController do
 
     get :index, chapter_id: inc.chapter.to_param
 
-    response.should be_success
-    controller.send(:collection).should =~ [cas]
+    expect(response).to be_success
+    expect(controller.send(:collection)).to match_array([cas])
   end
 
   it "can link an incident" do
@@ -24,10 +24,10 @@ describe Incidents::CasLinkController do
     inc = FactoryGirl.create :incident, chapter: @person.chapter
 
     post :link, id: cas.to_param, incident_id: inc.id, chapter_id: inc.chapter.to_param
-    response.should be_redirect
-    flash[:info].should_not be_empty
+    expect(response).to be_redirect
+    expect(flash[:info]).not_to be_empty
 
-    inc.reload.cas_event_number.should == cas.cas_incident_number
+    expect(inc.reload.cas_event_number).to eq(cas.cas_incident_number)
   end
 
   it "won't link if the cas is already linked" do
@@ -38,8 +38,8 @@ describe Incidents::CasLinkController do
     inc.link_to_cas_incident(cas2)
     expect {
       post :link, id: cas2.to_param, incident_id: inc2.id, chapter_id: inc.chapter.to_param
-      response.should be_redirect
-      flash[:error].should_not be_empty
+      expect(response).to be_redirect
+      expect(flash[:error]).not_to be_empty
     }.to_not change{inc.reload.cas_event_number}
   end
 
@@ -50,26 +50,26 @@ describe Incidents::CasLinkController do
       post :ignore, id: cas.to_param, chapter_id: @person.chapter.to_param
     }.to change{cas.reload.ignore_incident}.to(true)
 
-    response.should be_redirect
-    flash[:info].should_not be_empty
+    expect(response).to be_redirect
+    expect(flash[:info]).not_to be_empty
   end
 
   it "can promote to an incident" do
     cas = FactoryGirl.create :cas_incident, chapter: @person.chapter
     FactoryGirl.create :county, name: cas.county_name, chapter: @person.chapter
 
-    Geokit::Geocoders::GoogleGeocoder.should_receive(:geocode).and_return(
+    expect(Geokit::Geocoders::GoogleGeocoder).to receive(:geocode).and_return(
       double lat: Faker::Address.latitude, lng: Faker::Address.longitude, success?: true, 
              city: Faker::Address.city, district: Faker::Address.city, zip: Faker::Address.zip_code)
 
     expect {
       post :promote, id: cas.to_param, commit: 'Promote to Incident', chapter_id: cas.chapter.to_param
-      response.should be_redirect
-      flash[:info].should_not be_empty
+      expect(response).to be_redirect
+      expect(flash[:info]).not_to be_empty
 
     }.to change(Incidents::Incident, :count).by(1)
 
-    Incidents::Incident.where(cas_event_number: cas.cas_incident_number).first.should_not be_nil
+    expect(Incidents::Incident.where(cas_event_number: cas.cas_incident_number).first).not_to be_nil
   end
 
 end

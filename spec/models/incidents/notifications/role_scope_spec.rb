@@ -1,5 +1,5 @@
 require 'spec_helper'
 
-describe Incidents::Notifications::RoleScope do
-  pending "add some examples to (or delete) #{__FILE__}"
+describe Incidents::Notifications::RoleScope, :type => :model do
+  skip "add some examples to (or delete) #{__FILE__}"
 end

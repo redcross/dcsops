@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Incidents::DatIncidentsController do
+describe Incidents::DatIncidentsController, :type => :controller do
   include LoggedIn
 
 
@@ -28,13 +28,13 @@ describe Incidents::DatIncidentsController do
 
       get :new, incident_id: incident.to_param, chapter_id: incident.chapter.to_param
 
-      response.should redirect_to(action: :edit, incident_id: incident.to_param)
+      expect(response).to redirect_to(action: :edit, incident_id: incident.to_param)
     end
 
     it "should render under an incident" do
       incident = FactoryGirl.create :incident, chapter: @person.chapter
       get :new, incident_id: incident.to_param, chapter_id: incident.chapter.to_param
-      response.should be_success
+      expect(response).to be_success
     end
 
   end
@@ -69,7 +69,7 @@ describe Incidents::DatIncidentsController do
       @vehicle = FactoryGirl.create :vehicle
     end
 
-    before(:each) { Incidents::Notifications::Notification.stub :create_for_event }
+    before(:each) { allow(Incidents::Notifications::Notification).to receive :create_for_event }
 
     let(:create_attrs) {
       attrs = @dat.attributes
@@ -83,18 +83,18 @@ describe Incidents::DatIncidentsController do
     it "should allow creating" do
       expect {
         post :create, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param, incidents_dat_incident: create_attrs
-        response.should redirect_to(incidents_chapter_incident_path(@incident.chapter, @incident))
+        expect(response).to redirect_to(incidents_chapter_incident_path(@incident.chapter, @incident))
       }.to change(Incidents::DatIncident, :count).by(1)
     end
     it "should not change incident attributes" do
       create_attrs[:incident_attributes].merge!( {:incident_number => "15-555"})
       expect {
         post :create, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param, incidents_dat_incident: create_attrs
-        response.should redirect_to(incidents_chapter_incident_path(@incident.chapter, @incident))
+        expect(response).to redirect_to(incidents_chapter_incident_path(@incident.chapter, @incident))
       }.to_not change{@incident.reload.incident_number}
     end
     xit "should notify the report was filed" do
-      Incidents::Notifications::Notification.should_receive(:create_for_event).with(anything, 'incident_report_filed', {is_new: true})
+      expect(Incidents::Notifications::Notification).to receive(:create_for_event).with(anything, 'incident_report_filed', {is_new: true})
       create_attrs[:incident_attributes][:status] = 'closed'
       post :create, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param, incidents_dat_incident: create_attrs
     end
@@ -107,9 +107,9 @@ describe Incidents::DatIncidentsController do
     end
 
     it "should notify the report was filed" do
-      Incidents::Notifications::Notification.should_receive(:create_for_event).with(anything, 'incident_report_filed', {is_new: false})
+      expect(Incidents::Notifications::Notification).to receive(:create_for_event).with(anything, 'incident_report_filed', {is_new: false})
       put :update, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param, incidents_dat_incident: {incident_attributes: {num_adults: 3}}
-      response.should redirect_to(incidents_chapter_incident_path(@incident.chapter, @incident))
+      expect(response).to redirect_to(incidents_chapter_incident_path(@incident.chapter, @incident))
     end
   end
 end

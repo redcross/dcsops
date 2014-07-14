@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "View Timeline" do
+describe "View Timeline", :type => :feature do
 
   it "Should be submittable" do
     grant_role! :incidents_admin
@@ -16,7 +16,7 @@ describe "View Timeline" do
 
     click_link "Timeline"
     
-    page.should have_text(@log.message)
+    expect(page).to have_text(@log.message)
 
     @new_log = FactoryGirl.attributes_for :event_log
     click_button "Add Log"
@@ -25,11 +25,11 @@ describe "View Timeline" do
 
     click_button "Create Event log"
 
-    page.should_not have_text("Add Event")
-    page.should have_text(@new_log[:message])
+    expect(page).not_to have_text("Add Event")
+    expect(page).to have_text(@new_log[:message])
 
     latest_log = Incidents::EventLog.last
-    latest_log.message.should == @new_log[:message]
+    expect(latest_log.message).to eq(@new_log[:message])
   end
   
 end

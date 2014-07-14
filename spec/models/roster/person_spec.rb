@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Roster::Person do
+describe Roster::Person, :type => :model do
   let(:chapter) {FactoryGirl.create :chapter}
   let(:person) {FactoryGirl.create :person, positions: [position], chapter: chapter}
   let(:position) {Roster::Position.create name: 'Test Position', chapter: chapter}
@@ -11,16 +11,16 @@ describe Roster::Person do
     before(:each) { role }
 
     it "should return true if it has a role without a scope" do
-      person.has_role( grant_name).should be_true
-      person.has_role( grant_name + "x").should be_false
+      expect(person.has_role( grant_name)).to be_truthy
+      expect(person.has_role( grant_name + "x")).to be_falsey
     end
 
     it "should return true if it has a role with a scope" do
       role.role_scopes.build scope: "test"
       role.save!
 
-      person.has_role( grant_name).should be_true
-      person.has_role( grant_name + "x").should be_false
+      expect(person.has_role( grant_name)).to be_truthy
+      expect(person.has_role( grant_name + "x")).to be_falsey
     end
   end
 
@@ -31,7 +31,7 @@ describe Roster::Person do
 
     it "should return empty if it doesn't have that role" do
 
-      person.scope_for_role( grant_name + "x").should eq([])
+      expect(person.scope_for_role( grant_name + "x")).to eq([])
     end
 
     it "should return the scopes if it has a role with a scope" do
@@ -39,7 +39,7 @@ describe Roster::Person do
       role.role_scopes.build scope: "1"
       role.save!
 
-      person.scope_for_role( grant_name).should =~ ['test', 1]
+      expect(person.scope_for_role( grant_name)).to match_array(['test', 1])
     end
 
     it "should return county ids for scope if the scope is county_ids" do
@@ -49,7 +49,7 @@ describe Roster::Person do
 
       c = person.counties.create name: 'Test County', chapter: chapter
 
-      person.scope_for_role( grant_name).should =~ (person.county_ids + [424242])
+      expect(person.scope_for_role( grant_name)).to match_array(person.county_ids + [424242])
     end
   end
 end

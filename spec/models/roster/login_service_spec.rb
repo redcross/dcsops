@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Roster::LoginService do
+describe Roster::LoginService, :type => :model do
   subject { Roster::LoginService.new "username", "password" }
 
   before :each do
@@ -44,14 +44,14 @@ describe Roster::LoginService do
     }.to_not change(Roster::Person, :count)
     
     person.reload
-    person.username.should == 'username'
+    expect(person.username).to eq('username')
   end
 
   it "should update an existing persons attributes" do
     subject.call
     person.reload
     [:first_name, :last_name, :address1, :address2, :city, :state, :zip, :email, :vc_member_number].each do |name|
-      person.send(name).should == vc_info[name]
+      expect(person.send(name)).to eq(vc_info[name])
     end
   end
 
@@ -73,19 +73,19 @@ describe Roster::LoginService do
 
     it "should assign to chapter 0" do
       subject.call
-      new_person.should_not be_nil
-      new_person.chapter_id.should == 0
+      expect(new_person).not_to be_nil
+      expect(new_person.chapter_id).to eq(0)
     end
 
     it "should not be active" do
       subject.call
-      new_person.vc_is_active.should be_false
+      expect(new_person.vc_is_active).to be_falsey
     end
 
     it "should have basic attributes" do
       subject.call
       [:first_name, :last_name, :address1, :address2, :city, :state, :zip, :email, :vc_member_number].each do |name|
-        new_person.send(name).should == vc_info[name]
+        expect(new_person.send(name)).to eq(vc_info[name])
       end
     end
 

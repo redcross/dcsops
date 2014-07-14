@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ApplicationController do
+describe ApplicationController, :type => :controller do
   include LoggedIn
 
   describe "Impersonation" do
@@ -8,28 +8,28 @@ describe ApplicationController do
     let(:impersonated) { FactoryGirl.create(:person, chapter: @person.chapter) }
 
     it "should give the current user when asked" do
-      controller.current_user.should == @person
+      expect(controller.current_user).to eq(@person)
     end
 
     it "should give the current user when impersonating and not authorized" do
       session[:impersonating_user_id] = impersonated.id
 
-      controller.impersonating_user.should be_nil
-      controller.current_user.should == @person
+      expect(controller.impersonating_user).to be_nil
+      expect(controller.current_user).to eq(@person)
     end
 
     it "should give the impersonated user when impersonating and authorized" do
       session[:impersonating_user_id] = impersonated.id
       controller.stub can_impersonate: true
 
-      controller.impersonating_user.should == impersonated
-      controller.current_user.should == impersonated
+      expect(controller.impersonating_user).to eq(impersonated)
+      expect(controller.current_user).to eq(impersonated)
     end
 
     it "should check that the logged in user is authorized to impersonate" do
-      AdminAbility.any_instance.should_receive(:can?).with(:impersonate, anything).and_return(false)
+      expect_any_instance_of(AdminAbility).to receive(:can?).with(:impersonate, anything).and_return(false)
 
-      controller.can_impersonate(impersonated).should be_false
+      expect(controller.can_impersonate(impersonated)).to be_falsey
     end
 
 

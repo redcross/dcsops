@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Scheduler::ShiftSwapsController do
+describe Scheduler::ShiftSwapsController, :type => :controller do
   include LoggedIn
 
   before :each do
@@ -21,8 +21,8 @@ describe Scheduler::ShiftSwapsController do
 
   it "should allow to mark a shift as swappable" do
     post :create, shift_assignment_id: @assignment.id
-    @assignment.reload.available_for_swap.should be_true
-    ActionMailer::Base.deliveries.should be_empty
+    expect(@assignment.reload.available_for_swap).to be_truthy
+    expect(ActionMailer::Base.deliveries).to be_empty
   end
 
   it "should send admin emails when marking a shift swappable" do
@@ -31,8 +31,8 @@ describe Scheduler::ShiftSwapsController do
     @adminsettings.update_attribute :email_all_swaps, true
 
     post :create, shift_assignment_id: @assignment.id
-    ActionMailer::Base.deliveries.should_not be_empty
-    ActionMailer::Base.deliveries.first.body.should include("has made a shift available for swap")
+    expect(ActionMailer::Base.deliveries).not_to be_empty
+    expect(ActionMailer::Base.deliveries.first.body).to include("has made a shift available for swap")
   end
 
   it "should send user emails when marking a shift swappable" do
@@ -41,8 +41,8 @@ describe Scheduler::ShiftSwapsController do
     @adminsettings.update_attribute :email_swap_requested, true
 
     post :create, shift_assignment_id: @assignment.id
-    ActionMailer::Base.deliveries.should_not be_empty
-    ActionMailer::Base.deliveries.first.body.should include("has made a shift available for swap")
+    expect(ActionMailer::Base.deliveries).not_to be_empty
+    expect(ActionMailer::Base.deliveries.first.body).to include("has made a shift available for swap")
   end
 
   it "should allow marking a shift as swappable with a recipient" do
@@ -51,19 +51,19 @@ describe Scheduler::ShiftSwapsController do
     @adminsettings.update_attribute :email_all_swaps, true
 
     post :create, shift_assignment_id: @assignment.id, swap_to_id: @person2.id
-    @assignment.reload.available_for_swap.should be_true
+    expect(@assignment.reload.available_for_swap).to be_truthy
 
-    ActionMailer::Base.deliveries.should have(2).items # Admin and recipient
+    expect(ActionMailer::Base.deliveries.size).to eq(2) # Admin and recipient
 
     msg = ActionMailer::Base.deliveries.detect{|d| d.to.include? @person2.email}
-    msg.should_not be_nil
+    expect(msg).not_to be_nil
 
-    msg.body.should include("has asked you to take over their shift")
+    expect(msg.body).to include("has asked you to take over their shift")
 
     msg = ActionMailer::Base.deliveries.detect{|d| d.to.include? @admin.email}
-    msg.should_not be_nil
+    expect(msg).not_to be_nil
 
-    msg.body.should include("has made a shift available for swap")
+    expect(msg.body).to include("has made a shift available for swap")
   end
 
   it "should allow accepting a swap" do
@@ -73,10 +73,10 @@ describe Scheduler::ShiftSwapsController do
 
     post :confirm, shift_assignment_id: @assignment.id
 
-    response.should be_redirect
+    expect(response).to be_redirect
 
-    ActionMailer::Base.deliveries.should_not be_empty # 
-    Scheduler::ShiftAssignment.last.person.should == @person2
+    expect(ActionMailer::Base.deliveries).not_to be_empty # 
+    expect(Scheduler::ShiftAssignment.last.person).to eq(@person2)
   end
 
   it "should not allow accepting a swap to someone else" do
@@ -84,9 +84,9 @@ describe Scheduler::ShiftSwapsController do
 
     post :confirm, shift_assignment_id: @assignment.id, swap_to_id: @person2.id
 
-    response.should redirect_to(scheduler_shift_assignment_shift_swap_path(@assignment))
+    expect(response).to redirect_to(scheduler_shift_assignment_shift_swap_path(@assignment))
 
-    ActionMailer::Base.deliveries.should be_empty # 
+    expect(ActionMailer::Base.deliveries).to be_empty # 
   end
 
   it "should allow accepting a swap to someone else as admin" do
@@ -95,13 +95,13 @@ describe Scheduler::ShiftSwapsController do
 
     post :confirm, shift_assignment_id: @assignment.id, swap_to_id: @person2.id
     new_assignment = Scheduler::ShiftAssignment.last
-    new_assignment.id.should_not == @assignment.id
-    response.should redirect_to(new_scheduler_shift_assignment_shift_swap_path(new_assignment))
+    expect(new_assignment.id).not_to eq(@assignment.id)
+    expect(response).to redirect_to(new_scheduler_shift_assignment_shift_swap_path(new_assignment))
     expect{@assignment.reload}.to raise_error
     
 
-    ActionMailer::Base.deliveries.should_not be_empty # 
-    Scheduler::ShiftAssignment.last.person.should == @person2
+    expect(ActionMailer::Base.deliveries).not_to be_empty # 
+    expect(Scheduler::ShiftAssignment.last.person).to eq(@person2)
   end
 
   it "should allow cancelling a swap" do
@@ -110,7 +110,7 @@ describe Scheduler::ShiftSwapsController do
 
     delete :destroy, shift_assignment_id: @assignment.id
 
-    @assignment.reload.available_for_swap.should be_false
-    ActionMailer::Base.deliveries.should be_empty
+    expect(@assignment.reload.available_for_swap).to be_falsey
+    expect(ActionMailer::Base.deliveries).to be_empty
   end
 end

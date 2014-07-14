@@ -14,7 +14,7 @@ describe Incidents::DispatchImporter do
   before do
     geocode_result = double(:geocode_result, success?: true, lat: 0, lng: 0, city: Faker::Address.city, state: Faker::Address.state, district: Faker::Address.city, zip: Faker::Address.zip_code)
     Incidents::DispatchImporter.geocoder.stub geocode: geocode_result
-    Incidents::Notifications::Notification.stub :create_for_event
+    allow(Incidents::Notifications::Notification).to receive :create_for_event
   end
 
   describe "1.txt" do
@@ -23,53 +23,53 @@ describe Incidents::DispatchImporter do
       import
 
       inc = Incidents::DispatchLog.first
-      inc.should_not be_nil
+      expect(inc).not_to be_nil
 
-      inc.incident_number.should == "14-044"
-      inc.incident_type.should == "Flooding"
-      inc.address.should == '311 Dogwood Lane, BRENTWOOD'
-      inc.county_name.should == 'Contra Costa'
-      inc.displaced.should == "374"
-      inc.services_requested.should == "We need food and possibly an evacuation center. Sentence on line two."
-      inc.agency.should == "The Brentwood Police Dept"
-      inc.contact_name.should == "Sally Smith"
-      inc.contact_phone.should == "(510)227-9475"
-      inc.caller_id.should == "5105954566"
+      expect(inc.incident_number).to eq("14-044")
+      expect(inc.incident_type).to eq("Flooding")
+      expect(inc.address).to eq('311 Dogwood Lane, BRENTWOOD')
+      expect(inc.county_name).to eq('Contra Costa')
+      expect(inc.displaced).to eq("374")
+      expect(inc.services_requested).to eq("We need food and possibly an evacuation center. Sentence on line two.")
+      expect(inc.agency).to eq("The Brentwood Police Dept")
+      expect(inc.contact_name).to eq("Sally Smith")
+      expect(inc.contact_phone).to eq("(510)227-9475")
+      expect(inc.caller_id).to eq("5105954566")
 
-      inc.received_at.should == chapter.time_zone.parse( "2013-06-13 19:16:00")
-      inc.delivered_at.should == chapter.time_zone.parse( "2013-06-13 19:18:00")
+      expect(inc.received_at).to eq(chapter.time_zone.parse( "2013-06-13 19:16:00"))
+      expect(inc.delivered_at).to eq(chapter.time_zone.parse( "2013-06-13 19:18:00"))
       
-      inc.delivered_to.should == 'JOHN'
+      expect(inc.delivered_to).to eq('JOHN')
     end
 
     it "should parse the event logs" do
       import
 
       inc = Incidents::DispatchLog.first
-      inc.should_not be_nil
+      expect(inc).not_to be_nil
 
-      inc.log_items.should have(9).items
+      expect(inc.log_items.size).to eq(9)
 
       dial = inc.log_items.detect{|li| li.action_type == 'Dial'}
 
-      dial.should_not be_nil
-      dial.result.should == "RLY'D"
-      dial.recipient.should == "650-555-1212 DOE, JOHN - CELL"
-      dial.action_at.should == chapter.time_zone.parse( "2013-06-13 19:17:00")
-      dial.operator.should == 'FBGL'
+      expect(dial).not_to be_nil
+      expect(dial.result).to eq("RLY'D")
+      expect(dial.recipient).to eq("650-555-1212 DOE, JOHN - CELL")
+      expect(dial.action_at).to eq(chapter.time_zone.parse( "2013-06-13 19:17:00"))
+      expect(dial.operator).to eq('FBGL')
     end
 
     it "should create an incident" do
       import
 
       inc = Incidents::Incident.first
-      inc.should_not be_nil
+      expect(inc).not_to be_nil
 
-      inc.incident_number.should == '14-044'
-      inc.date.should == Date.civil(2013, 6, 13)
-      inc.area.should == county
-      inc.chapter.should == chapter
-      inc.status.should == 'open'
+      expect(inc.incident_number).to eq('14-044')
+      expect(inc.date).to eq(Date.civil(2013, 6, 13))
+      expect(inc.area).to eq(county)
+      expect(inc.chapter).to eq(chapter)
+      expect(inc.status).to eq('open')
     end
 
     it "should create several event logs" do
@@ -79,24 +79,24 @@ describe Incidents::DispatchImporter do
       inc = Incidents::Incident.first
       
       received = inc.event_logs.detect{|e| e.event == 'dispatch_received'}
-      received.should_not be_nil
-      received.event_time.should == log.received_at
+      expect(received).not_to be_nil
+      expect(received.event_time).to eq(log.received_at)
 
       delivered = inc.event_logs.detect{|e| e.event == 'dispatch_relayed'}
-      delivered.should_not be_nil
-      delivered.event_time.should == log.delivered_at
+      expect(delivered).not_to be_nil
+      expect(delivered.event_time).to eq(log.delivered_at)
 
-      inc.event_logs.should have(5).items
+      expect(inc.event_logs.size).to eq(5)
     end
 
     it "should notify IncidentCreated" do
-      Incidents::Notifications::Notification.should_receive(:create_for_event).with(anything, 'new_incident')
+      expect(Incidents::Notifications::Notification).to receive(:create_for_event).with(anything, 'new_incident')
 
       import
     end
 
     it "should not notify DispatchLogUpdated" do
-      Incidents::Notifications::Notification.should_not_receive(:create_for_event).with(anything, 'incident_dispatched')
+      expect(Incidents::Notifications::Notification).not_to receive(:create_for_event).with(anything, 'incident_dispatched')
 
       import
     end
@@ -111,17 +111,17 @@ describe Incidents::DispatchImporter do
         import
 
         log = Incidents::DispatchLog.first
-        log.incident.should == @inc
+        expect(log.incident).to eq(@inc)
       end
 
       it "should not notify IncidentCreated" do
-        Incidents::Notifications::Notification.should_not_receive(:create_for_event).with(anything, 'new_incident')
+        expect(Incidents::Notifications::Notification).not_to receive(:create_for_event).with(anything, 'new_incident')
 
         import
       end
 
       it "should notify DispatchLogUpdated" do
-        Incidents::Notifications::Notification.should_receive(:create_for_event).with(anything, 'incident_dispatched')
+        expect(Incidents::Notifications::Notification).to receive(:create_for_event).with(anything, 'incident_dispatched')
 
         import
       end
@@ -134,51 +134,51 @@ describe Incidents::DispatchImporter do
       import
 
       inc = Incidents::DispatchLog.first
-      inc.should_not be_nil
+      expect(inc).not_to be_nil
 
-      inc.incident_number.should == "14-043"
-      inc.incident_type.should == "Apartment Fire"
-      inc.address.should == '211 Main St, SAN FRANCISCO'
-      inc.county_name.should == 'San Francisco'
-      inc.displaced.should == "36"
-      inc.services_requested.should == "Canteine for the fire dept and the 36 people that live he also housing for the tenants."
-      inc.agency.should == "San Francisco Fire Dept"
-      inc.contact_name.should == "Bob Boberson"
-      inc.contact_phone.should == "(415)555-1212"
-      inc.caller_id.should == "5105551212"
+      expect(inc.incident_number).to eq("14-043")
+      expect(inc.incident_type).to eq("Apartment Fire")
+      expect(inc.address).to eq('211 Main St, SAN FRANCISCO')
+      expect(inc.county_name).to eq('San Francisco')
+      expect(inc.displaced).to eq("36")
+      expect(inc.services_requested).to eq("Canteine for the fire dept and the 36 people that live he also housing for the tenants.")
+      expect(inc.agency).to eq("San Francisco Fire Dept")
+      expect(inc.contact_name).to eq("Bob Boberson")
+      expect(inc.contact_phone).to eq("(415)555-1212")
+      expect(inc.caller_id).to eq("5105551212")
 
-      inc.received_at.should == chapter.time_zone.parse( "2013-06-13 18:57:00")
-      inc.delivered_at.should == chapter.time_zone.parse( "2013-06-13 19:07:00")
+      expect(inc.received_at).to eq(chapter.time_zone.parse( "2013-06-13 18:57:00"))
+      expect(inc.delivered_at).to eq(chapter.time_zone.parse( "2013-06-13 19:07:00"))
       
-      inc.delivered_to.should == 'MR. DOE'
+      expect(inc.delivered_to).to eq('MR. DOE')
     end
 
     it "should parse the event logs" do
       import
 
       inc = Incidents::DispatchLog.first
-      inc.should_not be_nil
+      expect(inc).not_to be_nil
 
-      inc.log_items.should have(13).items
+      expect(inc.log_items.size).to eq(13)
 
       dial = inc.log_items.order{action_at.desc}.detect{|li| li.action_type == 'Dial'}
-      dial.should_not be_nil
-      dial.result.should == "RELAYED"
-      dial.recipient.should == "650-555-1212 DOE, JOHN - CELL"
-      dial.action_at.should == chapter.time_zone.parse( "2013-06-13 19:05:00")
-      dial.operator.should == 'PMED'
+      expect(dial).not_to be_nil
+      expect(dial.result).to eq("RELAYED")
+      expect(dial.recipient).to eq("650-555-1212 DOE, JOHN - CELL")
+      expect(dial.action_at).to eq(chapter.time_zone.parse( "2013-06-13 19:05:00"))
+      expect(dial.operator).to eq('PMED')
     end
 
     it "should create an incident" do
       import
 
       inc = Incidents::Incident.first
-      inc.should_not be_nil
+      expect(inc).not_to be_nil
 
-      inc.incident_number.should == '14-043'
-      inc.date.should == Date.civil(2013, 6, 13)
-      inc.area.should == county
-      inc.chapter.should == chapter
+      expect(inc.incident_number).to eq('14-043')
+      expect(inc.date).to eq(Date.civil(2013, 6, 13))
+      expect(inc.area).to eq(county)
+      expect(inc.chapter).to eq(chapter)
     end
 
     it "should create several event logs" do
@@ -188,14 +188,14 @@ describe Incidents::DispatchImporter do
       inc = Incidents::Incident.first
       
       received = inc.event_logs.detect{|e| e.event == 'dispatch_received'}
-      received.should_not be_nil
-      received.event_time.should == log.received_at
+      expect(received).not_to be_nil
+      expect(received.event_time).to eq(log.received_at)
 
       delivered = inc.event_logs.detect{|e| e.event == 'dispatch_relayed'}
-      delivered.should_not be_nil
-      delivered.event_time.should == log.delivered_at
+      expect(delivered).not_to be_nil
+      expect(delivered.event_time).to eq(log.delivered_at)
 
-      inc.event_logs.should have(9).items
+      expect(inc.event_logs.size).to eq(9)
     end
   end
 
@@ -224,10 +224,10 @@ describe Incidents::DispatchImporter do
       import
 
       inc = Incidents::DispatchLog.first
-      inc.should_not be_nil
+      expect(inc).not_to be_nil
 
       incident_details.each do |attr, val|
-        inc.send(attr).should eq(val)
+        expect(inc.send(attr)).to eq(val)
       end
 
     end
@@ -236,19 +236,19 @@ describe Incidents::DispatchImporter do
       import
 
       inc = Incidents::DispatchLog.first
-      inc.should_not be_nil
+      expect(inc).not_to be_nil
 
-      inc.log_items.should have(num_event_logs).items
+      expect(inc.log_items.size).to eq(num_event_logs)
     end
 
     it "should create an incident" do
       import
 
       inc = Incidents::Incident.first
-      inc.should_not be_nil
+      expect(inc).not_to be_nil
 
       incident_attributes.each do |attr, val|
-        inc.send(attr).should eq(val)
+        expect(inc.send(attr)).to eq(val)
       end
     end
   end

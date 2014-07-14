@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Manually create incident" do
+describe "Manually create incident", :type => :feature do
 
   it "Should be submittable to dat incident report" do
     grant_role! :submit_incident_report
@@ -26,7 +26,7 @@ describe "Manually create incident" do
 
     click_on 'Create Incident'
 
-    page.should have_text('New DAT Incident Report')
+    expect(page).to have_text('New DAT Incident Report')
   end
 
 end

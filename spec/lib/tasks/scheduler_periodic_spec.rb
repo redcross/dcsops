@@ -19,7 +19,7 @@ describe "" do
     end
 
     it "should send a swap reminder to someone subscribed" do
-      Scheduler::RemindersMailer.should_receive(:daily_swap_reminder).with(@setting).and_return(double deliver: true)
+      expect(Scheduler::RemindersMailer).to receive(:daily_swap_reminder).with(@setting).and_return(double deliver: true)
       subject.invoke
     end
   end
@@ -30,20 +30,20 @@ describe "" do
     end
 
     it "should trigger the mailer with no env" do
-      Scheduler::SendDispatchRosterJob.should_receive(:new).with(@chapter, true).and_call_original
-      Scheduler::SendDispatchRosterJob.any_instance.should_receive :perform
+      expect(Scheduler::SendDispatchRosterJob).to receive(:new).with(@chapter, true).and_call_original
+      expect_any_instance_of(Scheduler::SendDispatchRosterJob).to receive :perform
       subject.invoke
     end
 
     it "should trigger the mailer with IF_NEEDED=false and run the mailer with force=false" do
-      ENV.stub(:[]).with("IF_NEEDED").and_return("true")
-      Scheduler::SendDispatchRosterJob.should_receive(:new).with(@chapter, false).and_call_original
-      Scheduler::SendDispatchRosterJob.any_instance.should_receive :perform
+      allow(ENV).to receive(:[]).with("IF_NEEDED").and_return("true")
+      expect(Scheduler::SendDispatchRosterJob).to receive(:new).with(@chapter, false).and_call_original
+      expect_any_instance_of(Scheduler::SendDispatchRosterJob).to receive :perform
       subject.invoke
     end
 
     it "should work all the way through" do
-      Scheduler::DirectlineMailer.any_instance.should_receive(:export).with(@chapter, anything, anything).and_return(double deliver: true)
+      expect_any_instance_of(Scheduler::DirectlineMailer).to receive(:export).with(@chapter, anything, anything).and_return(double deliver: true)
       subject.invoke
     end
   end

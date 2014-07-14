@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Invalid Incident Report" do
+describe "Invalid Incident Report", :type => :feature do
   self.use_transactional_fixtures = false
   before do
     grant_role! 'submit_incident_report'

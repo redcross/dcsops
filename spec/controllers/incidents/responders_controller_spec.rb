@@ -18,7 +18,7 @@ require 'spec_helper'
 # Message expectations are only used when there is no simpler way to specify
 # that an instance is receiving a specific message.
 
-describe Incidents::RespondersController do
+describe Incidents::RespondersController, :type => :controller do
   include LoggedIn
   before(:each) {@person.chapter.incidents_enable_dispatch_console = true; @person.chapter.save!;}
 
@@ -49,21 +49,21 @@ describe Incidents::RespondersController do
 
       it "redirects to index" do
         post :create, {:incidents_responder_assignment => valid_attributes, incident_id: incident.to_param, chapter_id: incident.chapter.to_param}, valid_session
-        response.should redirect_to(incidents_chapter_incident_responders_url(incident.chapter, incident))
+        expect(response).to redirect_to(incidents_chapter_incident_responders_url(incident.chapter, incident))
       end
 
       it "triggers the assignment mailers with a responding role" do
         client_stub = double :sms_client
         controller.stub sms_client: client_stub
         Bitly.stub(client: double(:shorten => double(short_url: "https://short.url")))
-        client_stub.should_receive(:send_message).with(an_instance_of(Incidents::ResponderMessage))
-        Incidents::RespondersMailer.should_receive(:assign_email).and_return(double deliver: true)
+        expect(client_stub).to receive(:send_message).with(an_instance_of(Incidents::ResponderMessage))
+        expect(Incidents::RespondersMailer).to receive(:assign_email).and_return(double deliver: true)
         post :create, {:incidents_responder_assignment => valid_attributes.merge(role: 'team_lead'), incident_id: incident.to_param, chapter_id: incident.chapter.to_param, send_assignment_sms: true, send_assignment_email: true}, valid_session
       end
 
       it "triggers the assignment mailers with a non-responding role" do
-        Incidents::RespondersMailer.should_not_receive(:assign_sms)
-        Incidents::RespondersMailer.should_not_receive(:assign_email)
+        expect(Incidents::RespondersMailer).not_to receive(:assign_sms)
+        expect(Incidents::RespondersMailer).not_to receive(:assign_email)
         post :create, {:incidents_responder_assignment => valid_attributes.merge(role: 'not_available'), incident_id: incident.to_param, chapter_id: incident.chapter.to_param, send_assignment_sms: true, send_assignment_email: true}, valid_session
       end
     end
@@ -72,31 +72,31 @@ describe Incidents::RespondersController do
   describe "GET index" do
     it "should succeed" do
       get :index, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param}
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "should set the flash if incident doesn't have a location" do
       incident.update_attributes lat: nil, lng: nil
       get :index, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param}
-      response.should be_success
-      flash.now[:error].should_not be_empty
+      expect(response).to be_success
+      expect(flash.now[:error]).not_to be_empty
     end
   end
 
   describe "GET new" do
     it "should succeed" do
       get :new, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param}
-      response.should be_success
+      expect(response).to be_success
 
-      controller.send(:person).should == nil
+      expect(controller.send(:person)).to eq(nil)
     end
 
     it "should assign the person if given" do
       get :new, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param, person_id: person.id}
-      response.should be_success
+      expect(response).to be_success
 
-      controller.send(:person).should == person
-      controller.send(:resource).person_id.should == person.id
+      expect(controller.send(:person)).to eq(person)
+      expect(controller.send(:resource).person_id).to eq(person.id)
     end
   end
 
@@ -104,7 +104,7 @@ describe Incidents::RespondersController do
     it "should succeed" do
       ass = FactoryGirl.create :responder_assignment, person: person, incident: incident
       get :show, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param, id: ass.id}
-      response.should be_success
+      expect(response).to be_success
     end
   end
 
@@ -134,7 +134,7 @@ describe Incidents::RespondersController do
     it "marks the incident as on scene" do
       post :update_status, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param, id: assignment.id, status: 'on_scene'}
       on_scene = incident.event_logs.detect{|el| el.event == 'dat_on_scene'}
-      on_scene.should_not be_nil
+      expect(on_scene).not_to be_nil
     end
 
     it "doesn't mark the incident as on scene if it already is" do
@@ -147,7 +147,7 @@ describe Incidents::RespondersController do
     it "marks the incident as departed scene" do
       post :update_status, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param, id: assignment.id, status: 'departed_scene'}
       dat_departed_scene = incident.event_logs.detect{|el| el.event == 'dat_departed_scene'}
-      dat_departed_scene.should_not be_nil
+      expect(dat_departed_scene).not_to be_nil
     end
 
     it "doesn't mark the incident as departed scene if this isn't the last responder" do

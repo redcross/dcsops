@@ -13,24 +13,24 @@ describe Incidents::IncidentNumberSequence do
   }
 
   it "generates a sequence number" do
-    sequence.next_sequence!.should == '14-0101'
+    expect(sequence.next_sequence!).to eq('14-0101')
   end
 
   it "generates a sequence number according to the format" do
     chapter.update_attributes incidents_sequence_format: "%<fy>02d-%<number>03d"
-    sequence.next_sequence!.should == '2014-101'
+    expect(sequence.next_sequence!).to eq('2014-101')
   end
 
   it "increments the stored sequence" do
     expect{
-      sequence.next_sequence!.should == '14-0101'
+      expect(sequence.next_sequence!).to eq('14-0101')
     }.to change{chapter.reload.incidents_sequence_number}.from(100).to(101)
   end
 
   it "resets the sequence if the year has changed" do
     chapter.update_attributes incidents_sequence_year: '2010'
     expect {
-      sequence.next_sequence!.should == '14-0001'
+      expect(sequence.next_sequence!).to eq('14-0001')
     }.to change{chapter.reload.incidents_sequence_year}.to(2014)
   end
 

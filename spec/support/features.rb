@@ -19,15 +19,15 @@ module FeatureSpec
       DatabaseCleaner.clean
     end
 
-    before(:each) do
+    before(:each) do |example|
       next if example.metadata[:logged_in] == false
       secret = Rails.application.config.secret_token
       cookies = ActionDispatch::Cookies::CookieJar.new(secret)
-      cookies.stub(:close!)
+      allow(cookies).to receive(:close!)
 
       request = ActionDispatch::Request.any_instance
-      request.stub(:cookie_jar).and_return{ cookies }
-      request.stub(:cookies).and_return{ cookies }
+      allow_any_instance_of(ActionDispatch::Request).to receive(:cookie_jar){ cookies }
+      allow_any_instance_of(ActionDispatch::Request).to receive(:cookies){ cookies }
 
       @person ||= FactoryGirl.create :person
       @person.reset_persistence_token!

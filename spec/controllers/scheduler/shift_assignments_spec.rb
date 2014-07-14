@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Scheduler::ShiftAssignmentsController do
+describe Scheduler::ShiftAssignmentsController, :type => :controller do
   before(:each) do
     @person = FactoryGirl.create :person
     @chapter = @person.chapter
@@ -16,13 +16,13 @@ describe Scheduler::ShiftAssignmentsController do
   it "when not logged in, should be unauthorized" do
     get :index, format: :ics
 
-    response.code.should eq "401"
+    expect(response.code).to eq "401"
   end
 
   it "with invalid api token, should be unauthorized" do
     get :index, format: :ics, api_token: "test123"
 
-    response.code.should eq "401"
+    expect(response.code).to eq "401"
   end
 
 
@@ -32,8 +32,8 @@ describe Scheduler::ShiftAssignmentsController do
     it "should allow exporting my shifts to calendar" do
       get :index, format: :ics, api_token: @settings.calendar_api_token
 
-      response.code.should eq "200"
-      response.body.scan(/BEGIN:VEVENT/).count.should eq(5)
+      expect(response.code).to eq "200"
+      expect(response.body.scan(/BEGIN:VEVENT/).count).to eq(5)
     end
 
     it "should only include my shifts on the calendar" do
@@ -41,13 +41,13 @@ describe Scheduler::ShiftAssignmentsController do
 
       get :index, format: :ics, api_token: @settings.calendar_api_token
 
-      response.code.should eq "200"
-      response.body.scan(/BEGIN:VEVENT/).count.should eq(5)
+      expect(response.code).to eq "200"
+      expect(response.body.scan(/BEGIN:VEVENT/).count).to eq(5)
     end
 
-    pending "should include daily, weekly, monthly shifts"
-    pending "daily shifts should have a date and time"
-    pending "weekly/monthly shifts should have only a day"
+    skip "should include daily, weekly, monthly shifts"
+    skip "daily shifts should have a date and time"
+    skip "weekly/monthly shifts should have only a day"
 
     context "?show_shifts=all" do
       it "should access denied if a regular user" do
@@ -68,8 +68,8 @@ describe Scheduler::ShiftAssignmentsController do
 
         get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
 
-        response.code.should eq "200"
-        response.body.scan(/BEGIN:VEVENT/).count.should eq(8)
+        expect(response.code).to eq "200"
+        expect(response.body.scan(/BEGIN:VEVENT/).count).to eq(8)
       end
 
       it "should merge other shifts into the same event" do
@@ -84,8 +84,8 @@ describe Scheduler::ShiftAssignmentsController do
 
         get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
 
-        response.code.should eq "200"
-        response.body.scan(/BEGIN:VEVENT/).count.should eq(5)
+        expect(response.code).to eq "200"
+        expect(response.body.scan(/BEGIN:VEVENT/).count).to eq(5)
       end
     end
   end

@@ -3,7 +3,7 @@ require 'spec_helper'
 
 if ENV['TEST_IMPORT']
 
-  describe Roster::VCImporter do
+  describe Roster::VCImporter, :type => :model do
 
     before :all do
       @file = File.open(File.join(Rails.root, "spec", "fixtures", "roster", "vcdata-sanitized.xls"), "r")
@@ -31,10 +31,10 @@ if ENV['TEST_IMPORT']
       }.to_not raise_error
 
       p = Roster::Person.where(vc_id: 48514).first
-      p.should_not be_nil
+      expect(p).not_to be_nil
 
-      p.counties.should include(@sf)
-      p.positions.should include(@dat)
+      expect(p.counties).to include(@sf)
+      expect(p.positions).to include(@dat)
     end
     
   end

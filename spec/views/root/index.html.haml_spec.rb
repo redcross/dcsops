@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "root/index.html.haml" do
+describe "root/index.html.haml", :type => :view do
   let(:person) {FactoryGirl.create :person, last_name: 'Laxson'}
 
   before do
@@ -18,9 +18,9 @@ describe "root/index.html.haml" do
     links = {link.group => [link]}
     view.stub :homepage_links => links
     render
-    rendered.should match(link.group)
-    rendered.should match(link.name)
-    rendered.should match(link.icon)
-    rendered.should match(link.url)
+    expect(rendered).to match(link.group)
+    expect(rendered).to match(link.name)
+    expect(rendered).to match(link.icon)
+    expect(rendered).to match(link.url)
   end
 end

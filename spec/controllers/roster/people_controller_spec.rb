@@ -1,5 +1,5 @@
 require 'spec_helper'
-describe Roster::PeopleController do
+describe Roster::PeopleController, :type => :controller do
   render_views
 
   include LoggedIn
@@ -7,13 +7,13 @@ describe Roster::PeopleController do
   describe '#show' do
     it "should succeed as html" do
       get :show, id: @person.id
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "should succeed as json" do
       get :show, id: @person.id, format: :json
-      response.should be_success
-      JSON.parse(response.body).should_not be_nil
+      expect(response).to be_success
+      expect(JSON.parse(response.body)).not_to be_nil
     end
   end
 

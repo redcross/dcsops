@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Incidents::Notifications::Mailer do
+describe Incidents::Notifications::Mailer, :type => :mailer do
   let(:from_address) {["incidents@dcsops.org"]}
   let(:person) { FactoryGirl.build_stubbed :person }
   let(:log_items) { [double(:dispatch_log_item, action_at: Time.zone.now, action_type: 'Dial', recipient: '', result: '')] }
@@ -20,17 +20,17 @@ describe Incidents::Notifications::Mailer do
     before(:each) { report.stub dispatch_log: double( delivered_to: "Bob", log_items: log_items) }
 
     it "renders the headers" do
-      mail.subject.should eq("Missing Incident Report For County")
-      mail.from.should eq(from_address)
+      expect(mail.subject).to eq("Missing Incident Report For County")
+      expect(mail.from).to eq(from_address)
     end
 
     it "should be to the county designated contact" do
-      mail.to.should eq([person.email])
+      expect(mail.to).to eq([person.email])
     end
 
     it "renders the body" do
-      mail.body.encoded.should match("An incident number was created")
-      mail.body.encoded.should match("Person Contacted by Dispatch: Bob")
+      expect(mail.body.encoded).to match("An incident number was created")
+      expect(mail.body.encoded).to match("Person Contacted by Dispatch: Bob")
     end
   end
 
@@ -46,17 +46,17 @@ describe Incidents::Notifications::Mailer do
     before(:each) { report.stub dispatch_log: dispatch }
 
     it "renders the headers" do
-      mail.subject.should eq("New Incident For County")
-      mail.from.should eq(from_address)
+      expect(mail.subject).to eq("New Incident For County")
+      expect(mail.from).to eq(from_address)
     end
 
     it "should be to the recipient" do
-      mail.to.should eq([person.email])
+      expect(mail.to).to eq([person.email])
     end
 
     it "renders the body" do
-      mail.body.encoded.should match("Incident Type: Flood")
-      mail.body.encoded.should_not match("Delivered At")
+      expect(mail.body.encoded).to match("Incident Type: Flood")
+      expect(mail.body.encoded).not_to match("Delivered At")
     end
 
     describe "as sms" do
@@ -65,8 +65,8 @@ describe Incidents::Notifications::Mailer do
       before(:each) { person.stub(sms_addresses: ['test@vtext.com']) }
 
       it "renders" do
-        mail.to.should eq([person.sms_addresses.first])
-        mail.from.should eq([from_address])
+        expect(mail.to).to eq([person.sms_addresses.first])
+        expect(mail.from).to eq([from_address])
       end
     end
   end
@@ -81,17 +81,17 @@ describe Incidents::Notifications::Mailer do
     before(:each) { report.stub dispatch_log: dispatch }
 
     it "renders the headers" do
-      mail.subject.should eq("Incident For County Dispatched")
-      mail.from.should eq(from_address)
+      expect(mail.subject).to eq("Incident For County Dispatched")
+      expect(mail.from).to eq(from_address)
     end
 
     it "should be to the recipient" do
-      mail.to.should eq([person.email])
+      expect(mail.to).to eq([person.email])
     end
 
     it "renders the body" do
-      mail.body.encoded.should match("Incident Type: Flood")
-      mail.body.encoded.should match("Delivered To: Bob")
+      expect(mail.body.encoded).to match("Incident Type: Flood")
+      expect(mail.body.encoded).to match("Delivered To: Bob")
     end
   end
 
@@ -102,16 +102,16 @@ describe Incidents::Notifications::Mailer do
     let(:mail) { subject.notify_event(person, false, event, report, 'notification', is_new: true) }
 
     it "renders the headers" do
-      mail.subject.should eq("Incident Report Filed For #{report.county}")
-      mail.from.should eq(from_address)
+      expect(mail.subject).to eq("Incident Report Filed For #{report.county}")
+      expect(mail.from).to eq(from_address)
     end
 
     it "should be to the designated contact" do
-      mail.to.should eq([person.email])
+      expect(mail.to).to eq([person.email])
     end
 
     it "renders the body" do
-      mail.body.encoded.should match("A New DAT Incident Report was filed")
+      expect(mail.body.encoded).to match("A New DAT Incident Report was filed")
     end
   end
 
@@ -121,16 +121,16 @@ describe Incidents::Notifications::Mailer do
     let(:mail) { subject.notify_event(person, false, event, report, 'notification') }
 
     it "renders the headers" do
-      mail.subject.should eq("Incident #{report.incident_number} Marked Invalid")
-      mail.from.should eq(from_address)
+      expect(mail.subject).to eq("Incident #{report.incident_number} Marked Invalid")
+      expect(mail.from).to eq(from_address)
     end
 
     it "should be to the designated contact" do
-      mail.to.should eq([person.email])
+      expect(mail.to).to eq([person.email])
     end
 
     it "renders the body" do
-      mail.body.encoded.should match("The incident below was marked as invalid.")
+      expect(mail.body.encoded).to match("The incident below was marked as invalid.")
     end
   end
 
@@ -142,16 +142,16 @@ describe Incidents::Notifications::Mailer do
     let(:report) { FactoryGirl.build_stubbed :incident }
 
     it "renders the headers" do
-      mail.subject.should eq("Notification for #{report.incident_number}")
-      mail.from.should eq(from_address)
+      expect(mail.subject).to eq("Notification for #{report.incident_number}")
+      expect(mail.from).to eq(from_address)
     end
 
     it "should be to the recipient" do
-      mail.to.should eq([person.email])
+      expect(mail.to).to eq([person.email])
     end
 
     it "renders the body" do
-      mail.body.encoded.should match("Incident Type: Fire")
+      expect(mail.body.encoded).to match("Incident Type: Fire")
     end
 
     describe "as sms" do
@@ -160,8 +160,8 @@ describe Incidents::Notifications::Mailer do
       before(:each) { person.stub(sms_addresses: ['test@vtext.com']) }
 
       it "renders" do
-        mail.to.should eq([person.sms_addresses.first])
-        mail.from.should eq([from_address])
+        expect(mail.to).to eq([person.sms_addresses.first])
+        expect(mail.from).to eq([from_address])
       end
     end
   end

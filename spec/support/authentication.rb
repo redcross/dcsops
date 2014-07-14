@@ -1,7 +1,7 @@
 module LoggedIn
   extend ActiveSupport::Concern
   included do
-    before(:each) do
+    before(:each) do |example|
       next if example.metadata[:logged_in] == false
       activate_authlogic
       @logged_in_person = FactoryGirl.create(:person)

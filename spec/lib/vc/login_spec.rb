@@ -37,7 +37,7 @@ describe Vc::Login do
   it "makes a query with editable name", vcr: true do
     #Vc::Login.should_receive(:post).with('/', anything).and_return(double(:response, body: load_fixture("profile-1.html")))
     data = Vc::Login.get_user credentials.username, credentials.password
-    data.should be_a(Hash)
+    expect(data).to be_a(Hash)
     
     expected = {
       :vc_id=>123123,
@@ -66,13 +66,13 @@ describe Vc::Login do
       :phone_3_preference => nil,
       :phone_4_preference => nil
     }
-    data.should == expected
+    expect(data).to eq(expected)
   end
 
   it "makes a query with uneditable name", vcr: true do
     #Vc::Login.should_receive(:post).with('/', anything).and_return(double(:response, body: load_fixture("profile-1.html")))
     data = Vc::Login.get_user credentials.username, credentials.password
-    data.should be_a(Hash)
+    expect(data).to be_a(Hash)
     expected = {
       :vc_id=>123123,
       :dro_history=>
@@ -100,7 +100,7 @@ describe Vc::Login do
       :phone_3_preference => 'work',
       :phone_4_preference => 'home'
     }
-    data.should == expected
+    expect(data).to eq(expected)
   end
 
   #it "Parses a profile" do

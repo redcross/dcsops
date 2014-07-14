@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Invalid Incident Report" do
+describe "Invalid Incident Report", :type => :feature do
   #self.use_transactional_fixtures = false
 
   it "Should be submittable" do
@@ -22,8 +22,8 @@ describe "Invalid Incident Report" do
 
     click_button 'Remove This Incident'
 
-    page.should have_text 'Incidents Needing Incident Report'
+    expect(page).to have_text 'Incidents Needing Incident Report'
 
-    @incident.reload.incident_type.should == 'not_eligible_for_services'
+    expect(@incident.reload.incident_type).to eq('not_eligible_for_services')
   end
 end

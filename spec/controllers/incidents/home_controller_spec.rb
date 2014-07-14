@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Incidents::HomeController do
+describe Incidents::HomeController, :type => :controller do
   include LoggedIn
   before(:each) do
     @person.update_attribute :last_name, 'Laxson'
@@ -10,7 +10,7 @@ describe Incidents::HomeController do
   describe "GET 'root'" do
     it "returns http success" do
       get 'root', chapter_id: @person.chapter.to_param
-      response.should be_success
+      expect(response).to be_success
     end
   end
 

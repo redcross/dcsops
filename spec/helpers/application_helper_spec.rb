@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe ApplicationHelper do
+describe ApplicationHelper, :type => :helper do
   it "provides an asset_url" do
-    helper.asset_url("map-icons/person-icon.png").should == "http://test.host/assets/map-icons/person-icon.png"
+    expect(helper.asset_url("map-icons/person-icon.png")).to eq("http://test.host/assets/map-icons/person-icon.png")
   end
 
   describe '#current_messages' do
@@ -15,12 +15,12 @@ describe ApplicationHelper do
     }
 
     it "returns nothing if motds aren't turned on" do
-      helper.current_messages.should =~ []
+      expect(helper.current_messages).to match_array([])
     end
 
     it "returns the motd if motds are turned on" do
-      ENV.should_receive(:[]).with("MOTD_ENABLED").and_return(true)
-      helper.current_messages.should =~ [motd]
+      expect(ENV).to receive(:[]).with("MOTD_ENABLED").and_return(true)
+      expect(helper.current_messages).to match_array([motd])
     end
   end
 

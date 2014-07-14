@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Incident Dispatch Console" do
+describe "Incident Dispatch Console", :type => :feature do
 
   after :each do
     ActionMailer::Base.deliveries.clear
@@ -33,7 +33,7 @@ describe "Incident Dispatch Console" do
 
     @outbound_messages = outbound_messages = []
     client = double(:sms_client)
-    client.stub :send_message do |message|
+    allow(client).to receive :send_message do |message|
       #puts "SMS: #{message.message}"
       outbound_messages << message.message
     end
@@ -48,9 +48,9 @@ describe "Incident Dispatch Console" do
     click_link "Responders"
     click_link "Launch Dispatch Console"
 
-    page.should have_text(@incident.address)
-    page.should have_text(@flex_responder.full_name)
-    page.should have_text(@committed_responder.full_name)
+    expect(page).to have_text(@incident.address)
+    expect(page).to have_text(@flex_responder.full_name)
+    expect(page).to have_text(@committed_responder.full_name)
 
     within 'tr', text: @committed_responder.full_name do
       click_link "Assign"
@@ -59,14 +59,14 @@ describe "Incident Dispatch Console" do
     check "Send assignment sms"
     check "Send assignment email"
     click_button "Save Assignment"
-    find(".assigned-table").should have_text(@committed_responder.full_name)
+    expect(find(".assigned-table")).to have_text(@committed_responder.full_name)
 
     within 'tr', text: @flex_responder.full_name do
       click_link "Assign"
     end
     select "Not Available", from: "Response*"
     click_button "Save Assignment"
-    find(".assigned-table").should_not have_text(@flex_responder.full_name)
+    expect(find(".assigned-table")).not_to have_text(@flex_responder.full_name)
   end
 
   it "Should support SMS recruitments" do
@@ -78,22 +78,22 @@ describe "Incident Dispatch Console" do
     click_link "Empty"
     find(".editable-input input").set message
     find(".editable-buttons i.glyphicon-ok").click
-    page.should have_text message
+    expect(page).to have_text message
     
     within 'tbody.responders-list tr', text: @committed_responder.full_name do
       click_link "Send SMS"
     end
 
-    find("tbody.responders-list tr", text: @committed_responder.full_name).should have_text "Message Sent"
-    last_message.should include(message)
+    expect(find("tbody.responders-list tr", text: @committed_responder.full_name)).to have_text "Message Sent"
+    expect(last_message).to include(message)
     handle_sms @committed_responder, "yes"
 
     visit(current_path) # Trigger a refresh, since the auto-update won't work here
-    find("tbody.responders-list tr", text: @committed_responder.full_name).should have_text "Available"
+    expect(find("tbody.responders-list tr", text: @committed_responder.full_name)).to have_text "Available"
 
     handle_sms @committed_responder, "no"
     visit(current_path)
-    find("tbody.not-available tr", text: @committed_responder.full_name).should have_text "Not Available"
+    expect(find("tbody.not-available tr", text: @committed_responder.full_name)).to have_text "Not Available"
   end
 
   it "Should support SMS messaging" do
@@ -110,11 +110,11 @@ describe "Incident Dispatch Console" do
     #pp page.driver.console_messages
     #pp page.evaluate_script("window.responderMessagesController.toString()")
 
-    find(".num-characters").should have_text((message.length - 1).to_s)
+    expect(find(".num-characters")).to have_text((message.length - 1).to_s)
 
     click_button "Send Message"
-    page.should_not have_selector('#edit-modal', visible: true)
-    last_message.should include(message)
+    expect(page).not_to have_selector('#edit-modal', visible: true)
+    expect(last_message).to include(message)
 
     # Send a direct message
     within ".assigned-table tr", text: @committed_responder.full_name do
@@ -125,13 +125,13 @@ describe "Incident Dispatch Console" do
     choose "Map Link"
     click_button "Send Message"
     close_modal
-    last_message.should include("short.url")
+    expect(last_message).to include("short.url")
 
     # Show an incoming message
     message = Faker::Lorem.sentence
     handle_sms @committed_responder, message
     visit current_path
-    page.should have_text(message.first 15)
+    expect(page).to have_text(message.first 15)
 
     within '.incoming-table' do
       click_link "View"
@@ -141,7 +141,7 @@ describe "Incident Dispatch Console" do
     #screenshot_and_open_image
     click_button "Acknowledge"
     close_modal
-    Incidents::ResponderMessage.last.acknowledged.should == true
+    expect(Incidents::ResponderMessage.last.acknowledged).to eq(true)
   end
 
   it "should allow updating responder statuses" do
@@ -151,25 +151,25 @@ describe "Incident Dispatch Console" do
     visit "/incidents/#{@chapter.url_slug}/incidents/#{@incident.incident_number}/responders"
 
     within ".assigned-table tr", text: @committed_responder.full_name do
-      page.should have_text "Assigned at"
+      expect(page).to have_text "Assigned at"
 
       click_link "Actions"
       click_link "Mark Dispatched"
 
-      page.should have_text "Dispatched at"
-      ra.reload.dispatched_at.should_not be_nil
+      expect(page).to have_text "Dispatched at"
+      expect(ra.reload.dispatched_at).not_to be_nil
 
       click_link "Actions"
       click_link "Mark On Scene"
 
-      page.should have_text "On Scene at"
-      ra.reload.on_scene_at.should_not be_nil
+      expect(page).to have_text "On Scene at"
+      expect(ra.reload.on_scene_at).not_to be_nil
 
       click_link "Actions"
       click_link "Mark Departed Scene"
 
-      page.should have_text "Departed at"
-      ra.reload.departed_scene_at.should_not be_nil
+      expect(page).to have_text "Departed at"
+      expect(ra.reload.departed_scene_at).not_to be_nil
     end
   end
 
@@ -188,11 +188,11 @@ describe "Incident Dispatch Console" do
   end
 
   def close_modal
-    page.should_not have_selector('#edit-modal', visible: true)
+    expect(page).not_to have_selector('#edit-modal', visible: true)
   end
 
   def open_modal
-    page.should have_selector('#edit-modal', visible: true)
+    expect(page).to have_selector('#edit-modal', visible: true)
   end
   
 end
