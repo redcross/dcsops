@@ -153,16 +153,22 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     }.select{|ass| ass.notification_setting.allow_sms_at? now }
   end
 
-  def self.normalized_date_on_or_after time
+  def self.normalized_date_sql time
     in_date = time.to_date
-    joins{shift_group}.where(<<-SQL)
-    scheduler_shift_assignments.date >= (CASE scheduler_shift_groups.period
+    "(CASE scheduler_shift_groups.period
     WHEN 'daily' THEN '#{in_date}'::date
     WHEN 'weekly' THEN date_trunc('week', '#{in_date}'::date) - '7 days'::interval
     WHEN 'monthly' THEN date_trunc('month', '#{in_date}'::date) - '1 month'::interval
     ELSE NULL
-    END)
-    SQL
+    END)"
+  end
+
+  def self.normalized_date_between date_first, date_last
+    joins{shift_group}.where("date BETWEEN #{normalized_date_sql date_first} AND #{normalized_date_sql date_last}")
+  end
+
+  def self.normalized_date_on_or_after time
+    joins{shift_group}.where("scheduler_shift_assignments.date >= #{normalized_date_sql time}")
   end
 
   scope :starts_after, ->(time){

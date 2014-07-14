@@ -70,9 +70,13 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
   def self.current_groups_for_chapter(chapter, current_time=Time.zone.now, scope=all)
     now = current_time.in_time_zone(chapter.time_zone)
 
-   for_chapter(chapter).merge(scope).select{|group|
+    for_chapter(chapter).merge(scope).select{|group|
       group.check_offsets(now)
     }
+  end
+
+  def self.current_groups_in_array(groups, current_time)
+    groups.select{ |grp| grp.check_offsets current_time }
   end
 
   def check_offsets(now)
