@@ -43,7 +43,7 @@ describe Scheduler::SendDispatchRosterJob do
     it "should call the mailer" do
       delivery = double(:delivery)
       delivery.should_receive(:deliver).and_return(true)
-      Scheduler::DirectlineMailer.should_receive(:export).with(chapter, Date.current-1, Date.current+60).and_return(delivery)
+      Scheduler::DirectlineMailer.should_receive(:export).with(chapter, chapter.time_zone.today-1, chapter.time_zone.today+15).and_return(delivery)
       subject.run!
     end
   end

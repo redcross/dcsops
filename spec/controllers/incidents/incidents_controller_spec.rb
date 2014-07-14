@@ -159,7 +159,7 @@ describe Incidents::IncidentsController do
       before(:each) do
          @person.chapter.update_attributes incidents_sequence_enabled: true, 
                                          incidents_sequence_number: 333,
-                                         incidents_sequence_format: '%<fy_short>02d-%<number>03d', 
+                                         incidents_sequence_format: '%<fy>04d-%<number>03d', 
                                          incidents_sequence_year: FiscalYear.current.year
         params.delete :incident_number
       end
@@ -169,7 +169,7 @@ describe Incidents::IncidentsController do
           post :create, incidents_incident: params, chapter_id: @person.chapter.to_param
         }.to(change(Incidents::Incident, :count).by(1))
         inc = Incidents::Incident.last
-        inc.incident_number.should == '14-334'
+        inc.incident_number.should == "#{FiscalYear.current.year}-334"
         @person.chapter.reload.incidents_sequence_number.should == 334
       end
 

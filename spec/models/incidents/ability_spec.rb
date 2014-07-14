@@ -44,11 +44,18 @@ describe Incidents::Ability do
         let(:today) {chapter.time_zone.today}
 
         it "Can't update if the date was more than 5 days ago" do
+          incident.status = 'closed'
           incident.date = (today-6)
           cannot! :update, report
         end
 
-        it "Can update if the date was less than 5 days ago" do
+        it "Can update if the date was more than 5 days ago but is open" do
+          incident.status = 'open'
+          incident.date = (today-7)
+          can! :update, report
+        end
+
+        it "Can submit if the date was less than 5 days ago" do
           incident.date = (today-5)
           can! :update, report
         end
