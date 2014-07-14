@@ -92,8 +92,9 @@ end
 
 
 group :test do
-  gem 'rspec'
-  gem 'rspec-rails'
+  gem 'rspec', '2.99'
+  gem 'rspec-rails', '2.99'
+  #gem 'rspec-activemodel-mocks'
   gem 'faker'
   gem 'zonebie'
   gem 'sqlite3'
