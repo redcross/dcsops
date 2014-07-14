@@ -3,7 +3,7 @@ class Incidents::Incident < ActiveRecord::Base
   include Incidents::IncidentPartners
   include Mappable
 
-  has_paper_trail meta: {chapter_id: ->(inc){inc.chapter_id}}
+  has_paper_trail class_name: 'Version', meta: {chapter_id: ->(inc){inc.chapter_id}}
 
   before_validation :set_incident_number, on: :create
 

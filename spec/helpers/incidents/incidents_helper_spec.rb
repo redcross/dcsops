@@ -12,7 +12,7 @@ require 'spec_helper'
 # end
 describe Incidents::IncidentsHelper, :type => :helper do
   before do
-    helper.stub_chain(:resource, :to_param) { "IncidentURLParam" }
+    allow(helper).to receive_message_chain(:resource, :to_param) { "IncidentURLParam" }
     allow(helper).to receive :edit_resource_dat_path do |*arg|
       "path_here?#{arg.first.to_query}"
     end

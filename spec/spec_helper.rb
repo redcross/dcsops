@@ -15,7 +15,6 @@ end
 
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
-require 'rspec/autorun'
 require 'authlogic/test_case'
 require 'shoulda-matchers'
 require 'factory_girl_rails'
@@ -61,6 +60,9 @@ RSpec.configure do |config|
   # config.mock_with :mocha
   # config.mock_with :flexmock
   # config.mock_with :rr
+  config.expect_with :rspec do |c|
+    c.syntax = [:should, :expect]
+  end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   # config.fixture_path = "#{::Rails.root}/spec/fixtures"

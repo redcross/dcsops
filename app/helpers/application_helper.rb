@@ -30,7 +30,7 @@ module ApplicationHelper
     end
   end
 
-  def respond_to?(method)
+  def respond_to?(method, include_all=true)
     main_app_url_helper?(method) or super
   end
 

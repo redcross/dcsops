@@ -12,7 +12,7 @@ gem 'activerecord-import'
 
 gem 'sass-rails'
 gem 'jquery-rails'
-gem 'jquery-ui-rails', '< 5.0'
+gem 'jquery-ui-rails'
 gem 'haml-rails'
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem "sprockets", '~> 2.11.0'
@@ -92,9 +92,9 @@ end
 
 
 group :test do
-  gem 'rspec', '2.99'
-  gem 'rspec-rails', '2.99'
-  #gem 'rspec-activemodel-mocks'
+  gem 'rspec', '~> 3.0'
+  gem 'rspec-rails'
+  gem 'rspec-activemodel-mocks'
   gem 'faker'
   gem 'zonebie'
   gem 'sqlite3'

@@ -1,4 +1,4 @@
-PaperTrail::Version.module_eval do
+class Version < PaperTrail::Version
   belongs_to :root, polymorphic: true
   belongs_to :chapter, class_name: 'Roster::Chapter'
 

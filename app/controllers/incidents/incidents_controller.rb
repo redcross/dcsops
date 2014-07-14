@@ -106,7 +106,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     }
 
     expose(:resource_changes) {
-      changes = PaperTrail::Version.order{created_at.desc}.for_chapter(@chapter).includes{[root, item]}
+      changes = Version.order{created_at.desc}.for_chapter(@chapter).includes{[root, item]}
       if params[:id] # we have a single resource
         changes = changes.for_root(resource.__getobj__)
       else
