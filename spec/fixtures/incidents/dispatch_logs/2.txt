@@ -9,6 +9,7 @@ Incident#: 14-043
   Address: 211 Main St, SAN FRANCISCO
  X-Street:  
    County: SAN FRANCISCO
+   State: CA
 
        # Displaced: 36
 Services Requested: Canteine for the fire dept and the 36 people that live he  

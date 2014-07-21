@@ -6,6 +6,7 @@ Incident: Flooding
  Address: 311 Dogwood Lane, BRENTWOOD
  ( X-Street: Atwood Road )
   County: CONTRA COSTA
+  State: CA
 
       # Displaced: 374
 Services Requested: We need food and possibly an evacuation center.  

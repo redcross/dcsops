@@ -252,4 +252,48 @@ describe Incidents::DispatchImporter do
       end
     end
   end
+
+  describe "5.txt" do
+    let!(:county) {FactoryGirl.create :county, chapter: chapter, name: 'San Francisco'}
+    let(:incident_details) {
+      {incident_number: '15-047',
+            incident_type: '',
+            address: ', SPRINGFIELD',
+            delivered_at: chapter.time_zone.parse( "2014-07-18 12:44:00")}
+    }
+    it "should parse the incident" do
+      import
+
+      inc = Incidents::DispatchLog.first
+      expect(inc).not_to be_nil
+      expect(inc.incident).not_to be_nil
+
+      incident_details.each do |attr, val|
+        expect(inc.send(attr)).to eq(val)
+      end
+
+    end
+  end
+
+  describe "6.txt" do
+    let!(:county) {FactoryGirl.create :county, chapter: chapter, name: 'San Francisco'}
+    let(:incident_details) {
+      {incident_number: nil,
+            incident_type: 'Structure Fire',
+            address: '123 Main St Street, SAN FRANCISCO',
+            delivered_at: chapter.time_zone.parse( "2013-07-05 00:25:00")}
+    }
+    it "should parse the incident" do
+      import
+
+      inc = Incidents::DispatchLog.first
+      expect(inc).not_to be_nil
+      expect(inc.incident).to be_nil
+
+      incident_details.each do |attr, val|
+        expect(inc.send(attr)).to eq(val)
+      end
+
+    end
+  end
 end

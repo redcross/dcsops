@@ -1,0 +1,36 @@
+            ---------------------------------------------------
+    TAKEN: DATE: 07/18/2014 TIME: 12:43 PM
+DELIVERED: DATE: 07/18/2014 TIME: 12:44 PM
+DELIVERED TO: 
+
+Incident#: 15-047
+   Reason: INCIDENT: 15-047
+
+ Incident: 
+  Address: , SPRINGFIELD
+ X-Street:  
+   County: LANE-EAST
+
+       # Displaced:  ()
+Services Requested:   
+                  : 
+                  : 
+
+Caller Type: RED CROSS
+Caller Name: John Doe
+     Agency: RED CROSS
+    Contact: 
+      Phone: 
+
+  Caller ID: 5555551212
+
+============ Message Dispatch History ===================
+
+07/18/2014 12:44 PM [Auto Action E-Mail Submitted to Queue]  OFC - EMAIL 
+                    (SYS!) 56551520001580GRN4587271 
+
+
+
+
+,56551520001580GTN5155330
+

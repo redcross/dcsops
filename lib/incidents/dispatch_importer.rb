@@ -24,6 +24,7 @@ class Incidents::DispatchImporter
       /^\s*Address: (.*)$/ => :address,
       /^\s*X-Street: (.*)$/ => :cross_street,
       /^\s*County: (.*)$/ => ->(matches){ {county_name: matches[1].try(:titleize)} },
+      /^\s*State: (.*)$/ => :state,
       /^\s*# Displaced: (\d*)$/ => :displaced,
       /^\s*Services Requested: (.*)\n\s+: (.*)\n\s+: (.*)$/ => ->(matches){ {services_requested: matches[1..3].compact.map(&:strip).join(" ")} },
       /^\s*Agency: (.*)$/ => :agency,
@@ -83,7 +84,6 @@ class Incidents::DispatchImporter
                                          chapter: @chapter,
                                             date: incident_date_for(log_object),
                                           county: log_object.county_name,
-                                           state: 'CA',
                                             area: area,
                                           status: 'open'
       
@@ -91,6 +91,7 @@ class Incidents::DispatchImporter
     end
 
     geocode_incident(log_object, log_object.incident)
+    log_object.incident.save!
     log_object.save!
     
 
@@ -117,7 +118,7 @@ class Incidents::DispatchImporter
 
   def geocode_incident(log_object, incident)
     incident.address = log_object.address
-    res = self.class.geocoder.geocode "#{log_object.address}, #{log_object.county_name} County, CA, USA"
+    res = self.class.geocoder.geocode "#{log_object.address}, #{log_object.state || "CA"}, USA"
     incident.take_location_from res if res.success?
   rescue Geokit::Geocoders::TooManyQueriesError
     # Not the end of the world
@@ -143,10 +144,9 @@ class Incidents::DispatchImporter
 
     data = run_matchers self.data_matchers, body
     log_items = log.split("\n\n").map {|item_text| run_matchers self.history_matchers, item_text}
+    log_object = update_log_object data, log_items
 
     return unless data[:incident_number].present?
-
-    log_object = update_log_object data, log_items
 
     created_incident = update_incident(log_object)
     map_log_items(log_object, log_object.incident, details)

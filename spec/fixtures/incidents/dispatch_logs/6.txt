@@ -4,7 +4,7 @@
 DELIVERED: DATE: 07/05/2013 TIME: 12:25 AM
 DELIVERED TO: BOB RESPONDER
 
-Incident#: 14-004
+Incident#:
    Reason: LOCAL EMERGENCY INCIDENT
    Caller: AGENCY
  Incident: Structure Fire
