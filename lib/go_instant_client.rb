@@ -3,6 +3,7 @@ class GoInstantClient
   base_uri "https://api.goinstant.net/v1"
   format :json
   headers({"Content-type" => "application/json"})
+  default_timeout 5
 
   def self.client
     client_id = ENV['GOINSTANT_CLIENT_ID']
@@ -43,7 +44,7 @@ class GoInstantClient
   def post url, opts={}
     return if Rails.env.test?
     self.class.post url, opts.merge(headers: {"Authorization" => "Bearer #{token}"})
-  rescue SocketError, Net::HTTPError => e
+  rescue SocketError, Net::HTTPError, Timeout::Error, Errno::ETIMEDOUT => e
     Raven.capture e
     nil
   end
