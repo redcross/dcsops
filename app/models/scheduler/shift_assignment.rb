@@ -131,7 +131,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   def self.needs_reminder chapter, type
     where(:"#{type}_reminder_sent" => false)
     .joins{notification_setting}.where{notification_setting.__send__("#{type}_advance_hours") != nil}
-    .with_active_person.for_chapter(chapter).readonly(false).includes{notification_setting}
+    .with_active_person.for_chapter(chapter).readonly(false).preload{[notification_setting,shift_group.chapter]}
     .select{|ass|
       now = chapter.time_zone.now
       start = ass.local_start_time
