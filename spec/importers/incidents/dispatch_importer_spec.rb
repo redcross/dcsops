@@ -35,6 +35,7 @@ describe Incidents::DispatchImporter do
       expect(inc.contact_name).to eq("Sally Smith")
       expect(inc.contact_phone).to eq("(510)227-9475")
       expect(inc.caller_id).to eq("5105954566")
+      expect(inc.state).to eq("CA")
 
       expect(inc.received_at).to eq(chapter.time_zone.parse( "2013-06-13 19:16:00"))
       expect(inc.delivered_at).to eq(chapter.time_zone.parse( "2013-06-13 19:18:00"))
@@ -70,6 +71,7 @@ describe Incidents::DispatchImporter do
       expect(inc.area).to eq(county)
       expect(inc.chapter).to eq(chapter)
       expect(inc.status).to eq('open')
+      expect(inc.state).to eq("CA")
     end
 
     it "should create several event logs" do

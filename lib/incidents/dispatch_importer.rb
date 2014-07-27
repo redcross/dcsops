@@ -84,6 +84,7 @@ class Incidents::DispatchImporter
                                          chapter: @chapter,
                                             date: incident_date_for(log_object),
                                           county: log_object.county_name,
+                                           state: log_object.state,
                                             area: area,
                                           status: 'open'
       
