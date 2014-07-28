@@ -60,7 +60,7 @@ describe Incidents::CasLinkController, :type => :controller do
 
     expect(Geokit::Geocoders::GoogleGeocoder).to receive(:geocode).and_return(
       double lat: Faker::Address.latitude, lng: Faker::Address.longitude, success?: true, 
-             city: Faker::Address.city, district: Faker::Address.city, zip: Faker::Address.zip_code)
+             city: Faker::Address.city, district: Faker::Address.city, zip: Faker::Address.zip_code, state: Faker::Address.state)
 
     expect {
       post :promote, id: cas.to_param, commit: 'Promote to Incident', chapter_id: cas.chapter.to_param
