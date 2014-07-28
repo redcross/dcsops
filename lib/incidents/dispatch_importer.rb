@@ -31,6 +31,7 @@ class Incidents::DispatchImporter
       /^\s*Contact: (.*)$/ => :contact_name,
       /^\s*Phone: (.*)$/ => :contact_phone,
       /^\s*Caller ID: (.*)$/ => :caller_id,
+      /^\s*,(\d{14})/ => :message_number
     }
   end
 
@@ -60,8 +61,7 @@ class Incidents::DispatchImporter
     map_log_item incident, log.delivered_at, 'dispatch_relayed', "Delivered to: #{log.delivered_to}"
 
     incident.event_logs.where(event: 'dispatch_note').delete_all
-    log.log_items.each do |item|
-      next if item.action_type =~ /^SMS Message/
+    log.log_items.not_sms_internal.each do |item|
       incident.event_logs.create! event: 'dispatch_note', event_time: item.action_at, message: item.description
     end
   end
@@ -126,7 +126,7 @@ class Incidents::DispatchImporter
   end
 
   def update_log_object(attrs, log_items)
-    log_object = Incidents::DispatchLog.find_or_initialize_by(chapter_id: @chapter.id, incident_number: attrs[:incident_number])
+    log_object = Incidents::DispatchLog.find_or_initialize_by(chapter_id: @chapter.id, message_number: attrs[:message_number])
     log_object.update_attributes attrs
 
     log_object.log_items.destroy_all

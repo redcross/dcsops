@@ -11,4 +11,8 @@ class Incidents::DispatchLog < ActiveRecord::Base
   def save_old_changes
     @old_changes = changes
   end
+
+  def num_dials
+    log_items.to_a.count{|li| li.action_type == 'Dial'}
+  end
 end

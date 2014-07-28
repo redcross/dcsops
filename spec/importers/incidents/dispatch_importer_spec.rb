@@ -11,9 +11,10 @@ describe Incidents::DispatchImporter do
     subject.import_data chapter, fixture
   end
 
+  let(:geocode_result) {double(:geocode_result, success?: true, lat: 0, lng: 0, city: Faker::Address.city, state: Faker::Address.state, district: Faker::Address.city, zip: Faker::Address.zip_code)}
+
   before do
-    geocode_result = double(:geocode_result, success?: true, lat: 0, lng: 0, city: Faker::Address.city, state: Faker::Address.state, district: Faker::Address.city, zip: Faker::Address.zip_code)
-    Incidents::DispatchImporter.geocoder.stub geocode: geocode_result
+    allow(Incidents::DispatchImporter.geocoder).to receive(:geocode).and_return(geocode_result)
     allow(Incidents::Notifications::Notification).to receive :create_for_event
   end
 
@@ -36,6 +37,7 @@ describe Incidents::DispatchImporter do
       expect(inc.contact_phone).to eq("(510)227-9475")
       expect(inc.caller_id).to eq("5105954566")
       expect(inc.state).to eq("CA")
+      expect(inc.message_number).to eq("21251520000044")
 
       expect(inc.received_at).to eq(chapter.time_zone.parse( "2013-06-13 19:16:00"))
       expect(inc.delivered_at).to eq(chapter.time_zone.parse( "2013-06-13 19:18:00"))
@@ -71,7 +73,7 @@ describe Incidents::DispatchImporter do
       expect(inc.area).to eq(county)
       expect(inc.chapter).to eq(chapter)
       expect(inc.status).to eq('open')
-      expect(inc.state).to eq("CA")
+      expect(inc.state).to eq(geocode_result.state)
     end
 
     it "should create several event logs" do
@@ -291,6 +293,7 @@ describe Incidents::DispatchImporter do
       inc = Incidents::DispatchLog.first
       expect(inc).not_to be_nil
       expect(inc.incident).to be_nil
+      expect(inc.incident_number).to be_nil
 
       incident_details.each do |attr, val|
         expect(inc.send(attr)).to eq(val)
