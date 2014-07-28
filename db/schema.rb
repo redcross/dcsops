@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140728000824) do
+ActiveRecord::Schema.define(version: 20140728003848) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -492,6 +492,7 @@ ActiveRecord::Schema.define(version: 20140728000824) do
     t.text     "notification_level_message"
     t.string   "recruitment_message"
     t.integer  "cas_event_id"
+    t.boolean  "address_directly_entered",   default: false, null: false
   end
 
   add_index "incidents_incidents", ["cas_event_number"], name: "index_incidents_incidents_on_cas_event_number", using: :btree

@@ -7,14 +7,17 @@
       .form-group.address-lookup-group
         .col-xs-5
         %button.btn.btn-default.address-lookup.col-xs-7 Look Up Address
-      =f.input :address, input_html: {readonly: true, editable: false}
-      =f.input :city, input_html: {readonly: true, editable: false}
-      =f.input :state, default: 'CA', input_html: {readonly: true, editable: false}
-      =f.input :zip, input_html: {readonly: true, editable: false}
-      =f.input :lat, as: :hidden, input_html: {readonly: true, editable: false}
-      =f.input :lng, as: :hidden, input_html: {readonly: true, editable: false}
-      =f.input :neighborhood, input_html: {readonly: true, editable: false}
-      =f.input :county, input_html: {readonly: true, editable: false}
+      - detail_options = {readonly: true, editable: false}
+      - detail_options[:value] = '' unless f.object.address_directly_entered
+      =f.input :address, input_html: detail_options
+      =f.input :city, input_html: detail_options
+      =f.input :state, input_html: detail_options
+      =f.input :zip, input_html: detail_options
+      =f.input :lat, as: :hidden, input_html: detail_options
+      =f.input :lng, as: :hidden, input_html: detail_options
+      =f.input :neighborhood, input_html: detail_options
+      =f.input :county, input_html: detail_options
+      =f.input :address_directly_entered, as: :hidden, input_html: {value: '1'}
       -if f.object.chapter.incidents_report_allow_manual_address
         .form-group
           .col-xs-7.col-xs-offset-5

@@ -168,7 +168,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       if base
         @_incident_params ||= base.permit([
           :incident_type, :narrative, :status, :cas_event_number,
-          :address, :city, :state, :zip, :lat, :lng, :county, :neighborhood,
+          :address, :city, :state, :zip, :lat, :lng, :county, :neighborhood, :address_directly_entered,
           :num_adults, :num_children, :num_families,
           {:team_lead_attributes => [:id, :person_id, :role, :response]},
           {:responder_assignments_attributes => [:id, :person_id, :role, :response, :_destroy, :was_flex]},
