@@ -4,7 +4,7 @@ ruby "2.1.2"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.0.0'
-gem 'squeel', github: 'activerecord-hackery/squeel'
+gem 'squeel', '~> 1.2.1', github: 'activerecord-hackery/squeel'
 gem 'puma'
 gem 'rack-rewrite'
 
@@ -48,8 +48,8 @@ gem 'geokit'#, github: 'mikefarmer/geokit' # Found a branch that removes some we
 gem 'formtastic', '~> 2.3.0rc3'
 gem 'formtastic-bootstrap', '~> 3.0'
 gem 'cocoon'
-gem 'polyamorous', '~> 0.6.0'
-gem 'ransack', '~> 1.1.0'#, github: 'ernie/ransack',            branch: 'rails-4'
+gem 'polyamorous'
+gem 'ransack', '~> 1.2.0'
 gem 'activeadmin',       github: 'gregbell/active_admin'  
 
 gem 'acts_as_flying_saucer', github: 'jlaxson/acts_as_flying_saucer', branch: 'master'
