@@ -31,7 +31,7 @@ class Incidents::DispatchImporter
       /^\s*Contact: (.*)$/ => :contact_name,
       /^\s*Phone: (.*)$/ => :contact_phone,
       /^\s*Caller ID: (.*)$/ => :caller_id,
-      /^\s*,(\d{14})/ => :message_number
+      /^\s*,(\d{14,})/ => :message_number
     }
   end
 
