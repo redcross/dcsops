@@ -54,16 +54,16 @@ module SerializedColumns
 
     def serialized_accessor store_attribute, name, type, default: nil
 
-      column = SerializedColumn.new name.to_s, default, type.to_s
-
-      serialized_columns[name] = [store_attribute, column]
-
       sql_type = case type
       when :string then 'varchar'
       when :double then 'float'
       when :time then 'timestamp'
       else type.to_s
       end
+
+      column = SerializedColumn.new name.to_s, default, sql_type
+
+      serialized_columns[name] = [store_attribute, column]
 
       define_method name do
         raw = read_store_attribute store_attribute, name

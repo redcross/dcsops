@@ -33,7 +33,9 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
 
       # For some reason AA cares about the return value of this block, reduce is a shortcut for that
       f.object.class.serialized_columns.keys.map(&:to_sym).reduce(nil) do |_, c|
-        f.input c
+        opts = {}
+        opts[:as] = :string if c.to_s.include? "password"
+        f.input c, opts
       end
     end
     f.actions
