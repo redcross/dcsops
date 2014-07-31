@@ -3,7 +3,7 @@ ruby "2.1.2"
 #ruby-gemset=arcdata
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.0.0'
+gem 'rails', '~> 4.1.0'
 gem 'squeel', '~> 1.2.1', github: 'activerecord-hackery/squeel'
 gem 'puma'
 gem 'rack-rewrite'
