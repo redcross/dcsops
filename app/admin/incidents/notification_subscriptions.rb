@@ -4,7 +4,7 @@ ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
   filter :notification_type
 
   controller do
-    include ActionController::Live
+    #include ActionController::Live
 
     def collection
       @_collection ||= super.includes{person}
