@@ -67,7 +67,8 @@ private
     ignore = chapter.incidents_report_dro_ignore_array
 
     Incidents::Deployment.for_chapter(chapter).seen_since(@date_range.first)
-                          .includes{[disaster, person.counties]}
+                          .preload{[disaster, person.counties]}
+                          .joins{disaster}
                           .where{ disaster.dr_number.not_like_any(ignore) }
                           .order{ date_first_seen.desc }
                           .uniq{|a| [a.person_id, a.disaster_id] }

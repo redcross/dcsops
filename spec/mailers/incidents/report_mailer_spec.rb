@@ -5,8 +5,13 @@ describe Incidents::ReportMailer, :type => :mailer do
   let(:chapter) { FactoryGirl.create :chapter }
   let(:person) { FactoryGirl.create :person, chapter: chapter }
 
+  before do
+    FactoryGirl.create :incident, chapter: chapter, date: chapter.time_zone.today.yesterday
+  end
+
+  let(:mail) { Incidents::ReportMailer.report(chapter, person) }
+
   describe "report" do
-    let(:mail) { Incidents::ReportMailer.report(chapter, person) }
 
     it "renders the headers" do
       expect(mail.subject).to match("ARCBA Disaster Operations")
@@ -42,6 +47,16 @@ describe Incidents::ReportMailer, :type => :mailer do
       it "Displays short date range otherwise" do
         @date_range = Date.civil(2014,1,10)..Date.civil(2014,1,12)
         expect(mail.subject).to match("Fri, Jan 10 to Sun, Jan 12")
+      end
+    end
+
+    describe "deployments" do
+      it "Renders" do
+        chapter.incidents_report_dro_ignore = "123-456"
+        chapter.save
+        disaster = FactoryGirl.create :disaster
+        deployment = FactoryGirl.create :deployment, person: person, disaster: disaster, date_first_seen: chapter.time_zone.today.yesterday, date_last_seen: chapter.time_zone.today
+        expect(mail.body.encoded).to match(disaster.name)
       end
     end
     
