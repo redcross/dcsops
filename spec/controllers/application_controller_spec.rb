@@ -3,6 +3,34 @@ require 'spec_helper'
 describe ApplicationController, :type => :controller do
   include LoggedIn
 
+  describe "Checks Active User" do
+
+    controller do
+      def index; render text: 'success'; end
+    end
+
+    it 'Does not redirect if active' do
+      get :index
+      expect(response).to be_success
+    end
+
+    it "Redirects if not active" do
+      @person.update_attribute :vc_is_active, false
+
+      get :index
+      expect(response).to redirect_to('/inactive')
+    end
+
+    it "Does not redirect if has the always_active role" do
+      @person.update_attribute :vc_is_active, false
+      grant_role! 'always_active'
+
+      get :index
+      expect(response).to be_success
+    end
+
+  end
+
   describe "Impersonation" do
 
     let(:impersonated) { FactoryGirl.create(:person, chapter: @person.chapter) }

@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
 
   def require_active_user!
     person = current_user_session.try(:person) || current_user
-    if person and (person.vc_is_active == false || filtered_person?(person))
+    if person and (!person.is_active? || filtered_person?(person))
       respond_with_redirect_or_status inactive_user_path, :forbidden
     end
   end

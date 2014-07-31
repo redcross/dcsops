@@ -186,4 +186,8 @@ class Roster::Person < ActiveRecord::Base
   def profile_complete?
     [:lat, :lng, :address1, :email].all?{|f| self[f].present?}
   end
+
+  def is_active?
+    vc_is_active or has_role 'always_active'
+  end
 end
