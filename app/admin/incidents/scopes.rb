@@ -28,10 +28,14 @@ ActiveAdmin.register Incidents::Scope, as: 'Scope' do
         f.input c
       end
     end
+    f.inputs "Map" do
+      f.template.render 'map', map_options: {bind_center: {lat: 'incidents_scope_incidents_map_center_lat', lng: 'incidents_scope_incidents_map_center_lng'}, bind_zoom: 'incidents_scope_incidents_map_zoom'}
+    end
     f.actions
   end
 
   controller do
+    helper Incidents::MapHelper
     defaults finder: :find_by_url_slug!
       def resource_params
       [params.fetch(resource_request_name, {}).permit!]

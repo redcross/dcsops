@@ -1,0 +1,5 @@
+%div.map(style="height: 500px")
+
+=google_maps_javascript
+:javascript
+  window.adminMapController = new AdminMapController($('.map')[0], #{map_options.to_json})
