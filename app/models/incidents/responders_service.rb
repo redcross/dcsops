@@ -24,7 +24,7 @@ class Incidents::RespondersService
   end
 
   def have_dispatch?
-    dispatch_responders[:present]
+    dispatch_responders && dispatch_responders[:present]
   end
 
   def scheduled_responders
