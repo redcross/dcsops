@@ -44,7 +44,7 @@ class GoInstantClient
   def post url, opts={}
     return if Rails.env.test?
     self.class.post url, opts.merge(headers: {"Authorization" => "Bearer #{token}"})
-  rescue SocketError, Net::HTTPError, Timeout::Error, Errno::ETIMEDOUT => e
+  rescue => e
     Raven.capture e
     nil
   end
