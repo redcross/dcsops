@@ -5,7 +5,7 @@ class Roster::MemberPositionsImporter < ImportParser
   self.check_dates = true
   self.identity_columns = {:vc_id => 'account_id'}
   self.column_mappings = {position_name: 'position_name', position_start: 'position_start_date', position_end: 'position_end_date',
-    vc_member_number: 'member_number', first_name: 'first_name', last_name: 'last_name', 
+    vc_member_number: 'member_number', first_name: 'first_name', last_name: 'last_name', is_primary: 'is_primary',
     email: 'email', secondary_email: 'second_email',
     work_phone: 'work_phone', cell_phone: 'cell_phone', home_phone: 'home_phone', alternate_phone: 'alternate_phone',
     gap_primary: 'primary_gap', gap_secondary: 'secondary_gap', gap_tertiary: 'tertiary_gap',
@@ -14,7 +14,7 @@ class Roster::MemberPositionsImporter < ImportParser
     address1: 'address1', address2: 'address2', city: 'address3', state: 'address4', zip: 'address5', county_name: 'county'
   }
 
-  POSITION_ATTR_NAMES = [:county_name, :position_name, :position_start, :position_end, :second_lang, :third_lang]
+  POSITION_ATTR_NAMES = [:county_name, :position_name, :position_start, :position_end, :second_lang, :third_lang, :is_primary]
 
   def positions
     @_positions ||= @chapter.positions.select(&:vc_regex)
@@ -29,7 +29,7 @@ class Roster::MemberPositionsImporter < ImportParser
     vc_id = identity[:vc_id].to_i
     unless @person and @person.vc_id == vc_id
       status = attrs[:vc_is_active]
-      attrs[:vc_is_active] = is_active_status(status)
+      attrs[:vc_is_active] = is_active_status(status) && all_attrs[:is_primary] == 'Yes'
       @person = object 
       @person ||= Roster::Person.find_or_initialize_by(vc_id: vc_id) if is_importable_status(status)
       if @person.nil? or (@person.new_record? and !is_importable_status(status))
