@@ -24,7 +24,11 @@ ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
 
   collection_action :test_report, :method => :post do
     sub = Incidents::NotificationSubscription.find_by person_id: current_user, notification_type: 'report'
-    Incidents::ReportMailer.report_for_date_range(current_chapter, current_user, sub.range_to_send).deliver
+    if sub
+      Incidents::ReportMailer.report_for_date_range(current_chapter, current_user, sub.range_to_send).deliver
+    else
+      flash[:error] = "You are not signed up for a report."
+    end
     redirect_to({:action => :index}, {:notice => "Incident report sent to #{current_user.email}"})
   end
 
