@@ -27,12 +27,13 @@ class Roster::MemberPositionsImporter < ImportParser
 
   def get_person(object, identity, attrs, all_attrs)
     vc_id = identity[:vc_id].to_i
+    is_primary = all_attrs[:is_primary] == 'Yes'
     unless @person and @person.vc_id == vc_id
       status = attrs[:vc_is_active]
-      attrs[:vc_is_active] = is_active_status(status) && all_attrs[:is_primary] == 'Yes'
+      attrs[:vc_is_active] = is_active_status(status)
       @person = object 
       @person ||= Roster::Person.find_or_initialize_by(vc_id: vc_id) if is_importable_status(status)
-      if @person.nil? or (@person.new_record? and !is_importable_status(status))
+      if @person.nil? or (@person.new_record? and !is_importable_status(status)) or !is_primary
         #logger.warn "Skipping because inactive and new: #{status}"
         @person = nil
         return
