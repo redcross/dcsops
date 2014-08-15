@@ -64,7 +64,9 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   end
 
   def collection
-    @shift_assignments ||= apply_scopes(super).order(:date).includes{[person, shift_group.chapter, shift.county, person.counties, person.chapter]}.uniq
+    @shift_assignments ||= apply_scopes(super).order(:date).joins{person.outer}
+                  .where{(person.chapter_id == my{current_chapter}) & (date <= my{current_chapter.time_zone.today + 30})}
+                  .includes{[person, shift_group.chapter, shift.county, person.counties, person.chapter]}.uniq
   end
 
   helper_method :grouped_collection
