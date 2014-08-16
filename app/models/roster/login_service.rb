@@ -7,7 +7,6 @@ class Roster::LoginService
   end
 
   def deferred_update
-    # This should be a delayed_job enqueue
     @ignore_credentials = true
     Delayed::Job.enqueue self
   end
@@ -54,13 +53,13 @@ class Roster::LoginService
                                     :home_phone, :cell_phone, :alternate_phone, :work_phone, :sms_phone)
   end
 
-  def update_deployments deployments  
+  def update_deployments deployments
     deployments.each do |deployment|
       disaster = Incidents::Disaster.find_or_create_by(name: deployment[:incident_name])
       dep = Incidents::Deployment.find_or_initialize_by(disaster_id: disaster.id, gap: deployment[:gap], person_id: @person.id)
       dep.date_first_seen = deployment[:assign_date]
       dep.date_last_seen = deployment[:release_date] || Date.current
-      dep.save!
+      dep.save! if dep.persisted? or @person.chapter_id == 0
     end
   end
 end
