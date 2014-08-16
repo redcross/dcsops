@@ -24,8 +24,8 @@ module Incidents::IncidentsListHelper
   end
 
   def average_response_time(collection)
-    logs_start = Incidents::EventLog.where{(event.in(['dispatch_received', 'dispatch_note', 'dat_received', 'dispatch_relayed', 'responders_identified'])) & (incident_id == incidents_incidents.id)}.order{event_time}.select{event_time}.limit(1).to_sql
-    logs_end = Incidents::EventLog.where{(event.in(['dat_on_scene'])) & (incident_id == incidents_incidents.id)}.order{event_time}.select{event_time}.limit(1).to_sql
+    logs_start = Incidents::EventLog.where{(event.in(['dispatch_received', 'dispatch_note', 'dat_received', 'dispatch_relayed', 'responders_identified'])) & (incident_id == incidents_incidents.id)}.reorder{event_time}.select{event_time}.limit(1).to_sql
+    logs_end = Incidents::EventLog.where{(event.in(['dat_on_scene'])) & (incident_id == incidents_incidents.id)}.reorder{event_time}.select{event_time}.limit(1).to_sql
     durations = collection.select(
       "extract(epoch from (#{logs_end}) - (#{logs_start})) AS duration"
     ).to_a.map(&:duration).select{|dur| dur && dur > 10.minutes && dur < 8.hours}
