@@ -135,7 +135,7 @@ describe Scheduler::CalendarController, :type => :controller do
     end
   end
 
-  date = Date.civil(2014,8,8)
+  date = Date.current + 365
   weekly_date = date.at_beginning_of_week
   monthly_date = date.at_beginning_of_month
   
