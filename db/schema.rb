@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140728003848) do
+ActiveRecord::Schema.define(version: 20140818013405) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -501,21 +501,6 @@ ActiveRecord::Schema.define(version: 20140728003848) do
   add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id", using: :btree
   add_index "incidents_incidents", ["incident_number"], name: "index_incidents_incidents_on_incident_number", using: :btree
 
-  create_table "incidents_notification_subscriptions", force: true do |t|
-    t.integer  "person_id"
-    t.integer  "county_id"
-    t.string   "notification_type"
-    t.boolean  "persistent",        default: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.hstore   "options"
-    t.string   "frequency"
-    t.date     "last_sent"
-  end
-
-  add_index "incidents_notification_subscriptions", ["county_id"], name: "index_incidents_notification_subscriptions_on_county_id", using: :btree
-  add_index "incidents_notification_subscriptions", ["person_id"], name: "index_incidents_notification_subscriptions_on_person_id", using: :btree
-
   create_table "incidents_notifications_events", force: true do |t|
     t.integer  "chapter_id"
     t.string   "name"
@@ -595,6 +580,21 @@ ActiveRecord::Schema.define(version: 20140728003848) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "incidents_report_subscriptions", force: true do |t|
+    t.integer  "person_id"
+    t.integer  "county_id"
+    t.string   "report_type"
+    t.boolean  "persistent",  default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.hstore   "options"
+    t.string   "frequency"
+    t.date     "last_sent"
+  end
+
+  add_index "incidents_report_subscriptions", ["county_id"], name: "index_incident_report_subscriptions_on_county_id", using: :btree
+  add_index "incidents_report_subscriptions", ["person_id"], name: "index_incident_report_subscriptions_on_person_id", using: :btree
 
   create_table "incidents_responder_assignments", force: true do |t|
     t.integer  "person_id"

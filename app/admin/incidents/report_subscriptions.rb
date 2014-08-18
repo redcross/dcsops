@@ -1,7 +1,7 @@
-ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
+ActiveAdmin.register Incidents::ReportSubscription, as: 'Report Subscriptions' do
   menu parent: 'Incidents'
 
-  filter :notification_type
+  filter :report_type
 
   controller do
     #include ActionController::Live
@@ -11,19 +11,19 @@ ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
     end
 
     def resource_params
-      request.get? ? [] : [params.require(:notification).permit(:person_id, :county_id, :notification_type, :frequency)]
+      request.get? ? [] : [params.require(:notification).permit(:person_id, :county_id, :report_type, :frequency)]
     end
   end
 
   action_item :only => :index do
-    link_to('Send Test Report', {action: :test_report}, {method: :post}) if authorized? :test_report, Incidents::NotificationSubscription
+    link_to('Send Test Report', {action: :test_report}, {method: :post}) if authorized? :test_report, Incidents::ReportSubscription
   end
   action_item :only => :index do
-    link_to('Send Daily Report', {action: :send_report}, {method: :post, data: {confirm: "This will send all notifications to chapter #{current_chapter.short_name}"}})  if authorized? :send_report, Incidents::NotificationSubscription
+    link_to('Send Reports', {action: :send_report}, {method: :post, data: {confirm: "This will send all notifications to chapter #{current_chapter.short_name}"}})  if authorized? :send_report, Incidents::ReportSubscription
   end
 
   collection_action :test_report, :method => :post do
-    sub = Incidents::NotificationSubscription.find_by person_id: current_user, notification_type: 'report'
+    sub = Incidents::ReportSubscription.find_by person_id: current_user, report_type: 'report'
     if sub
       Incidents::ReportMailer.report_for_date_range(current_chapter, current_user, sub.range_to_send).deliver
     else
@@ -53,7 +53,7 @@ ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
       sub.person.chapter_id
     end
     column :person
-    column :notification_type
+    column :report_type
     column :frequency
     column :county
     column :persistent
@@ -65,7 +65,7 @@ ActiveAdmin.register Incidents::NotificationSubscription, as: 'Notification' do
     f.inputs do
       f.input :person
       f.input :county
-      f.input :notification_type, as: :assignable_select
+      f.input :report_type, as: :assignable_select
       f.input :frequency, as: :assignable_select
       f.input :persistent
       f.actions

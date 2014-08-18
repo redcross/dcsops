@@ -1,12 +1,12 @@
-class Incidents::NotificationSubscription < ActiveRecord::Base
+class Incidents::ReportSubscription < ActiveRecord::Base
   belongs_to :person, class_name: 'Roster::Person'
   belongs_to :county, class_name: 'Roster::County'
 
-  validates :notification_type, uniqueness: {scope: [:person_id, :county_id]}
-  validates :frequency, presence: {if: ->(sub) {sub.notification_type == 'report'}}
+  validates :report_type, uniqueness: {scope: [:person_id, :county_id]}
+  validates :frequency, presence: {if: ->(sub) {sub.report_type == 'report'}}
   validates :person, presence: true
 
-  assignable_values_for :notification_type do
+  assignable_values_for :report_type do
     %w(new_incident incident_dispatch incident_report missing_report report)
   end
 
@@ -18,7 +18,7 @@ class Incidents::NotificationSubscription < ActiveRecord::Base
 
   before_validation :set_frequency, on: :create
   def set_frequency
-    self.frequency ||= self.assignable_frequencies.first if self.notification_type == 'report'
+    self.frequency ||= self.assignable_frequencies.first if self.report_type == 'report'
   end
 
   def self.for_chapter chapter
@@ -30,7 +30,7 @@ class Incidents::NotificationSubscription < ActiveRecord::Base
   end
 
   def self.for_type type
-    where{notification_type == type}
+    where{report_type == type}
   end
 
   def self.to_send_on today

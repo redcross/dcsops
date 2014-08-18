@@ -48,12 +48,12 @@ class Incidents::WeeklyReportJob
   end
 
   def subscriptions
-    Incidents::NotificationSubscription.for_type('report')
-                                       .for_chapter(chapter)
-                                       .to_send_on(current_send_date)
-                                       .includes{person.chapter}
-                                       .with_active_person
-                                       .readonly(false)
+    Incidents::ReportSubscription.for_type('report')
+                                 .for_chapter(chapter)
+                                 .to_send_on(current_send_date)
+                                 .includes{person.chapter}
+                                 .with_active_person
+                                 .readonly(false)
   end
 
   def chapter

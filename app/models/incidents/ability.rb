@@ -34,7 +34,7 @@ class Incidents::Ability
 
   def personal
     # for now, anyone can do the weekly subscription
-    can :manage, Incidents::NotificationSubscription, person_id: person.id, notification_type: 'report'
+    can :manage, Incidents::ReportSubscription, person_id: person.id, report_type: 'report'
     can :index, Partners::Partner, chapter_id: person.chapter_id
 
     can :read, Incidents::Incident

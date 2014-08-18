@@ -29,8 +29,8 @@ describe Incidents::WeeklyReportJob do
   end
 
   describe '#subscriptions' do
-    let!(:sub_in_chapter) { FactoryGirl.create :notification_subscription }
-    let!(:sub_outside_chapter) { FactoryGirl.create :notification_subscription }
+    let!(:sub_in_chapter) { FactoryGirl.create :report_subscription }
+    let!(:sub_outside_chapter) { FactoryGirl.create :report_subscription }
     let(:chapter) { sub_in_chapter.person.chapter }
     let(:job) { Incidents::WeeklyReportJob.new(chapter.id) }
     it "returns a sub in the current chapter" do
@@ -80,7 +80,7 @@ describe Incidents::WeeklyReportJob do
 
   describe 'integration', type: :mailer do
     it 'works all the way through' do
-      sub = FactoryGirl.create :notification_subscription
+      sub = FactoryGirl.create :report_subscription
       chapter = sub.person.chapter
       chapter.update_attributes incidents_report_send_automatically: true
 

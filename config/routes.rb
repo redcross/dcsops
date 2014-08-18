@@ -111,7 +111,7 @@ Scheduler::Application.routes.draw do
       scope "responses", controller: :responses do
         root to: :responders, as: 'responders'
       end
-      resources :report_subscription, controller: 'notification_subscriptions', notification_type: 'report'
+      resources :report_subscriptions, report_type: 'report'
     end
 
     namespace :api do

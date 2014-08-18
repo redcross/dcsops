@@ -26,7 +26,7 @@
             %a{href: incidents_chapter_cas_incidents_path(scope)}
               Incident Tracker
               %i.fa.fa-chevron-right
-        -if can? :create, Incidents::NotificationSubscription.new(person: current_user, notification_type: 'report')
+        -if can? :create, Incidents::ReportSubscription.new(person: current_user, report_type: 'report')
           %li
             %a{href: incidents_chapter_report_subscription_path(scope, current_user)}
               Daily/Weekly Report

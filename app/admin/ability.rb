@@ -18,7 +18,7 @@ class AdminAbility
       can :manage, Scheduler::ShiftGroup
       can :manage, Scheduler::ShiftCategory
 
-      can :manage, Incidents::NotificationSubscription
+      can :manage, Incidents::ReportSubscription
       can :manage, Incidents::PriceListItem
 
       can :manage, Logistics::Vehicle
@@ -44,9 +44,9 @@ class AdminAbility
       can :impersonate, Roster::Person, chapter_id: chapter
       can :manage, Logistics::Vehicle, chapter_id: chapter
       can :manage, HomepageLink, chapter_id: chapter
-      can :new, Incidents::NotificationSubscription
-      can :manage, Incidents::NotificationSubscription, person: {chapter_id: chapter}
-      can [:test_report, :send_report, :new], Incidents::NotificationSubscription
+      can :new, Incidents::ReportSubscription
+      can :manage, Incidents::ReportSubscription, person: {chapter_id: chapter}
+      can [:test_report, :send_report, :new], Incidents::ReportSubscription
 
       can :manage, Incidents::Notifications::Event, chapter_id: chapter
       can :manage, Incidents::Notifications::Role, chapter_id: chapter
