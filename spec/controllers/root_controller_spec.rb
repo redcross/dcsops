@@ -61,18 +61,20 @@ describe RootController, :type => :controller do
     end
 
     it "should return a link where the current user has the correct role" do
-      role = FactoryGirl.create :role, chapter: @person.chapter
-      pos = FactoryGirl.create :position, roles: [role], chapter: @person.chapter
+      role = FactoryGirl.create :role, grant_name: 'homepage_link'
+      pos = FactoryGirl.create :position, chapter: @person.chapter
+      mem = Roster::RoleMembership.create role: role, position: pos
+      mem.role_scopes.create! scope: 'test'
       @person.positions << pos
       @person.save
 
-      link.update_attributes roles: [role]
+      link.roles.create! role_scope: 'test'
       expect(controller.homepage_links.values.flatten).to match_array([link])
     end
 
     it "should not return a link where the current user does not have the right role" do
-      role = FactoryGirl.create :role, chapter: @person.chapter
-      link.update_attributes roles: [role]
+      role = FactoryGirl.create :role, grant_name: 'homepage_link'
+      link.roles.create! role_scope: 'test'
       expect(controller.homepage_links.values.flatten).to match_array([])
     end
 

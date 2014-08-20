@@ -16,7 +16,7 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
     #column :vc_regex_raw
     column :hidden
     column :roles do |pos|
-      safe_join(pos.roles.map(&:name), tag(:br))
+      safe_join(pos.role_memberships.map(&:display_name), tag(:br))
     end
     actions
   end
@@ -27,14 +27,20 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :vc_regex_raw, :hidden, :chapter_id, :watchfire_role, :role_ids => [])]
+      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :vc_regex_raw, :hidden, :chapter_id, :watchfire_role, 
+        :role_memberships_attributes => [:id, :_destroy, :role_id, role_scopes_attributes: [:scope, :id, :_destroy]])]
     end
   end
 
   form do |f|
     f.inputs
     f.inputs do
-      f.input :roles, as: :check_boxes, collection: (f.object.chapter && f.object.chapter.roles.sort_by(&:name))
+      f.has_many :role_memberships, allow_destroy: true do |f|
+        f.input :role
+        f.has_many :role_scopes, allow_destroy: true do |f|
+          f.input :scope
+        end
+      end
     end
     f.actions
   end

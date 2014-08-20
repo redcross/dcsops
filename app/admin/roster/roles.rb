@@ -3,31 +3,28 @@ ActiveAdmin.register Roster::Role, as: 'Role' do
 
   controller do
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :chapter_id, :grant_name, role_scopes: [:scope, :_destroy])]
+      [params.fetch(resource_request_name, {}).permit(:name, :grant_name)]
     end
 
     def collection
-      super.includes{role_scopes}
+      @coll ||= apply_scopes(super).preload{[role_memberships.position, role_memberships.role_scopes]}
     end
   end
 
   index do
     column :name
     column :grant_name
-    column :scopes do |obj|
-      obj.role_scopes.map(&:scope).join ","
+    column :positions do |role|
+      safe_join(role.role_memberships.map{|pm| "#{pm.position.name} (#{pm.role_scopes.map(&:scope).join ','})"}, tag(:br))
     end
     actions
   end
 
   form do |f|
     f.inputs
-
-    f.has_many :role_scopes do |f|
-      f.input :scope
-      f.input :_destroy, as: :boolean, label: "Remove"
-    end
-
     f.actions
   end
+
+  filter :name
+  filter :grant_name
 end

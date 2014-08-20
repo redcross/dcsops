@@ -2,7 +2,6 @@
 
 FactoryGirl.define do
   factory :role, :class => 'Roster::Role' do
-    association :chapter
     name "MyString"
     grant_name "MyString"
   end

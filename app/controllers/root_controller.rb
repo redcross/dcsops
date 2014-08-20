@@ -35,6 +35,7 @@ class RootController < ApplicationController
 
   expose(:homepage_links) {
     links = HomepageLink.for_chapter(current_chapter).order{[group_ordinal.asc, ordinal.asc]}.includes{roles}.to_a
-    links.select{|l| l.role_ids.blank? || (l.role_ids & current_user.role_ids).present? }.group_by(&:group)
+    scopes = current_user.scope_for_role 'homepage_link'
+    links.select{|l| l.role_ids.blank? || (l.roles.map(&:role_scope) & scopes).present? }.group_by(&:group)
   }
 end

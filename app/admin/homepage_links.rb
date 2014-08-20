@@ -28,8 +28,11 @@ ActiveAdmin.register HomepageLink, as: 'Homepage Link' do
       f.actions
     end
     f.inputs 'Roles' do
-      f.input :roles, as: :check_boxes, collection: Roster::Role.where{chapter_id == f.object.chapter}
+      f.has_many :roles, allow_destroy: true do |f|
+        f.input :role_scope
+      end
     end
+    f.actions
   end
 
   controller do
@@ -39,7 +42,7 @@ ActiveAdmin.register HomepageLink, as: 'Homepage Link' do
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :description, :file, :icon, :url, :ordinal, :group, :group_ordinal)]
+      [params.fetch(resource_request_name, {}).permit(:name, :description, :file, :icon, :url, :ordinal, :group, :group_ordinal, roles_attributes: [:role_scope, :id, :_destroy])]
     end
   end
 end

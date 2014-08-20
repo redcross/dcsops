@@ -1,5 +1,5 @@
 class Roster::RoleScope < ActiveRecord::Base
-  belongs_to :role
+  belongs_to :role_membership
 
   def scope
     val = super

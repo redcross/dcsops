@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140818013405) do
+ActiveRecord::Schema.define(version: 20140819054205) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -189,6 +189,11 @@ ActiveRecord::Schema.define(version: 20140818013405) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
+  create_table "homepage_link_roles", force: true do |t|
+    t.integer "homepage_link_id"
+    t.string  "role_scope"
+  end
+
   create_table "homepage_links", force: true do |t|
     t.integer  "chapter_id"
     t.string   "name"
@@ -207,11 +212,6 @@ ActiveRecord::Schema.define(version: 20140818013405) do
   end
 
   add_index "homepage_links", ["chapter_id"], name: "index_homepage_links_on_chapter_id", using: :btree
-
-  create_table "homepage_links_roster_roles", id: false, force: true do |t|
-    t.integer "role_id"
-    t.integer "homepage_link_id"
-  end
 
   create_table "import_logs", force: true do |t|
     t.string   "controller"
@@ -593,8 +593,8 @@ ActiveRecord::Schema.define(version: 20140818013405) do
     t.date     "last_sent"
   end
 
-  add_index "incidents_report_subscriptions", ["county_id"], name: "index_incident_report_subscriptions_on_county_id", using: :btree
-  add_index "incidents_report_subscriptions", ["person_id"], name: "index_incident_report_subscriptions_on_person_id", using: :btree
+  add_index "incidents_report_subscriptions", ["county_id"], name: "index_incidents_report_subscriptions_on_county_id", using: :btree
+  add_index "incidents_report_subscriptions", ["person_id"], name: "index_incidents_report_subscriptions_on_person_id", using: :btree
 
   create_table "incidents_responder_assignments", force: true do |t|
     t.integer  "person_id"
@@ -861,27 +861,27 @@ ActiveRecord::Schema.define(version: 20140818013405) do
     t.string   "abbrev"
   end
 
-  create_table "roster_positions_roles", id: false, force: true do |t|
-    t.integer "position_id"
-    t.integer "role_id"
-  end
-
   create_table "roster_positions_scheduler_shifts", id: false, force: true do |t|
     t.integer "shift_id"
     t.integer "position_id"
   end
 
+  add_index "roster_positions_scheduler_shifts", ["shift_id", "position_id"], name: "index_roster_positions_scheduler_shifts", unique: true, using: :btree
+
+  create_table "roster_role_memberships", force: true do |t|
+    t.integer "role_id"
+    t.integer "position_id"
+    t.string  "description"
+  end
+
   create_table "roster_role_scopes", force: true do |t|
-    t.integer  "role_id"
     t.string   "scope"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "role_membership_id"
   end
 
-  add_index "roster_role_scopes", ["role_id"], name: "index_roster_role_scopes_on_role_id", using: :btree
-
   create_table "roster_roles", force: true do |t|
-    t.integer  "chapter_id"
     t.string   "name"
     t.string   "grant_name"
     t.datetime "created_at"
@@ -978,6 +978,7 @@ ActiveRecord::Schema.define(version: 20140818013405) do
 
   add_index "scheduler_shift_assignments", ["date", "person_id", "shift_id", "shift_group_id"], name: "index_scheduler_shift_assignment_fields", unique: true, using: :btree
   add_index "scheduler_shift_assignments", ["person_id"], name: "index_scheduler_shift_assignments_on_person_id", using: :btree
+  add_index "scheduler_shift_assignments", ["shift_id", "date"], name: "index_scheduler_shift_assignments_on_shift_date", using: :btree
 
   create_table "scheduler_shift_categories", force: true do |t|
     t.integer  "chapter_id"

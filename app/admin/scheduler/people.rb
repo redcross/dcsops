@@ -55,7 +55,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
           table_for person.position_memberships do
             column( :name) { |rec| rec.position && rec.position.name }
             column(:persistent) { |rec| rec.persistent ? 'Yes' : ''}
-            column(:roles) {|rec| rec.roles.map(&:name).join ", "}
+            column(:roles) {|rec| safe_join rec.position.role_memberships.map(&:display_name),  tag(:br)}
           end
         end
       end

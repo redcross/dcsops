@@ -12,7 +12,7 @@ class Roster::Person < ActiveRecord::Base
 
   has_many :position_memberships, class_name: 'Roster::PositionMembership'
   has_many :positions, class_name: 'Roster::Position', through: :position_memberships
-  has_many :roles, class_name: 'Roster::Role', through: :positions
+  has_many :role_memberships, class_name: 'Roster::RoleMembership', through: :positions
 
   belongs_to :home_phone_carrier, class_name: 'Roster::CellCarrier'
   belongs_to :cell_phone_carrier, class_name: 'Roster::CellCarrier'
@@ -69,15 +69,18 @@ class Roster::Person < ActiveRecord::Base
   accepts_nested_attributes_for :county_memberships, :position_memberships, allow_destroy: true
 
   def has_role(grant_name)
-    roles_with_scopes.select{|p| p.grant_name == grant_name}.present?
+    roles_with_scopes.select{|mem| mem.role.grant_name == grant_name}.present?
   end
 
   def scope_for_role(grant_name)
-    roles_with_scopes.select{|p| p.grant_name == grant_name}.flat_map{|r| r.role_scopes.map(&:scope) }.flat_map{ |scope| scope == 'county_ids' ? county_ids : scope}.compact.uniq
+    roles_with_scopes.select{|mem| mem.role.grant_name == grant_name}
+                     .flat_map{|mem| mem.role_scopes.map(&:scope) }
+                     .flat_map{ |scope| scope == 'county_ids' ? county_ids : scope}
+                     .compact.uniq
   end
 
   def roles_with_scopes
-    @roles_with_scopes ||= roles.includes{role_scopes}.joins{role_scopes.outer}
+    @roles_with_scopes ||= role_memberships.includes{[role, role_scopes]}.joins{role_scopes.outer}
   end
 
   def primary_county
