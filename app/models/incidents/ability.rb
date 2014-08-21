@@ -1,5 +1,6 @@
 class Incidents::Ability
   include CanCan::Ability
+  include ::NewRelic::Agent::MethodTracer
 
   attr_reader :person
 
@@ -21,6 +22,8 @@ class Incidents::Ability
     read_only if ENV['READ_ONLY']
     
   end
+
+  add_method_tracer :initialize
 
   def scopes
     # This controls what chapters this person can access in the URL

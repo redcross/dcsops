@@ -1,5 +1,6 @@
 class Scheduler::Ability
   include CanCan::Ability
+  include ::NewRelic::Agent::MethodTracer
 
   attr_reader :person
 
@@ -25,6 +26,8 @@ class Scheduler::Ability
 
     read_only if ENV['READ_ONLY']
   end
+
+  add_method_tracer :initialize
 
   def personal
     can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], {id: person.id}

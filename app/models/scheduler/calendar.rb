@@ -1,6 +1,7 @@
 class Scheduler::Calendar
   # Calendar is a service class that retrieves all of the objects (group, shift, 
   # assignment) needed to render a calendar for a given date range
+  include ::NewRelic::Agent::MethodTracer
 
   attr_reader :chapter, :start_date, :end_date, :person, :filter, :counties, :categories
 
@@ -56,10 +57,12 @@ class Scheduler::Calendar
 
   private
 
+
   def load_shifts
     load_all_shifts
     load_my_shifts
   end
+  add_method_tracer :load_shifts
 
   def date_range
     start_date.at_beginning_of_week.advance(weeks: -0)..end_date
