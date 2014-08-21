@@ -4,8 +4,9 @@ class Roster::RoleMembership < ActiveRecord::Base
   has_many :role_scopes
 
   accepts_nested_attributes_for :role_scopes, allow_destroy: true
+  validates :position, :role, presence: true
 
   def display_name
-    "#{role.name} - (#{role_scopes.map(&:scope).join ','})"
+    "#{role.try :name} - (#{role_scopes.map(&:scope).join ','})"
   end
 end
