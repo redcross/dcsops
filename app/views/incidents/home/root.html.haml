@@ -76,6 +76,9 @@
   :javascript
     config = #{map_config(scope).to_json};
     allIncidentsMapController = new AllIncidentsMapController(#{map_json_for(recent_incidents).to_json}, config);
+  - if ENV['BOUNDARY_TABLE_ID'] && scope.boundary_polygon_filter.present?
+    :javascript
+      allIncidentsMapController.configureBoundaryLayer(#{ENV['BOUNDARY_TABLE_ID'].to_json}, #{scope.boundary_polygon_filter.to_json});
   =chapter_goinstant_setup(current_chapter)
 
 

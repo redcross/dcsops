@@ -137,6 +137,20 @@ class window.AllIncidentsMapController
         position: new google.maps.LatLng(obj.lat, obj.lng)
         map: @map
 
+  configureBoundaryLayer: (tableId, filter) ->
+    @boundaryLayer = new google.maps.FusionTablesLayer
+      query:
+        select: 'geometry'
+        from: tableId
+        where: "UNIT_CODE='#{filter}'"
+      styles: [
+        polygonOptions:
+          fillColor: '#000000'
+          fillOpacity: 0.00001
+          strokeWeight: 3
+      ]
+    @boundaryLayer.setMap @map
+
 class window.AllIncidentsHeatmapController
 
   constructor: (objects, display, config) ->

@@ -29,4 +29,6 @@ class Incidents::Scope < ActiveRecord::Base
   serialized_accessor :config, :incidents_map_zoom, :integer
   serialized_accessor :config, :summary_show_state, :boolean
 
+  serialized_accessor :config, :boundary_polygon_filter, :string
+
 end
