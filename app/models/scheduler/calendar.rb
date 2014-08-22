@@ -95,7 +95,9 @@ class Scheduler::Calendar
   end
 
   def groups_by_period(period)
-    @_unfiltered_groups ||= Scheduler::ShiftGroup.includes{[shifts.positions, shifts.county, shifts.shift_groups]}.where(chapter_id: chapter).order(:start_offset).to_a
+    # The references(:shifts) forces all of the preloads to be generated as one massive join.  Maybe
+    # not so good for the database, but rails seems to be pathalogically slow on this eager load.
+    @_unfiltered_groups ||= Scheduler::ShiftGroup.references(:shifts).includes{[shifts.positions, shifts.county, shifts.shift_groups]}.where(chapter_id: chapter).order(:start_offset).to_a
 
     @_unfiltered_groups.select{|sh| sh.period == period}
   end
