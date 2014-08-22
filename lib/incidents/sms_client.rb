@@ -4,6 +4,8 @@ class Incidents::SMSClient
   end
 
   def send_message(responder_message)
+    return unless have_credentials?
+
     responder_message.direction = 'outgoing'
     responder_message.local_number = from_phone_number
     responder_message.remote_number = sms_number(responder_message.person)
@@ -18,6 +20,10 @@ class Incidents::SMSClient
   end
 
   protected
+
+  def have_credentials?
+    @chapter.twilio_account_sid.present? && @chapter.twilio_auth_token.present?
+  end
 
   def from_phone_number
     @chapter.incidents_twilio_number
