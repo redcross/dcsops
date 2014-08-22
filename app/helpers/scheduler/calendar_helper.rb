@@ -24,6 +24,18 @@ module Scheduler::CalendarHelper
     end
   end
 
+  # Helper to cache the result of the shift method, since there may be
+  # 900+ shift lines rendered, only for one person, and maybe 10 shifts
+  def can_be_taken_by? shift, person
+    @taken_cache ||= Hash.new{|h, k| h[k] = k.first.can_be_taken_by?(k.last) }
+    @taken_cache[[shift, person]]
+  end
+
+  def today
+    @today ||= current_chapter.time_zone.today
+  end
+
+
 
   # Renders one line of shift info for the calendar
   # Editable: must be true to enable the checkbox
@@ -34,9 +46,9 @@ module Scheduler::CalendarHelper
   # assignments: Any shift assignments for the given shift on the given date (may include my_shift if appropriate)
   # period: day/week/month, so the javascript knows what to reload if the shift is edited
   def render_shift_assignment_info(editable, person, shift, shift_group, my_shifts, date, assignments, period)
-    can_take = person && shift.can_be_taken_by?(person)
-    can_sign_up = shift.can_sign_up_on_day(date, shift_group, assignments.count)
-    can_remove = shift.can_remove_on_day(date, shift_group)
+    can_take = person && can_be_taken_by?(shift, person)
+    can_sign_up = shift.can_sign_up_on_day(date, shift_group, assignments.count, today)
+    can_remove = shift.can_remove_on_day(date, shift_group, today)
     this_assignment = my_shifts && my_shifts.detect{|sa| sa.shift == shift && sa.shift_group == shift_group}
     is_signed_up = this_assignment.present?
 

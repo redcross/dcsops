@@ -29,14 +29,18 @@ class Scheduler::Shift < ActiveRecord::Base
     end
   end
 
-  def can_sign_up_on_day(date, shift_group, num_assignments_on_day=nil)
+  def unfrozen_on(date)
+    (signups_frozen_before.nil? || (date >= signups_frozen_before)) and
+      (signups_available_before.nil? || (date <= signups_available_before))
+  end
+
+  def can_sign_up_on_day(date, shift_group, num_assignments_on_day=nil, today=nil)
     check_shift_group shift_group
-    today = shift_group.chapter.time_zone.today
+    today ||= shift_group.chapter.time_zone.today
 
     return false if date < today and !allow_signup_in_past?(date, shift_group)
     return false unless active_on_day? date, shift_group
-    return false if signups_frozen_before and date < signups_frozen_before
-    return false if signups_available_before and date > signups_available_before
+    return false unless unfrozen_on(date)
     num_days = (date - today).to_i
     return false if max_advance_signup and num_days > max_advance_signup
     return true if max_signups == 0
@@ -51,14 +55,18 @@ class Scheduler::Shift < ActiveRecord::Base
 
   def allow_signup_in_past?(date, shift_group)
     check_shift_group shift_group
-    Scheduler::ShiftAssignment.new(date: date, shift: self, shift_group: shift_group).local_end_time >= shift_group.chapter.time_zone.now
+    tz = shift_group.chapter.time_zone
+    key = (shift_group.period == 'monthly' ? :days : :seconds)
+    Scheduler::ShiftTimeCalculator.new(tz).local_offset(date, key => shift_group.end_offset) >= tz.now
+    #pp(Scheduler::ShiftAssignment.new(date: date, shift: self, shift_group: shift_group).local_end_time) >= tz.now
   end
 
-  def can_remove_on_day(date, shift_group)
+  def can_remove_on_day(date, shift_group, today=nil)
     check_shift_group shift_group
-    today = normalize_date shift_group.chapter.time_zone.today, shift_group
+    today ||= shift_group.chapter.time_zone.today
+    today = normalize_date today, shift_group
     advance = date - today
-    (date >= today) and (signups_frozen_before.nil? || (date >= signups_frozen_before)) and (advance >= min_advance_signup) and (signups_available_before.nil? || (date <= signups_available_before))
+    (date >= today) and unfrozen_on(date) and (advance >= min_advance_signup)
   end
 
   def active_on_day?(date, shift_group)

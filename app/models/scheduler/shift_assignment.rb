@@ -184,12 +184,16 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     includes{[person.home_phone_carrier, person.cell_phone_carrier, person.work_phone_carrier, person.alternate_phone_carrier, person.sms_phone_carrier]}
   }
 
+
+
   def local_start_time
-    local_offset(date, shift_group.start_offset)
+    key = (shift_group.period == 'monthly' ? :days : :seconds)
+    shift_time_calculator.local_offset(date, key => shift_group.start_offset)
   end
 
   def local_end_time
-    local_offset(date, shift_group.end_offset)
+    key = (shift_group.period == 'monthly' ? :days : :seconds)
+    shift_time_calculator.local_offset(date, key => shift_group.end_offset)
   end
 
   def check_frozen_shift
@@ -207,17 +211,8 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
 
   private
 
-  def local_offset(date, offset)
-    #date.in_time_zone.at_beginning_of_day.advance( seconds: offset).iso8601
-
-    beginning_of_day = date.in_time_zone(shift_group.chapter.time_zone).at_beginning_of_day
-    key = (shift_group.period == 'monthly' ? :days : :seconds)
-    offset_time = beginning_of_day.advance(key => offset)
-
-    # advance counts every instant that elapses, not just calendar seconds.  so
-    # when crossing DST you might end up one hour off in either direction even though
-    # you just want "wall clock" time.  So if the offset of the two times is different, we
-    # negate it.
-    offset_time.advance seconds: (beginning_of_day.utc_offset - offset_time.utc_offset)
+  def shift_time_calculator
+    @_calculator ||= Scheduler::ShiftTimeCalculator.new(shift_group.chapter.time_zone)
   end
+
 end

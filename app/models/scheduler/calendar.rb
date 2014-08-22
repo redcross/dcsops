@@ -30,7 +30,7 @@ class Scheduler::Calendar
   end
 
   def all_groups
-    daily_groups.merge(weekly_groups).merge(monthly_groups)
+    @all_groups ||= daily_groups.merge(weekly_groups).merge(monthly_groups)
   end
 
   def assignments_for_group_on_day(group, date)
