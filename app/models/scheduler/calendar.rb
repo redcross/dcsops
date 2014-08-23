@@ -70,7 +70,7 @@ class Scheduler::Calendar
 
   def load_all_shifts
     shifts = all_groups.values.flatten
-    @all_assignments = Scheduler::ShiftAssignment#.includes_person_carriers
+    @all_assignments = Scheduler::ShiftAssignment.references(:shift)#.includes_person_carriers
         .includes{[person, shift.county, shift.positions, shift_group]} # person.counties, 
         .for_shifts(shifts).where{date.in(my{date_range})}
     
@@ -86,7 +86,7 @@ class Scheduler::Calendar
       group_ids = all_groups.keys
       pid = person.id
 
-      Scheduler::ShiftAssignment.includes{[shift.shift_groups, shift_group]}
+      Scheduler::ShiftAssignment.references(:shift).includes{[shift.shift_groups, shift_group]}
           .where{(shift_group_id.in(group_ids)) & (person_id == pid) & date.in(my{date_range})}
           .each do |assignment|
         @my_shifts[assignment.shift_group_id][assignment.date] << assignment

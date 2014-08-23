@@ -80,7 +80,7 @@ class Roster::Person < ActiveRecord::Base
   end
 
   def roles_with_scopes
-    @roles_with_scopes ||= role_memberships.includes{[role, role_scopes]}.joins{role_scopes.outer}
+    @roles_with_scopes ||= role_memberships.includes{[role, role_scopes]}.joins{role_scopes.outer}.references(:role)
   end
 
   def primary_county
