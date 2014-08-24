@@ -8,7 +8,7 @@ json.deployments Incidents::Deployment.for_person(resource).includes{disaster} d
   json.release_date dep.date_last_seen
   json.url api_disaster_url(dep.disaster, format: :json)
 end
-json.positions resource.positions.includes{roles.role_scopes} do |position|
+json.positions resource.positions do |position|
   json.name position.name
 end
-json.roles resource.positions.includes{roles.role_scopes}.flat_map{|p| p.roles.map(&:grant_name) }
+json.roles resource.positions.includes{[role_memberships.role_scopes, role_memberships.role]}.flat_map{|p| p.role_memberships.map{|rm| rm.role.grant_name } }

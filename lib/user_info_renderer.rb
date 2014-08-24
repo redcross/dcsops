@@ -36,7 +36,7 @@ class UserInfoRenderer
   end
 
   def render_position pos
-    {id: pos.id, chapter_id: pos.chapter_id, name: pos.name, roles: pos.roles.map{|r| {name: r.grant_name, scope: r.role_scopes.map(&:scope)}}}
+    {id: pos.id, chapter_id: pos.chapter_id, name: pos.name, roles: pos.role_memberships.map{|r| {name: r.role.grant_name, scope: r.role_scopes.map(&:scope)}}}
   end
 
   def deployments
