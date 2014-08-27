@@ -19,4 +19,10 @@ namespace :scheduler_periodic do
       Scheduler::RemindersMailer.daily_swap_reminder(setting).deliver
     end
   end
+
+  task :upload_hours => [:environment] do
+    if ENV['FORCE'] || (Date.current.wday == 0)
+      Scheduler::SubmitHoursJob.enqueue_all
+    end
+  end
 end
