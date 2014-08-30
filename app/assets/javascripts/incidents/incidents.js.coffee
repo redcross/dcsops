@@ -157,6 +157,8 @@ class window.AllIncidentsHeatmapController
     @config = config
 
     dom = $('.all-incidents-map')[0]
+    unless dom?
+      return
     @map = MapFactory.createMap dom, config,
       draggable: true
       enableHover: false
