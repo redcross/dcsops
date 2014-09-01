@@ -14,7 +14,8 @@ class Api::BaseController < ActionController::Base
 
   def allow_cors
     origin = request.env['HTTP_ORIGIN']
-    if origin =~ /(localhost|dcsops.org\Z)/
+    if origin =~ /(localhost|dcsops.org)(:\d+)?\Z/
+      puts 'CORS Matches'
       response.headers['Access-Control-Allow-Origin'] = origin
       response.headers['Access-Control-Allow-Methods'] = 'GET, HEAD, OPTIONS'
       response.headers['Vary'] = 'Origin'
