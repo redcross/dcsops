@@ -2,12 +2,22 @@ class Api::BaseController < ActionController::Base
   include Connect::ControllerAdditions
   protect_from_forgery with: :null_session
   before_filter :require_access_token
+  before_filter :allow_cors
 
   check_authorization
 
   def current_ability
     @ability ||= begin
       Api::Ability.new(current_access_token)
+    end
+  end
+
+  def allow_cors
+    origin = request.env['HTTP_ORIGIN']
+    if origin =~ /(localhost|dcsops.org\Z)/
+      response.headers['Access-Control-Allow-Origin'] = origin
+      response.headers['Access-Control-Allow-Methods'] = 'GET, HEAD, OPTIONS'
+      response.headers['Vary'] = 'Origin'
     end
   end
 

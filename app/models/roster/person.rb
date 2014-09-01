@@ -2,7 +2,7 @@ class Roster::Person < ActiveRecord::Base
   include AutoGeocode
   include Mappable
 
-  PHONE_TYPES = [:home_phone, :cell_phone, :work_phone, :alternate_phone, :sms_phone]
+  PHONE_TYPES = [:cell_phone, :home_phone, :work_phone, :alternate_phone, :sms_phone]
 
   belongs_to :chapter, class_name: 'Roster::Chapter'
   belongs_to :primary_county, class_name: 'Roster::County'

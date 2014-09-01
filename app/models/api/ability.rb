@@ -11,7 +11,7 @@ class Api::Ability
   end
 
   def for_person(person)
-    can :read, Roster::Person, id: person.id
+    can :read, Roster::Person
     can :read, Roster::Chapter, id: person.chapter_id
   end
 
