@@ -27,7 +27,7 @@ class Api::PeopleController < Api::BaseController
 
   helper do
     def include_phones?
-      params['include'] = 'phone' && has_oauth_scope?('user_phones')
+      params['include'] = 'phone'# && has_oauth_scope?('user_phones')
     end
   end
 end
