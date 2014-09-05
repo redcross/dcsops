@@ -14,18 +14,18 @@
             =link_to incidents_chapter_event_logs_path(scope) do
               ECC Log
               %i.fa.fa-chevron-right
-        -if can? :link_cas, Incidents::Incident
-          %li
-            %a{href: incidents_chapter_cas_link_index_path(scope)}
-              Link CAS Incidents
-              -if num_incidents_to_link > 0
-                (#{num_incidents_to_link})
-              %i.fa.fa-chevron-right
-        -if can? :read, Incidents::CasIncident
-          %li
-            %a{href: incidents_chapter_cas_incidents_path(scope)}
-              Incident Tracker
-              %i.fa.fa-chevron-right
+        -#-if can? :link_cas, Incidents::Incident
+        -#  %li
+        -#    %a{href: incidents_chapter_cas_link_index_path(scope)}
+        -#      Link CAS Incidents
+        -#      -if num_incidents_to_link > 0
+        -#        (#{num_incidents_to_link})
+        -#      %i.fa.fa-chevron-right
+        -#-if can? :read, Incidents::CasIncident
+        -#  %li
+        -#    %a{href: incidents_chapter_cas_incidents_path(scope)}
+        -#      Incident Tracker
+        -#      %i.fa.fa-chevron-right
         -if can? :create, Incidents::ReportSubscription.new(person: current_user, report_type: 'report')
           %li
             %a{href: incidents_chapter_report_subscription_path(scope, current_user)}
