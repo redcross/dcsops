@@ -29,7 +29,7 @@ class AddShiftGroupToShiftAssignments < ActiveRecord::Migration
     
     shifts_by_name = nil
     shift_replacements = Hash.new
-    shift_memberships = NestedHash.hash_set
+    shift_memberships = Core::NestedHash.hash_set
     shifts_to_delete = []
 
     say_with_time "Group Shifts" do

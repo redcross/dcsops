@@ -68,6 +68,12 @@ GIT
       rails (>= 3.1)
       railties (>= 3.1)
 
+PATH
+  remote: gems/arcdata_core
+  specs:
+    arcdata_core (0.0.1)
+      rails (~> 4.1.5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -503,6 +509,7 @@ DEPENDENCIES
   activerecord-import
   activerecord-postgresql-adapter
   acts_as_flying_saucer!
+  arcdata_core!
   assignable_values
   authlogic (= 3.4.0)
   autotest

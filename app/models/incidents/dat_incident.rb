@@ -30,7 +30,7 @@ class Incidents::DatIncident < Incidents::DataModel
   before_validation :cleanup_first_responders
   before_validation :cleanup_services
 
-  include SerializedColumns
+  include Core::SerializedColumns
   TRACKED_RESOURCE_TYPES.each do |type_s|
     type = type_s.to_sym
     serialized_accessor :resources, type, :integer

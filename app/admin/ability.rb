@@ -23,7 +23,7 @@ class AdminAbility
 
       can :manage, Logistics::Vehicle
 
-      can :manage, ImportLog
+      can :manage, Core::JobLog
       can :manage, MOTD
 
       can :manage, Partners::Partner

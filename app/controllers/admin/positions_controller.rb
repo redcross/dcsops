@@ -1,5 +1,5 @@
 class Admin::PositionsController < GridController
-  belongs_to :chapter, parent_class: Roster::Chapter
+  belongs_to :chapter, parent_class: Roster::Chapter, finder: :find_by_url_slug!
   defaults resource_class: Roster::Position
   load_and_authorize_resource class: Roster::Position
 

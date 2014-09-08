@@ -213,25 +213,6 @@ ActiveRecord::Schema.define(version: 20140905043147) do
 
   add_index "homepage_links", ["chapter_id"], name: "index_homepage_links_on_chapter_id", using: :btree
 
-  create_table "import_logs", force: true do |t|
-    t.string   "controller"
-    t.string   "name"
-    t.string   "url"
-    t.string   "result"
-    t.string   "message_subject"
-    t.string   "file_name"
-    t.integer  "file_size"
-    t.integer  "num_rows"
-    t.text     "log"
-    t.text     "import_errors"
-    t.string   "exception"
-    t.string   "exception_message"
-    t.text     "exception_trace"
-    t.float    "runtime"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "incidents_attachments", force: true do |t|
     t.integer  "incident_id",       null: false
     t.string   "attachment_type"
@@ -674,6 +655,27 @@ ActiveRecord::Schema.define(version: 20140905043147) do
 
   add_index "incidents_vehicle_uses", ["incident_id"], name: "index_incidents_vehicle_uses_on_incident_id", using: :btree
   add_index "incidents_vehicle_uses", ["vehicle_id"], name: "index_incidents_vehicle_uses_on_vehicle_id", using: :btree
+
+  create_table "job_logs", force: true do |t|
+    t.string   "controller"
+    t.string   "name"
+    t.string   "url"
+    t.string   "result"
+    t.string   "message_subject"
+    t.string   "file_name"
+    t.integer  "file_size"
+    t.integer  "num_rows"
+    t.text     "log"
+    t.text     "import_errors"
+    t.string   "exception"
+    t.string   "exception_message"
+    t.text     "exception_trace"
+    t.float    "runtime"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "tenant_id"
+    t.string   "tenant_type",       limit: nil
+  end
 
   create_table "logistics_vehicles", force: true do |t|
     t.integer  "chapter_id"

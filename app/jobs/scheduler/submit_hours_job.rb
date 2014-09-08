@@ -11,7 +11,7 @@ class Scheduler::SubmitHoursJob
   end
 
   def perform
-    ImportLog.capture self.class.to_s, "Upload-#{@chapter_id}" do |log, counter|
+    Core::JobLog.capture self.class.to_s, chapter do |log, counter|
       @counter = counter
       upload_hours
     end

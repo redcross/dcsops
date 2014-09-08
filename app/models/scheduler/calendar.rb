@@ -74,14 +74,14 @@ class Scheduler::Calendar
         .includes{[person, shift.county, shift.positions, shift_group]} # person.counties, 
         .for_shifts(shifts).where{date.in(my{date_range})}
     
-    @all_shifts = NestedHash.hash_hash_hash_array
+    @all_shifts = Core::NestedHash.hash_hash_hash_array
     @all_assignments.each do |assignment|
       @all_shifts[assignment.shift_group_id][assignment.date][assignment.shift_id] << assignment
     end
   end
 
   def load_my_shifts
-    @my_shifts = NestedHash.hash_hash_array
+    @my_shifts = Core::NestedHash.hash_hash_array
     if person
       group_ids = all_groups.keys
       pid = person.id
@@ -118,7 +118,7 @@ class Scheduler::Calendar
   end
 
   def load_by_day_group
-    @by_day_group ||= Hash.new{|h,k| h[k] = Hash.new{|h,k| h[k] = Hash.new }}
+    @by_day_group ||= Core::NestedHash.hash_hash_hash
     @all_assignments.each { |ass| @by_day_group[ass.person][ass.date][ass.shift_group] = ass; }
   end
 

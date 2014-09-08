@@ -94,7 +94,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
     @shifts_by_shift_group ||= begin
       groups = collection.map{|s| s.shift_group}.uniq
       shifts = Scheduler::Shift.for_groups(groups).order{ordinal}.active_on_day(item.date).includes{shift_groups}
-      shifts.reduce(NestedHash.hash_array) { |arr, shift| shift.shift_group_ids.each { |gid| arr[gid] << shift }; arr }
+      shifts.reduce(Core::NestedHash.hash_array) { |arr, shift| shift.shift_group_ids.each { |gid| arr[gid] << shift }; arr }
     end
 
     @shifts_by_shift_group[item.shift_group_id].select{|s| s.county_id == item.shift.county_id}.map{|s| [s, assignments_for(s, item)]}

@@ -233,6 +233,8 @@ development:
   # textmate: true
   log_level: debug
 
+  disable_middleware_instrumentation: true
+
 test:
   <<: *default_settings
   # It almost never makes sense to turn on the agent when running

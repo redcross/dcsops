@@ -5,7 +5,7 @@ class Roster::PositionMatcher
   def initialize(positions)
     @positions = positions
     @matches = Set.new
-    @existing = NestedHash.hash_set
+    @existing = Core::NestedHash.hash_set
   end
 
   def match(position_name, id)

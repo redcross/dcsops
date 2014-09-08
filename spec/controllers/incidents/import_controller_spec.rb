@@ -4,7 +4,7 @@ describe Incidents::ImportController, :type => :controller do
 
   describe "#import_dispatch_body_handler" do
     let(:importer) { double(:importer) }
-    let(:log) { ImportLog.new }
+    let(:log) { Core::JobLog.new }
     before(:each) { controller.stub importer: importer }
 
     it "Calls importer when no account is specified" do

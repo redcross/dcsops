@@ -8,6 +8,9 @@ gem 'squeel', '~> 1.2.1', github: 'activerecord-hackery/squeel'
 gem 'puma'
 gem 'rack-rewrite'
 
+gem 'arcdata_core', github: 'redcross/arcdata_core', branch: 'master'
+gem 'connect', github: 'jlaxson/openid-connect-engine', branch: 'master'
+
 gem 'activerecord-postgresql-adapter'
 gem 'activerecord-import'
 
@@ -76,8 +79,6 @@ gem 'jbuilder'
 
 gem 'rails_12factor', group: :production
 gem 'rack-zippy', group: :production
-
-gem 'connect', github: 'jlaxson/openid-connect-engine', branch: 'master'
 
 # Gems used only for assets and not required
 # in production environments by default.

@@ -21,8 +21,8 @@ class Scheduler::SendDispatchRosterJob
   end
 
   def run!
-    ImportLog.capture(self.class.to_s, "DirectlineExport-#{chapter.id}") do |logger, import_log|
-      ImportLog.cache do # Enable the query cache here.
+    Core::JobLog.capture(self.class.to_s, chapter) do |logger, import_log|
+      Core::JobLog.cache do # Enable the query cache here.
         day = chapter.time_zone.today
         Scheduler::DirectlineMailer.export(chapter, day - 1, day + 15).deliver
       end

@@ -114,7 +114,7 @@ class Scheduler::Shift < ActiveRecord::Base
 
     groups_by_id = shifts.flat_map(&:shift_groups).reduce({}){|hash, group| hash[group.id] = group; hash }
 
-    arr = NestedHash.hash_hash_hash
+    arr = Core::NestedHash.hash_hash_hash
     shifts.each do |shift|
       shift.shift_groups.each do |group|
         arr[shift][group] = empties[group.period].dup

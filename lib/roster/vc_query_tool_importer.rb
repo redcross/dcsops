@@ -52,7 +52,7 @@ class Roster::VcQueryToolImporter
     qual_id = qual_header.index('account_id')
     qual_name_col = qual_header.index('qualification_name')
 
-    mapped_quals = NestedHash.hash_set
+    mapped_quals = Core::NestedHash.hash_set
     qualifications.each do |qual_row|
       name = qual_row[qual_name_col]
       id = qual_row[qual_id]

@@ -34,7 +34,7 @@ class Incidents::ImportController < ApplicationController
 
     json = JSON.parse( params[:mandrill_events])
     json.each do |evt|
-      ImportLog.capture(self.class.to_s, params[:action]) do |logger, import_log|
+      Core::JobLog.capture(self.class.to_s + '#import_dispatch') do |logger, import_log|
         message = evt['msg']
         import_log.message_subject = message['subject']
 

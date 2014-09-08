@@ -16,7 +16,7 @@ namespace :roster do
   task :update_positions => :environment do
     Raven.capture do
       chapter = Roster::Chapter.find ENV['CHAPTER_ID']
-      ImportLog.capture("UpdatePositions", "chapter-#{chapter.id}") do |logger, log|
+      Core::JobLog.capture("UpdatePositions", chapter) do |logger, log|
         Roster::VcQueryToolImporter.new(logger, log).import(chapter, [:positions, :qualifications, :usage])
       end
     end

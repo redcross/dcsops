@@ -9,7 +9,7 @@
   - debug_errors = false
   - all_errors = error_keys(f.object)
   - pp all_errors if debug_errors
-  - components = tabs.map{|name| p = FormProxy.new(f); html = render(name, f: p); pp name, p.keys if debug_errors; {name => {proxy: p, html: html, errors: (all_errors & p.keys).present?}}}.reduce(&:merge)
+  - components = tabs.map{|name| p = Core::FormProxy.new(f); html = render(name, f: p); pp name, p.keys if debug_errors; {name => {proxy: p, html: html, errors: (all_errors & p.keys).present?}}}.reduce(&:merge)
   - first_error = tabs.detect{|name| components[name][:errors] }
   - components.each_with_index { |(name, opts), idx| opts[:active] = (first_error == name || (idx == 0 && first_error.nil?)) }
   /
