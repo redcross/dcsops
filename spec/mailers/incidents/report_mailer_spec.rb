@@ -2,14 +2,14 @@ require "spec_helper"
 
 describe Incidents::ReportMailer, :type => :mailer do
   let(:from_address) {["incidents@dcsops.org"]}
-  let(:chapter) { FactoryGirl.create :chapter }
-  let(:person) { FactoryGirl.create :person, chapter: chapter }
+  let(:scope) { FactoryGirl.create :incidents_scope }
+  let(:person) { FactoryGirl.create :person, chapter: scope.chapter }
 
   before do
-    FactoryGirl.create :incident, chapter: chapter, date: chapter.time_zone.today.yesterday
+    FactoryGirl.create :incident, chapter: scope.chapter, date: scope.chapter.time_zone.today.yesterday
   end
 
-  let(:mail) { Incidents::ReportMailer.report(chapter, person) }
+  let(:mail) { Incidents::ReportMailer.report(scope, person) }
 
   describe "report" do
 
@@ -31,7 +31,7 @@ describe Incidents::ReportMailer, :type => :mailer do
     # right now, so we'll examine it as output in the subject and this
     # can be moved when I find a better way.
     describe "#subtitle" do
-      let(:mail) { Incidents::ReportMailer.report_for_date_range(chapter, person, @date_range) }
+      let(:mail) { Incidents::ReportMailer.report_for_date_range(scope, person, @date_range) }
 
       it "Displays week when the week starts on monday and is 7 days long" do
         @date_range = Date.civil(2014,1,6)..Date.civil(2014,1,12)
@@ -52,10 +52,10 @@ describe Incidents::ReportMailer, :type => :mailer do
 
     describe "deployments" do
       it "Renders" do
-        chapter.incidents_report_dro_ignore = "123-456"
-        chapter.save
+        scope.report_dro_ignore = "123-456"
+        scope.save
         disaster = FactoryGirl.create :disaster
-        deployment = FactoryGirl.create :deployment, person: person, disaster: disaster, date_first_seen: chapter.time_zone.today.yesterday, date_last_seen: chapter.time_zone.today
+        deployment = FactoryGirl.create :deployment, person: person, disaster: disaster, date_first_seen: scope.chapter.time_zone.today.yesterday, date_last_seen: scope.chapter.time_zone.today
         expect(mail.body.encoded).to match(disaster.name)
       end
     end

@@ -13,6 +13,6 @@
       - incident_statistics.each do |stat, val|
         #{stat.titleize}: #{val}
         %br
-      -if chapter.incidents_report_include_assistance_amounts
+      -if scope.chapter && scope.chapter.incidents_report_include_assistance_amounts
         Total Assistance:
         =number_to_currency total_assistance_amount

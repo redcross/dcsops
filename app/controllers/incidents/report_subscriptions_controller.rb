@@ -1,7 +1,7 @@
 class Incidents::ReportSubscriptionsController < Incidents::BaseController
   inherit_resources
   respond_to :html, :json
-  belongs_to :chapter, parent_class: Roster::Chapter, finder: :find_by_url_slug!
+  belongs_to :scope, parent_class: Incidents::Scope, finder: :find_by_url_slug!
   load_and_authorize_resource
   helper EditableHelper
 
@@ -30,7 +30,7 @@ class Incidents::ReportSubscriptionsController < Incidents::BaseController
   end
 
   def new_resource_params
-    {person_id: current_user, report_type: params[:report_type]}
+    {person_id: current_user, report_type: params[:report_type], scope: parent}
   end
 
   def resource_params

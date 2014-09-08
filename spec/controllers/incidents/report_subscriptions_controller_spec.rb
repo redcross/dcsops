@@ -5,11 +5,12 @@ describe Incidents::ReportSubscriptionsController, :type => :controller do
   render_views
 
   let(:chapter) { @person.chapter }
+  let!(:scope) { FactoryGirl.create :incidents_scope, chapter: chapter}
   let(:report_type) { 'report' }
 
   describe '#new' do
     it 'renders' do
-      get :new, chapter_id: chapter.to_param, report_type: report_type
+      get :new, scope_id: scope.to_param, report_type: report_type
       expect(response).to be_success
       expect(response.body).to include('Subscribe')
     end
@@ -17,18 +18,18 @@ describe Incidents::ReportSubscriptionsController, :type => :controller do
 
   describe '#create' do
     it 'creates and redirects to the subscription' do
-      post :create, chapter_id: chapter.to_param, report_type: report_type
+      post :create, scope_id: scope.to_param, report_type: report_type
       expect(response).to be_redirect
       expect(get_sub).to_not be_nil
     end
   end
 
   describe "with existing subscription" do
-    let!(:sub) {FactoryGirl.create :report_subscription, person: @person}
+    let!(:sub) {FactoryGirl.create :report_subscription, person: @person, scope: scope}
     
     describe '#show' do
       it 'renders' do
-        get :show, chapter_id: chapter.to_param, report_type: report_type, id: sub.id
+        get :show, scope_id: scope.to_param, report_type: report_type, id: sub.id
         expect(response).to be_success
         expect(response.body).to include('Unsubscribe')
       end
@@ -36,7 +37,7 @@ describe Incidents::ReportSubscriptionsController, :type => :controller do
 
     describe '#update' do
       it 'changes the frequency' do
-        patch :update, chapter_id: chapter.to_param, report_type: report_type, id: sub.id, incidents_report_subscription: {frequency: 'daily'}
+        patch :update, scope_id: scope.to_param, report_type: report_type, id: sub.id, incidents_report_subscription: {frequency: 'daily'}
         expect(response).to be_redirect
         expect(get_sub.frequency).to eq('daily')
       end
@@ -44,7 +45,7 @@ describe Incidents::ReportSubscriptionsController, :type => :controller do
 
     describe '#destroy' do
       it 'destroys and redirects to the subscription' do
-        delete :destroy, chapter_id: chapter.to_param, report_type: report_type, id: sub.id
+        delete :destroy, scope_id: scope.to_param, report_type: report_type, id: sub.id
         expect(response).to be_redirect
         expect{
           get_sub

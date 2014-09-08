@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140819054205) do
+ActiveRecord::Schema.define(version: 20140905043147) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -591,6 +591,7 @@ ActiveRecord::Schema.define(version: 20140819054205) do
     t.hstore   "options"
     t.string   "frequency"
     t.date     "last_sent"
+    t.integer  "scope_id"
   end
 
   add_index "incidents_report_subscriptions", ["county_id"], name: "index_incidents_report_subscriptions_on_county_id", using: :btree

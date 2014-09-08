@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Incidents::ReportSubscription, :type => :model do
-  let!(:chapter) { FactoryGirl.create :chapter, incidents_enabled_report_frequencies: 'weekly,weekdays,daily' }
-  let(:person) { FactoryGirl.create :person, chapter: chapter}
-  let(:today) { chapter.time_zone.today }
+  let(:scope) { FactoryGirl.create :incidents_scope, report_frequencies: 'weekly,weekdays,daily'}
+  let(:person) { FactoryGirl.create :person, chapter: scope.chapter}
+  let(:today) { scope.chapter.time_zone.today }
   after(:each) { Delorean.back_to_1985}
 
   describe "type=report" do
@@ -11,17 +11,17 @@ describe Incidents::ReportSubscription, :type => :model do
 
     it "Should be creatable" do
       expect{
-        sub = Incidents::ReportSubscription.create person_id: person.id, report_type: report_type
+        sub = Incidents::ReportSubscription.create person_id: person.id, report_type: report_type, scope: scope
       }.to change(Incidents::ReportSubscription, :count).by(1)
     end
 
     it "Should provide a default frequency" do
-      sub = Incidents::ReportSubscription.create person_id: person.id, report_type: report_type
+      sub = Incidents::ReportSubscription.create person_id: person.id, report_type: report_type, scope: scope
       expect(sub.frequency).to eq('weekly')
     end
 
     it "Should validate frequency" do
-      sub = Incidents::ReportSubscription.create person_id: person.id, report_type: report_type
+      sub = Incidents::ReportSubscription.create person_id: person.id, report_type: report_type, scope: scope
       sub.frequency = nil
       expect(sub).not_to be_valid
     end
@@ -31,7 +31,7 @@ describe Incidents::ReportSubscription, :type => :model do
     
 
     describe "frequency weekly" do
-      let!(:subscription) { Incidents::ReportSubscription.create! person: person, report_type: 'report', frequency: 'weekly'}
+      let!(:subscription) { Incidents::ReportSubscription.create! person: person, report_type: 'report', frequency: 'weekly', scope: scope}
 
       it "Should return a subscription that has never been sent" do
         expect(Incidents::ReportSubscription.to_send_on(Date.current)).to match_array([subscription])
@@ -50,7 +50,7 @@ describe Incidents::ReportSubscription, :type => :model do
     end
 
     describe "frequency daily" do
-      let!(:subscription) { Incidents::ReportSubscription.create! person: person, report_type: 'report', frequency: 'weekly'}
+      let!(:subscription) { Incidents::ReportSubscription.create! person: person, report_type: 'report', frequency: 'weekly', scope: scope}
 
       it "Should return a subscription that has never been sent" do
         expect(Incidents::ReportSubscription.to_send_on(Date.current)).to match_array([subscription])
@@ -69,7 +69,7 @@ describe Incidents::ReportSubscription, :type => :model do
     end
 
     describe "frequency weekdays" do
-      let!(:subscription) { Incidents::ReportSubscription.create! person: person, report_type: 'report', frequency: 'weekdays'}
+      let!(:subscription) { Incidents::ReportSubscription.create! person: person, report_type: 'report', frequency: 'weekdays', scope: scope}
 
       it "Should return a subscription that has never been sent" do
         expect(Incidents::ReportSubscription.to_send_on(Date.current)).to match_array([subscription])
@@ -77,7 +77,7 @@ describe Incidents::ReportSubscription, :type => :model do
 
       describe "on a non-Monday weekday" do
         before(:each) do
-          Delorean.time_travel_to chapter.time_zone.today.at_beginning_of_week+3
+          Delorean.time_travel_to today.at_beginning_of_week+3
         end
 
         it "Should return a subscription that hasn't been sent today" do
@@ -93,7 +93,7 @@ describe Incidents::ReportSubscription, :type => :model do
 
       describe "on a Monday" do
         before(:each) do
-          Delorean.time_travel_to chapter.time_zone.today.at_beginning_of_week
+          Delorean.time_travel_to today.at_beginning_of_week
         end
 
         it "Should return a subscription that hasn't been sent since friday" do
@@ -110,7 +110,7 @@ describe Incidents::ReportSubscription, :type => :model do
 
       describe "on a weekend" do
         before(:each) do
-          Delorean.time_travel_to chapter.time_zone.today.at_beginning_of_week
+          Delorean.time_travel_to today.at_beginning_of_week
         end
 
         it "Should not return a subscription that hasn't been sent since friday" do
@@ -124,8 +124,7 @@ describe Incidents::ReportSubscription, :type => :model do
   end
 
   describe "#range_to_send" do
-    let(:sub) {Incidents::ReportSubscription.new(report_type: 'weekly', person: person)}
-    let(:today) {chapter.time_zone.today}
+    let(:sub) {Incidents::ReportSubscription.new(report_type: 'weekly', person: person, scope: scope)}
 
     it "should send yesterday when a daily" do
       sub.frequency = 'daily'

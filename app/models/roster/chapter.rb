@@ -1,5 +1,6 @@
 class Roster::Chapter < ActiveRecord::Base
-  include SerializedColumns
+  include Core::SerializedColumns
+  include Core::ArrayAccessor
   has_many :counties
   has_many :positions
   has_many :people
@@ -25,7 +26,6 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_enable_dispatch_console, :boolean
   serialized_accessor :config, :incidents_dispatch_console_ignore_county, :boolean
   serialized_accessor :config, :idat_database, :string
-  serialized_accessor :config, :incidents_report_dro_ignore, :string
   serialized_accessor :config, :cas_chapter_codes, :string
   serialized_accessor :config, :incidents_timeline_collect, :string
   serialized_accessor :config, :incidents_timeline_collect_source, :string
@@ -34,9 +34,6 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_sequence_number, :integer
   serialized_accessor :config, :incidents_sequence_format, :string
   serialized_accessor :config, :incidents_sequence_enabled, :boolean
-  serialized_accessor :config, :incidents_enabled_report_frequencies, :string
-  serialized_accessor :config, :incidents_report_send_automatically, :boolean
-  serialized_accessor :config, :incidents_report_send_at, :integer, default: 0
   serialized_accessor :config, :incidents_report_include_assistance_amounts, :boolean
   serialized_accessor :config, :incidents_timeline_collect_source, :string
   serialized_accessor :config, :incidents_report_advanced_details, :boolean
@@ -71,19 +68,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :roster_import_prospective_members, :boolean
   serialized_accessor :config, :directline_account_number, :string
 
-  def self.array_accessor *syms
-    syms.each do |sym|
-      define_method "#{sym}_array" do |valid_options=nil|
-        val = self.send(sym) || ''
-        array = val.split(',').select(&:present?)
-        array = (array & valid_options) if valid_options
-        array
-      end
-    end
-  end
-
   array_accessor :cas_chapter_codes
   array_accessor :incidents_timeline_collect, :incidents_timeline_mandatory, :incidents_timeline_collect_source
-  array_accessor :incidents_resources_tracked, :incidents_enabled_report_frequencies
-  array_accessor :incidents_report_dro_ignore
+  array_accessor :incidents_resources_tracked
 end

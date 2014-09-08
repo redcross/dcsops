@@ -1,33 +1,37 @@
 class Incidents::ReportSubscription < ActiveRecord::Base
   belongs_to :person, class_name: 'Roster::Person'
   belongs_to :county, class_name: 'Roster::County'
+  belongs_to :scope, class_name: 'Incidents::Scope'
 
-  validates :report_type, uniqueness: {scope: [:person_id, :county_id]}
-  validates :frequency, presence: {if: ->(sub) {sub.report_type == 'report'}}
-  validates :person, presence: true
+  validates :report_type, uniqueness: {scope: [:person_id, :scope_id]}
+  validates :person, :scope, :frequency, presence: true
 
-  assignable_values_for :report_type do
-    %w(new_incident incident_dispatch incident_report missing_report report)
-  end
-
+  #assignable_values_for :report_type do
+  #  %w(report)
+  #end
+#
   FREQUENCIES = %w(daily weekly weekdays)
 
   assignable_values_for :frequency, allow_blank: true do
-    person.try(:chapter).try(:incidents_enabled_report_frequencies_array, FREQUENCIES) || []
+    scope && scope.report_frequencies_array(FREQUENCIES) || []
   end
 
   before_validation :set_frequency, on: :create
   def set_frequency
-    self.frequency ||= self.assignable_frequencies.first if self.report_type == 'report'
+    self.frequency ||= self.assignable_frequencies.first# if self.report_type == 'report'
   end
 
-  def self.for_chapter chapter
-    joins{person}.where{person.chapter_id == chapter}
+  def self.for_scope scope
+    where{scope_id == scope}
   end
 
-  def self.for_county county
-    where{(county_id == nil) | (county_id == county)}
-  end
+  #def self.for_chapter chapter
+  #  joins{person}.where{person.chapter_id == chapter}
+  #end
+#
+  #def self.for_county county
+  #  where{(county_id == nil) | (county_id == county)}
+  #end
 
   def self.for_type type
     where{report_type == type}

@@ -6,25 +6,25 @@ class Incidents::ReportMailer < ActionMailer::Base
 
   default from: "DCSOps <incidents@dcsops.org>"
 
-  def self.report(chapter, recipient)
-    start_date = chapter.time_zone.today.at_beginning_of_week.last_week
+  def self.report(scope, recipient)
+    start_date = scope.time_zone.today.at_beginning_of_week.last_week
     end_date = start_date.next_week.yesterday
-    self.report_for_date_range(chapter, recipient, start_date..end_date)
+    self.report_for_date_range(scope, recipient, start_date..end_date)
   end
 
-  def report_for_date_range(chapter, recipient, date_range)
-    @chapter = chapter
+  def report_for_date_range(scope, recipient, date_range)
+    @scope = scope
     @person = recipient
     @date_range = date_range
 
     fiscal = FiscalYear.for_date(@date_range.first)
 
-    scope = Incidents::Incident.valid.for_chapter(chapter)
+    rel = Incidents::Incident.valid.for_chapter(scope.all_chapters)
     
-    @incident_scope = date_scope(scope, date_range).order{date}.includes{responder_assignments.person}
-    @incidents = @incident_scope.map{|i| Incidents::IncidentPresenter.new i}
-    @weekly_stats = date_scope(scope, date_range).incident_stats
-    @yearly_stats = scope.where{date.in(fiscal.range)}.incident_stats
+    @incident_scope = date_scope(rel, date_range).order{date}.includes{responder_assignments.person}
+    @incidents = @incident_scope.map{|i| Incidents::IncidentPresenter.new(i) }
+    @weekly_stats = date_scope(rel, date_range).incident_stats
+    @yearly_stats = rel.where{date.in(fiscal.range)}.incident_stats
 
     tag :incidents, :weekly_report
     mail to: format_address(recipient), subject: subject, template_name: 'report'
@@ -32,8 +32,8 @@ class Incidents::ReportMailer < ActionMailer::Base
 
 private
 
-  attr_reader :chapter, :person, :incidents
-  helper_method :chapter, :person, :incidents
+  attr_reader :scope, :person, :incidents
+  helper_method :scope, :person, :incidents
 
   def subject
     [title, subtitle].join(" - ")
@@ -41,7 +41,7 @@ private
 
   helper_method :subtitle, :title
   def title
-    "#{chapter.short_name} Disaster Operations Report"
+    "#{scope.short_name} Disaster Operations Report"
   end
 
   def date_scope(scope, date_range)
@@ -64,9 +64,9 @@ private
   }
 
   def deployments
-    ignore = chapter.incidents_report_dro_ignore_array
-
-    Incidents::Deployment.for_chapter(chapter).seen_since(@date_range.first)
+    ignore = scope.report_dro_ignore_array
+    chapters = scope.all_chapters
+    Incidents::Deployment.for_chapter(chapters).seen_since(@date_range.first)
                           .preload{[disaster, person.counties]}
                           .joins{disaster}
                           .where{ disaster.dr_number.not_like_any(ignore) }
@@ -98,7 +98,8 @@ private
   }
 
   expose(:incident_statistics) {
-    @incident_scope.count_resources(chapter.incidents_resources_tracked_array)
+    resources = scope.all_chapters.flat_map(&:incidents_resources_tracked_array).uniq
+    @incident_scope.count_resources(resources)
   }
 
   expose(:map_width) { 250 }

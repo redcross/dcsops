@@ -25,7 +25,6 @@ module FeatureSpec
       cookies = ActionDispatch::Cookies::CookieJar.new(secret)
       allow(cookies).to receive(:close!)
 
-      request = ActionDispatch::Request.any_instance
       allow_any_instance_of(ActionDispatch::Request).to receive(:cookie_jar){ cookies }
       allow_any_instance_of(ActionDispatch::Request).to receive(:cookies){ cookies }
 

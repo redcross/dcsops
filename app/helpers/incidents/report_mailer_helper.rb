@@ -31,6 +31,6 @@ module Incidents::ReportMailerHelper
   end
 
   def path_param
-    "color:0x00000000|#{chapter.incidents_map_framing_points}"
+    "color:0x00000000|#{scope.report_map_framing_points}"
   end
 end

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Scheduler::SendRemindersJob do
   let(:chapter) { mock_model Roster::Chapter, time_zone: Time.zone, id: SecureRandom.random_number }
   let(:person) { mock_model Roster::Person, chapter: chapter }
-  let(:job) { Scheduler::SendRemindersJob.new(chapter.id).tap{|j| j.stub chapter: chapter } }
+  let(:job) { Scheduler::SendRemindersJob.new(chapter.id).tap{|j| allow(j).to receive(:chapter).and_return(chapter) } }
 
   after :each do
     ActionMailer::Base.deliveries.clear

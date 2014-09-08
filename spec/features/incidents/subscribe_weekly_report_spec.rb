@@ -4,12 +4,9 @@ describe "Weekly Report", :type => :feature do
 
   it "Should be subscribable" do
     grant_role! :incidents_admin
-    @chapter = @person.chapter
-    @chapter.incidents_enabled_report_frequencies = 'weekly,daily'
-    @chapter.save!
-    FactoryGirl.create :incidents_scope, chapter: @person.chapter
+    @scope = FactoryGirl.create :incidents_scope, chapter: @person.chapter, report_frequencies: 'weekly,daily'
 
-    visit "/incidents/#{@chapter.url_slug}"
+    visit "/incidents/#{@scope.url_slug}"
 
     click_link "Daily/Weekly Report"
 

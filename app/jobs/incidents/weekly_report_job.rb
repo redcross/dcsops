@@ -1,13 +1,13 @@
 class Incidents::WeeklyReportJob
 
   def self.enqueue
-    Roster::Chapter.with_incidents_report_send_automatically_value(true).each do |chapter|
+    Incidents::Scope.with_report_send_automatically_value(true).each do |chapter|
       new(chapter.id).perform
     end
   end
 
-  def initialize chapter_id
-    @chapter_id = chapter_id
+  def initialize scope_id
+    @scope_id = scope_id
   end
 
   def perform
@@ -29,7 +29,7 @@ class Incidents::WeeklyReportJob
   private 
 
   def deliver_subscription sub
-    Incidents::ReportMailer.report_for_date_range(sub.person.chapter, sub.person, sub.range_to_send).deliver
+    Incidents::ReportMailer.report_for_date_range(sub.scope, sub.person, sub.range_to_send).deliver
     sub.update_attribute :last_sent, current_send_date
   rescue => e
     errors << {exception: e, subscription: sub}
@@ -37,9 +37,9 @@ class Incidents::WeeklyReportJob
 
   def current_send_date
     @current_send_date ||= begin
-      seconds = chapter.time_zone.now.seconds_since_midnight
-      today = chapter.time_zone.today
-      if seconds < (chapter.incidents_report_send_at || 0)
+      seconds = scope.time_zone.now.seconds_since_midnight
+      today = scope.time_zone.today
+      if seconds < (scope.report_send_at || 0)
         today.yesterday
       else
         today
@@ -49,15 +49,15 @@ class Incidents::WeeklyReportJob
 
   def subscriptions
     Incidents::ReportSubscription.for_type('report')
-                                 .for_chapter(chapter)
+                                 .for_scope(scope)
                                  .to_send_on(current_send_date)
                                  .includes{person.chapter}
                                  .with_active_person
                                  .readonly(false)
   end
 
-  def chapter
-    @chapter ||= Roster::Chapter.find @chapter_id
+  def scope
+    @scope ||= Incidents::Scope.find @scope_id
   end
 
 end

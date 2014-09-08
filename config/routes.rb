@@ -59,6 +59,10 @@ Scheduler::Application.routes.draw do
 
   namespace :incidents do
     root to: "home#redirect_to_chapter"
+    scope ':scope_id', as: :scope do
+      resources :report_subscriptions, report_type: 'report'
+    end
+
     scope ':chapter_id', as: :chapter do
       root to: "home#root"
       get :operations, to: "home#operations"
@@ -111,7 +115,7 @@ Scheduler::Application.routes.draw do
       scope "responses", controller: :responses do
         root to: :responders, as: 'responders'
       end
-      resources :report_subscriptions, report_type: 'report'
+      
     end
 
     namespace :api do
