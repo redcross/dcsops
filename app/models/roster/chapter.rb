@@ -6,6 +6,8 @@ class Roster::Chapter < ActiveRecord::Base
   has_many :people
   has_many :roles
 
+  has_one :vc_import_data
+
   has_many :incidents, class_name: "Incidents::Incident"
   has_many :event_logs, class_name: "Incidents::EventLog"
   has_many :cas_incidents, class_name: "Incidents::CasIncident"

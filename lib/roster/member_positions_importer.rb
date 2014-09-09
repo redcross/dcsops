@@ -56,6 +56,7 @@ class Roster::MemberPositionsImporter < ImportParser
   def before_import
     @positions_matcher = Roster::PositionMatcher.new(positions)
     @counties_matcher = Roster::PositionMatcher.new(counties)
+    @position_names = Hash.new{|h, k| h[k] = 0}
 
     @vc_ids_seen = Set.new
     @filters = DataFilter.where{model == 'Roster::Person'}.group_by(&:field)
@@ -68,6 +69,7 @@ class Roster::MemberPositionsImporter < ImportParser
   def after_import
     import_memberships @counties_matcher, Roster::CountyMembership, :county_id
     import_memberships @positions_matcher, Roster::PositionMembership, :position_id
+    Roster::VcImportData.find_or_initialize_by(chapter_id: @chapter).update_attributes position_data: @position_names, chapter_id: @chapter
 
     Roster::Person.where(vc_id: @vc_ids_seen.to_a).update_all :vc_imported_at => Time.now
     deactivated = Roster::Person.for_chapter(@chapter).where{vc_id.not_in(my{@vc_ids_seen.to_a})}.update_all(:vc_is_active => false) if @vc_ids_seen.present?
@@ -132,6 +134,7 @@ class Roster::MemberPositionsImporter < ImportParser
   end
 
   def match_position_named position_name
+    @position_names[position_name] += 1
     matched_counties = @counties_matcher.match(position_name, @person.id) 
     matched_positions = @positions_matcher.match(position_name, @person.id)
 

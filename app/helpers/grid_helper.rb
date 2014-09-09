@@ -5,7 +5,7 @@ module GridHelper
 
   def form_options(col)
     options = default_form_options
-    options.merge! col.form_options if col.form_options
+    options.deep_merge! col.form_options if col.form_options
     evaluate_procs(options)
   end
 

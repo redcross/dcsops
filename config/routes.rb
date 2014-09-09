@@ -143,6 +143,7 @@ Scheduler::Application.routes.draw do
       resources :positions
       resources :counties
       resources :shifts
+      resource :vc_positions, only: :show
     end
   end
 

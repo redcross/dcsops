@@ -1,6 +1,7 @@
 class Roster::County < ActiveRecord::Base
   belongs_to :chapter
   has_many :county_memberships
+  has_many :people, through: :county_memberships, class_name: 'Roster::Person'
 
   validates_presence_of :chapter
 

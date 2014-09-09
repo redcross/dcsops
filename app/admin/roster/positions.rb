@@ -21,6 +21,23 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
     actions
   end
 
+  show do
+    default_main_content
+    attributes_table do
+      row("Number of Members") { resource.people.count }
+    end
+    data = resource.chapter.vc_import_data
+    if data
+      positions = data.positions_matching resource.vc_regex_raw
+      panel "Matched VC Positions" do
+        table_for positions do
+          column("Name") { |r| r[:name] }
+          column("Number of Matches") { |r| r[:count] }
+        end
+      end
+    end
+  end
+
   controller do
     def update
       update! { url_for(action: :index)}

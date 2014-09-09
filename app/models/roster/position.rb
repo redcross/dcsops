@@ -1,6 +1,7 @@
 class Roster::Position < ActiveRecord::Base
   belongs_to :chapter
   has_many :position_memberships
+  has_many :people, through: :position_memberships, class_name: 'Roster::Person'
 
   has_many :role_memberships, class_name: 'Roster::RoleMembership'
 
