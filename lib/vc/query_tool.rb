@@ -83,6 +83,6 @@ module Vc
       return resp.body
     end
 
-    class QueryRetrievalException < Exception; end
+    class QueryRetrievalException < StandardError; end
   end
 end
