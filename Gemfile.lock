@@ -59,7 +59,7 @@ GIT
 
 GIT
   remote: git://github.com/redcross/arcdata_core.git
-  revision: d759febf4cd08c1dff29688184d007d871f803dd
+  revision: 7296582f0b75e94bd6074b786a5dc6f0db5fb77c
   branch: master
   specs:
     arcdata_core (0.0.1)
