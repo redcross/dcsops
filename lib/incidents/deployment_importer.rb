@@ -2,7 +2,7 @@ class Incidents::DeploymentImporter
   include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
   def self.get_deployments(chapter)
-    Core::JobLog.capture(self.to_s, "Get-#{chapter.id}") do |logger, counter|
+    Core::JobLog.capture(self.to_s, chapter) do |logger, counter|
       logger.level = 0
       query = Vc::QueryTool.new chapter.vc_username, chapter.vc_password, logger
       file = query.get_disaster_query '38613', {return_jid: 4942232, prompt0: chapter.vc_unit}, :csv
