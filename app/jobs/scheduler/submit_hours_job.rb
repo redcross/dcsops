@@ -1,5 +1,5 @@
 class Scheduler::SubmitHoursJob
-  def enqueue_all
+  def self.enqueue_all
     Roster::Chapter.with_scheduler_submit_vc_hours_value(true).ids.each do |chapter|
       new(chapter.id).perform
     end

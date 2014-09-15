@@ -119,8 +119,8 @@ class Incidents::DispatchImporter
 
   def geocode_incident(log_object, incident)
     incident.address = log_object.address
-    res = self.class.geocoder.geocode "#{log_object.address}, #{log_object.state || "CA"}, USA"
-    incident.take_location_from res if res.success?
+    res = self.class.geocoder.geocode "#{log_object.address}, #{log_object.state}"
+    incident.take_location_from res if res.success? && res.province == log_object.state
   rescue Geokit::Geocoders::TooManyQueriesError
     # Not the end of the world
   end

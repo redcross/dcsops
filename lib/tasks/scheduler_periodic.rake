@@ -15,14 +15,18 @@ namespace :scheduler_periodic do
   end
 
   task :send_daily_shift_swap => [:environment] do
-    Scheduler::NotificationSetting.where{(email_all_swaps_daily == true)}.each do |setting|
-      Scheduler::RemindersMailer.daily_swap_reminder(setting).deliver
+    Raven.capture do
+      Scheduler::NotificationSetting.where{(email_all_swaps_daily == true)}.each do |setting|
+        Scheduler::RemindersMailer.daily_swap_reminder(setting).deliver
+      end
     end
   end
 
   task :upload_hours => [:environment] do
-    if ENV['FORCE'] || (Date.current.wday == 0)
-      Scheduler::SubmitHoursJob.enqueue_all
+    Raven.capture do
+      if ENV['FORCE'] || (Date.current.wday == 0)
+        Scheduler::SubmitHoursJob.enqueue_all
+      end
     end
   end
 end

@@ -30,7 +30,11 @@ namespace :incidents_periodic do
     Raven.capture do
       Roster::Chapter.where{vc_username != nil}.each do |chapter|
         next unless chapter.vc_username.present?
-        Incidents::DisastersImporter.get_disasters chapter
+        begin
+          Incidents::DisastersImporter.get_disasters chapter
+        rescue => e
+          Raven.capture_exception e
+        end
         #break # For now, this only needs to run for one chapter since it pulls national data
       end
     end
