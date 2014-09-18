@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140905043147) do
+ActiveRecord::Schema.define(version: 20140909153646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -474,6 +474,7 @@ ActiveRecord::Schema.define(version: 20140905043147) do
     t.string   "recruitment_message"
     t.integer  "cas_event_id"
     t.boolean  "address_directly_entered",   default: false, null: false
+    t.integer  "territory_id"
   end
 
   add_index "incidents_incidents", ["cas_event_number"], name: "index_incidents_incidents_on_cas_event_number", using: :btree
@@ -645,6 +646,23 @@ ActiveRecord::Schema.define(version: 20140905043147) do
   end
 
   add_index "incidents_scopes_roster_chapters", ["scope_id", "chapter_id"], name: "index_incidents_scopes_roster_chapters", unique: true, using: :btree
+
+  create_table "incidents_territories", force: true do |t|
+    t.integer  "chapter_id"
+    t.string   "name"
+    t.boolean  "enabled"
+    t.boolean  "is_default"
+    t.string   "counties",             array: true
+    t.string   "cities",               array: true
+    t.string   "zip_codes",            array: true
+    t.string   "dispatch_number"
+    t.string   "non_disaster_number"
+    t.text     "special_instructions"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_territories", ["chapter_id"], name: "index_incidents_territories_on_chapter_id", using: :btree
 
   create_table "incidents_vehicle_uses", force: true do |t|
     t.integer  "vehicle_id"
@@ -890,6 +908,15 @@ ActiveRecord::Schema.define(version: 20140905043147) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "roster_vc_import_data", force: true do |t|
+    t.integer  "chapter_id"
+    t.json     "position_data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "roster_vc_import_data", ["chapter_id"], name: "index_roster_vc_import_data_on_chapter_id", using: :btree
 
   create_table "scheduler_dispatch_configs", force: true do |t|
     t.integer  "county_id"

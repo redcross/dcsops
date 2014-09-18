@@ -53,6 +53,8 @@ class AdminAbility
 
       can [:read, :update], Scheduler::DispatchConfig, chapter_id: chapter
       can :read, Incidents::DispatchLog, chapter_id: chapter
+
+      can :manage, Incidents::Territory, chapter_id: chapter
     end
   end
 
