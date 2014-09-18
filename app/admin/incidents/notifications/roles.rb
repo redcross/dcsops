@@ -18,7 +18,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
       safe_join(r.positions.map(&:name) + r.shifts.map(&:name), tag(:br))
     }
     column(:counties) { |r|
-      safe_join(r.role_scopes.map(&:value), tag(:br))
+      safe_join(r.role_scopes.includes{territory}.map{|rs| rs.territory ? "Territory: #{rs.territory.name}" : "County: #{rs.value}" }, tag(:br))
     }
     actions
   end
@@ -34,6 +34,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
       f.has_many :role_scopes, allow_destroy: true do |sf|
         sf.input :level, as: :assignable_select_admin
         sf.input :value
+        sf.input :territory, collection: Incidents::Territory.for_chapter(f.object.chapter)
       end
     end
     f.inputs do

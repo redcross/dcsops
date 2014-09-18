@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140918042332) do
+ActiveRecord::Schema.define(version: 20140918150614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -502,6 +502,7 @@ ActiveRecord::Schema.define(version: 20140918042332) do
     t.string   "value"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "territory_id"
   end
 
   add_index "incidents_notifications_role_scopes", ["role_id"], name: "index_incidents_notifications_role_scopes_on_role_id", using: :btree
