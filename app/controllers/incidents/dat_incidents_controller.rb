@@ -84,6 +84,16 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
   expose(:scheduler_service) { Scheduler::SchedulerService.new(@chapter) }
 
+  def update_resource(obj, attrs)
+    super(obj, attrs).tap {|success|
+      if success && (resource.incident.previous_changes.keys & [:address, :city, :state, :zip, :county, :lat, :lng]).present?
+        Incidents::TerritoryMatcher.new(obj.incident).perform
+        obj.incident.save
+      end
+    }
+  end
+
+
   def prepare_resource(obj)
     inc_attrs = incident_params
     obj.incident.attributes = inc_attrs if inc_attrs
@@ -164,27 +174,23 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
       partner_use_params = [:partner_id, :partner_name, :hotel_rate, :hotel_rooms, :meals_served]
 
-      base = params.require(:incidents_dat_incident)[:incident_attributes]
-      if base
-        @_incident_params ||= base.permit([
-          :incident_type, :narrative, :status, :cas_event_number,
-          :address, :city, :state, :zip, :lat, :lng, :county, :neighborhood, :address_directly_entered,
-          :num_adults, :num_children, :num_families,
-          {:team_lead_attributes => [:id, :person_id, :role, :response]},
-          {:responder_assignments_attributes => [:id, :person_id, :role, :response, :_destroy, :was_flex]},
-          :evac_partner_used,
-          {:evac_partner_use_attributes => partner_use_params},
-          :feeding_partner_used,
-          {:feeding_partner_use_attributes => partner_use_params},
-          :shelter_partner_used,
-          {:shelter_partner_use_attributes => partner_use_params},
-          :hotel_partner_used,
-          {:hotel_partner_use_attributes => partner_use_params},
-          {:timeline_attributes => Incidents::TimelineProxy::EVENT_TYPES.map{|key| {"#{key}_attributes" => [:event_time, :source_id]}}}
-        ])
-      else
-        {}
-      end
+      base = params.require(:incidents_dat_incident).fetch(:incident_attributes, {})
+      @_incident_params ||= base.permit([
+        :incident_type, :narrative, :status, :cas_event_number,
+        :address, :city, :state, :zip, :lat, :lng, :county, :neighborhood, :address_directly_entered,
+        :num_adults, :num_children, :num_families,
+        {:team_lead_attributes => [:id, :person_id, :role, :response]},
+        {:responder_assignments_attributes => [:id, :person_id, :role, :response, :_destroy, :was_flex]},
+        :evac_partner_used,
+        {:evac_partner_use_attributes => partner_use_params},
+        :feeding_partner_used,
+        {:feeding_partner_use_attributes => partner_use_params},
+        :shelter_partner_used,
+        {:shelter_partner_use_attributes => partner_use_params},
+        :hotel_partner_used,
+        {:hotel_partner_use_attributes => partner_use_params},
+        {:timeline_attributes => Incidents::TimelineProxy::EVENT_TYPES.map{|key| {"#{key}_attributes" => [:event_time, :source_id]}}}
+      ])
     end
 
     def scope

@@ -43,6 +43,8 @@ class window.IncidentLocationController
     else
       false
 
+  locationCallback: () ->
+
   initMap: () ->
     return unless window.google # if no gmaps js, don't die
     return if @map?
@@ -124,6 +126,7 @@ class window.IncidentLocationController
         this.setFieldVal('neighborhood', this.getAddressComponent(result, 'neighborhood', 'long_name'))
       else
         @marker.setMap null
+      @locationCallback()
 
 class window.AllIncidentsMapController
 
@@ -213,4 +216,24 @@ class window.IncidentsTrackerController
         success: (data, status, xhr) =>
           $("#narrative-modal .modal-body").html(data)
           setTimeout ( () -> $("#narrative-modal .modal-body").scrollTop(0) ), 100
+
+class window.IncidentTerritoryController
+  constructor: (@url) ->
+    $(document).on 'change', 'select[id$=territory_id]', () =>
+      @updateTerritory(true)
+
+  updateTerritory: (preserveTerritory) ->
+
+    query = $('form').serialize()
+    if !preserveTerritory
+      query = query + "&incidents_incident[territory_id]="
+
+    $.ajax
+      url: @url
+      data: query
+      success: (data, status, xhr) =>
+        $('.territory-info').html(data)
+
+
+
 

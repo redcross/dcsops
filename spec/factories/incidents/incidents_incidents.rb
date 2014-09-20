@@ -4,7 +4,7 @@ FactoryGirl.define do
   factory :raw_incident, :class => 'Incidents::Incident' do
     date "2013-06-05"
     status 'open'
-    area { |i| i.chapter.counties.first || i.association(:county, chapter: i.chapter) }
+    territory { |i| Incidents::Territory.for_chapter(i.chapter).first || i.association(:territory, chapter: i.chapter) }
     incident_number {"13-#{'%03d' % SecureRandom.random_number(999)}"}
   end
 
@@ -31,6 +31,10 @@ FactoryGirl.define do
     
     lat {Faker::Address.latitude}
     lng {Faker::Address.longitude}
+  end
+
+  factory :incident_without_territory, parent: :incident do
+    territory nil
   end
 
   factory :closed_incident, parent: :incident do

@@ -1,4 +1,4 @@
-%h1 Incidents Needing Incident Report
+%h1 Currently Open Incidents
 
 %table.table
   %thead
@@ -14,8 +14,11 @@
       - inc = Incidents::IncidentPresenter.new inc
       %tr
         %td=inc.incident_number
-        %td=inc.address
-        %td=inc.area.try(:display_name) || inc.county
+        %td=inc.full_address
+        %td
+          =inc.chapter.try :name
+          %br
+          =inc.territory.try :name
         %td=inc.date.to_s :dow_short
         %td=time_ago_in_words inc.created_at
         %td

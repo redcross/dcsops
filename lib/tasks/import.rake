@@ -36,7 +36,7 @@ namespace :import_queue do
           raise "Unknown import endpoint #{endpoint}"
         end
 
-        Core::JobLog.capture(importer.to_s, 'import') do |logger, counter|
+        Core::JobLog.capture(importer.to_s) do |logger, counter|
           importer.new.import_data(chapter, io) do |step|
             counter.row!
             logger.info "Importing attachment #{counter.num_rows} @ #{step}..." if (counter.num_rows % 100) == 0

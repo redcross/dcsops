@@ -25,7 +25,7 @@ ActiveAdmin.register Incidents::ReportSubscription, as: 'Report Subscriptions' d
   collection_action :test_report, :method => :post do
     sub = Incidents::ReportSubscription.find_by person_id: current_user, report_type: 'report'
     if sub
-      Incidents::ReportMailer.report_for_date_range(current_chapter, current_user, sub.range_to_send).deliver
+      Incidents::ReportMailer.report_for_date_range(sub.scope, current_user, sub.range_to_send).deliver
     else
       flash[:error] = "You are not signed up for a report."
     end

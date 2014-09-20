@@ -5,7 +5,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   respond_to :js, only: :index
   defaults finder: :find_by_incident_number!
   load_and_authorize_resource :chapter
-  load_and_authorize_resource except: [:needs_report, :activity]
+  load_and_authorize_resource except: [:needs_report, :activity, :new, :create]
   belongs_to :chapter, parent_class: Roster::Chapter, finder: :find_by_url_slug!
   helper Incidents::MapHelper
   responders :partial
@@ -93,7 +93,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     helper_method :tab_authorized?
     def tab_authorized?(name)
       case name
-      when 'summary' then true
+      when 'summary','territory' then true
       when 'details', 'timeline', 'responders', 'attachments' then can? :read_details, resource
       when 'cases' then resource.chapter.incidents_collect_case_details && can?(:read_case_details, resource)
       when 'changes' then can? :read_changes, resource
@@ -121,10 +121,22 @@ class Incidents::IncidentsController < Incidents::BaseController
     expose(:show_version_root) { params[:action] == 'activity' }
 
     def build_resource
-      super.tap{|i| 
+      @resource ||= super.tap{|i| 
         i.date ||= Date.current
-        i.chapter = i.area.chapter if i.area
+        unless i.territory
+          Incidents::TerritoryMatcher.new(i, Incidents::Territory.all).perform
+        end
+        i.chapter = i.territory.try :chapter if i.territory
       }
+    end
+
+    def create_resource obj
+      if can? :create, obj
+        super obj
+      else
+        obj.errors[:base] = "You cannot create incidents for this region."
+        false
+      end
     end
 
     def resource
@@ -133,13 +145,11 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      return [] if request.get?
-
-      keys = [:area_id, :date, :incident_type, :status, :narrative, :address, :city, :state, :zip, :neighborhood, :county, :lat, :lng, :recruitment_message]
+      keys = [:territory_id, :date, :incident_type, :status, :narrative, :address, :city, :state, :zip, :neighborhood, :county, :lat, :lng, :address_directly_entered, :recruitment_message]
 
       keys << :incident_number if params[:action] == 'create' && !parent.incidents_sequence_enabled
 
-      attrs = params.require(:incidents_incident).permit(*keys)
+      attrs = params.fetch(:incidents_incident, {}).permit(*keys)
       attrs.merge!({status: 'open'})
 
       [attrs]

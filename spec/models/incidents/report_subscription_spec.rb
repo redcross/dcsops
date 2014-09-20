@@ -110,7 +110,7 @@ describe Incidents::ReportSubscription, :type => :model do
 
       describe "on a weekend" do
         before(:each) do
-          Delorean.time_travel_to today.at_beginning_of_week
+          Delorean.time_travel_to Date.current.at_beginning_of_week
         end
 
         it "Should not return a subscription that hasn't been sent since friday" do

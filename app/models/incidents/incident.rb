@@ -9,6 +9,7 @@ class Incidents::Incident < ActiveRecord::Base
 
   belongs_to :chapter, class_name: 'Roster::Chapter'
   belongs_to :area, class_name: 'Roster::County'
+  belongs_to :territory, class_name: 'Incidents::Territory'
 
   belongs_to :cas_incident, class_name: 'Incidents::CasIncident', primary_key: 'cas_incident_number', foreign_key: 'cas_event_number'
   has_one :dat_incident, class_name: 'Incidents::DatIncident', inverse_of: :incident
@@ -31,7 +32,7 @@ class Incidents::Incident < ActiveRecord::Base
   accepts_nested_attributes_for :event_logs
 
   # We always want these to be present
-  validates :chapter, :area, :date, presence: true
+  validates :chapter, :date, :territory, presence: true
   validates :incident_number, presence: true, format: /\A\w*\d{2}-\d{3,}\z/, uniqueness: { scope: :chapter_id }
 
   scope :for_chapter, -> chapter { where{chapter_id.in chapter}}
@@ -85,10 +86,6 @@ class Incidents::Incident < ActiveRecord::Base
 
   assignable_values_for :status do
     %w(open closed invalid)
-  end
-
-  assignable_values_for :area do
-    chapter.counties
   end
 
   delegated_validator Incidents::Validators::IncidentValidator, if: :valid_incident?
@@ -162,7 +159,7 @@ class Incidents::Incident < ActiveRecord::Base
   end
 
   def set_incident_number
-    if chapter.incidents_sequence_enabled
+    if chapter && chapter.incidents_sequence_enabled
       seq = Incidents::IncidentNumberSequence.new(chapter)
       self.incident_number = seq.next_sequence!
     end

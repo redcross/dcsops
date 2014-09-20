@@ -6,6 +6,7 @@ describe "Manually create incident", :type => :feature do
     grant_role! :submit_incident_report
     grant_role! :incidents_admin
     FactoryGirl.create :incidents_scope, chapter: @person.chapter
+    FactoryGirl.create :territory, chapter: @person.chapter, name: 'SF Territory', counties: ['San Francisco, CA']
 
     visit "/incidents/#{@person.chapter.url_slug}"
 
@@ -14,7 +15,6 @@ describe "Manually create incident", :type => :feature do
     click_on "Submit Incident Report"
     click_on 'Create New Incident'
 
-    select @person.counties.first.name, from: 'Area*'
     fill_in 'Incident number*', with: @incident_number
     select '2013'
     select Date.today.strftime("%B")
@@ -23,6 +23,9 @@ describe "Manually create incident", :type => :feature do
     select 'Fire', from: 'Incident type*'
     fill_in 'Search for address', with: '1663 market st sf'
     click_on 'Look Up Address'
+
+    # Wait for AJAX to load the territory
+    expect(page).to have_select('Territory*', selected: 'SF Territory')
 
     click_on 'Create Incident'
 

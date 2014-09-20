@@ -22,7 +22,7 @@ describe "Invalid Incident Report", :type => :feature do
 
     click_button 'Remove This Incident'
 
-    expect(page).to have_text 'Incidents Needing Incident Report'
+    expect(page).to have_text 'Currently Open Incidents'
 
     expect(@incident.reload.incident_type).to eq('not_eligible_for_services')
   end

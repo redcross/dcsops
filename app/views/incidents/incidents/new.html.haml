@@ -4,13 +4,20 @@
 .row
   .col-sm-12
     =semantic_form_for resource, url: resource_path(resource.to_param || ""), builder: FormtasticBootstrap::FormBuilder, html: {class: "form-horizontal"} do |f|
+      =f.semantic_errors *f.object.errors.keys
+      =render partial: 'incidents/dat_incidents/location_fields', locals: {f: f}
+      .territory-info=render 'territory', f: f
       =f.inputs "Data" do
-        =f.input :area, collection: counties_for_create
         - unless f.object.chapter.incidents_sequence_enabled
-          =f.input :incident_number
-        
+          =f.input :incident_number        
         =f.input :date
         =f.input :incident_type, as: :assignable_select, include_blank: false, required: true, humanized: :humanized_valid_incident_types
-        =f.input :narrative, label: "Initial Description", input_html: {rows: "3"}
-      =render partial: 'incidents/dat_incidents/location_fields', locals: {f: f}
+        =f.input :narrative, label: "Initial Description", input_html: {rows: "3"}, hint: 'This message will be included in the initial incident notification.'
+      
       =f.action :submit, button_html: {class: "btn btn-primary"}
+- content_for :footer_js do
+  :javascript
+    $(function() {
+      window.territoryController = new IncidentTerritoryController(#{new_resource_path(partial: 'territory').to_json});
+      window.incidentLocationController.locationCallback = function() { territoryController.updateTerritory(false); }
+    });

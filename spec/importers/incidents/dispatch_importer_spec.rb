@@ -12,10 +12,12 @@ describe Incidents::DispatchImporter do
   end
 
   let(:geocode_result) {double(:geocode_result, success?: true, lat: 0, lng: 0, city: Faker::Address.city, state: Faker::Address.state, district: Faker::Address.city, zip: Faker::Address.zip_code)}
+  let(:territory) { FactoryGirl.create :territory, chapter: chapter }
 
   before do
     allow(Incidents::DispatchImporter.geocoder).to receive(:geocode).and_return(geocode_result)
     allow(Incidents::Notifications::Notification).to receive :create_for_event
+    allow_any_instance_of(Incidents::TerritoryMatcher).to receive(:match_territory).and_return(territory)
   end
 
   describe "1.txt" do
@@ -73,7 +75,7 @@ describe Incidents::DispatchImporter do
       expect(inc.area).to eq(county)
       expect(inc.chapter).to eq(chapter)
       expect(inc.status).to eq('open')
-      expect(inc.state).to eq(geocode_result.state)
+      expect(inc.state).to eq('CA')
     end
 
     it "should create several event logs" do

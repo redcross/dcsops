@@ -129,8 +129,9 @@ describe Incidents::IncidentsController, :type => :controller do
     let(:area) {
       @person.chapter.counties.first
     }
+    let(:territory) { FactoryGirl.create :territory, chapter: @person.chapter }
     let(:params) {
-      {incident_number: '14-123', area_id: area.id, date: Date.current.to_s}
+      {incident_number: '14-123', date: Date.current.to_s, territory_id: territory.id}
     }
     before(:each) { allow(Incidents::Notifications::Notification).to receive :create_for_event }
 
@@ -157,7 +158,7 @@ describe Incidents::IncidentsController, :type => :controller do
     describe "with incident number sequence" do
 
       before(:each) do
-         @person.chapter.update_attributes incidents_sequence_enabled: true, 
+        @person.chapter.update_attributes incidents_sequence_enabled: true, 
                                          incidents_sequence_number: 333,
                                          incidents_sequence_format: '%<fy>04d-%<number>03d', 
                                          incidents_sequence_year: FiscalYear.current.year
@@ -174,7 +175,7 @@ describe Incidents::IncidentsController, :type => :controller do
       end
 
       it "should not change incident sequence if the create is rejected" do
-        params.delete :area_id
+        params.delete :territory_id
 
         expect {
           expect {

@@ -6,6 +6,7 @@ class Incidents::Ability
 
   def initialize(person)
     @person = person
+    @chapter_scope = [@person.chapter_id] + Roster::Chapter.with_incidents_delegate_chapter_value(@person.chapter_id).ids
     is_admin = person.has_role 'incidents_admin'
 
     scopes
@@ -29,10 +30,7 @@ class Incidents::Ability
     # This controls what chapters this person can access in the URL
     can :read, Incidents::Scope#, chapter_id: person.chapter_id
 
-    can :read, Roster::Chapter, id: person.chapter_id
-    can :read, Roster::Chapter do |chapter|
-        chapter.incidents_delegate_chapter == person.chapter_id
-    end
+    can :read, Roster::Chapter, id: @chapter_scope
   end
 
   def personal
@@ -57,7 +55,7 @@ class Incidents::Ability
   end
 
   def create_incident
-    can :create, Incidents::Incident
+    can :create, Incidents::Incident, chapter_id: @chapter_scope
     can :reopen, Incidents::Incident
   end
 
@@ -78,8 +76,8 @@ class Incidents::Ability
   end
 
   def incidents_admin
-    can :manage, Incidents::DatIncident
-    can :manage, Incidents::Incident
+    can :manage, Incidents::DatIncident, incident: {chapter_id: @chapter_scope}
+    can :manage, Incidents::Incident, chapter_id: @chapter_scope
   end
 
   def incident_details

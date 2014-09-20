@@ -11,7 +11,8 @@ describe ApplicationHelper, :type => :helper do
     let(:user) { mock_model Roster::Person }
 
     before(:each) {
-      helper.stub current_user: user, current_chapter: chapter
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:current_chapter).and_return(chapter)
     }
 
     it "returns nothing if motds aren't turned on" do

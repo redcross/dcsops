@@ -21,6 +21,7 @@ ActiveAdmin.register Incidents::Territory, as: 'Territory' do
     f.inputs do
       f.input :chapter
       f.input :dispatch_config
+      f.input :is_default
       f.input :name
       f.input :enabled
       f.input :dispatch_number
