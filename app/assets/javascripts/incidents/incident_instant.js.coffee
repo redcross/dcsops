@@ -1,18 +1,21 @@
 class window.IncidentInstantController
-  constructor: (@connectionPromise) ->
-
-  monitorRoom: (incidentRoomName) ->
-    @connectionPromise.then( (result) => @connection = result.connection; @incidentRoom = @connection.room(incidentRoomName); @incidentRoom.join())
-                      .then( (result) => channel = result.room.channel('updates'); channel.on('message', ((value, context)=>@handleUpdate(value,context))) )
-                      .catch( (error) -> console.log "error", error )
+  constructor: (@pubnub, @channelName) ->
+    @pubnub.subscribe
+      channel: @channelName
+      message: (msg) => @handleMessage(msg)
 
   setIncident: (@incidentNumber) ->
 
-  handleUpdate: (value, context) ->
-    values = value.refresh
-    console.log value
-    return unless values?
-    return if @incidentNumber? && @incidentNumber != value.incident
+  setChapter: (@chapterNumber) ->
+
+  handleMessage: (msg) ->
+    console.log msg
+
+    unless msg.chapter == @chapterNumber || (@incidentNumber? && msg.incident == @incidentNumber)
+      return
+    
+    values = msg.refresh
+
     values.forEach (value, idx) =>
       console.log value
       $targets = $("[data-refresh-name~=\"#{value}\"]")
@@ -24,10 +27,3 @@ class window.IncidentInstantController
           method: 'GET'
           success: (data, status, xhr) =>
             $(target).html(data)
-
-
-  startChat: (roomName) ->
-    @connectionPromise.then( (result) => result.connection.room(roomName).join() )
-                      .then( (result) => @chat = new goinstant.widgets.Chat({room: result.room, messageExpiry: (6*60*60), collapsed: true}))
-                      .then( (chat) => chat.initialize((err) => console.error err if err?) )
-                      .catch( (error) -> console.log "chat error", error)

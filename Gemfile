@@ -70,6 +70,7 @@ gem 'aws-sdk'
 gem "memcachier"
 gem "dalli"
 gem "twilio-ruby"
+gem 'pubnub'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 # gem 'turbolinks'

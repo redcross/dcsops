@@ -48,8 +48,10 @@ describe Incidents::NumberSequence do
       sequence.update current_number: 0
       threads = num_threads.times.map do
         Thread.new do
-          200.times do
-            sequence.next_sequence!
+          sequence.class.connection_pool.with_connection do
+            200.times do
+              sequence.next_sequence!
+            end
           end
         end
       end

@@ -36,6 +36,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
       f.object.class.serialized_columns.keys.map(&:to_sym).reduce(nil) do |_, c|
         opts = {}
         opts[:as] = :string if c.to_s.include? "password"
+        opts[:as] = :time_offset if c.to_s.include? "scheduler_flex"
         f.input c, opts
       end
     end

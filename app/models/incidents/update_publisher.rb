@@ -29,24 +29,16 @@ class Incidents::UpdatePublisher
 
   def update_tabs *tabs
     tabs << 'changes'
-    send_update({refresh: tabs, incident: (incident && incident.id)})
+    send_update({refresh: tabs, chapter: chapter.id, incident: (incident && incident.id)})
   end
 
   def send_update value
-    client = GoInstantClient.client
-    client.send_to_channel chapter_room_name, channel_name, value
-  end
-
-  def room_name
-    "incident-#{incident.id}"
-  end
-
-  def chapter_room_name
-    "chapter-#{chapter.id}"
+    client = PubnubClient.client
+    client.publish channel: channel_name, message: value, callback: ->msg{ puts "Update sent #{msg.inspect}"}
   end
 
   def channel_name
-    "updates"
+    "incident-updates"
   end
 
 end

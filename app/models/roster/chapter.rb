@@ -51,7 +51,6 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :twilio_auth_token, :string
   serialized_accessor :config, :incidents_twilio_number, :string
   serialized_accessor :config, :incidents_enable_messaging, :boolean
-  serialized_accessor :config, :incidents_enable_chat, :boolean
   serialized_accessor :config, :incidents_delegate_chapter, :integer
 
   serialized_accessor :config, :incidents_notifications_reply_to, :string
