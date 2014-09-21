@@ -13,26 +13,7 @@ ActiveAdmin.register Incidents::NumberSequence, as: 'Number Sequence' do
     actions
   end
 
-  #index do
-  #  column("CID") { |msg| msg.chapter_id }
-  #  column :message_number
-  #  column :incident_number
-  #  column :county_name
-  #  column :num_dials
-  #  actions
-  #end
-#
-  #show do |log|
-  #  panel "Log" do
-  #    table_for log.log_items.not_sms_internal do |li|
-  #      column :action_at
-  #      column :action_type
-  #      column :recipient
-  #      column :result
-  #    end
-  #  end
-  #  default_main_content
-  #end
+  permit_params :name, :current_number, :current_year, :format
 
   controller do
     def collection
