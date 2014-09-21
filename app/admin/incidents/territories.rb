@@ -5,7 +5,7 @@ ActiveAdmin.register Incidents::Territory, as: 'Territory' do
 
   filter :chapter
 
-  permit_params :chapter_id, :name, :enabled, :is_default, :dispatch_number, :non_disaster_number, :special_instructions, :counties => [], cities: [], zip_codes: []
+  permit_params :chapter_id, :name, :enabled, :is_default, :dispatch_number, :non_disaster_number, :special_instructions, :dispatch_config_id, :calendar_county_ids => [], :counties => [], cities: [], zip_codes: []
 
   index do
     id_column
@@ -31,6 +31,9 @@ ActiveAdmin.register Incidents::Territory, as: 'Territory' do
       f.input :zip_codes, as: :string_array
       f.input :special_instructions
     end
+    f.inputs 'Counties' do
+      f.input :calendar_counties, as: :check_boxes, collection: available_counties
+    end
     f.actions
   end
 
@@ -38,5 +41,14 @@ ActiveAdmin.register Incidents::Territory, as: 'Territory' do
     def collection
       @coll ||= super.includes{chapter}
     end
+
+    def available_counties
+      if resource.chapter
+        resource.chapter.counties
+      else
+        Roster::County.all
+      end
+    end
+    helper_method :available_counties
   end
 end

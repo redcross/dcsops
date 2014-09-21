@@ -85,13 +85,13 @@ describe Scheduler::CalendarHelper, :type => :helper do
     it "should render a name when the shift has one person" do
       out = helper.render_shift_assignment_info(false, person, shift, shift_group, [], date, [assignment], 'daily')
       expect(out).to match(shift.name + ":")
-      expect(out).to match("#{person.first_initial} #{person.last_name}")
+      expect(out).to match(CGI.escapeHTML "#{person.first_initial} #{person.last_name}")
     end
     it "should render a count when the shift has more than one person" do
       out = helper.render_shift_assignment_info(false, person, shift, shift_group, [], date, [assignment, assignment], 'daily')
       expect(out).to match(shift.name + ":")
       expect(out).to match("2 registered")
-      expect(out).to match("#{person.full_name}, #{person.full_name}")
+      expect(out).to match(CGI.escapeHTML "#{person.full_name}, #{person.full_name}")
     end
 
   end

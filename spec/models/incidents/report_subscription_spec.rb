@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Incidents::ReportSubscription, :type => :model do
   let(:scope) { FactoryGirl.create :incidents_scope, report_frequencies: 'weekly,weekdays,daily'}
   let(:person) { FactoryGirl.create :person, chapter: scope.chapter}
-  let(:today) { scope.chapter.time_zone.today }
+  def today; scope.chapter.time_zone.today; end
   after(:each) { Delorean.back_to_1985}
 
   describe "type=report" do
@@ -110,7 +110,7 @@ describe Incidents::ReportSubscription, :type => :model do
 
       describe "on a weekend" do
         before(:each) do
-          Delorean.time_travel_to Date.current.at_beginning_of_week
+          Delorean.time_travel_to scope.chapter.time_zone.today.at_beginning_of_week
         end
 
         it "Should not return a subscription that hasn't been sent since friday" do

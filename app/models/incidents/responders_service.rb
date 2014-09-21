@@ -28,21 +28,25 @@ class Incidents::RespondersService
   end
 
   def scheduled_responders
-    service.scheduled_responders(area: scheduled_area, exclude: exclude_scheduled)
+    @scheduled ||= service.scheduled_responders(areas: scheduled_areas, exclude: exclude_scheduled).preload{person.positions}
   end
 
   def flex_responders
-    service.flex_responders(area: flex_area, exclude: exclude_flex, limit: self.limit_flex, origin: incident)
+    @flex ||= service.flex_responders(areas: flex_areas, exclude: exclude_flex, limit: self.limit_flex, origin: incident)
   end
 
   private
 
   def dispatch_responders
-    @dispatch ||= (incident.area && service.dispatch_assignments(area: incident.area))
+    @dispatch ||= (incident.territory && service.dispatch_assignments(territory: territory))
   end
 
-  def area
-    incident.area
+  def territory
+    incident.territory
+  end
+
+  def areas
+    territory.counties
   end
 
   def set_defaults
@@ -58,16 +62,16 @@ class Incidents::RespondersService
     collection_people + dispatch_shifts.map(&:person_id)
   end
 
-  def scheduled_area
-    ignore_area_scheduled ? nil : area
+  def scheduled_areas
+    ignore_area_scheduled ? nil : areas
   end
 
-  def flex_area
-    ignore_area_flex ? nil : area
+  def flex_areas
+    ignore_area_flex ? nil : areas
   end
 
   def exclude_flex
-    service.scheduled_responders(area: flex_area).map(&:person_id) + exclude_scheduled
+    service.scheduled_responders(areas: flex_areas).map(&:person_id) + exclude_scheduled
   end
 
 end

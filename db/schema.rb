@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140918150614) do
+ActiveRecord::Schema.define(version: 20140921015108) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -665,6 +665,11 @@ ActiveRecord::Schema.define(version: 20140918150614) do
   end
 
   add_index "incidents_territories", ["chapter_id"], name: "index_incidents_territories_on_chapter_id", using: :btree
+
+  create_table "incidents_territories_roster_counties", id: false, force: true do |t|
+    t.integer "territory_id"
+    t.integer "county_id"
+  end
 
   create_table "incidents_vehicle_uses", force: true do |t|
     t.integer  "vehicle_id"

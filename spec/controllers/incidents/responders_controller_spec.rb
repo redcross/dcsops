@@ -100,14 +100,6 @@ describe Incidents::RespondersController, :type => :controller do
     end
   end
 
-  describe "GET show" do
-    it "should succeed" do
-      ass = FactoryGirl.create :responder_assignment, person: person, incident: incident
-      get :show, {incident_id: incident.to_param, chapter_id: incident.chapter.to_param, id: ass.id}
-      expect(response).to be_success
-    end
-  end
-
   describe "POST update_status" do
     let!(:assignment) { FactoryGirl.create :responder_assignment, person: person, incident: incident }
     it "fails with an invalid value" do

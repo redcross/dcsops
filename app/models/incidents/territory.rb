@@ -1,6 +1,7 @@
 class Incidents::Territory < ActiveRecord::Base
   belongs_to :chapter, class_name: 'Roster::Chapter'
   belongs_to :dispatch_config, class_name: 'Scheduler::DispatchConfig'
+  has_and_belongs_to_many :calendar_counties, class_name: 'Roster::County'
 
   def self.for_chapter chapter
     where{chapter_id == chapter}
