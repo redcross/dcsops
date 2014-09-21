@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140921015108) do
+ActiveRecord::Schema.define(version: 20140921143632) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -540,6 +540,13 @@ ActiveRecord::Schema.define(version: 20140921015108) do
   add_index "incidents_notifications_triggers", ["event_id"], name: "index_incidents_notifications_triggers_on_event_id", using: :btree
   add_index "incidents_notifications_triggers", ["role_id"], name: "index_incidents_notifications_triggers_on_role_id", using: :btree
 
+  create_table "incidents_number_sequences", force: true do |t|
+    t.string  "name"
+    t.integer "current_year"
+    t.integer "current_number"
+    t.string  "format"
+  end
+
   create_table "incidents_partner_uses", force: true do |t|
     t.integer  "incident_id"
     t.integer  "partner_id"
@@ -792,6 +799,7 @@ ActiveRecord::Schema.define(version: 20140921015108) do
     t.hstore   "config"
     t.integer  "vc_unit"
     t.string   "url_slug"
+    t.integer  "incident_number_sequence_id"
   end
 
   add_index "roster_chapters", ["url_slug"], name: "index_roster_chapters_on_url_slug", unique: true, using: :btree

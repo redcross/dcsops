@@ -1,23 +1,15 @@
 require File.expand_path("../authentication", __FILE__) # Provides LoggedIn module
+require_relative 'truncation_strategy'
 module FeatureSpec
   extend ActiveSupport::Concern
 
   include LoggedIn
+  include TruncationStrategy
 
   included do
     self.use_transactional_fixtures = false
 
-    before(:all) do
-      DatabaseCleaner.strategy = :truncation
-    end
 
-    before(:each) do
-      DatabaseCleaner.start
-    end
-
-    after(:each) do
-      DatabaseCleaner.clean
-    end
 
     before(:each) do |example|
       next if example.metadata[:logged_in] == false
@@ -37,10 +29,6 @@ module FeatureSpec
 
     after(:each) do
       @person = nil
-    end
-
-    after(:all) do
-      DatabaseCleaner.strategy = :transaction
     end
 
     # For some incredibly stupid reason the Sauce gem aliases page to call 'selenium',

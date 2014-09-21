@@ -8,7 +8,7 @@
       =render partial: 'incidents/dat_incidents/location_fields', locals: {f: f}
       .territory-info=render 'territory', f: f
       =f.inputs "Data" do
-        - unless f.object.chapter.incidents_sequence_enabled
+        - unless has_incident_number_sequence?
           =f.input :incident_number        
         =f.input :date
         =f.input :incident_type, as: :assignable_select, include_blank: false, required: true, humanized: :humanized_valid_incident_types

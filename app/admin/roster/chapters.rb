@@ -30,6 +30,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
       f.input :vc_username
       f.input :vc_password, as: :string
       f.input :vc_position_filter
+      f.input :incident_number_sequence
 
       # For some reason AA cares about the return value of this block, reduce is a shortcut for that
       f.object.class.serialized_columns.keys.map(&:to_sym).reduce(nil) do |_, c|

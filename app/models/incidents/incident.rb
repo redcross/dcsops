@@ -159,8 +159,7 @@ class Incidents::Incident < ActiveRecord::Base
   end
 
   def set_incident_number
-    if chapter && chapter.incidents_sequence_enabled
-      seq = Incidents::IncidentNumberSequence.new(chapter)
+    if chapter && (seq = chapter.incident_number_sequence)
       self.incident_number = seq.next_sequence!
     end
     true

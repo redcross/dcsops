@@ -147,7 +147,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     def resource_params
       keys = [:territory_id, :date, :incident_type, :status, :narrative, :address, :city, :state, :zip, :neighborhood, :county, :lat, :lng, :address_directly_entered, :recruitment_message]
 
-      keys << :incident_number if params[:action] == 'create' && !parent.incidents_sequence_enabled
+      keys << :incident_number if params[:action] == 'create' && !has_incident_number_sequence?
 
       attrs = params.fetch(:incidents_incident, {}).permit(*keys)
       attrs.merge!({status: 'open'})
@@ -172,5 +172,10 @@ class Incidents::IncidentsController < Incidents::BaseController
       @scope ||= Incidents::Scope.for_chapter(resource.chapter_id)
     end
     helper_method :scope
+
+    def has_incident_number_sequence?
+      parent.incident_number_sequence.present?
+    end
+    helper_method :has_incident_number_sequence?
 
 end

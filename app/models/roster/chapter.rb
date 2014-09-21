@@ -11,6 +11,7 @@ class Roster::Chapter < ActiveRecord::Base
   has_many :incidents, class_name: "Incidents::Incident"
   has_many :event_logs, class_name: "Incidents::EventLog"
   has_many :cas_incidents, class_name: "Incidents::CasIncident"
+  belongs_to :incident_number_sequence, class_name: "Incidents::NumberSequence"
 
   def time_zone
     @_tz ||= ActiveSupport::TimeZone[self.time_zone_raw]
@@ -31,10 +32,6 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_timeline_collect, :string
   serialized_accessor :config, :incidents_timeline_collect_source, :string
   serialized_accessor :config, :incidents_timeline_mandatory, :string
-  serialized_accessor :config, :incidents_sequence_year, :integer
-  serialized_accessor :config, :incidents_sequence_number, :integer
-  serialized_accessor :config, :incidents_sequence_format, :string
-  serialized_accessor :config, :incidents_sequence_enabled, :boolean
   serialized_accessor :config, :incidents_report_include_assistance_amounts, :boolean
   serialized_accessor :config, :incidents_timeline_collect_source, :string
   serialized_accessor :config, :incidents_report_advanced_details, :boolean

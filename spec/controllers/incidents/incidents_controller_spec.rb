@@ -157,11 +157,10 @@ describe Incidents::IncidentsController, :type => :controller do
 
     describe "with incident number sequence" do
 
+      let(:sequence) { FactoryGirl.create :incident_number_sequence, current_number: 333, format: '%<fy>04d-%<number>03d', current_year: FiscalYear.current.year }
+
       before(:each) do
-        @person.chapter.update_attributes incidents_sequence_enabled: true, 
-                                         incidents_sequence_number: 333,
-                                         incidents_sequence_format: '%<fy>04d-%<number>03d', 
-                                         incidents_sequence_year: FiscalYear.current.year
+        @person.chapter.update incident_number_sequence: sequence
         params.delete :incident_number
       end
 
@@ -171,7 +170,7 @@ describe Incidents::IncidentsController, :type => :controller do
         }.to(change(Incidents::Incident, :count).by(1))
         inc = Incidents::Incident.last
         expect(inc.incident_number).to eq("#{FiscalYear.current.year}-334")
-        expect(@person.chapter.reload.incidents_sequence_number).to eq(334)
+        expect(sequence.reload.current_number).to eq(334)
       end
 
       it "should not change incident sequence if the create is rejected" do
@@ -182,7 +181,7 @@ describe Incidents::IncidentsController, :type => :controller do
             post :create, incidents_incident: params, chapter_id: @person.chapter.to_param
             expect(response).to be_success # Re-renders the create page rather than redirecting to the incident
           }.to_not(change(Incidents::Incident, :count))
-        }.to_not(change{@person.chapter.reload.incidents_sequence_number})
+        }.to_not(change{sequence.current_number})
       end
 
     end
