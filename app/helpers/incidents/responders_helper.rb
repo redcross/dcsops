@@ -36,7 +36,7 @@ module Incidents::RespondersHelper
 
   def links(person, obj, editable)
     if editable
-      link_to('Assign', assignment_url(person, obj), class: 'btn btn-mini', data: {assign: person.id})
+      link_to('Assign', assignment_url(person, obj), class: '', data: {assign: person.id})
     end
   end
 
@@ -49,7 +49,7 @@ module Incidents::RespondersHelper
     if recruitment
       existing_recruit_status recruitment
     elsif parent.chapter.incidents_enable_messaging && person.sms_addresses.present? && editable
-      link_to 'Send SMS', incidents_chapter_incident_responder_recruitments_path(parent.chapter, parent, person_id: person.id), method: :post, remote: true, class: 'btn btn-mini'
+      link_to 'Send SMS', incidents_chapter_incident_responder_recruitments_path(parent.chapter, parent, person_id: person.id), method: :post, remote: true
     end
   end
 
