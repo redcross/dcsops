@@ -6,7 +6,7 @@ module Scheduler::CalendarHelper
     my_shifts = person ? calendar.my_shifts_for_group_on_day(group.id, date) : []
     today = current_chapter.time_zone.today
 
-    shifts.each_with_index do |shift, idx|
+    shifts.sort_by(&:ordinal).each_with_index do |shift, idx|
       assignments=calendar.assignments_for_shift_on_day_in_group(shift, date, group)
       row_html = render_shift_assignment_info(editable, person, shift, group, my_shifts, date, assignments, group_to_period(group))
       is_first = (idx == 0)
