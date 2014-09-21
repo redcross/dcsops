@@ -4,6 +4,6 @@ class AddCountiesToTerritory < ActiveRecord::Migration
       t.references :territory
       t.references :county
     end
-    add_index :incidents_territories_roster_counties, [:territory_id, :county_id]
+    add_index :incidents_territories_roster_counties, [:territory_id, :county_id], name: 'incidents_territories_roster_counties_index'
   end
 end
