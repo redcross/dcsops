@@ -18,6 +18,7 @@ class Incidents::ResponderMessageService
 
   def assign_incident inc
     @incident = incoming.incident = response.incident = inc
+    @incident = Incidents::IncidentPresenter.new @incident
   end
 
   def reply
