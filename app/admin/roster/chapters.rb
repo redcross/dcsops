@@ -13,7 +13,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
     end
 
     def resource_params
-      keys = [:name, :short_name, :code, :url_slug, :time_zone_raw, :vc_username, :vc_password, :vc_position_filter, :vc_unit]
+      keys = [:name, :short_name, :code, :url_slug, :time_zone_raw, :vc_username, :vc_password, :vc_position_filter, :vc_unit, :incident_number_sequence_id]
       keys = keys + resource_class.serialized_columns.values.map{|c| c.last.name.to_sym }
       [params.fetch(resource_request_name, {}).permit(*keys)]
     end
