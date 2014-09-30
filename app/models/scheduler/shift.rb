@@ -126,11 +126,12 @@ class Scheduler::Shift < ActiveRecord::Base
       shift = shifts_by_id[ass.shift_id]
       group = groups_by_id[ass.shift_group_id]
       if shift.nil? || group.nil?
-        raise "Got unknown shift back from query #{ass.shift_id} #{shifts_by_id.inspect}"
+        logger.warn "Got unknown shift back from query #{ass.shift_id} #{shifts_by_id.inspect}"
+        next hash
       end
 
       if hash[shift][group][ass.date].nil?
-        logger.warn "Got unknown date back from query #{ass.date} #{shift.shift_group.period} #{hash.inspect}"
+        logger.warn "Got unknown date back from query #{ass.date} #{shift.shift_group_ids.inspect} #{hash.inspect}"
         next hash
       end
 
