@@ -21,6 +21,10 @@ class Roster::Chapter < ActiveRecord::Base
     url_slug || id
   end
 
+  def self.find_by_slug slug
+    where{(url_slug == slug)}.first || find(slug)
+  end
+
   serialized_accessor :config, :incidents_geocode_bounds, :string
   serialized_accessor :config, :incidents_resources_tracked, :string
   serialized_accessor :config, :incidents_report_editable, :boolean

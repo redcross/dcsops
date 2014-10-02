@@ -1,6 +1,13 @@
 class AdminAbility
   include CanCan::Ability
 
+  class RegionAdminProxy
+    attr_accessor :region_id
+    def initialize(region)
+      @region_id = region.id if !region.kind_of? Class
+    end
+  end
+
   def initialize(person)
 
     is_config = person.has_role 'chapter_config'
@@ -55,6 +62,10 @@ class AdminAbility
       can :read, Incidents::DispatchLog, chapter_id: chapter
 
       can :manage, Incidents::Territory, chapter_id: chapter
+
+      can :manage, RegionAdminProxy do |region|
+        region.region_id.nil? || region.region_id == chapter
+      end
     end
   end
 
