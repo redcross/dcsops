@@ -48,7 +48,9 @@ class Roster::LoginService
   end
 
   def update_data info
-    @person.attributes = info.slice(:first_name, :last_name, :address1, :address2, :city, :state, :zip, :email, :vc_member_number, 
+    @person.first_name ||= info[:first_name]
+    @person.last_name ||= info[:last_name]
+    @person.attributes = info.slice(:address1, :address2, :city, :state, :zip, :email, :vc_member_number, 
                                     :phone_1_preference, :phone_2_preference, :phone_3_preference, :phone_4_preference,
                                     :home_phone, :cell_phone, :alternate_phone, :work_phone, :sms_phone)
   end
