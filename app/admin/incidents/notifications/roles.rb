@@ -2,8 +2,6 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
   batch_action :destroy, false
   batch_action :edit, false
 
-  actions :all, except: [:destroy]
-
   menu parent: 'Incidents'
 
   filter :chapter
