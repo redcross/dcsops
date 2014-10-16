@@ -81,7 +81,7 @@ class Incidents::Incident < ActiveRecord::Base
   end
 
   assignable_values_for :incident_type, allow_blank: true do
-    self.class.valid_incident_types + self.class.invalid_incident_types
+    valid_incident_types
   end
 
   assignable_values_for :status do
@@ -107,12 +107,22 @@ class Incidents::Incident < ActiveRecord::Base
     status == 'open'
   end
 
-  def self.valid_incident_types
-    %w(fire flood police vacate tornado blizzard storm transportation hazmat explosion search_and_rescue earthquake building_collapse exercise)
+  def self.main_incident_types
+    %w(fire flood police vacate tornado blizzard storm transportation hazmat explosion search_and_rescue earthquake building_collapse exercise hurricane)
+  end
+
+  def self.extended_incident_types
+    %w(outreach dhs drought epidemic food hpd hra mass_care nuclear other refugee volcano client_services_request power_outage)
+  end
+
+  def valid_incident_types
+    types = self.class.main_incident_types
+    types += self.class.extended_incident_types if chapter && chapter.incidents_report_advanced_details
+    types
   end
 
   def humanized_valid_incident_types
-    self.class.valid_incident_types.map{|t| AssignableValues::HumanizedValue.new(t, t.titleize)}
+    valid_incident_types.map{|t| AssignableValues::HumanizedValue.new(t, t.titleize)}
   end
 
   def self.invalid_incident_types
