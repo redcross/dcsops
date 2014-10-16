@@ -50,7 +50,7 @@ describe Roster::LoginService, :type => :model do
   it "should update an existing persons attributes" do
     subject.call
     person.reload
-    [:first_name, :last_name, :address1, :address2, :city, :state, :zip, :email, :vc_member_number].each do |name|
+    [:address1, :address2, :city, :state, :zip, :email, :vc_member_number].each do |name|
       expect(person.send(name)).to eq(vc_info[name])
     end
   end
