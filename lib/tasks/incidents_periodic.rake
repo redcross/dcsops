@@ -2,14 +2,21 @@ namespace :incidents_periodic do
   task :send_reminders => [:send_missing_incident_report]
 
   task :send_no_incident_report => :environment do
-    Raven.capture do
-      Incidents::RemindMissingReportJob.enqueue
+    begin
+      Raven.capture do
+        Incidents::RemindMissingReportJob.enqueue
+      end
+    rescue => e
+
     end
   end
 
   task :send_weekly_report => :environment do
-    Raven.capture do
-      Incidents::WeeklyReportJob.enqueue
+    begin
+      Raven.capture do
+        Incidents::WeeklyReportJob.enqueue
+      end
+    rescue => e
     end
   end
 
@@ -41,8 +48,12 @@ namespace :incidents_periodic do
   end
 
   task :update_driving_distances => :environment do
-    Raven.capture do
-      Incidents::UpdateDrivingDistanceJob.new.perform
+    begin
+      Raven.capture do
+        Incidents::UpdateDrivingDistanceJob.new.perform
+      end
+    rescue => e
+
     end
   end
 end

@@ -35,8 +35,8 @@ class Scheduler::SendRemindersJob
   # Need to capture any errors with delivery and log them with the person.
   def send_reminder mailer, person, *args
     Scheduler::RemindersMailer.send(mailer, *args).deliver
-  #rescue => e
-  #  Raven.capture e
+  rescue => e
+    Raven.capture e
   end
 
   def chapter
