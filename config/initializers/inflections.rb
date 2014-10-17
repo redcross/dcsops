@@ -22,4 +22,7 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym 'SUV'
   inflect.acronym 'ERV'
   inflect.acronym 'POV'
+
+  inflect.acronym 'HPD'
+  inflect.acronym 'DHS'
 end
