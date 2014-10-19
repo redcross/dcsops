@@ -124,7 +124,7 @@ class Incidents::RespondersController < Incidents::BaseController
   end
   helper_method :recruitments
 
-  expose(:ignore_area) { current_chapter.incidents_dispatch_console_ignore_county || (params[:ignore_area] == '1') }
+  expose(:ignore_area) { parent.chapter.incidents_dispatch_console_ignore_county || (params[:ignore_area] == '1') }
   expose(:service) { Incidents::RespondersService.new(parent, collection, ignore_area_scheduled: ignore_area, ignore_area_flex: true) }
 
   def scope
