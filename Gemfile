@@ -44,7 +44,7 @@ gem "assignable_values"
 gem 'bootstrap-kaminari-views'
 gem 'paperclip', '~> 4.0.0'
 gem 'threach'
-gem 'dotiw', github: 'Sija/dotiw'
+gem 'dotiw', '~> 2.0'
 
 gem 'geokit'#, github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 
