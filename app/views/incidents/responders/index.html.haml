@@ -26,7 +26,7 @@
         -#  =submit_tag 'Filter', class: 'btn btn-mini'
         Recruitment message:
         =editable_string parent, :recruitment_message, url: parent_path
-      .responders-table{data: {refresh_name: "available", refresh: url_for(partial: 'responders_table')}}
+      .responders-table{data: {refresh_name: "recruitment", refresh: url_for(partial: 'responders_table')}}
         =render 'responders_table'
 
 .modal.fade#edit-modal

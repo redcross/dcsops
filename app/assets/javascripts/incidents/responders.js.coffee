@@ -1,6 +1,7 @@
 class window.IncidentRespondersController
 
   constructor: () ->
+    @cache = {}
 
   initMap: (config, dom) ->
     @map = MapFactory.createMap(dom, config)
@@ -22,17 +23,27 @@ class window.IncidentRespondersController
     @incidentMarker.setPosition @incidentLocation
     @incidentMarker.setMap @map
 
+  fillTimesFromCache: () ->
+    elements = $('[data-person]:not([data-travel-lookup])')
+    elements.each (idx, el) =>
+      id = $(el).data('person')['id']
+      if id? and @cache[id]
+        this.processTravelTime($(el), @cache[id])
+
   loadTravelTimes: () ->
     return unless @incidentLocation?
 
     @distanceService ||= new google.maps.DistanceMatrixService()
 
+    this.fillTimesFromCache()
+
     elements = $('[data-person]:not([data-travel-lookup])').slice(0, 25)
 
-    return unless elements.length > 0
+    if elements.length == 0
+      this.sortTables()
+      return
 
     people = elements.map((idx, el) -> $(el).data('person'))
-
     origins = people.map((idx, el) -> new google.maps.LatLng(parseFloat(el.lat), parseFloat(el.lng)))
 
     @distanceService.getDistanceMatrix
@@ -48,6 +59,7 @@ class window.IncidentRespondersController
 
         resp.rows.forEach (row, idx) =>
           result = row['elements'][0]
+          @cache[people[idx].id] = result
           this.processTravelTime(elements[idx], result)
         this.loadTravelTimes()
         this.sortTables()

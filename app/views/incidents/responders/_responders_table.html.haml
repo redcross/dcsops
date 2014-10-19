@@ -38,3 +38,8 @@
   %tbody.responders-list.not-available.sort
     - collection.reject(&:was_available).each do |ass|
       =person_schedule_row(ass)
+
+:javascript
+  if (window.respondersController) {
+    window.respondersController.loadTravelTimes()
+  }

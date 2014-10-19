@@ -24,7 +24,7 @@ module Incidents::RespondersHelper
       safe_join([
         content_tag(:td, role_name(obj)),
         content_tag(:td, qualifications(person)),
-        content_tag(:td, link_to(person.full_name, person)),
+        content_tag(:td, person.full_name),
         content_tag(:td, location(person)),
         tag(:td, class: 'distance'),
         tag(:td, class: 'travel-time'),
