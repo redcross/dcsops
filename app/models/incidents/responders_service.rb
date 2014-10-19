@@ -46,7 +46,7 @@ class Incidents::RespondersService
   end
 
   def areas
-    territory.counties
+    territory.calendar_counties
   end
 
   def set_defaults
