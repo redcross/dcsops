@@ -10,12 +10,14 @@ class Incidents::DirectionsServiceClient
     ENV['GOOGLE_API_KEY']
   end
 
+  METERS_PER_MILE = 1609
+
   def self.driving_distance origin, destination
     resp = get '/json', query: { key: api_key, sensor: false, origin: str_from_ll(origin), destination: str_from_ll(destination)}
 
     status = resp.parsed_response['status']
     if status == 'OK'
-      resp.parsed_response['routes'].first['legs'].first['distance']['value'] / 1000 / Geokit::Mappable::KMS_PER_MILE
+      resp.parsed_response['routes'].first['legs'].first['distance']['value'] / METERS_PER_MILE
     elsif status == 'ZERO_RESULTS' || status == 'NOT_FOUND'
       nil
     else
