@@ -48,12 +48,12 @@ gem 'dotiw', '~> 2.0'
 
 gem 'geokit'#, github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 
-gem 'formtastic', '~> 2.3.0rc3'
-gem 'formtastic-bootstrap', '~> 3.0'
+gem 'formtastic', '~> 3.0'
+gem 'formtastic-bootstrap', '~> 3.0', github: 'ekubal/formtastic-bootstrap'
 gem 'cocoon'
 gem 'polyamorous'
-gem 'ransack', '~> 1.2.0'
-gem 'activeadmin',       github: 'gregbell/active_admin'  
+gem 'ransack', '~> 1.2'
+gem 'activeadmin', github: 'activeadmin'  
 
 gem 'acts_as_flying_saucer', github: 'jlaxson/acts_as_flying_saucer', branch: 'master'
 gem 'nokogiri'
@@ -126,8 +126,6 @@ group :development do
 
   gem 'quiet_assets'
 
-  gem 'capistrano'
-  gem 'rvm-capistrano'
   gem 'ruby-prof'
   gem 'spring'
   gem 'spring-commands-rspec'
