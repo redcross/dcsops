@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<Response>
+  <Say loop="2">
+    You have reached the d c s ops text message line.  This line can only send or receive text messages and does not accept calls.
+  </Say>
+</Response>
