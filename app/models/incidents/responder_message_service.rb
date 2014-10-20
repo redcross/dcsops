@@ -12,8 +12,9 @@ class Incidents::ResponderMessageService
     RECRUITMENT_MATCHERS << MessageMatcher.new(patterns, block)
   end
 
-  def initialize(message)
+  def initialize(message, media=[])
     @incoming = message
+    @media = media
   end
 
   def assign_incident inc
@@ -28,6 +29,7 @@ class Incidents::ResponderMessageService
     if @assignment = open_assignment_for_person(incoming.person)
       assign_incident assignment.incident
       handle_command incoming.message.downcase, ASSIGNMENT_MATCHERS
+      handle_media @media
     elsif @recruitment = open_recruitment_for_person(incoming.person)
       assign_incident recruitment.incident
       handle_command incoming.message.downcase, RECRUITMENT_MATCHERS
@@ -37,6 +39,25 @@ class Incidents::ResponderMessageService
 
     incoming.save
     response
+  end
+
+  def handle_media media
+    media.each do |m|
+      attachment = assignment.incident.attachments.build
+      attachment.attachment_type = 'exterior_photo'
+      attachment.file = URI.parse(m[:url])
+      attachment.name = "Photo from #{incoming.person.full_name}"
+      attachment.description = incoming.message.gsub(%r{\s*\[[^\[]*\]$}, '')
+      
+      # Just report errors through Sentry to see what if anything is going wrong
+      begin
+        attachment.save!
+      rescue => e
+        Raven.capture(e)
+      end
+    end
+
+    publisher.publish_attachments if media.present?
   end
 
   def open_assignment_for_person(person)

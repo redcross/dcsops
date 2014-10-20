@@ -25,6 +25,10 @@ class Incidents::UpdatePublisher
     update_tabs 'timeline'
   end
 
+  def publish_attachments
+    update_tabs 'attachments'
+  end
+
   protected
 
   def update_tabs *tabs

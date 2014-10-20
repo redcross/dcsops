@@ -24,22 +24,7 @@ class Incidents::EventLogsController < Incidents::EditPanelController
 
   protected
 
-  def update_resource(resource, args)
-    super resource, args
-    notify
-  end
-
-  def create_resource resource
-    super resource
-    notify
-  end
-
-  def destroy_resource resource
-    super resource
-    notify
-  end
-
-  def notify
+  def notify resource
     Incidents::UpdatePublisher.new(@chapter, parent).publish_timeline
   end
 

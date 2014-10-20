@@ -1,5 +1,5 @@
 class Incidents::Attachment < Incidents::DataModel
-  has_attached_file :file, styles: {thumbnail: '60x60#', thumbnail2x: '120x120#', large: '600x600#'}
+  has_attached_file :file, styles: {thumbnail: '60x60>', thumbnail2x: '120x120>', large: '600x600>'}
   before_post_process :skip_convert_unless_image
 
   validates :incident, :name, presence: true

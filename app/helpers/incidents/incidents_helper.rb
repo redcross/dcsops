@@ -32,15 +32,17 @@ module Incidents::IncidentsHelper
     case val
     when DateTime, Time, ActiveSupport::TimeWithZone
       val.in_time_zone.to_s :date_time # An ApplicationController filter automatically sets the current time zone for each request
-    when String
-      if name == 'cac_number' and val.present?
-        "xxxx-xxxx-xxxx-" + val[-4..-1]
-      elsif ['services', 'languages'].include? name and val.present?
-        YAML.load(val).map(&:titleize).to_sentence
+    else 
+      case name
+      when 'cac_number'
+        "xxxx-xxxx-xxxx-" + val[-4..-1] if val.present?
+      when 'services', 'languages'
+        YAML.load(val).map(&:titleize).to_sentence if val.present?
+      when /file_size$/
+        number_to_human_size val
       else
         val
       end
-    else val
     end
   end
 

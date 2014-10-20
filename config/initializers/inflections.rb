@@ -25,4 +25,6 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
 
   inflect.acronym 'HPD'
   inflect.acronym 'DHS'
+
+  inflect.acronym 'RESTful'
 end

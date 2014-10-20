@@ -8,6 +8,17 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
     body = params[:Body]
     person = find_person_by_phone params[:From]
 
+    if params[:NumMedia] && (media_count = params[:NumMedia].to_i) > 0
+      media = media_count.times.map do |i|
+        {content_type: params["MediaContentType#{i}"],
+         url: params["MediaUrl#{i}"]}
+      end
+
+      body += " [The message had #{media_count} #{media_count == 1 ? 'attachment' : 'attachments'}]"
+    else
+      media = []
+    end
+
     message = Incidents::ResponderMessage.new chapter: chapter, message: body, person: person, local_number: params[:To], remote_number: params[:From], direction: 'incoming'
     message.save!
 
@@ -16,7 +27,7 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
       return
     end
 
-    reply = Incidents::ResponderMessageService.new(message).reply
+    reply = Incidents::ResponderMessageService.new(message, media).reply
     if reply && reply.message.present?
       respond_with_message reply
       reply.save
@@ -57,5 +68,9 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
     if !@validator.validate(request.original_url, request.POST, request.env['HTTP_X_TWILIO_SIGNATURE'])
       render status: 403, text: 'Invalid Signature'
     end
+  end
+
+  def user_for_paper_trail
+    "DCSOps SMS"
   end
 end
