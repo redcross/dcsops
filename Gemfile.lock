@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/activeadmin/activeadmin.git
-  revision: 483661d2fd699883228abfe51d57b6710455bc7b
+  revision: aee5d5bd230ddad589d3e2c3d837b0ac3dfd018d
   specs:
     activeadmin (1.0.0.pre)
       arbre (~> 1.0, >= 1.0.2)
@@ -59,7 +59,7 @@ GIT
 
 GIT
   remote: git://github.com/redcross/arcdata_core.git
-  revision: 23ca0fd62891453ce8410806fcff261cd35be158
+  revision: 963854f156f0953bc0ec552b474d065943315ed2
   branch: master
   specs:
     arcdata_core (0.0.1)
