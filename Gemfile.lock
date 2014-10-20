@@ -47,7 +47,7 @@ GIT
 
 GIT
   remote: git://github.com/jlaxson/openid-connect-engine.git
-  revision: 449d61f9166de74ab9277f18692c9dae8ca2bde8
+  revision: cde7d209d8897ac40c5e5f20182644c4f8df883d
   branch: master
   specs:
     connect (0.0.1)
