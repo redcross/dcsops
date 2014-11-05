@@ -11,8 +11,13 @@
         %td
           =msg.person.full_name
         %td
-          =time_ago_in_words msg.created_at
-          ago
+          %abbr.timeago{title: msg.created_at.iso8601}
+            =time_ago_in_words msg.created_at
+            ago
         %td
           .incoming-message-preview=msg.message
         %td=link_to 'View', '#', class: 'btn btn-mini', data: {edit_panel: incidents_chapter_incident_responder_message_path(incident.chapter, incident, msg)}
+  :javascript
+    $(function() {
+      $('.timeago').timeago();
+    });

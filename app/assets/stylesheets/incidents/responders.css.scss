@@ -4,3 +4,8 @@
   overflow: hidden;
   width: 200px;
 }
+
+abbr.timeago[title] {
+  border-bottom: none;
+  cursor: inherit;
+}

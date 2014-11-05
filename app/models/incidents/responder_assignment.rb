@@ -11,6 +11,7 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   belongs_to :incident, class_name: 'Incidents::Incident', foreign_key: 'incident_id', inverse_of: :responder_assignments
 
   validates_presence_of :person
+  validates :person_id, uniqueness: {scope: :incident_id}
   validates :role, presence: true, inclusion: {in: ROLES + RESPONSES, allow_blank: true}, uniqueness: {scope: :incident_id, if: ->(obj){obj.role == 'team_lead'}}
 
   def humanized_role
