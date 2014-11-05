@@ -1,0 +1,7 @@
+-if scope.report_show_county_summary
+  %strong
+    .center By County
+  - incident_counts.each do |county, count|
+    .county.center
+      =county + ":"
+      %strong=count

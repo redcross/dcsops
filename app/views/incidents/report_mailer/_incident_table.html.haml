@@ -29,6 +29,7 @@
   -else
     %tr
       %td.incident-list(style="vertical-align: top; overflow: visible")
+        =render 'county_statistics'
         - @incidents.each do |inc|
           .incident-header
             %a{href:incidents_chapter_incident_url(inc.chapter, inc)}

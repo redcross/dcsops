@@ -147,6 +147,10 @@ class Incidents::Incident < ActiveRecord::Base
     [incident_number, county.try(:name), date.to_s, incident_type, address].compact.join " "
   end
 
+  def county_state
+    "#{county}, #{state}"
+  end
+
   def link_to_cas_incident(cas)
     raise "Already have a CAS Incident" if cas_incident.present?
     raise "CAS Incident is already linked" if cas.incident.present?

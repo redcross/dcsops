@@ -102,6 +102,11 @@ private
     @incident_scope.count_resources(resources)
   }
 
+  expose(:incident_counts) {
+    hash = @incidents.select{|i| i.county.present? }.sort_by{|i| [i.state, i.county]}.group_by(&:county_state)
+    hash.map {|title, coll| [title, coll.count]}
+  }
+
   expose(:map_width) { 250 }
   expose(:map_height) { (map_width * 1.8).to_i }
 

@@ -52,6 +52,7 @@ module Scheduler
       domain: ENV['SMTP_DOMAIN'],
       enable_starttls_auto: true
     }
+    config.action_mailer.preview_path = "#{Rails.root}/lib/mailer_previews"
 
     config.assets.precompile += %w( es5-shim.js )
   end
