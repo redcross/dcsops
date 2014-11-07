@@ -3,6 +3,7 @@ class Scheduler::ShiftNotesController < Scheduler::BaseController
   respond_to :html, :json
   defaults resource_class: Scheduler::ShiftAssignment
   actions :index, :update
+  load_and_authorize_resource class: "Scheduler::ShiftAssignment"
 
   has_scope :date, default: ->controller{Date.current.to_s} do |controller, scope, val|
     d = Date.parse val

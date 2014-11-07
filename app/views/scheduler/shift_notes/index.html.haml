@@ -24,4 +24,4 @@
           =ass.shift_group.name
         %td=ass.shift.name
         %td=ass.person.full_name
-        %td=editable_string ass, :note, url: resource_path(ass), editable: true, emptytext: '&nbsp;' * 20
+        %td=editable_string ass, :note, url: resource_path(ass), editable: can?(:update, ass), emptytext: '&nbsp;' * 20

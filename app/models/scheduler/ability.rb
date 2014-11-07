@@ -31,7 +31,7 @@ class Scheduler::Ability
 
   def personal
     can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], {id: person.id}
-    can [:read, :destroy, :create, :swap], Scheduler::ShiftAssignment, person: {id: person.id}
+    can [:read, :destroy, :create, :swap, :update], Scheduler::ShiftAssignment, person: {id: person.id}
     can :manage, Scheduler::ShiftSwap, assignment: {person: {chapter_id: person.chapter_id}}
     can :read, :on_call unless person.chapter.scheduler_restrict_on_call_contacts
   end
