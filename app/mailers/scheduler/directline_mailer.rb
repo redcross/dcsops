@@ -38,7 +38,8 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   def generate_shifts_for_county(csv, chapter, config, start_date, end_date)
     backups = config.backup_list.map(&:id)
     dispatch_shifts = config.shift_list
-    dispatch_group_ids = dispatch_shifts.flat_map(&:shift_group_ids)
+    return unless dispatch_shifts.present?
+    dispatch_group_ids = dispatch_shifts.first.shift_group_ids
 
     @latest_time = nil
     all_groups = Scheduler::ShiftGroup.for_chapter(chapter).order(:start_offset).to_a
@@ -65,7 +66,7 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
 
   def check_timing_overlap start_time, end_time
     if @latest_time and @latest_time > start_time
-      raise "A configuration error has occurred and shifts are overlapping: New start is #{start_time.iso8601}, last end was #{latest_time.iso8601}"
+      raise "A configuration error has occurred and shifts are overlapping: New start is #{start_time.iso8601}, last end was #{@latest_time.iso8601}"
     end
     @latest_time = end_time
   end

@@ -1,6 +1,7 @@
 ActiveAdmin.register Scheduler::DispatchConfig, as: 'Dispatch Configs' do
   menu parent: 'Scheduling'
 
+  filter :chapter
   filter :is_active
   filter :name
 
