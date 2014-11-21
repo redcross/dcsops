@@ -125,7 +125,10 @@ class Incidents::RespondersController < Incidents::BaseController
   helper_method :recruitments
 
   expose(:ignore_area) { parent.chapter.incidents_dispatch_console_ignore_county || (params[:ignore_area] == '1') }
-  expose(:service) { Incidents::RespondersService.new(parent, collection, ignore_area_scheduled: ignore_area, ignore_area_flex: true) }
+  expose(:dispatched) { parent.event_logs.for_type("dispatch_relayed").exists? }
+  expose(:service) { 
+    Incidents::RespondersService.new(parent, collection, ignore_area_scheduled: ignore_area, ignore_area_flex: true, ignore_dispatch: dispatched )
+  }
 
   def scope
     @scope ||= Incidents::Scope.for_chapter(parent.chapter_id)

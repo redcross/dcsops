@@ -1,0 +1,21 @@
+%table.table.table-bordered.table-condensed
+  %tr
+    %th Incident
+    %th Region
+    %th Address
+    %th Status
+    %th Actions
+  - collection.each do |resource|
+    - presenter = Incidents::IncidentPresenter.new resource
+    %tbody.incident-group{data: {incident: resource.id}}
+      %tr.summary-row
+        %td
+          =link_to resource.incident_number, presenter.path
+        %td=resource.chapter.name
+        %td=presenter.full_address
+        %td
+          -if person = resource.current_dispatch_contact
+            Next Contact:
+            =person.full_name
+        %td
+          %a{data: {edit_panel: resource_path(resource)}} Show

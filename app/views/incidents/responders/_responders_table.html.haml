@@ -14,8 +14,11 @@
   -if service.have_dispatch?
     %tbody
       %tr
-        %th(colspan=8) Dispatch
-    %tbody
+        %th(colspan=8)
+          Dispatch
+          -if dispatched
+            %a{data: {toggle: 'collapse', target: 'tbody.dispatch-list'}} show dispatch list
+    %tbody.dispatch-list{class: dispatched && "collapse"}
       - service.dispatch_shifts.each do |assignment|
         =person_schedule_row(assignment)
       - service.dispatch_backup.each do |person|

@@ -74,18 +74,7 @@ class window.IncidentLocationController
   getFieldVal: (fname) ->
     this.inputField(fname).val()
 
-  getAddressComponent: (result, type, key) ->
-    val = null
-    result.address_components.forEach (el) =>
-      if el.types.indexOf(type) != -1
-        val = el[key]
-    return val
-
-  filterCounty: (strOrNothing) ->
-    if strOrNothing
-      strOrNothing.replace(' County', '')
-    else
-      strOrNothing
+  
 
   allowDirectEntry: () ->
     ['address', 'city', 'state', 'zip', 'county', 'neighborhood'].forEach (field) =>
@@ -117,13 +106,11 @@ class window.IncidentLocationController
         city = null
         admin3 = null
 
-        this.setFieldVal('state', this.getAddressComponent(result, 'administrative_area_level_1', 'short_name'))
-        this.setFieldVal('county', this.filterCounty(this.getAddressComponent(result, 'administrative_area_level_2', 'long_name')))
-        this.setFieldVal('zip', this.getAddressComponent(result, 'postal_code', 'long_name'))
-        this.setFieldVal 'city', (this.getAddressComponent(result, 'sublocality', 'long_name') ||
-                                  this.getAddressComponent(result, 'locality', 'long_name') ||
-                                  this.getAddressComponent(result, 'administrative_area_level_3', 'long_name'))
-        this.setFieldVal('neighborhood', this.getAddressComponent(result, 'neighborhood', 'long_name'))
+        this.setFieldVal('state', MapHelper.getAddressComponent(result, 'administrative_area_level_1', 'short_name'))
+        this.setFieldVal('county', MapHelper.filterCounty(MapHelper.getAddressComponent(result, 'administrative_area_level_2', 'long_name')))
+        this.setFieldVal('zip', MapHelper.getAddressComponent(result, 'postal_code', 'long_name'))
+        this.setFieldVal('city', MapHelper.getCity(result))
+        this.setFieldVal('neighborhood', MapHelper.getAddressComponent(result, 'neighborhood', 'long_name'))
       else
         @marker.setMap null
       @locationCallback()

@@ -11,6 +11,10 @@ class Incidents::EventLog < Incidents::DataModel
     where{event == 'note'}
   end
 
+  def self.for_type type
+    where{event == type}
+  end
+
   INCIDENT_EVENT_TYPES = {
     "note"=>"Note",
     "incident_occurred"=>     "Incident Occurred",

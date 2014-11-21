@@ -55,3 +55,22 @@ window.MapFactory =
         if $(evt.target).closest(dom).length == 0
           map.hover = false
           map.setOptions this.controlsOut
+
+window.MapHelper =
+  getAddressComponent: (result, type, key) ->
+    val = null
+    result.address_components.forEach (el) =>
+      if el.types.indexOf(type) != -1
+        val = el[key]
+    return val
+
+  filterCounty: (strOrNothing) ->
+    if strOrNothing
+      strOrNothing.replace(' County', '')
+    else
+      strOrNothing
+
+  getCity: (result) ->
+    MapHelper.getAddressComponent(result, 'sublocality', 'long_name') || MapHelper.getAddressComponent(result, 'locality', 'long_name') || MapHelper.getAddressComponent(result, 'administrative_area_level_3', 'long_name')
+
+

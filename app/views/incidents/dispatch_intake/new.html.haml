@@ -1,0 +1,77 @@
+.row
+  .col-sm-12
+    %h1 Dispatch New Incident
+    .form-horizontaal
+      = semantic_form_for resource, url: collection_path, builder: FormtasticBootstrap::FormBuilder do |f|
+        =hidden_field_tag :call_start, Time.now.iso8601
+        =f.input :call_type, as: :radio, collection: {"Yes" => 'incident', "No" => 'referral'}, label: "Red Cross Disaster Dispatch, is this regarding a local emergency?"
+        - [:address, :city, :state, :zip, :lat, :lng, :chapter_id, :territory_id].each do |fname|
+          =f.input fname, as: :hidden
+        .local-emergency.collapse{class: f.object.call_type=='incident' && 'in'}
+          =f.input :address_entry, label: "What is the address of the incident?"
+          .form-group
+            %label.control-label 
+              To confirm, that's located in
+              %span.county-name=f.object.county.presence || "_________"
+              county?
+          .form-group
+            %em
+              %p
+                Region:
+                %span.dispatch-region-name
+              %p
+                Territory:
+                %span.dispatch-territory-name
+          .inside-territory.collapse
+            =f.input :contact_name, label: "May I have the name of the person you would like to have us call back and confirm an estimated time of arrival?"
+            =f.input :contact_number, label: "The callback phone number for this person?"
+            =f.input :incident_type, as: :assignable_select, include_blank: false, required: true, humanized: :humanized_valid_incident_types, label: "What type of incident is this?"
+            =f.input :num_displaced, label: "Approximately how many people are displaced?"
+            =f.input :services_requested, as: :text, input_html: {rows: 3}, label: "Are there any special instructions or specific services you are requesting?"
+            .form-group
+              %label.control-label 
+                Please wait for a moment while I save your information&hellip;
+            =f.action :submit, label: "Create Incident", button_html: {class: "btn btn-primary"}, value: "incident"
+          .outside-territory.collapse
+            .form-group
+              %label.form-label
+                That address is outside the area I can dispatch for.  You'll need to call
+                %span.dispatch-referral _________
+                to request Red Cross services.
+        .referral.collapse{class: f.object.call_type=='referral' && 'in'}
+          .form-group
+            %label.form-label
+              This line is for local emergencies and disaster incidents only, but I can provide you with a number for your local Red Cross office.
+          =f.input :address_entry, label: 'What is the address you are calling from?', input_html: {value: '', id: "incidents_call_log_2_address_entry"}
+          .form-group
+            %label.form-label
+              The local Red Cross number for
+              %span.referral-county
+              County
+              is
+              %span.referral-number
+              \.
+          .form-group
+            %em
+              %p
+                Region:
+                %span.dispatch-region-name
+              %p
+                Territory:
+                %span.dispatch-territory-name
+          =f.input :referral_reason, label: 'If available, enter what the caller was requesting', as: :text, input_html: {rows: 3}
+          =f.action :submit, label: "Save Log", value: "referral", button_html: {class: "btn btn-primary"}
+
+- content_for :footer_js do
+  =google_maps_javascript
+  :javascript
+    $(function() {
+      //window.territoryController = new IncidentTerritoryController(#{new_resource_path(partial: 'territory').to_json});
+      //window.incidentLocationController.locationCallback = function() { territoryController.updateTerritory(false); }
+      window.dispatchIntakeController = window.dispatchIntakeController || new DispatchIntakeController();
+    });
+  -if params[:action] == 'create'
+    :javascript
+      $(function() {
+        window.dispatchController.addressChanged(null, #{resource.address_entry.to_json})
+      })

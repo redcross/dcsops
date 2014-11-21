@@ -30,13 +30,7 @@
     .tab-pane{class: ((idx==0) && 'active'), id: "inc-#{name}", data: {refresh_name: name, refresh: resource_path(partial: name)}}
       =render name
 
-.modal.fade#edit-modal
-  .modal-header 
-    %a.close(data-dismiss="modal") &times;
-    %h3 Edit
-  .modal-body
-  .modal-footer
-    %a.btn.btn-primary(data-dismiss="modal") Close
+= edit_panel_html
 
 .drag-top
 .drag-right

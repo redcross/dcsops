@@ -81,6 +81,10 @@ class Incidents::IncidentPresenter < SimpleDelegator
     Rails.application.routes.url_helpers
   end
 
+  def path
+    routes.incidents_chapter_incident_path(chapter, to_param)
+  end
+
   def submit_path
     param = to_param || "INVALID"
     chapter.incidents_report_editable ? routes.incidents_chapter_incident_path(chapter, param) : routes.new_incidents_chapter_incident_dat_path(chapter, param)

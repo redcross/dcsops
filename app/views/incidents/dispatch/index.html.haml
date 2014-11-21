@@ -1,0 +1,18 @@
+%h1 Disaster Dispatch
+=link_to "New Incident", new_incidents_chapter_dispatch_intake_path(parent), class: "btn btn-primary"
+
+%h3 Dispatching Incidents
+.dispatch-table{data: {refresh_name: 'dispatch', refresh: collection_path(partial: 'dispatch_table')}}
+  =render 'dispatch_table'
+
+%h3 Open Incidents
+
+=edit_panel_html
+
+- content_for :footer_js do
+  :javascript
+    $(function() {
+      window.editPanelController = window.editPanelController || new IncidentEditPanelController();
+      window.dispatchController = window.dispatchController || new DispatchController();
+    })
+  =chapter_pubnub_setup

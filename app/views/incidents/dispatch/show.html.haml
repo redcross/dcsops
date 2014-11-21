@@ -1,0 +1,44 @@
+.modal-dialog
+  .modal-content
+    =form_tag do
+      .modal-header
+        Dispatching
+        = resource.incident_number
+        for
+        = resource.chapter.name
+      .modal-body
+        .row
+          .col-sm-6
+            - person = resource.current_dispatch_contact
+            %strong 
+              Dispatch Contact:
+              = person.full_name
+            %ol
+              - person.phone_order.each do |ph|
+                %li #{ph[:number]} (#{ph[:label].to_s.titleize})
+          .col-sm-6
+            %div
+              %strong Incident Number:
+              =resource.incident_number
+            %div
+              %strong Address:
+              =Incidents::IncidentPresenter.new(resource).full_address
+            %div
+              %strong Type:
+              =resource.humanized_incident_type
+            - disp_notes = resource.event_logs.find_by event: 'dispatch_received'
+            - if disp_notes
+              %div
+                =simple_format(disp_notes.message.gsub( /^[^:]+:/){|m| content_tag(:strong, m)})
+        =hidden_field_tag :contact_id, resource.current_dispatch_contact_id
+        =label_tag :dispatch_note, "Contact Notes:"
+        =text_area_tag :dispatch_note, '', class: "form-control input-sm", rows: 3
+      .modal-footer
+        .row
+          .col-sm-4
+            %button.btn.btn-block.btn-sm.btn-danger.complete-button{data: {form_action: next_contact_resource_path}} Next Contact
+          .col-sm-4
+            %button.btn.btn-block.btn-sm.btn-default{data: {dismiss: "modal"}} Close
+          .col-sm-4
+            %button.btn.btn-block.btn-sm.btn-success.complete-button{data: {form_action: complete_resource_path}} Dispatched
+          

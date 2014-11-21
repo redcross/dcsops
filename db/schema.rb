@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140921143632) do
+ActiveRecord::Schema.define(version: 20141116170842) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -225,6 +225,35 @@ ActiveRecord::Schema.define(version: 20140921143632) do
   end
 
   add_index "incidents_attachments", ["incident_id"], name: "index_incidents_attachments_on_incident_id", using: :btree
+
+  create_table "incidents_call_logs", force: true do |t|
+    t.integer  "chapter_id"
+    t.integer  "dispatching_chapter_id"
+    t.string   "call_type"
+    t.string   "contact_name"
+    t.string   "contact_number"
+    t.string   "address_entry"
+    t.string   "address"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.string   "county"
+    t.float    "lat"
+    t.float    "lng"
+    t.string   "incident_type"
+    t.text     "services_requested"
+    t.integer  "num_displaced"
+    t.text     "referral_reason"
+    t.datetime "call_start"
+    t.integer  "incident_id"
+    t.integer  "territory_id"
+    t.integer  "creator_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_call_logs", ["chapter_id"], name: "index_incidents_call_logs_on_chapter_id", using: :btree
+  add_index "incidents_call_logs", ["dispatching_chapter_id"], name: "index_incidents_call_logs_on_dispatching_chapter_id", using: :btree
 
   create_table "incidents_cas_cases", force: true do |t|
     t.integer  "cas_incident_id"
@@ -461,20 +490,22 @@ ActiveRecord::Schema.define(version: 20140921143632) do
     t.datetime "updated_at"
     t.datetime "last_no_incident_warning"
     t.boolean  "ignore_incident_report"
-    t.boolean  "evac_partner_used",          default: false
-    t.boolean  "hotel_partner_used",         default: false
-    t.boolean  "shelter_partner_used",       default: false
-    t.boolean  "feeding_partner_used",       default: false
+    t.boolean  "evac_partner_used",           default: false
+    t.boolean  "hotel_partner_used",          default: false
+    t.boolean  "shelter_partner_used",        default: false
+    t.boolean  "feeding_partner_used",        default: false
     t.integer  "area_id"
     t.string   "county"
-    t.string   "status",                                     null: false
+    t.string   "status",                                      null: false
     t.date     "response_date"
     t.integer  "notification_level_id"
     t.text     "notification_level_message"
     t.string   "recruitment_message"
     t.integer  "cas_event_id"
-    t.boolean  "address_directly_entered",   default: false, null: false
+    t.boolean  "address_directly_entered",    default: false, null: false
     t.integer  "territory_id"
+    t.integer  "current_dispatch_contact_id"
+    t.datetime "dispatch_contact_due_at"
   end
 
   add_index "incidents_incidents", ["cas_event_number"], name: "index_incidents_incidents_on_cas_event_number", using: :btree

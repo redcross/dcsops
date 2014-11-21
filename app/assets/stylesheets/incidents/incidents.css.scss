@@ -66,3 +66,11 @@ body.incidents {
     color: red;
   }
 }
+
+table tr.collapse.in {
+  display:table-row;
+}
+
+table tbody.collapse.in {
+  display: table-row-group;
+}

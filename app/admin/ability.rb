@@ -27,8 +27,10 @@ class AdminAbility
 
       can :manage, Incidents::ReportSubscription
       can :manage, Incidents::PriceListItem
+      can :manage, Incidents::CallLog
 
       can :manage, Logistics::Vehicle
+
 
       can :manage, Core::JobLog
       can :manage, MOTD

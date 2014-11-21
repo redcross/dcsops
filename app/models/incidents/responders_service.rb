@@ -2,6 +2,7 @@ class Incidents::RespondersService
   attr_reader :incident, :collection, :service
   attr_accessor :ignore_area_scheduled
   attr_accessor :ignore_area_flex, :limit_flex
+  attr_accessor :ignore_dispatch
 
   def initialize(incident, collection, options={})
     set_defaults
@@ -59,7 +60,7 @@ class Incidents::RespondersService
   end
 
   def exclude_scheduled
-    collection_people + dispatch_shifts.map(&:person_id)
+    collection_people + (ignore_dispatch ? [] : dispatch_shifts.map(&:person_id))
   end
 
   def scheduled_areas

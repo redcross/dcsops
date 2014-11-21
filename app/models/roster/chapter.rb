@@ -10,6 +10,7 @@ class Roster::Chapter < ActiveRecord::Base
 
   has_many :incidents, class_name: "Incidents::Incident"
   has_many :event_logs, class_name: "Incidents::EventLog"
+  has_many :call_logs, class_name: "Incidents::CallLog"
   has_many :cas_incidents, class_name: "Incidents::CasIncident"
   belongs_to :incident_number_sequence, class_name: "Incidents::NumberSequence"
 

@@ -71,6 +71,15 @@ Scheduler::Application.routes.draw do
         get 'incidents', as: :incidents, action: :index
         get 'incidents/map', as: :incidents_map, action: :map
       end
+
+      resources :dispatch_intake, only: [:new, :create]
+      resources :dispatch, only: [:index, :show, :update] do
+        member do
+          post :next_contact
+          post :complete
+        end
+      end
+
       resources :incidents, except: :index do
 
         resource :dat, controller: :dat_incidents
@@ -119,6 +128,7 @@ Scheduler::Application.routes.draw do
     end
 
     namespace :api do
+      resources :territories, only: :index
       resources :incidents, only: :index
       post :twilio_incoming, controller: :responder_messages_twilio, action: :incoming
     end

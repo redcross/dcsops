@@ -25,6 +25,8 @@ class Incidents::Incident < ActiveRecord::Base
   has_many :all_responder_assignments, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
   has_one :team_lead, lambda{ where(role: 'team_lead')}, class_name: 'Incidents::ResponderAssignment', foreign_key: 'incident_id'
 
+  belongs_to :current_dispatch_contact, class_name: "Roster::Person"
+
   belongs_to :notification_level, class_name: 'Incidents::Notifications::Event'
 
   accepts_nested_attributes_for :team_lead, update_only: true

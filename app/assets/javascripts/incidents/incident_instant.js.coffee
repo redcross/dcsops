@@ -11,7 +11,10 @@ class window.IncidentInstantController
   handleMessage: (msg) ->
     console.log msg
 
-    unless msg.chapter == @chapterNumber || (@incidentNumber? && msg.incident == @incidentNumber)
+    if @incidentNumber?
+      if msg.incident != @incidentNumber
+        return
+    else if msg.chapter != @chapterNumber
       return
     
     values = msg.refresh
