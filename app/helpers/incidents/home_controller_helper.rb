@@ -20,8 +20,7 @@ module Incidents::HomeControllerHelper
 
     {"#{month_begin.strftime("%B")} To Date" => stats(month_begin..today), 
     "#{last_month.strftime("%B")}" => stats(last_month..last_month.end_of_month), 
-    "FYTD" => stats(fy_begin..today), 
-    "5 Years" => stats(five_fy_begin..today)}
+    "FYTD" => stats(fy_begin..today)}
   end
 
   def incident_link(incident)
