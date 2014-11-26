@@ -13,11 +13,23 @@ class window.DispatchIntakeController
     @addressSelector = 'input[id$=address_entry]'
     $(document).on 'change', @addressSelector, (evt) =>
       @addressChanged(evt)
+      evt.preventDefault()
 
-    $(document).on 'submit', (evt) =>
-      console.log evt.target
-      if $(evt.target).attr('id').match /address_entry/
+    $(document).on 'keypress', (evt) =>
+      if evt.keyCode == 13
+        $(evt.target).trigger('change')
         evt.preventDefault()
+        false
+      true
+
+    #$(document).on 'submit', (evt) =>
+    #  console.log evt.target
+    #  unless @allowSubmit
+    #    evt.preventDefault()
+#
+    #$(document).on 'click', 'input[type=submit]', (evt) =>
+    #  @allowSubmit = true
+    #  true
 
     @geocoder = new google.maps.Geocoder()
 
