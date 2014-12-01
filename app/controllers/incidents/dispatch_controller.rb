@@ -1,7 +1,7 @@
 class Incidents::DispatchController < Incidents::BaseController
   inherit_resources
   defaults resource_class: Incidents::Incident, finder: :find_by_incident_number!, collection_name: :incidents, route_instance_name: :dispatch, route_collection_name: :dispatch
-  belongs_to :chapter, parent_class: Roster::Chapter, finder: :find_by_url_slug!
+  belongs_to :chapter, parent_class: Incidents::Scope, finder: :find_by_url_slug!
   load_and_authorize_resource :chapter
   load_and_authorize_resource class: "Incidents::Incident"
 

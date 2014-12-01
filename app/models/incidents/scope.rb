@@ -40,6 +40,7 @@ class Incidents::Scope < ActiveRecord::Base
   serialized_accessor :config, :report_dro_ignore, :string
   serialized_accessor :config, :report_map_framing_points, :string
   serialized_accessor :config, :report_show_county_summary, :boolean
+  serialized_accessor :config, :enable_dispatch_console, :boolean
 
   serialized_accessor :config, :time_zone_raw, :string
 
@@ -52,5 +53,9 @@ class Incidents::Scope < ActiveRecord::Base
 
   def all_chapters
     chapter_id ? [chapter] : chapters
+  end
+
+  def call_logs
+    Incidents::CallLog.all
   end
 end

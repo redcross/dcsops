@@ -1,7 +1,7 @@
 %h3 
   Responders
   -if can? :read, (resource.responder_assignments.first || resource.responder_assignments.build)
-    =link_to 'Launch Dispatch Console', resource_responders_path(resource)
+    =link_to 'Show Responders Console', resource_responders_path(resource)
 %table.table
   - {'Responded' => resource.available_responders, 'Unavailable' => resource.unavailable_responders}.each do |title, collection|
     %tr

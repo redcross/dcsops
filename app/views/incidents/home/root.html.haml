@@ -36,6 +36,7 @@
             %a{href: incidents_chapter_responders_path(scope)}
               Responder History
               %i.fa.fa-chevron-right
+        
   %div(class=stats_col)
     %h1.center
       #{scope.short_name} DAT Incidents
@@ -58,6 +59,12 @@
 
 .row
   .col-sm-5.col-md-4
+    -if scope.enable_dispatch_console
+      %ul.nav.nav-tabs.nav-stacked.nav-tabs-small
+        %li
+          %a{href: incidents_chapter_dispatch_index_path(scope)}
+            Dispatch Console
+            %i.fa.fa-chevron-right
     .recent-table{data: {refresh_name: "timeline details", refresh: url_for(partial: 'recent_table')}}
       =render 'recent_table'
     -if can? :index, Incidents::Incident

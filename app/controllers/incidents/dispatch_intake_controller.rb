@@ -1,7 +1,7 @@
 class Incidents::DispatchIntakeController < Incidents::BaseController
   inherit_resources
   defaults resource_class: Incidents::CallLog, collection_name: :call_logs, route_instance_name: :dispatch_intake
-  belongs_to :chapter, parent_class: Roster::Chapter, finder: :find_by_url_slug!
+  belongs_to :chapter, parent_class: Incidents::Scope, finder: :find_by_url_slug!
 
   actions :new, :create
 
