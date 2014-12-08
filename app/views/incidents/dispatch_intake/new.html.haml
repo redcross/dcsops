@@ -73,5 +73,5 @@
   -if params[:action] == 'create'
     :javascript
       $(function() {
-        window.dispatchController.addressChanged(null, #{resource.address_entry.to_json})
+        window.dispatchIntakeController.addressChanged(null, #{resource.address_entry.to_json})
       })
