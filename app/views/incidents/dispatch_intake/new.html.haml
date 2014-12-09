@@ -3,9 +3,9 @@
     %h1 Dispatch New Incident
     .form-horizontaal
       = semantic_form_for resource, url: collection_path, builder: FormtasticBootstrap::FormBuilder do |f|
-        =hidden_field_tag :call_start, Time.now.iso8601
+        =f.hidden_field :call_start, Time.now.iso8601
         =f.input :call_type, as: :radio, collection: {"Yes" => 'incident', "No" => 'referral'}, label: "Red Cross Disaster Dispatch, is this regarding a local emergency?"
-        - [:address, :city, :state, :zip, :lat, :lng, :chapter_id, :territory_id].each do |fname|
+        - [:address, :city, :state, :zip, :lat, :lng, :county, :chapter_id, :territory_id].each do |fname|
           =f.input fname, as: :hidden
         .local-emergency.collapse{class: f.object.call_type=='incident' && 'in'}
           =f.input :address_entry, label: "What is the address of the incident?"

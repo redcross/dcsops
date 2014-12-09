@@ -7,6 +7,21 @@ module Incidents::EditPanelHelper
   #  .modal-footer
   #    %a.btn.btn-primary(data-dismiss="modal") Close
 
+  def edit_panel_link_to title, url, opts={}, &block
+    if block_given?
+      opts = url
+      url = title
+      title = capture(&block)
+    end
+
+    classes = opts[:class]
+    classes = [classes, "edit-panel"].compact.join " "
+    opts[:class] = classes
+
+    link_to title, url, opts
+  end
+
+
   def edit_panel_html(id="edit-modal", title="Edit", &block)
     content_tag(:div, id: id, class: "modal fade") do
       content_tag(:div, class: "modal-header") do

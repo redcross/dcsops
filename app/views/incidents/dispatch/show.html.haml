@@ -36,9 +36,12 @@
       .modal-footer
         .row
           .col-sm-4
-            %button.btn.btn-block.btn-sm.btn-danger.complete-button{data: {form_action: next_contact_resource_path}} Next Contact
+            %button.btn.btn-block.btn-md.btn-danger.complete-button.dispatch-button{data: {form_action: next_contact_resource_path}} Next Contact
           .col-sm-4
-            %button.btn.btn-block.btn-sm.btn-default{data: {dismiss: "modal"}} Close
+            %button.btn.btn-block.btn-md.btn-default.dispatch-button{data: {dismiss: "modal"}} Close
           .col-sm-4
-            %button.btn.btn-block.btn-sm.btn-success.complete-button{data: {form_action: complete_resource_path}} Dispatched
-          
+            %button.btn.btn-block.btn-md.btn-success.complete-button.dispatch-button{data: {form_action: complete_resource_path}} Dispatched
+:javascript
+    $(function() {
+      window.dispatchController = window.dispatchController || new DispatchController();
+    })

@@ -18,4 +18,4 @@
             Next Contact:
             =person.full_name
         %td
-          %a{data: {edit_panel: resource_path(resource)}} Show
+          =edit_panel_link_to 'Show', resource_path(resource)

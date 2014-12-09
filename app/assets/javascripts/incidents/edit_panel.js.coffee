@@ -6,6 +6,11 @@ class window.IncidentEditPanelController
       evt.stopPropagation()
       false
 
+    $(document).on 'click', 'a.edit-panel', (evt) =>
+      evt.preventDefault()
+      panel = $(evt.target).attr('href')
+      this.openPanel(panel)
+
     $(document).on 'click', '[data-edit-panel]', (evt) =>
       evt.preventDefault()
       panel = $(evt.target).data('edit-panel')
