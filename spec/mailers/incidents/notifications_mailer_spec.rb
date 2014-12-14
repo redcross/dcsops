@@ -72,12 +72,13 @@ describe Incidents::Notifications::Mailer, :type => :mailer do
   end
 
   describe "incident_dispatched" do
+    let(:use_sms) { false }
     let(:event) { mock_model Incidents::Notifications::Event, event_type: 'event', event: 'incident_dispatched'}
     let(:dispatch) { double :dispatch_log, incident_type: 'Flood', address: Faker::Address.street_address, displaced: 3, 
       services_requested: "Help!", agency: "Fire Department", contact_name: "Name", contact_phone: "Phone", 
       delivered_at: Time.zone.now, delivered_to: "Bob", log_items: log_items
     }
-    let(:mail) { subject.notify_event(person, false, event, report, 'notification') }
+    let(:mail) { subject.notify_event(person, use_sms, event, report, 'notification') }
     before(:each) { report.stub dispatch_log: dispatch }
 
     it "renders the headers" do
@@ -93,13 +94,25 @@ describe Incidents::Notifications::Mailer, :type => :mailer do
       expect(mail.body.encoded).to match("Incident Type: Flood")
       expect(mail.body.encoded).to match("Delivered To: Bob")
     end
+
+    describe "as sms" do
+      let(:use_sms) { true }
+      let(:from_address) { 'sms@dcsops.org' }
+      before(:each) { person.stub(sms_addresses: ['test@vtext.com']) }
+
+      it "renders" do
+        expect(mail.to).to eq([person.sms_addresses.first])
+        expect(mail.from).to eq([from_address])
+      end
+    end
   end
 
   describe "incident_report_filed" do
+    let(:use_sms) { false }
     let(:event) { mock_model Incidents::Notifications::Event, event_type: 'event', event: 'incident_report_filed'}
     let(:dat) { FactoryGirl.build_stubbed :dat_incident}
     let(:report) { FactoryGirl.build_stubbed :incident, dat_incident: dat}
-    let(:mail) { subject.notify_event(person, false, event, report, 'notification', is_new: true) }
+    let(:mail) { subject.notify_event(person, use_sms, event, report, 'notification', is_new: true) }
 
     it "renders the headers" do
       expect(mail.subject).to eq("Incident Report Filed For #{report.county}")
@@ -113,12 +126,24 @@ describe Incidents::Notifications::Mailer, :type => :mailer do
     it "renders the body" do
       expect(mail.body.encoded).to match("A New DAT Incident Report was filed")
     end
+
+    describe "as sms" do
+      let(:use_sms) { true }
+      let(:from_address) { 'sms@dcsops.org' }
+      before(:each) { person.stub(sms_addresses: ['test@vtext.com']) }
+
+      it "renders" do
+        expect(mail.to).to eq([person.sms_addresses.first])
+        expect(mail.from).to eq([from_address])
+      end
+    end
   end
 
   describe "incident_invalid" do
+    let(:use_sms) { false }
     let(:event) { mock_model Incidents::Notifications::Event, event_type: 'event', event: 'incident_invalid'}
     let(:report) { FactoryGirl.build_stubbed :incident, incident_type: 'duplicate'}
-    let(:mail) { subject.notify_event(person, false, event, report, 'notification') }
+    let(:mail) { subject.notify_event(person, use_sms, event, report, 'notification') }
 
     it "renders the headers" do
       expect(mail.subject).to eq("Incident #{report.incident_number} Marked Invalid")
@@ -131,6 +156,17 @@ describe Incidents::Notifications::Mailer, :type => :mailer do
 
     it "renders the body" do
       expect(mail.body.encoded).to match("The incident below was marked as invalid.")
+    end
+
+    describe "as sms" do
+      let(:use_sms) { true }
+      let(:from_address) { 'sms@dcsops.org' }
+      before(:each) { person.stub(sms_addresses: ['test@vtext.com']) }
+
+      it "renders" do
+        expect(mail.to).to eq([person.sms_addresses.first])
+        expect(mail.from).to eq([from_address])
+      end
     end
   end
 
