@@ -4,18 +4,16 @@ class window.DispatchIntakeController
 
     $(document).on 'change', 'input[id*=call_type]', (evt) =>
       val = $(evt.target).val()
-      console.log val
-      $('.local-emergency').collapse(@collapseAction(val == 'incident'))
-      $('.referral').collapse(@collapseAction(val == 'referral'))
+      @updateCollapse(val)
 
-      @validIncident = (val == 'incident')
+      
 
     @addressSelector = 'input[id$=address_entry]'
     $(document).on 'change', @addressSelector, (evt) =>
       @addressChanged(evt)
       evt.preventDefault()
 
-    $(document).on 'keypress', (evt) =>
+    $(document).on 'keydown', (evt) =>
       if evt.keyCode == 13
         $(evt.target).trigger('change')
         evt.preventDefault()
@@ -32,6 +30,14 @@ class window.DispatchIntakeController
     #  true
 
     @geocoder = new google.maps.Geocoder()
+
+    @updateCollapse($('input:checked[id*=call_type]').val())
+
+  updateCollapse: (val) ->
+    console.log val
+    $('.local-emergency').collapse(@collapseAction(val == 'incident'))
+    $('.referral').collapse(@collapseAction(val == 'referral'))
+    @validIncident = (val == 'incident')
 
   addressChanged: (evt, val) ->
     evt.preventDefault() if evt?

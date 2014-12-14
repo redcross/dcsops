@@ -1,0 +1,17 @@
+.row
+  .col-sm-12
+    %h1 Dispatch New Incident
+    %p
+      %em 
+        Dispatchers:  Read the text in
+        %strong bold
+        word-for-word to the caller, and enter their responses in each box.
+        Text like this in italics is information or clarification for you.
+    -if resource.call_type == 'incident'
+      %p
+        %strong
+          Thank you.  We have assigned number #{resource.incident.incident_number} to your call.  If you need to follow up, please use this number.
+      %p
+        %strong
+          A Red Cross responder should return your call within 10-15 minutes to confirm the details and our estimated time of arrival if appropriate.
+    =link_to "Back to Dispatch Console", incidents_chapter_dispatch_index_path(parent), class: "btn btn-primary"

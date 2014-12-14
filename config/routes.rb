@@ -72,7 +72,7 @@ Scheduler::Application.routes.draw do
         get 'incidents/map', as: :incidents_map, action: :map
       end
 
-      resources :dispatch_intake, only: [:new, :create]
+      resources :dispatch_intake, only: [:new, :create, :show]
       resources :dispatch, only: [:index, :show, :update] do
         member do
           post :next_contact

@@ -2,6 +2,12 @@
   .col-sm-12
     %h1 Dispatch New Incident
     .form-horizontaal
+      %p
+        %em 
+          Dispatchers:  Read the text in
+          %strong bold
+          word-for-word to the caller, and enter their responses in each box.
+          Text like this in italics is information or clarification for you.
       = semantic_form_for resource, url: collection_path, builder: FormtasticBootstrap::FormBuilder do |f|
         =f.hidden_field :call_start, value: f.object.call_start || Time.now.iso8601
         =f.input :call_type, as: :radio, collection: {"Yes" => 'incident', "No" => 'referral'}, label: "Red Cross Disaster Dispatch, is this regarding a local emergency?"

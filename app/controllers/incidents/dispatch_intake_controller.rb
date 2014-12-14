@@ -6,7 +6,7 @@ class Incidents::DispatchIntakeController < Incidents::BaseController
   actions :new, :create
 
   def create
-    create! { incidents_chapter_dispatch_index_path(parent) }
+    create! { resource.call_type == 'referral' ? incidents_chapter_dispatch_index_path(parent) : resource_path(resource) }
   end
 
   protected

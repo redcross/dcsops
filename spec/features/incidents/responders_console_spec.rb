@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Incident Dispatch Console", :type => :feature do
+describe "Incident Responders Console", :type => :feature do
 
   after :each do
     ActionMailer::Base.deliveries.clear
