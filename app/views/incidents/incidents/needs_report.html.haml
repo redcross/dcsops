@@ -1,4 +1,7 @@
-%h1 Currently Open Incidents
+%h1 
+  Currently Open Incidents
+  -if can? :create, Incidents::Incident
+    %a.btn.btn-warning{href: new_resource_path} Create New Incident
 
 %table.table
   %thead
@@ -30,7 +33,3 @@
 -unless current_chapter.incidents_report_editable
   %h3 Don't see your incident?
   The dispatch call center must assign an incident number in order to submit a report.  If you do not have an incident number, call dispatch and request one.  Then refresh the page and you should see your incident listed.
-
--if can? :create, Incidents::Incident
-  %h3 Create New Incident
-  %a.btn.btn-warning{href: new_resource_path} Create New Incident
