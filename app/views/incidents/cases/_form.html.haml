@@ -3,25 +3,30 @@
     =semantic_form_for [parent, resource], url: form_url, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
       .modal-header 
         %a.close(data-dismiss="modal") &times;
-        %h3 Add Case
+        %h4.modal-title=t(".add_case")
       .modal-body
         .form-group{class: (f.object.errors[:first_name].present? || f.object.errors[:last_name].present?) && 'error'}
           %label.control-label Name
           .form-wrapper
-            =f.text_field :first_name, placeholder: 'First', class: 'name-field form-control col-xs-5'
-            =f.text_field :last_name, placeholder: 'Last', class: 'name-field form-control col-xs-6 col-xs-offset-1'
+            .row
+              .col-xs-6
+                =f.text_field :first_name, placeholder: 'First', class: 'name-field form-control'
+              .col-xs-6
+                =f.text_field :last_name, placeholder: 'Last', class: 'name-field form-control'
         =f.input :num_adults
         =f.input :num_children
         =f.input :unit
         .address-collapse.in
           .form-group
-            %label.form-label 
-              Address 
-              =link_to '(edit)', '#', data: {toggle: 'collapse', target: '.address-collapse'}
+            %label.control-label 
+              Address
             .form-wrapper
-              =f.object.address
-              %br
-              #{f.object.city}, #{f.object.state} #{f.object.zip}
+              .form-control-static
+                =f.object.address
+                %br
+                #{f.object.city}, #{f.object.state} #{f.object.zip}
+                %br
+                =link_to '(edit)', '#', data: {toggle: 'collapse', target: '.address-collapse'}
         .collapse.address-collapse
           =f.input :address
           =f.input :city
@@ -50,7 +55,7 @@
         
       .modal-footer
         -if f.object.persisted? and can? :destroy, resource
-          =link_to 'Delete', resource_path, method: 'delete', data: {confirm: 'Really delete this case?'}, class: 'btn btn-danger', remote: request.xhr?
+          =link_to t(".delete"), resource_path, method: 'delete', data: {confirm: t(".delete_confirm")}, class: 'btn btn-danger', remote: request.xhr?
         =f.action :submit, button_html: {class: "btn btn-primary"}
 
 :javascript

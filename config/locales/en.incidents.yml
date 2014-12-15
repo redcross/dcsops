@@ -1,0 +1,26 @@
+en:
+  incidents:
+    incidents:
+      show:
+        tab:
+          details: Details
+          timeline: Timeline
+          responders: Responders
+          cases: Clients
+          attachments: Attachments
+          changes: Changes
+          summary: Summary
+      cases:
+        cases:
+          cases: Clients
+          add_case: Add Client
+
+    cases:
+      form:
+        add_case: Add Client
+
+  formtastic:
+    actions:
+      incidents/case:
+        new:
+          create: Create Client

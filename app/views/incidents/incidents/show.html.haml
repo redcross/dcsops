@@ -23,7 +23,7 @@
   %ul.nav.nav-tabs
     - tabs.each_with_index do |name, idx|
       %li{class: ((idx==0) && 'active')}
-        %a{href: '', data: {target: "#inc-#{name}", toggle: 'tab'}}=name.titleize
+        %a{href: '', data: {target: "#inc-#{name}", toggle: 'tab'}}=t(".tab.#{name}")
   
 .tab-content
   - tabs.each_with_index do |name, idx|
