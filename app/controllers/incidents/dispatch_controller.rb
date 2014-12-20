@@ -11,12 +11,8 @@ class Incidents::DispatchController < Incidents::BaseController
   before_filter :ensure_has_dispatch_contact, only: [:show, :next_contact, :complete]
 
   def complete
-    if resource.current_dispatch_contact_id != params[:contact_id].to_i
-
-    end
-
     log_action params[:dispatch_note]
-    resource.event_logs.create! event: 'dispatch_relayed', event_time: Time.current, message: "Relayed to #{person.full_name}"
+    resource.event_logs.create! event: 'dispatch_relayed', event_time: Time.current, message: "Relayed to #{person.full_name}", person: current_user
     resource.responder_assignments.create! person: person, role: 'responder'
     dispatch_info = resource.event_logs.find_by event: 'dispatch_received'
     Incidents::Notifications::Notification.create_for_event resource, 'incident_dispatched', message: "Incident dispatched to #{person.full_name}.\n\nDetails:\n#{dispatch_info.try(:message)}"
@@ -28,8 +24,8 @@ class Incidents::DispatchController < Incidents::BaseController
 
   def next_contact
     log_action params[:dispatch_note]
-    resource.responder_assignments.create! person: person, role: 'not_available'
-    Incidents::DispatchService.new(resource).assign_contact
+    service = Incidents::DispatchService.new(resource)
+    service.assign_contact
 
     flash[:success] = "Incident #{resource.incident_number} has been updated."
     redirect_to collection_path
