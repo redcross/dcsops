@@ -29,7 +29,11 @@ module Incidents::Notifications
         reply_opts[:reply_to] = @incident.chapter.incidents_notifications_reply_to
       end
 
-      mail({to: recipient, template_name: @render_template_name, subject: @subject, from: (message.from || self.class.default[:from])}.merge reply_opts)
+      msg = mail({to: recipient, template_name: @render_template_name, subject: @subject, from: (message.from || self.class.default[:from])}.merge reply_opts)
+      if sms
+        byebug
+        @_message = SmsEmailGroup.new(msg)
+      end
     end
 
     def new_incident
