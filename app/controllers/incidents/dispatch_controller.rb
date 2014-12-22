@@ -12,8 +12,9 @@ class Incidents::DispatchController < Incidents::BaseController
 
   def complete
     log_action params[:dispatch_note]
-    resource.event_logs.create! event: 'dispatch_relayed', event_time: Time.current, message: "Relayed to #{person.full_name}", person: current_user
-    resource.responder_assignments.create! person: person, role: 'responder'
+    resource.event_logs.find_or_initialize_by(event: 'dispatch_relayed').update event_time: Time.current, message: "Relayed to #{person.full_name}", person: current_user
+    resource.responder_assignments.find_or_initialize_by(person: person).update role: 'responder'
+
     dispatch_info = resource.event_logs.find_by event: 'dispatch_received'
     Incidents::Notifications::Notification.create_for_event resource, 'incident_dispatched', message: "Incident dispatched to #{person.full_name}.\n\nDetails:\n#{dispatch_info.try(:message)}"
     resource.update current_dispatch_contact_id: nil
