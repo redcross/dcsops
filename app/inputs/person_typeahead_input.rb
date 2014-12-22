@@ -2,9 +2,9 @@ class ::PersonTypeaheadInput < TypeaheadInput
   self.javascript_controller_name = "PersonTypeaheadController"
 
   def field_html
-    builder.hidden_field(:"#{method}_id", input_html_options) <<
     field_tag = template.text_field_tag(method.to_s + "_text", text_value, input_html_options.merge({id: input_html_options[:id] + '_text', autocomplete: 'off', class: "form-control"}))
 
+    builder.hidden_field(:"#{method}_id", input_html_options) <<
     if include_clear?
       template.content_tag( :div, class: 'input-group') do
         field_tag <<
