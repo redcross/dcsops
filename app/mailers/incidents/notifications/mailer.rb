@@ -31,7 +31,6 @@ module Incidents::Notifications
 
       msg = mail({to: recipient, template_name: @render_template_name, subject: @subject, from: (message.from || self.class.default[:from])}.merge reply_opts)
       if sms
-        byebug
         @_message = SmsEmailGroup.new(msg)
       end
     end

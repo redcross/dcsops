@@ -38,4 +38,9 @@ class SmsEmailGroup
     @collection << msg
   end
 
+  # Delegate Message-like behavior to the original message
+  def method_missing method, *args
+    original_message.send method, *args
+  end
+
 end
