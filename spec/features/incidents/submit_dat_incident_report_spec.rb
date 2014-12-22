@@ -97,8 +97,8 @@ describe "DAT Incident Report", type: :feature, versions: true do
   end
 
   def fill_in_responders
-    fill_in 'incidents_dat_incident_incident_attributes_team_lead_attributes_person_id_text', with: @team_lead.first_name[0..3]
-    find('p', text: @team_lead.full_name).click
+    fill_in 'incidents_dat_incident_incident_attributes_team_lead_attributes_person_id_text', with: @team_lead.first_name[0..4]
+    find('.tt-suggestion', text: @team_lead.full_name).click
 
     # Add the flex person
     within :xpath, "//td[text()='#{@flex_responder.full_name.gsub "'", "\\'"}']/.." do
@@ -136,11 +136,13 @@ describe "DAT Incident Report", type: :feature, versions: true do
     fill_in 'incidents_dat_incident_incident_attributes_incident_id_feeding_partner_use_text', with: 'McDonalds'
 
     check 'Evacuation Center Opened'
-    fill_in 'incidents_dat_incident_incident_attributes_incident_id_evac_partner_use_text', with: 'Bill Graham'
+    fill_in 'incidents_dat_incident_incident_attributes_incident_id_evac_partner_use_text', with: "Bill Graham"
+    find(".tt-suggestion", text: 'New').click
 
     check 'Shelter Opened'
     fill_in 'incidents_dat_incident_incident_attributes_incident_id_shelter_partner_use_text', with: 'YMCA'
-
+    find(".tt-suggestion", text: 'New').click
+    
     check 'Hotel/Motel Provided'
     fill_in 'incidents_dat_incident_incident_attributes_incident_id_hotel_partner_use_text', with: 'Holiday Inn'
     fill_in 'Hotel rate*', with: 129.00

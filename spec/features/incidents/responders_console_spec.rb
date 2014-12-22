@@ -45,8 +45,8 @@ describe "Incident Responders Console", :type => :feature do
     ApplicationController.stub current_user: @person
     visit "/incidents/#{@chapter.url_slug}/incidents/#{@incident.incident_number}"
 
-    click_link "Responders"
-    click_link "Launch Dispatch Console"
+    click_on "Responders"
+    click_on "Show Responders Console"
 
     expect(page).to have_text(@incident.address)
     expect(page).to have_text(@flex_responder.full_name)

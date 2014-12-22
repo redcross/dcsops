@@ -84,7 +84,7 @@ describe Incidents::IncidentsHelper, :type => :helper do
     it "formats the cac number" do
       cac = Faker::Business.credit_card_number
       expect(helper.format_change_value(double(:incident), 'cac_number', cac)).to eq("xxxx-xxxx-xxxx-#{cac.slice(-4, 4)}")
-      expect(helper.format_change_value(double(:incident), 'cac_number', '')).to eq('')
+      expect(helper.format_change_value(double(:incident), 'cac_number', '')).to eq(nil)
     end
   end
 end

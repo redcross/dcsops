@@ -51,7 +51,7 @@ describe Roster::LoginService, :type => :model do
     subject.call
     person.reload
     [:address1, :address2, :city, :state, :zip, :email, :vc_member_number].each do |name|
-      expect(person.send(name)).to eq(vc_info[name])
+      expect(person.send(name)).to eq(vc_info[name].presence)
     end
   end
 
@@ -85,7 +85,7 @@ describe Roster::LoginService, :type => :model do
     it "should have basic attributes" do
       subject.call
       [:first_name, :last_name, :address1, :address2, :city, :state, :zip, :email, :vc_member_number].each do |name|
-        expect(new_person.send(name)).to eq(vc_info[name])
+        expect(new_person.send(name)).to eq(vc_info[name].presence)
       end
     end
 

@@ -233,7 +233,7 @@ describe Incidents::DispatchImporter do
       expect(inc).not_to be_nil
 
       incident_details.each do |attr, val|
-        expect(inc.send(attr)).to eq(val)
+        expect(inc.send(attr)).to eq(val.presence)
       end
 
     end
@@ -254,7 +254,7 @@ describe Incidents::DispatchImporter do
       expect(inc).not_to be_nil
 
       incident_attributes.each do |attr, val|
-        expect(inc.send(attr)).to eq(val)
+        expect(inc.send(attr)).to eq(val.presence)
       end
     end
   end
@@ -275,7 +275,7 @@ describe Incidents::DispatchImporter do
       expect(inc.incident).not_to be_nil
 
       incident_details.each do |attr, val|
-        expect(inc.send(attr)).to eq(val)
+        expect(inc.send(attr)).to eq(val.presence)
       end
 
     end
