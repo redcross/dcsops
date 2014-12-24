@@ -92,7 +92,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Region Admin' do
 
     f.inputs 'DCSOps Settings' do
       f.input :scheduler_flex_day_start, as: :time_offset
-      f.input :scheduler_flex_night_start, as: :time_offset
+      f.input :scheduler_flex_night_start, as: :time_offset, midnight: true
     end
 
     f.actions

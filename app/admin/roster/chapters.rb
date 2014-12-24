@@ -37,6 +37,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
         opts = {}
         opts[:as] = :string if c.to_s.include? "password"
         opts[:as] = :time_offset if c.to_s.include? "scheduler_flex"
+        opts[:midnight] = true if c.to_s.include? "scheduler_flex_night_start"
         f.input c, opts
       end
     end

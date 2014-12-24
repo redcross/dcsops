@@ -18,8 +18,8 @@ ActiveAdmin.register Scheduler::ShiftGroup, as: 'Shift Group' do
       f.input :chapter
       f.input :name
       f.input :period, as: :assignable_select_admin
-      f.input :start_offset, as: :time_offset, next_day: true
-      f.input :end_offset, as: :time_offset, next_day: true
+      f.input :start_offset, as: :time_offset, week: f.object.period == 'weekly'
+      f.input :end_offset, as: :time_offset, week: f.object.period == 'weekly', next_period: true, midnight: true
     end
     f.inputs do
       f.input :active_sunday
