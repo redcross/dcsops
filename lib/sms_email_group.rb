@@ -6,7 +6,7 @@ class SmsEmailGroup
     subject_length = message.header[:subject].encoded.size
 
     remaining = message.text_part || message.body.raw_source
-    limit = 140 - overhead_length
+    limit = 180 - overhead_length
 
     @collection = []
     while remaining.size > 0
