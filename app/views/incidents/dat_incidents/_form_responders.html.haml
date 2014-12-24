@@ -29,7 +29,9 @@
           %tfoot
             %tr
               %th(colspan=5)
-                %h4 Responders On Call:
+                %h4
+                  Responders On Call:
+                  =link_to_add_association 'Add Other Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-default btn-sm"
             %tr
               %th Name
               %th Shift Position
@@ -46,10 +48,10 @@
                 %td=flex.person.full_name
                 %td Flex
                 %td
-                  %button.btn.btn-primary.add-responder{data: {person_text: flex.person.full_name, person_id: flex.person.id, was_flex: true}} Add Responder
+                  %button.btn.btn-primary.btn-sm.add-responder{data: {person_text: flex.person.full_name, person_id: flex.person.id, was_flex: true}} Add Responder
                 %td(colspan=2)
 
-        =link_to_add_association 'Add Other Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary"
+        %p=link_to_add_association 'Add Other Responder', f, :responder_assignments, "data-association-insertion-node" => "#responder-table tbody", "data-association-insertion-method" => "append", class: "btn btn-primary"
 .row
   .col-sm-12
     =f.actions do
