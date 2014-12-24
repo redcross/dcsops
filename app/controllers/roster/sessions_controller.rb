@@ -52,7 +52,7 @@ class Roster::SessionsController < ApplicationController
       service.call
       resource.save
     end
-  rescue Net::ReadTimeout
+  rescue Net::ReadTimeout, Net::OpenTimeout
     flash.now[:error] = "There was an error validating your password.  Please try again."
     false
   rescue Vc::Login::InvalidCredentials
