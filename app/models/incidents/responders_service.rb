@@ -5,9 +5,9 @@ class Incidents::RespondersService
   attr_accessor :ignore_dispatch
 
   def initialize(incident, collection, options={})
-    set_defaults
     @incident = incident
     @collection = collection
+    set_defaults
 
     @service = Scheduler::SchedulerService.new(incident.chapter)
 
@@ -51,7 +51,7 @@ class Incidents::RespondersService
   end
 
   def set_defaults
-    self.ignore_area_flex = true
+    self.ignore_area_flex = incident.chapter.incidents_dispatch_console_ignore_county
     self.limit_flex = 15
   end
 
