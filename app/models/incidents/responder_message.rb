@@ -7,6 +7,7 @@ class Incidents::ResponderMessage < ActiveRecord::Base
 
   validates :chapter, :message, presence: true
   validates :person, presence: {if: ->msg{msg.direction != 'incoming'}}
+  validates :message, length: {maximum: 1600}
 
   validate :validate_person_assigned_to_incident
   def validate_person_assigned_to_incident
