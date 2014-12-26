@@ -19,8 +19,9 @@ ActiveAdmin.register Incidents::Territory, as: 'Territory' do
 
   form do |f|
     f.inputs do
+      configs = f.object.chapter ? Incidents::Territory.for_chapter(f.object.chapter) : Incidents::Territory.order{[chapter_id, name]}
       f.input :chapter
-      f.input :dispatch_config
+      f.input :dispatch_config, collection: configs
       f.input :is_default
       f.input :name
       f.input :enabled

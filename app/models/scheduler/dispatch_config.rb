@@ -22,14 +22,6 @@ class Scheduler::DispatchConfig < ActiveRecord::Base
     self.where(county_id: county).first_or_create
   end
 
-  def shift_list
-    [shift_first, shift_second, shift_third, shift_fourth].compact
-  end
-
-  def backup_list
-    [backup_first, backup_second, backup_third, backup_fourth].compact
-  end
-
   def self.for_chapter chapter
     where{chapter_id == chapter}
   end
@@ -49,5 +41,17 @@ class Scheduler::DispatchConfig < ActiveRecord::Base
     where do
       shifts.map{|sh| __send__(sh) == shift }.reduce(&:|)
     end
+  end
+
+  def shift_list
+    [shift_first, shift_second, shift_third, shift_fourth].compact
+  end
+
+  def backup_list
+    [backup_first, backup_second, backup_third, backup_fourth].compact
+  end
+
+  def display_name
+    "#{chapter_id} - #{name}"
   end
 end
