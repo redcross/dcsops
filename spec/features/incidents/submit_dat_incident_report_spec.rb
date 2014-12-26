@@ -113,7 +113,7 @@ describe "DAT Incident Report", type: :feature, versions: true do
     end
 
     # Add the regular person
-    click_link "Add Other Responder"
+    first("a", text: "Add Other Responder").click
     within "#responder-table tbody" do
       within "tr:last-child" do
         fill_in 'person_text', with: @responder.first_name
