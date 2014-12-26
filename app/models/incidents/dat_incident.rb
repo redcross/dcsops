@@ -34,7 +34,9 @@ class Incidents::DatIncident < Incidents::DataModel
   TRACKED_RESOURCE_TYPES.each do |type_s|
     type = type_s.to_sym
     serialized_accessor :resources, type, :integer
+    validates type, numericality: {allow_nil: true, only_integer: true}
   end
+
   def resource_types_to_track
     TRACKED_RESOURCE_TYPES & (incident.try(:chapter).try(:incidents_resources_tracked_array) || [])
   end
