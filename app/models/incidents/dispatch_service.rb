@@ -27,16 +27,16 @@ class Incidents::DispatchService
   protected
 
   def create_not_available_assignment
-    incidents.responder_assignments.find_or_create_by person_id: incident.current_dispatch_contact_id do |ra|
+    incident.responder_assignments.find_or_create_by person_id: incident.current_dispatch_contact_id do |ra|
       ra.role = 'not_available'
     end
   end
 
   def next_contact
     service = Incidents::RespondersService.new(incident, incident.responder_assignments)
-    shift = service.dispatch_shifts.first
-    if shift
-      shift.person
+    shift_assignment = service.dispatch_shifts.first
+    if shift_assignment
+      shift_assignment.person
     else
       service.dispatch_backup.first
     end
