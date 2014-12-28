@@ -13,7 +13,7 @@ class Incidents::DispatchService
     person = next_contact
 
     unless person
-      incidents.responder_assignments.destroy_all
+      incident.responder_assignments.destroy_all
       person = next_contact
     end
 
