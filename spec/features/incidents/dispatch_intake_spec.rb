@@ -7,15 +7,14 @@ describe "Incident Dispatch Intake Console", :type => :feature do
   end
 
   before do
-
-    grant_role! :incidents_admin
     @chapter = @person.chapter
     @chapter.incidents_enable_dispatch_console = true
     @chapter.incident_number_sequence = FactoryGirl.create :incident_number_sequence
     @chapter.save!
 
-
     @scope = FactoryGirl.create :incidents_scope, enable_dispatch_console: true, chapter: @chapter
+
+    grant_role!(:dispatch_console, [@scope.id])
 
     backup_person = FactoryGirl.create :person, chapter: @chapter
     dc = FactoryGirl.create :scheduler_dispatch_config, chapter: @chapter, backup_first: backup_person

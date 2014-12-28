@@ -12,6 +12,7 @@ class Incidents::Ability
     scopes
     personal
     
+    dispatch_console        if is_admin or person.has_role 'dispatch_console'
     create_incident         if             person.has_role 'create_incident'
     submit_incident_report  if is_admin or person.has_role 'submit_incident_report'
     cas_admin               if is_admin or person.has_role 'cas_admin'
@@ -72,7 +73,6 @@ class Incidents::Ability
     can [:create, :recipients], Incidents::Notifications::Message
     can [:create, :read, :acknowledge], Incidents::ResponderMessage
     can [:create], Incidents::ResponderRecruitment
-    can :manage, :chat
   end
 
   def incidents_admin
@@ -86,6 +86,16 @@ class Incidents::Ability
 
   def see_responses
     can :show, :responders
+  end
+
+  def dispatch_console
+    scopes = person.scope_for_role('dispatch_console').map(&:to_i)
+    can :dispatch_console, Incidents::Scope, {id: scopes}
+
+
+    dispatch_chapters = Incidents::Scope.where{id.in scopes}.includes{chapters}.flat_map{|s| s.all_chapters}.map(&:id)
+    can [:create, :show], Incidents::CallLog, {chapter_id: dispatch_chapters + [nil]}
+    can [:create, :index, :show, :complete, :next_contact], Incidents::Incident, {chapter_id: dispatch_chapters}
   end
 
   def read_only
