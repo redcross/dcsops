@@ -59,7 +59,7 @@
 
 .row
   .col-sm-5.col-md-4
-    -if scope.enable_dispatch_console
+    -if scope.enable_dispatch_console && can?(:dispatch_console, scope)
       %ul.nav.nav-tabs.nav-stacked.nav-tabs-small
         %li
           %a{href: incidents_chapter_dispatch_index_path(scope)}
