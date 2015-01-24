@@ -19,7 +19,7 @@ ActiveAdmin.register Incidents::Territory, as: 'Territory' do
 
   form do |f|
     f.inputs do
-      configs = f.object.chapter ? Incidents::Territory.for_chapter(f.object.chapter) : Incidents::Territory.order{[chapter_id, name]}
+      configs = f.object.chapter ? Scheduler::DispatchConfig.for_chapter(f.object.chapter).order{name} : Scheduler::DispatchConfig.order{[chapter_id, name]}
       f.input :chapter
       f.input :dispatch_config, collection: configs
       f.input :is_default
