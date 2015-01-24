@@ -42,7 +42,11 @@ ActiveAdmin.register Scheduler::DispatchConfig, as: 'Dispatch Configs' do
 
   controller do
     def allow_edit_names?
-      authorized? :update_names, resource
+      if %w(new create).include? params[:action]
+        true
+      else
+        authorized? :update_names, resource
+      end
     end
     helper_method :allow_edit_names?
 
