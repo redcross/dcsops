@@ -4,7 +4,7 @@ class Incidents::EventLogsController < Incidents::EditPanelController
   belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident, optional: true
   #defaults route_prefix: nil
   before_filter :require_parent_or_global_log
-  include Searchable
+  include Searchable, RESTfulNotification
   responders :partial
   respond_to :html, :js
 
@@ -26,6 +26,14 @@ class Incidents::EventLogsController < Incidents::EditPanelController
 
   def notify resource
     Incidents::UpdatePublisher.new(@chapter, parent).publish_timeline
+  end
+
+  def create_resource resource
+    super(resource).tap do |success|
+      if success and resource.incident and resource.event == 'dispatch_relayed'
+        Incidents::Notifications::Notification.create_for_event resource.incident, 'incident_dispatched', message: resource.message
+      end
+    end
   end
 
   def collection
