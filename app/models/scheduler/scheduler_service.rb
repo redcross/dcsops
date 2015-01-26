@@ -5,7 +5,7 @@ class Scheduler::SchedulerService
     @chapter = chapter
   end
 
-  def scheduled_responders(time: chapter.time_zone.now, limit: nil, areas: nil, exclude: [], shifts: nil)
+  def scheduled_responders(time: chapter.time_zone.now, limit: nil, areas: nil, exclude: [], shifts: nil, dispatch_console: false)
     groups = Scheduler::ShiftGroup.current_groups_for_chapter(chapter, time)
     assignments = Scheduler::ShiftAssignment.joins{[shift]}.preload{[shift, person]}.for_active_groups(groups)
                   .where{person_id.not_in(exclude)}.limit(limit)
@@ -14,6 +14,9 @@ class Scheduler::SchedulerService
     end
     if shifts
       assignments = assignments.where{shift_id.in(shifts)}
+    end
+    if dispatch_console
+      assignments = assignments.where{shift.show_in_dispatch_console == true}
     end
 
     assignments
