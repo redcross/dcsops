@@ -1,5 +1,6 @@
 class Scheduler::Shift < ActiveRecord::Base
   belongs_to :county, class_name: 'Roster::County'
+  has_one :chapter, class_name: 'Roster::Chapter', through: :county
   belongs_to :shift_category, class_name: 'Scheduler::ShiftCategory'
 
   has_and_belongs_to_many :positions, class_name: 'Roster::Position'

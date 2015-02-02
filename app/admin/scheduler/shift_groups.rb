@@ -3,6 +3,10 @@ ActiveAdmin.register Scheduler::ShiftGroup, as: 'Shift Group' do
 
   actions :all, except: [:destroy]
 
+  filter :chapter
+  filter :name
+  filter :period
+
   index do
     id_column
     column :chapter

@@ -1,0 +1,29 @@
+h3 "Reschedule Shifts"
+form_for "reschedule", method: :post, url: url_for(action: :perform_reschedule) do |f|
+  table_for params[:shifts] do
+    column :county
+    column :name
+    column :shift_groups do |sh|
+      text_node safe_join(sh.shift_groups.map(&:name), tag(:br))
+      input type: 'hidden', name: 'reschedule[shift_ids][]', value: sh.id
+    end
+  end
+  h4 "Choose new Shift Groups"
+  table_for params[:shift_groups] do
+    column :shift_group do |sg|
+      input type: 'checkbox', name: "reschedule[shift_group_ids][]", value: sg.id
+      text_node sg.name
+    end
+  end
+  h4 "Choose Effective Date"
+  label do
+    text_node "Effective Date"
+    f.date_field "effective_date", class: "datepicker"
+  end
+  br
+  br
+  h4 "Submit"
+  div do
+    input type: 'submit', value: 'Reschedule', "data-confirm" => 'Are you sure you want to reschedule these shifts?'
+  end
+end
