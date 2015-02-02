@@ -103,7 +103,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :chapter_id, position_ids: [], shift_ids: [], triggers_attributes: [:id, :event_id, :template, :use_sms, :_destroy], role_scopes_attributes: [:id, :_destroy, :level, :value])]
+      [params.fetch(resource_request_name, {}).permit(:name, :chapter_id, position_ids: [], shift_ids: [], triggers_attributes: [:id, :event_id, :template, :use_sms, :_destroy], role_scopes_attributes: [:id, :_destroy, :level, :value, :territory_id])]
     end
 
     after_build :set_chapter
