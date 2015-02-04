@@ -38,7 +38,7 @@ class window.IncidentEditPanelController
   openPanel: (url, callback) ->
     modal = $('#edit-modal')
     modal.html(this.modalContent(this.loadingHtml))
-    modal.modal({show: true, keyboard: false})
+    modal.modal({show: true, keyboard: false, backdrop: 'static'})
     $.ajax
       url: url
       dataType: 'html'
