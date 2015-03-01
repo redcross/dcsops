@@ -10,7 +10,7 @@ class Scheduler::Shift < ActiveRecord::Base
   validates :county, :shift_category, presence: true
   validates :max_signups, numericality: true, presence: true
   validates :min_desired_signups, numericality: true, presence: true
-  validates_presence_of :name, :abbrev
+  validates_presence_of :name, :abbrev, :ordinal
 
   assignable_values_for :vc_hours_type, allow_blank: true do
     %w(oncall worked)

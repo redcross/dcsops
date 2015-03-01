@@ -18,11 +18,11 @@ class Incidents::UpdatePublisher
   end
 
   def publish_details
-    update_tabs 'details'
+    update_tabs 'details', 'iir'
   end
 
   def publish_timeline
-    update_tabs 'timeline'
+    update_tabs 'timeline', 'iir'
   end
 
   def publish_attachments
@@ -31,6 +31,10 @@ class Incidents::UpdatePublisher
 
   def publish_dispatch
     update_tabs 'dispatch', 'timeline', 'responders'
+  end
+
+  def publish_iir
+    update_tabs 'iir'
   end
 
   protected

@@ -70,6 +70,9 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :roster_import_prospective_members, :boolean
   serialized_accessor :config, :directline_account_number, :string
 
+  serialized_accessor :config, :division_name, :string
+  serialized_accessor :config, :iir_emails, :string
+
   array_accessor :cas_chapter_codes
   array_accessor :incidents_timeline_collect, :incidents_timeline_mandatory, :incidents_timeline_collect_source
   array_accessor :incidents_resources_tracked

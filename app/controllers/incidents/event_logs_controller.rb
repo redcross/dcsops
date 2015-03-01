@@ -1,5 +1,5 @@
 class Incidents::EventLogsController < Incidents::EditPanelController
-  self.panel_name = 'timeline'
+  self.panel_name = ['timeline', 'iir']
   belongs_to :chapter, finder: :find_by_url_slug!, parent_class: Roster::Chapter
   belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident, optional: true
   #defaults route_prefix: nil

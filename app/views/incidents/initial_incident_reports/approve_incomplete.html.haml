@@ -1,0 +1,10 @@
+.modal-dialog
+  .modal-content
+    .modal-header 
+      %a.close(data-dismiss="modal") &times;
+      %h4.modal-title Approve Initial Incident Report
+    .modal-body
+      The Initial Incident Report cannot be approved because some fields are blank:
+      .text-danger= safe_join resource.errors.full_messages, tag(:br)
+    .modal-footer
+      %a.btn.btn-default.pull-left(data-dismiss="modal") Close

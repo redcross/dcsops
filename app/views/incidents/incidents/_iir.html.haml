@@ -1,0 +1,94 @@
+.iir
+  - iir = resource.initial_incident_report || resource.build_initial_incident_report
+  =bootstrap_flash
+  - flash.discard
+  %h3 
+    Initial Incident Report
+    %small
+      -if iir.approved_by_id == nil && can?( :approve, iir)
+        =edit_panel_link_to 'Approve', approve_incidents_chapter_incident_initial_incident_report_path(parent, resource), class: 'btn btn-success'
+      -if iir.approved_by_id && can?( :unapprove, iir)
+        =link_to 'Unapprove', unapprove_incidents_chapter_incident_initial_incident_report_path(parent, resource), class: 'btn btn-warning', remote: true, method: 'post', data: {confirm: 'Are you sure you want to unapprove this IIR?'}
+  .row
+    .col-sm-5
+      =render 'details_location', header_tag: 'h4'
+      %h4 Basic Information
+      %table.table.table-bordered.table-condensed
+        /%tr
+        /  %th Caller Name:
+        /  %td
+        /%tr
+        /  %th Caller Agency:
+        /  %td
+        %tr
+          %th=iir_edit_link 'IIR Completed By:'
+          %td= iir.completed_by && iir.completed_by.full_name
+        %tr
+          %th IIR Approved By:
+          %td= iir.approved_by && iir.approved_by.full_name
+        %tr
+          %th=passthrough_edit_link 'basic', 'Incident Type:'
+          %td=resource.humanized_incident_type
+        %tr
+          %th=iir_edit_link 'Estimated # homes affected:'
+          %td= iir.estimated_units
+        %tr
+          %th=iir_edit_link 'Estimated # individuals affected:'
+          %td= iir.estimated_individuals
+     
+    .col-sm-7
+      %h4 Timeline
+      %table.table.table-bordered.table-condensed
+        %tr
+          %th Time Incident Occurred:
+          %td
+            - evt = resource.event_logs.detect{|el| el.event == 'incident_occurred' } || resource.event_logs.build(event: 'incident_occurred')
+            =timeline_entry evt
+        %tr
+          %th
+            Time ARC Notified:
+          %td
+            - dispatch_event = resource.event_logs.detect{|el| el.event == 'dispatch_received' } 
+            - evt = resource.event_logs.detect{|el| el.event == 'dat_received' } || resource.event_logs.build(event: 'dat_received')
+            - evt.event_time ||= dispatch_event.try(:event_time)
+            =timeline_entry evt
+        %tr
+          %th Time ARC On Scene:
+          %td
+            - evt = resource.event_logs.detect{|el| el.event == 'dat_on_scene' } || resource.event_logs.build(event: 'dat_on_scene')
+            =timeline_entry evt, empty_text: "Not On Scene"
+        %tr
+          %th=iir_edit_link 'Do you expect the budget to go over $10,000?'
+          %td= yes_no_exact iir.budget_exceeded
+        %tr
+          %th=iir_edit_link 'Trend of Event:'
+          %td= iir.humanized_trend
+        %tr
+          %th=iir_edit_link 'Triggers for this Initial Incident Report:'
+          %td
+            - (iir.triggers || []).each do |trigger|
+              %div=t trigger
+      =render 'details_narrative', title: 'Incident Summary and Actions Taken'
+      
+  .row
+    .col-xs-12
+      %h4
+        Do you expect to provide?
+        %small=iir_edit_link '(edit)', display_if_uneditable: false
+      - services = iir.expected_services || []
+      %ul
+        - iir.assignable_services.reject{|s| s=='none'}.each do |service|
+          %li #{t(service)}: #{(services.include? service) ? 'Yes' : 'No'}
+      %h4
+        Additional Details
+        %small=iir_edit_link '(edit)', display_if_uneditable: false
+      %table.table.table-bordered.table-condensed
+        %tr
+          %th=iir_edit_link 'Does the event have significant media coverage?'
+          %td= yes_no_exact iir.significant_media
+        %tr
+          %th=iir_edit_link 'Safety concerns?'
+          %td= yes_no_exact iir.safety_concerns
+        %tr
+          %th=iir_edit_link 'Weather concerns?'
+          %td= yes_no_exact iir.weather_concerns

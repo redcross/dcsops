@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150116170202) do
+ActiveRecord::Schema.define(version: 20150204173729) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -513,6 +513,27 @@ ActiveRecord::Schema.define(version: 20150116170202) do
   add_index "incidents_incidents", ["chapter_id", "incident_number"], name: "index_incidents_incidents_on_chapter_id_incident_number", unique: true, using: :btree
   add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id", using: :btree
   add_index "incidents_incidents", ["incident_number"], name: "index_incidents_incidents_on_incident_number", using: :btree
+
+  create_table "incidents_initial_incident_reports", force: true do |t|
+    t.integer  "incident_id"
+    t.integer  "completed_by_id"
+    t.integer  "approved_by_id"
+    t.boolean  "budget_exceeded"
+    t.string   "trend"
+    t.string   "triggers",              array: true
+    t.integer  "estimated_units"
+    t.integer  "estimated_individuals"
+    t.string   "expected_services",     array: true
+    t.boolean  "significant_media"
+    t.boolean  "safety_concerns"
+    t.boolean  "weather_concerns"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_initial_incident_reports", ["approved_by_id"], name: "index_incidents_initial_incident_reports_on_approved_by_id", using: :btree
+  add_index "incidents_initial_incident_reports", ["completed_by_id"], name: "index_incidents_initial_incident_reports_on_completed_by_id", using: :btree
+  add_index "incidents_initial_incident_reports", ["incident_id"], name: "index_incidents_initial_incident_reports_on_incident_id", using: :btree
 
   create_table "incidents_notifications_events", force: true do |t|
     t.integer  "chapter_id"

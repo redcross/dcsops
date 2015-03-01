@@ -1,0 +1,14 @@
+- header_tag ||= 'h4'
+=content_tag header_tag do
+  Location
+  %small=edit_link 'location'
+-if resource.address
+  =resource.address
+  %br
+  #{resource.city}, #{resource.state} #{resource.zip}
+  %br
+  =resource.county
+  County
+  %br
+  Territory:
+  =resource.territory.try :name

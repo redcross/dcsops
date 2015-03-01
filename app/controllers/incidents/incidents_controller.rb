@@ -14,7 +14,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   custom_actions collection: [:needs_report, :activity, :map], resource: [:mark_invalid, :close, :reopen]
 
   include HasManyRoutesFor
-  has_many_routes_for :responder_messages, :dat, :event_logs, :responders, :attachments, :notifications, :cases
+  has_many_routes_for :responder_messages, :dat, :event_logs, :responders, :attachments, :notifications, :cases, :initial_incident_report
 
   def create
     create! { after_create_path }
@@ -97,6 +97,7 @@ class Incidents::IncidentsController < Incidents::BaseController
       when 'details', 'timeline', 'responders', 'attachments' then can? :read_details, resource
       when 'cases' then resource.chapter.incidents_collect_case_details && can?(:read_case_details, resource)
       when 'changes' then can? :read_changes, resource
+      when 'iir' then can?(:read, Incidents::InitialIncidentReport) && (resource.status=='open' || resource.initial_incident_report.present?)
       else false
       end
     end

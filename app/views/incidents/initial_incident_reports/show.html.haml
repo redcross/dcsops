@@ -1,0 +1,78 @@
+- provide :title, "Incident #{resource.incident.incident_number} - Initial Incident Report - DCSOps"
+.iir-print
+  
+  .header.pull-right
+    %h1 Initial Incident Report
+    %h2 
+      #{resource.incident.city}, #{resource.incident.state}
+      %br
+      .red
+        Incident Type:
+        =resource.incident.humanized_incident_type
+  .logo=image_tag 'ARC Horizontal Stacked.png'
+  .clearfix
+  %br
+  .maps.pull-right
+    - inc = resource.incident
+    - size = "200x200"
+    .lowmap=image_tag "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=#{size}&markers=#{URI::encode "|#{inc.lat},#{inc.lng}"}&zoom=10&scale=2&key=AIzaSyBabBKA3eRH_Pj1UdHEvzISS0crsOScsf4"
+    .highmap=image_tag "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=#{size}&markers=#{URI::encode "|#{inc.lat},#{inc.lng}"}&zoom=6&scale=2&key=AIzaSyBabBKA3eRH_Pj1UdHEvzISS0crsOScsf4"
+  %h3 Basic Information
+  Incident Number: #{resource.incident.incident_number}
+  =link_to 'View in DCSOps', incidents_chapter_incident_url(resource.incident.chapter, resource.incident)
+  %br
+  IIR Completed By: #{resource.completed_by.try :full_name}
+  %br
+  IIR Approved By: #{resource.approved_by.try :full_name}
+
+  %h3 Timeline
+  Incident Occurred: #{timeline_time 'incident_occurred'}
+  %br
+  ARC Notified Time: #{timeline_time('dat_received') || timeline_time('dispatch_received')}
+  %br
+  ARC on Scene: #{timeline_time('dat_on_scene') || 'Not On Scene'}
+  %br
+  Do you expect the budget to go over $10,000?: #{yes_no_exact resource.budget_exceeded}
+  %br
+  Trend of Event: #{resource.humanized_trend}
+  %br
+  IIR Triggers:
+  = humanized_triggers
+
+  %h3 Location
+  = resource.incident.address
+  %br
+  #{resource.incident.city}, #{resource.incident.state} #{resource.incident.zip}
+  %br
+  County: #{resource.incident.county}
+  -if resource.incident.neighborhood.present?
+    Neighborhood: #{resource.incident.neighborhood}
+    %br
+  %br
+  Territory: #{resource.incident.territory.try(:name)}
+  %br
+  Region: #{resource.incident.chapter.name}
+  %br
+  Division: #{resource.incident.chapter.division_name}
+
+  %h3 Demographics
+  Estimated # homes affected: #{resource.estimated_units}
+  %br
+  Estimated # individuals affected: #{resource.estimated_individuals}
+
+  %h3 Incident Summary and Actions Taken
+  =simple_format resource.incident.narrative
+
+  %h3 Do you expect to provide...
+  - services = resource.expected_services || []
+  - resource.assignable_services.each do |service|
+    - next if service == 'none'
+    #{t(".services.#{service}")}: #{services.include?(service) ? 'Yes' : 'No'}
+    %br
+
+  %h3 Additional Details
+  Does the event have significant media coverage?: #{yes_no_exact resource.significant_media}
+  %br
+  Safety Concerns: #{yes_no_exact resource.safety_concerns}
+  %br
+  Weather Concerns: #{yes_no_exact resource.weather_concerns}

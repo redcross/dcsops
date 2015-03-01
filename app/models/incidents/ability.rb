@@ -19,6 +19,7 @@ class Incidents::Ability
     incident_details        if is_admin or person.has_role 'incident_details'
     cas_details             if is_admin or person.has_role 'cas_details'
     see_responses           if is_admin or person.has_role 'see_responses'
+    approve_iir             if is_admin or person.has_role 'approve_iir'
     incidents_admin         if is_admin
 
     read_only if ENV['READ_ONLY']
@@ -73,11 +74,13 @@ class Incidents::Ability
     can [:create, :recipients], Incidents::Notifications::Message
     can [:create, :read, :acknowledge], Incidents::ResponderMessage
     can [:create], Incidents::ResponderRecruitment
+    can [:create, :read, :update], Incidents::InitialIncidentReport
   end
 
   def incidents_admin
     can :manage, Incidents::DatIncident, incident: {chapter_id: @chapter_scope}
     can :manage, Incidents::Incident, chapter_id: @chapter_scope
+    can :manage, Incidents::InitialIncidentReport, incident: {chapter_id: @chapter_scope}
   end
 
   def incident_details
@@ -98,8 +101,18 @@ class Incidents::Ability
     can [:create, :index, :show, :complete, :next_contact], Incidents::Incident, {chapter_id: dispatch_chapters}
   end
 
+  def approve_iir
+    can :manage, Incidents::InitialIncidentReport, incident: {chapter_id: @chapter_scope}
+  end
+
   def read_only
     cannot [:mark_invalid, :reopen, :close, :update, :create, :destroy], :all
   end
+
+  #def can? *args
+  #  val = super
+  #  pp 'can?', args, val
+  #  val
+  #end
 
 end

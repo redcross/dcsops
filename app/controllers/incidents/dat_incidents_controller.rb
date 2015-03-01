@@ -176,7 +176,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
       base = params.require(:incidents_dat_incident).fetch(:incident_attributes, {})
       @_incident_params ||= base.permit([
-        :incident_type, :narrative, :status, :cas_event_number,
+        :incident_type, :territory_id, :narrative, :status, :cas_event_number,
         :address, :city, :state, :zip, :lat, :lng, :county, :neighborhood, :address_directly_entered,
         :num_adults, :num_children, :num_families,
         {:team_lead_attributes => [:id, :person_id, :role, :response]},

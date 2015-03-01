@@ -10,6 +10,7 @@ en:
           attachments: Attachments
           changes: Changes
           summary: Summary
+          iir: IIR
       cases:
         cases:
           cases: Clients
@@ -19,8 +20,41 @@ en:
       form:
         add_case: Add Client
 
+    initial_incident_reports:
+      form:
+        triggers:
+          casualties: "A death or multiple significant injuries have occurred"
+          staff_casualty: "A Red Cross paid or volunteer staff member is injured"
+          facility_damage: "A Red Cross facility is damaged"
+          evacuation: "Any form of evacuation larger than a Single Family Fire"
+          shelter: "A shelter is, or will be, opened or put on standby"
+          media: "The incident has substantial media coverage"
+          budget: "The estimated cost is expected to go over $10,000"
+          mutual_aid: "Mutual-aid (Red Cross human/material resources are requested from outside of the affected region) is expected to occur or is occurring"
+
   formtastic:
     actions:
       incidents/case:
         new:
           create: Create Client
+      incidents/initial_incident_report:
+        new:
+          create: Save IIR
+    labels:
+      incidents/initial_incident_report:
+        budget_exceeded: "Budget is estimated to exceed $10,000"
+        significant_media: "The event has significant media coverage"
+        trend: Trend of Event
+
+  assignable_values:
+    incidents/initial_incident_report:
+      trend:
+        escalating: Growing
+        stable: Holding Steady
+        deescalating: Shrinking
+        ended: Ended
+    incidents/attachment:
+      attachment_type:
+        pa_release: Public Affairs Release
+        iir: Initial Incident Report
+        sitrep: Situation Report

@@ -26,6 +26,18 @@ GIT
       polyamorous (~> 1.1.0)
 
 GIT
+  remote: git://github.com/cater2me/wkhtmltopdf-heroku.git
+  revision: 7383436d6e94c2f5363d80a8939f630555277320
+  specs:
+    wkhtmltopdf-heroku (1.0.3)
+
+GIT
+  remote: git://github.com/dwa012/wkhtmltopdf-binary.git
+  revision: 377c1a311e2ebbbc368f4067ddd8a2835ed08fcb
+  specs:
+    wkhtmltopdf-binary (0.9.9)
+
+GIT
   remote: git://github.com/ekubal/formtastic-bootstrap.git
   revision: bbe573b64ea70475ef60f19c371a5f84189f142e
   specs:
@@ -317,6 +329,7 @@ GEM
     parallel (1.3.3)
     parallel_tests (1.0.7)
       parallel
+    pdfkit (0.6.2)
     pg (0.17.1)
     polyamorous (1.1.0)
       activerecord (>= 3.0)
@@ -546,6 +559,7 @@ DEPENDENCIES
   paper_trail (~> 3.0)
   paperclip (~> 4.0.0)
   parallel_tests
+  pdfkit
   polyamorous
   pubnub
   puma
@@ -582,4 +596,6 @@ DEPENDENCIES
   unicorn
   vcr
   webmock
+  wkhtmltopdf-binary!
+  wkhtmltopdf-heroku!
   zonebie

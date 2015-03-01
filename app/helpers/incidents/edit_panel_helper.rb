@@ -7,9 +7,9 @@ module Incidents::EditPanelHelper
   #  .modal-footer
   #    %a.btn.btn-primary(data-dismiss="modal") Close
 
-  def edit_panel_link_to title, url, opts={}, &block
+  def edit_panel_link_to title, url=nil, opts={}, &block
     if block_given?
-      opts = url
+      opts = url || {}
       url = title
       title = capture(&block)
     end

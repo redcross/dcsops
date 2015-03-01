@@ -17,6 +17,20 @@ module Incidents::IncidentsHelper
     end
   end
 
+  def timeline_entry event_log, editable: true, empty_text: 'Add'
+    editable = editable && inline_editable?
+    panel_url = event_log.persisted? ? edit_resource_event_log_path(event_log) : new_resource_event_log_path(incidents_event_log: {event: event_log.event})
+    edit_panel_link_to panel_url do
+      if event_log.event_time
+        event_log.event_time.to_s :date_time
+      else
+        empty_text
+      end
+    end
+  end
+
+
+
   def version_ignore_fields(version)
     %w(id created_at updated_at incident_id) + case version.item_type
     when 'Incidents::Incident', 'Incidents::DatIncident'
@@ -70,6 +84,25 @@ module Incidents::IncidentsHelper
         hidden_field_tag('client[module][cas_event]', resource.cas_event_id) <<
         submit_tag(message, {class: 'btn btn-default'}.merge(opts))
       end
+    end
+  end
+
+  def yes_no_exact val
+    if val.nil?
+      ""
+    elsif val
+      "Yes"
+    else
+      "No"
+    end
+  end
+
+  def iir_edit_link label, *opts, display_if_uneditable: true, **kwopts
+    iir = resource.initial_incident_report
+    if iir.approved_by_id
+      label if display_if_uneditable
+    else
+      edit_panel_link_to label, edit_resource_initial_incident_report_path, *opts, **kwopts
     end
   end
 

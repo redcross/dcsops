@@ -1,0 +1,38 @@
+.modal-dialog
+  .modal-content
+    =semantic_form_for [parent, resource], url: form_url, builder: FormtasticBootstrap::FormBuilder, html: {class: 'form-horizontal'}, remote: request.xhr? do |f|
+      .modal-header 
+        %a.close(data-dismiss="modal") &times;
+        %h4.modal-title Edit Initial Incident Report
+      .modal-body
+        =f.input :budget_exceeded
+        =f.input :trend, as: :assignable_select
+        .form-group
+          %label.control-label IIR Triggers
+          .form-wrapper
+            - triggers = f.object.triggers || []
+            =hidden_field_tag "incidents_initial_incident_report[triggers][]", ""
+            -f.object.assignable_triggers.each do |val|
+              - label = t(".triggers.#{val}")
+              .checkbox
+                %label
+                  =check_box_tag "incidents_initial_incident_report[triggers][]", val, triggers.include?( val)#, class: 'cb-service'
+                  =label
+        =f.input :estimated_units
+        =f.input :estimated_individuals
+        .form-group
+          %label.control-label Anticipated Services
+          .form-wrapper
+            - services = f.object.expected_services || []
+            =hidden_field_tag "incidents_initial_incident_report[expected_services][]", ""
+            -f.object.assignable_services.each do |val|
+              - label = t(".services.#{val}")
+              .checkbox
+                %label
+                  =check_box_tag "incidents_initial_incident_report[expected_services][]", val, services.include?( val)#, class: 'cb-service'
+                  =label
+        =f.input :significant_media
+        =f.input :safety_concerns
+        =f.input :weather_concerns
+      .modal-footer
+        =f.action :submit, button_html: {class: "btn btn-primary", data: {disable_with: "Creating…"}}

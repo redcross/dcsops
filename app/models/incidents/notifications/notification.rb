@@ -60,6 +60,10 @@ module Incidents::Notifications
     def plan_messages roles
       messages = flatten roles
 
+      Array(@options[:extra_recipients]).each do |recip|
+        messages << {person: recip, use_sms: false, template: 'notification'}
+      end
+
       # Uniq messages, preferring certain templates
       messages.group_by{|d| d[:person] }.map do |person, data|
         if data.length > 1

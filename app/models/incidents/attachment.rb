@@ -9,7 +9,7 @@ class Incidents::Attachment < Incidents::DataModel
 
 
   assignable_values_for :attachment_type do
-    %w(file damage_assessment_photo exterior_photo team_photo pa_release)
+    %w(file damage_assessment_photo exterior_photo team_photo pa_release iir sitrep)
   end
 
   def image?

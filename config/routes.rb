@@ -83,6 +83,13 @@ Scheduler::Application.routes.draw do
       resources :incidents, except: :index do
 
         resource :dat, controller: :dat_incidents
+        resource :iir, controller: :initial_incident_reports, as: :initial_incident_report do
+          member do
+            get :approve
+            post :approve, action: :really_approve
+            post :unapprove
+          end
+        end
         resource :notification, only: [:new, :create] do
           get :recipients
         end

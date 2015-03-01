@@ -9,7 +9,8 @@ class window.IncidentEditPanelController
     $(document).on 'click', 'a.edit-panel', (evt) =>
       evt.preventDefault()
       panel = $(evt.target).attr('href')
-      this.openPanel(panel)
+      method = $(evt.target).data('method') || 'get'
+      this.openPanel(panel, null, method)
 
     $(document).on 'click', '[data-edit-panel]', (evt) =>
       evt.preventDefault()
@@ -35,7 +36,7 @@ class window.IncidentEditPanelController
   modalContent: (body) ->
     @modalPrepend + body + @modalAppend
 
-  openPanel: (url, callback) ->
+  openPanel: (url, callback, method='GET') ->
     modal = $('#edit-modal')
     modal.html(this.modalContent(this.loadingHtml))
     modal.modal({show: true, keyboard: false, backdrop: 'static'})

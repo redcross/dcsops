@@ -1,0 +1,9 @@
+%p An Initial Report has been filed for incident #{@incident.incident_number} in #{@incident.city}, #{@incident.state}.
+
+%p
+  Region: #{@incident.chapter.name}
+  %br
+  Division: #{@incident.chapter.division_name}
+
+%p
+  The IIR document is attached to this message.  You may also view it in DCSOps at #{link_to incidents_chapter_incident_url(@incident.chapter, @incident), incidents_chapter_incident_url(@incident.chapter, @incident)}

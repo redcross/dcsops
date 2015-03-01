@@ -17,6 +17,7 @@ module HasManyRoutesFor
           else
             ivars = ['@chapter', '@incident', 'nil']
           end
+
           generate_url_and_path_helpers(action, :"resource_#{name}", [:incidents, :chapter, :incident, name], ivars)
           helper_method :"#{action ? "#{action}_" : ''}resource_#{name}_path"
         end

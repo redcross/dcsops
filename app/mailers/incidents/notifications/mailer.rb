@@ -35,6 +35,15 @@ module Incidents::Notifications
       end
     end
 
+    def initial_incident_report_extra_contact address, incident, options={}
+      @incident = incident
+      @options = options
+
+      initial_incident_report
+
+      mail to: address, template_name: "initial_incident_report", subject: @subject, from: (message.from || self.class.default[:from])
+    end
+
     def new_incident
       @subject = "New Incident For #{@incident.county}"
     end
@@ -58,6 +67,11 @@ module Incidents::Notifications
 
     def escalation
       @subject = "#{@template.titleize} for #{@incident.incident_number}"
+    end
+
+    def initial_incident_report
+      @subject = "Initial Incident Report for #{@incident.incident_number} #{@incident.humanized_incident_type} in #{@incident.chapter.name}"
+      attachments[@options[:attachment_filename]] = @options[:attachment_data]
     end
 
     helper do

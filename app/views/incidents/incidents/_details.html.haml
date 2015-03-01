@@ -17,24 +17,9 @@
 
 .row
   .col-sm-5
-    %h4
-      Location
-      %small=edit_link 'location'
-    -if resource.address
-      =resource.address
-      %br
-      #{resource.city}, #{resource.state} #{resource.zip}
-      %br
-      =resource.county
-      County
-      %br
-      Territory:
-      =resource.territory.try :name
+    =render 'details_location'
   .col-sm-7
-    %h4 
-      Narrative
-      %small=edit_link 'narrative'
-    = simple_format resource.narrative
+    =render 'details_narrative'
 
 -if dat
   .row
