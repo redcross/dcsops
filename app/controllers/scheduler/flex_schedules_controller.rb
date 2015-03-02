@@ -1,7 +1,6 @@
 class Scheduler::FlexSchedulesController < Scheduler::BaseController
   inherit_resources
-  respond_to :html, :json, :pdf
-  responders :pdf
+  respond_to :html, :json
   helper EditableHelper
   load_and_authorize_resource
   include Searchable

@@ -60,7 +60,7 @@ module Incidents::Notifications
     def plan_messages roles
       messages = flatten roles
 
-      Array(@options[:extra_recipients]).each do |recip|
+      Array(@options && @options[:extra_recipients]).each do |recip|
         messages << {person: recip, use_sms: false, template: 'notification'}
       end
 

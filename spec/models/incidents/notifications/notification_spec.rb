@@ -6,7 +6,7 @@ describe Incidents::Notifications::Notification, :type => :model do
   let(:incident) { FactoryGirl.build_stubbed :incident }
   let(:person) { FactoryGirl.build_stubbed :person }
   let(:message) { "Test Message" }
-  let(:notification) { Incidents::Notifications::Notification.new(incident, event, message) }
+  let(:notification) { Incidents::Notifications::Notification.new(incident, event, message: message) }
 
   after(:each) { ActionMailer::Base.deliveries.clear }
 
@@ -85,15 +85,15 @@ describe Incidents::Notifications::Notification, :type => :model do
   describe '#deliver_message', type: :mailer do
     it "Delivers email" do
       data = {person: person, template: 'mobilization', use_sms: false}
-      expect(Incidents::Notifications::Mailer).to receive(:notify_event).with(person, false, event, incident, 'mobilization', message).once.and_return(double deliver: true)
+      expect(Incidents::Notifications::Mailer).to receive(:notify_event).with(person, false, event, incident, 'mobilization', {message: message}).once.and_return(double deliver: true)
       notification.deliver_message data
     end
 
     it "Delivers sms if use_sms is specified" do
       person.stub sms_addresses: ['test@vtext.com']
       data = {person: person, template: 'mobilization', use_sms: true}
-      expect(Incidents::Notifications::Mailer).to receive(:notify_event).with(person, false, event, incident, 'mobilization', message).once.and_return(double deliver: true)
-      expect(Incidents::Notifications::Mailer).to receive(:notify_event).with(person, true, event, incident, 'mobilization', message).and_return(double deliver: true)
+      expect(Incidents::Notifications::Mailer).to receive(:notify_event).with(person, false, event, incident, 'mobilization', {message: message}).once.and_return(double deliver: true)
+      expect(Incidents::Notifications::Mailer).to receive(:notify_event).with(person, true, event, incident, 'mobilization', {message: message}).and_return(double deliver: true)
       notification.deliver_message data
     end
   end
@@ -106,7 +106,7 @@ describe Incidents::Notifications::Notification, :type => :model do
       incident = FactoryGirl.create :incident, chapter: person.chapter
       trigger = FactoryGirl.create :trigger, role: role, event: event, template: 'notification'
 
-      Incidents::Notifications::Notification.create incident, event, message
+      Incidents::Notifications::Notification.create incident, event, {message: message}
 
       expect(ActionMailer::Base.deliveries.size).to eq(1)
     end

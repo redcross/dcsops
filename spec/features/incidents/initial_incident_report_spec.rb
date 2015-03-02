@@ -29,7 +29,7 @@ describe "Initial Incident Report", :type => :feature do
     click_on 'Estimated # homes affected:'
     expect(page).to have_text('Edit Initial Incident Report')
     check 'Budget is estimated to exceed $10,000'
-    select 'Stable', from: 'Trend'
+    select 'Holding Steady', from: 'Trend'
     check 'A shelter is, or will be, opened or put on standby'
     fill_in 'Estimated units', with: '20'
     fill_in 'Estimated individuals', with: '50'

@@ -44,7 +44,7 @@ class Incidents::InitialIncidentReportsController < Incidents::EditPanelControll
   protected
 
   def check_unapproved
-    if resource.approved_by_id
+    if resource and resource.approved_by_id
       render action: 'already_approved'
     end
   end
