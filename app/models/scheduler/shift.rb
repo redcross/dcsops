@@ -23,11 +23,7 @@ class Scheduler::Shift < ActiveRecord::Base
   end
 
   def normalize_date date, shift_group
-    case shift_group.period
-    when 'daily' then date
-    when 'weekly' then date.at_beginning_of_week
-    when 'monthly' then date.at_beginning_of_month
-    end
+    shift_group.normalize_date date
   end
 
   def unfrozen_on(date)

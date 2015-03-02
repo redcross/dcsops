@@ -3,12 +3,12 @@
 
 %p
   This is a daily reminder of today's DAT shifts.
-- @groups.each do |group_hash, shifts|
-  - group = group_hash[:group]
-  - date = group_hash[:date]
+- @groups.each do |group, shifts|
+  - next unless shifts.present?
+  - date = group.start_date
   - if group.period == 'daily'
     %p
-      #{group.name} Shift for #{date.to_s :dow_long}
+      #{group.name} Shift on #{date.to_s :dow_long}
       %br
       - shifts.each do |shift|
         - assignments = assignments_for_date_shift_group(date, shift, group)

@@ -1,5 +1,6 @@
--@groups.each do |group_hash, shifts|
-  - group = group_hash[:group]; date = group_hash[:date]
+-@groups.each do |group, shifts|
+  - next unless shifts.present?
+  - date = group.start_date
   - if group.period == 'daily'
     #{date.strftime "%m/%d"} #{group.name}: 
     - shifts.first(2).each do |shift|

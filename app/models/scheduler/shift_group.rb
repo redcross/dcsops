@@ -55,8 +55,25 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
     end
   end
   # Returns a date, group pairing of the count upcoming groups
-  def self.next_groups(chapter, count=2, current_time=Time.zone.now)
+  def self.next_groups(chapter, current_time=Time.zone.now)
+    groups = for_chapter(chapter).order{start_offset}.to_a
+
     current_time = current_time.in_time_zone(chapter.time_zone)
+    since_midnight = current_time.seconds_since_midnight
+
+    groups.each do |group|
+      group.check_offsets(current_time)
+      unless group.start_date
+        group.start_date = group.normalize_date current_time.to_date
+        if group.end_offset < since_midnight
+          group.start_date = group.next_period_date
+        end
+      end
+    end
+
+  end
+
+  def unused
 
     current_group = first_group(chapter, current_time)
 
@@ -145,5 +162,13 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
 
     { month_offset => begin_of_month,
       month_plus_offset => begin_of_month.months_since(1) }
+  end
+
+  def normalize_date date
+    case period
+    when 'daily' then date
+    when 'weekly' then date.at_beginning_of_week
+    when 'monthly' then date.at_beginning_of_month
+    end
   end
 end
