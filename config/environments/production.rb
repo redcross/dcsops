@@ -87,7 +87,7 @@ Scheduler::Application.configure do
 
   config.middleware.insert(0, Rack::Rewrite) do
     r301 %r{.*}, "https://#{ENV['WWW_HOSTNAME']}\$&", :if => Proc.new {|rack_env|
-      rack_env['SERVER_NAME'] != ENV['WWW_HOSTNAME']
+      ENV['WWW_HOSTNAME'].present? && rack_env['SERVER_NAME'] != ENV['WWW_HOSTNAME']
     }
   end
   Rails.application.config.middleware.insert_before(ActionDispatch::Static, Rack::Zippy::AssetServer)

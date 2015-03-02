@@ -86,7 +86,7 @@
     / Placed at the end of the document so the pages load faster
     = yield :footer_js
     -if dsn = ENV['SENTRY_DSN_WEB']
-      = javascript_include_tag '//cdn.ravenjs.com/1.1.7/jquery,native/raven.min.js'
+      = javascript_include_tag 'https://cdn.ravenjs.com/1.1.7/jquery,native/raven.min.js'
       :javascript
         Raven.config(#{dsn.to_json}, {
             whitelistUrls: ['dcsops.org']
