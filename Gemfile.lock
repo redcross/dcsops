@@ -45,13 +45,6 @@ GIT
       formtastic (>= 3.0.0)
 
 GIT
-  remote: git://github.com/jlaxson/acts_as_flying_saucer.git
-  revision: e569a46de39ad777e5a078d8c4f2387d37847a6c
-  branch: master
-  specs:
-    acts_as_flying_saucer (1.0.4)
-
-GIT
   remote: git://github.com/jlaxson/cancan.git
   revision: 0ca3749869af1b5e154f81fca35d4199666ac2f8
   specs:
@@ -514,7 +507,6 @@ DEPENDENCIES
   activeadmin!
   activerecord-import
   activerecord-postgresql-adapter
-  acts_as_flying_saucer!
   arcdata_core!
   assignable_values
   authlogic (= 3.4.0)

@@ -13,6 +13,11 @@ module ApplicationHelper
     end
   end
 
+  def pdf_header?
+    request.env['Rack-Middleware-PDFKit'].present?
+  end
+
+
   def short_url(url)
     return url if Rails.env.development? # Bitly won't shorten localhost
     Rails.cache.fetch([:shorten, url]) { Bitly.client.shorten(url).short_url }

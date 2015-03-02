@@ -2,8 +2,7 @@
 class Scheduler::CalendarController < Scheduler::BaseController
   skip_authorization_check
 
-  respond_to :html, :pdf
-  responders :pdf
+  respond_to :html
 
   #before_filter :require_xhr, only: [:day, :month]
 

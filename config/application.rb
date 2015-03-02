@@ -55,6 +55,8 @@ module Scheduler
     config.action_mailer.preview_path = "#{Rails.root}/lib/mailer_previews"
 
     config.assets.precompile += %w( es5-shim.js )
+
+    config.middleware.use PDFKit::Middleware, :print_media_type => true
   end
   def self.table_name_prefix
     'scheduler_'

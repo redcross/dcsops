@@ -54,8 +54,6 @@ gem 'cocoon'
 gem 'polyamorous'
 gem 'ransack', '~> 1.2'
 gem 'activeadmin', github: 'activeadmin'  
-
-gem 'acts_as_flying_saucer', github: 'jlaxson/acts_as_flying_saucer', branch: 'master'
 gem 'nokogiri'
 
 # Monitoring/Alerting
