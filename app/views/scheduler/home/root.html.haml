@@ -98,6 +98,7 @@
       - groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_chapter)
       - groups.select{|g| g.period == 'daily' }.each do |grp| 
         %strong=grp.start_date.to_s(:dow_long) + " - " + grp.name
+        %br
       %br
       = render partial: 'current_shifts', locals: {counties: current_person.counties, groups: groups}
 
@@ -138,7 +139,11 @@
       %tbody
         - responses.each do |response|
           %tr
-            %td=link_to response.incident.to_label, incidents_chapter_incident_path(response.incident.chapter, response.incident)
+            %td
+              =link_to incidents_chapter_incident_path(response.incident.chapter, response.incident) do
+                = response.incident.incident_number
+                = response.incident.humanized_incident_type
+                = response.incident.address
             %td=response.humanized_role
     If this information is incomplete or incorrect, please contact your DAT Administrator.
 
