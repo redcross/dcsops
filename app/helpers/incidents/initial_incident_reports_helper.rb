@@ -2,7 +2,7 @@ module Incidents::InitialIncidentReportsHelper
 
   def timeline_time event
     tl = resource.incident.event_logs.find_by event: event
-    tl && tl.event_time.to_s(:mdy_time)
+    tl && tl.event_time.to_s(:mdy_time_tz)
   end
 
   def humanized_triggers

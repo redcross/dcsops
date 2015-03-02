@@ -32,18 +32,27 @@ class Incidents::PrepareIirJob
     html = view_html
     margin = '.25in'
     kit = PDFKit.new(html, :page_size => 'Letter', margin_bottom: margin, margin_top: margin, margin_left: margin, margin_right: margin)
-    file = kit.to_file '/Users/jlaxson/test.pdf'
     kit.to_pdf
   end
 
   def view_html
-    html = RenderMan.new(file: 'incidents/initial_incident_reports/show', defs: {resource: iir}, layout: 'thin').render 
+    tz = iir.incident.chapter.time_zone
+    html = nil
+    Time.use_zone(tz) do
+      html = RenderMan.new(file: 'incidents/initial_incident_reports/show', defs: {resource: iir}, layout: 'thin').render 
+    end
     
     # Insert correct path to assets
     html.gsub %r{['"](/assets/[^'"]*)['"]} do |match|
-      assetname = match[9..-2]
-      asset = Rails.application.assets[assetname]
-      "'file://#{asset.pathname}'"
+      # See if the asset has been precompiled
+      path = File.join(Rails.application.root, "public", match[2..-2])
+      if !File.exists? path
+        # Try to treat this as a sprockets asset and get its compiled filesystem path
+        assetname = match[9..-2]
+        asset = Rails.application.assets[assetname]
+        path = asset.pathname if asset
+      end
+      "'file://#{path}'"
     end
   end
 
@@ -63,6 +72,12 @@ class Incidents::PrepareIirJob
       att.name = "Initial Incident Report"
     end
     attachment.save!
+
+    publish_attachment
+  end
+
+  def publish_attachment
+    Incidents::UpdatePublisher.new(iir.incident).publish_attachments
   end
 
   def filename
