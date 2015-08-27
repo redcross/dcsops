@@ -71,6 +71,7 @@ private
                           .joins{disaster}
                           .where{ disaster.dr_number.not_like_any(ignore) }
                           .order{ date_first_seen.desc }
+                          .to_a
                           .uniq{|a| [a.person_id, a.disaster_id] }
                           .group_by{|a| a.disaster.title }
   end
