@@ -13,5 +13,6 @@ date_format :mdy_time_tz, "%-m/%-d/%Y %-I:%M%P %Z"
 date_format :on_date_at_time, "on %-m/%-d at %-I:%M%P"
 date_format :time, "%-I:%M%P"
 date_format :at_time, "at %-I:%M%P"
+date_format :month_year, "%b %Y"
 
 Timeliness.default_timezone = :current

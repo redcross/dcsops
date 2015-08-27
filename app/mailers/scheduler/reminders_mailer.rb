@@ -73,6 +73,12 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     end
   end
 
+  def flex_reminder(schedule)
+    now = schedule.person.chapter.time_zone.now
+    @schedule = schedule
+    mail to: format_address(schedule.person), subject: "DCSOps Flex Schedule Reminder for #{now.to_s :month_year}"
+  end
+
   private
   def shift_subject
     "#{@assignment.shift.name} on #{@assignment.date.strftime("%b %d")}"

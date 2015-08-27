@@ -1,0 +1,18 @@
+%p Dear #{@schedule.person.first_name},
+%p This is a monthly reminder of your current DCSOps flex availability:
+
+%p
+  - Scheduler::FlexSchedule.days.each do |day|
+    #{day.titleize}:
+    - Scheduler::FlexSchedule.shifts.each do |shift|
+      -if @schedule.available(day, shift)
+        = shift.titleize
+    %br
+
+%p
+  Your availability was last updated #{@schedule.updated_at.to_s :on_date_at_time}.
+  To update your flex availability, visit #{link_to scheduler_flex_schedule_url(@schedule, action: :show), scheduler_flex_schedule_url(@schedule, action: :show) }
+
+%p
+  This email is sent monthly when you are listed as available on the flex schedule.
+  Please contact your supervisor with questions.
