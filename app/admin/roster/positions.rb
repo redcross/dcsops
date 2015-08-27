@@ -27,7 +27,7 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
       row("Number of Members") { resource.people.count }
     end
     data = resource.chapter.vc_import_data
-    if data
+    if data && resource.vc_regex_raw
       positions = data.positions_matching resource.vc_regex_raw
       panel "Matched VC Positions" do
         table_for positions do
