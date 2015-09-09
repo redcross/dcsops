@@ -14,7 +14,7 @@
       -if can? :reopen, resource
         =link_to 'Reopen', reopen_resource_path, class: 'btn btn-default', method: 'post', data: {confirm: 'Really reopen this incident?'}
 
--if incident.status == 'open'
+-if resource.status == 'open'
   .incoming-table{data: {refresh_name: "incoming", refresh: resource_responder_messages_path(partial: 'incoming_table')}}
     =render partial: 'incidents/responder_messages/incoming_table', locals: {incident: resource}
 
