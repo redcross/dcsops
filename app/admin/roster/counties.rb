@@ -4,6 +4,7 @@ ActiveAdmin.register Roster::County, as: 'County' do
 
   filter :chapter
   filter :name
+  filter :enabled
 
   actions :all, except: [:destroy]
 
@@ -26,7 +27,7 @@ ActiveAdmin.register Roster::County, as: 'County' do
 
   controller do
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :county_code, :fips_code, :gis_name, :vc_regex_raw, :chapter_id)]
+      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :enabled, :county_code, :fips_code, :gis_name, :vc_regex_raw, :chapter_id)]
     end
   end
 

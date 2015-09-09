@@ -5,6 +5,10 @@ class Roster::County < ActiveRecord::Base
 
   validates_presence_of :chapter
 
+  def self.enabled
+    where(enabled: true)
+  end
+
   def vc_regex
     @compiled_regex ||= (vc_regex_raw.present? && Regexp.new(vc_regex_raw))
   end

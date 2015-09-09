@@ -4,5 +4,6 @@ FactoryGirl.define do
   factory :county, :class => 'Roster::County' do
     name { Faker::Address.city }
     association :chapter
+    enabled true
   end
 end

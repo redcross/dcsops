@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150204173729) do
+ActiveRecord::Schema.define(version: 20150909073913) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -730,6 +730,8 @@ ActiveRecord::Schema.define(version: 20150204173729) do
     t.integer "county_id"
   end
 
+  add_index "incidents_territories_roster_counties", ["territory_id", "county_id"], name: "incidents_territories_roster_counties_index", using: :btree
+
   create_table "incidents_vehicle_uses", force: true do |t|
     t.integer  "vehicle_id"
     t.integer  "incident_id"
@@ -751,8 +753,8 @@ ActiveRecord::Schema.define(version: 20150204173729) do
     t.integer  "num_rows"
     t.text     "log"
     t.text     "import_errors"
-    t.string   "exception"
-    t.string   "exception_message"
+    t.text     "exception"
+    t.text     "exception_message"
     t.text     "exception_trace"
     t.float    "runtime"
     t.datetime "created_at"
@@ -866,6 +868,7 @@ ActiveRecord::Schema.define(version: 20150204173729) do
     t.string   "vc_regex_raw"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "enabled",      default: true
   end
 
   create_table "roster_county_memberships", force: true do |t|
