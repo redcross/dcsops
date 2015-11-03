@@ -3,7 +3,7 @@ class Incidents::CaseAssistanceItem < ActiveRecord::Base
   belongs_to :case, class_name: 'Incidents::Case'
 
   assignable_values_for :price_list_item do
-    Incidents::PriceListItem.order{[item_class.asc, name.asc]} # will scope this to the chapter later
+    Incidents::PriceListItem.enabled.order{[item_class.asc, name.asc]} # will scope this to the chapter later
   end
 
   validates :quantity, numericality: {allow_blank: false}

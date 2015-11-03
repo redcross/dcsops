@@ -4,6 +4,7 @@ ActiveAdmin.register Incidents::PriceListItem, as: 'Price List Item' do
   form do |f|
     f.inputs do
       f.input :item_class
+      f.input :enabled
       f.input :name
       f.input :unit_price
       f.input :type, collection: options_for_select(available_types, selected: f.object.type), include_blank: false

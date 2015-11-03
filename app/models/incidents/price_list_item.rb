@@ -1,6 +1,10 @@
 class Incidents::PriceListItem < ActiveRecord::Base
   validates :item_class, :name, :unit_price, presence: true
 
+  def self.enabled
+    where(enabled: true)
+  end
+
   def calculate_total(quantity)
     unit_price * quantity
   end
