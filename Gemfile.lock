@@ -162,7 +162,7 @@ GEM
       capybara (>= 1.0, < 3)
       colored
       launchy
-    capybara-webkit (1.7.0)
+    capybara-webkit (1.7.1)
       capybara (>= 2.3.0, < 2.6.0)
       json
     chronic (0.10.2)
@@ -283,7 +283,7 @@ GEM
     mail (2.6.1)
       mime-types (>= 1.16, < 3)
     memcachier (0.0.2)
-    mime-types (2.6.1)
+    mime-types (2.6.2)
     mini_portile (0.6.2)
     minitest (5.4.2)
     multi_json (1.10.1)
