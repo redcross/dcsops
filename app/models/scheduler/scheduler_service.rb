@@ -35,7 +35,7 @@ class Scheduler::SchedulerService
       schedules = schedules.by_distance_from origin
     end
 
-    people = schedules.where{id.not_in(exclude)}.preload{[person.positions, person.cell_phone_carrier, person.work_phone_carrier, person.home_phone_carrier, person.alternate_phone_carrier, person.sms_phone_carrier]}.limit(limit).to_a.uniq{|s| s.person_id }
+    people = schedules.where{id.not_in(exclude)}.preload{[person.positions, person.cell_phone_carrier, person.work_phone_carrier, person.home_phone_carrier, person.alternate_phone_carrier, person.sms_phone_carrier]}.limit(limit).to_a.uniq{|s| s.id }
   end
 
   def dispatch_assignments(time: chapter.time_zone.now, territory: )
