@@ -80,7 +80,7 @@ gem 'rails_12factor', group: :production
 gem 'rack-zippy', group: :production
 
 gem 'pdfkit'
-gem 'wkhtmltopdf-heroku', github: 'cater2me/wkhtmltopdf-heroku', group: :production
+gem 'wkhtmltopdf-heroku', group: :production
 gem 'wkhtmltopdf-binary', github: 'dwa012/wkhtmltopdf-binary', group: :development
 
 # Gems used only for assets and not required

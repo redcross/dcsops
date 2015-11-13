@@ -26,12 +26,6 @@ GIT
       polyamorous (~> 1.1.0)
 
 GIT
-  remote: git://github.com/cater2me/wkhtmltopdf-heroku.git
-  revision: 7383436d6e94c2f5363d80a8939f630555277320
-  specs:
-    wkhtmltopdf-heroku (1.0.3)
-
-GIT
   remote: git://github.com/dwa012/wkhtmltopdf-binary.git
   revision: 377c1a311e2ebbbc368f4067ddd8a2835ed08fcb
   specs:
@@ -496,6 +490,7 @@ GEM
     webmock (1.19.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
+    wkhtmltopdf-heroku (2.12.2.4)
     xpath (2.0.0)
       nokogiri (~> 1.3)
     zonebie (0.5.1)
@@ -589,5 +584,5 @@ DEPENDENCIES
   vcr
   webmock
   wkhtmltopdf-binary!
-  wkhtmltopdf-heroku!
+  wkhtmltopdf-heroku
   zonebie
