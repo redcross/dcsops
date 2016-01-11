@@ -18,7 +18,7 @@
       $ brew install qt
 
 
-4.  Go to app/locales
+4.  Go to config
     -Copy the content in database.tmpl.yml
     -Create a new file, database.yml
     -Paste the content into database.yml
@@ -43,7 +43,7 @@
 
 
 
-6.  We current dont have any chapters, so to avoid the errors we must comment out a few lines in:
+6.  We currently dont have any chapters, so to avoid the errors we must comment out a few lines in:
 
     app/views/root/index.html.haml    -   lines 18-22
           / .row
