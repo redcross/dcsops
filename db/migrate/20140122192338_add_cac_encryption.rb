@@ -1,8 +1,10 @@
 class AddCacEncryption < ActiveRecord::Migration
   class Case < ActiveRecord::Base
     self.table_name = :incidents_cases
-
-    encrypt_with_public_key :encrypted_cac, public_key: ENV['CAC_PUBLIC_KEY'], private_key: ENV['CAC_PRIVATE_KEY'], symmetric: :never
+    # Must comment out line 7 in order to start server or the error below will show up
+    # ERROR: NoMethodError: undefined method `encrypt_with_public_key' for #<Class:0x007f81dd2aa0b0>
+    # 
+    # encrypt_with_public_key :encrypted_cac, public_key: ENV['CAC_PUBLIC_KEY'], private_key: ENV['CAC_PRIVATE_KEY'], symmetric: :never
 
     def normalize_cac_number
       if cac_number

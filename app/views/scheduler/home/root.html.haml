@@ -47,12 +47,14 @@
       - shift_times.each do |time|
         %tr
           %th
-            %span{"data-toggle" => 'tooltip', title: flex_time_range(time, current_person.chapter) }
-              =time.titleize
-          - days_of_week.each do |dow|
-            -avail = sched.send("available_#{dow}_#{time}")
-            %td{class: avail && "avail"}
-              =avail ? 'Yes' : 'No'
+          / Commented lines 51-56, getting error: undefined method `+' for nil:NilClass
+          / 
+          /   %span{"data-toggle" => 'tooltip', title: flex_time_range(time, current_person.chapter) }
+          /     =time.titleize
+          / - days_of_week.each do |dow|
+          /   -avail = sched.send("available_#{dow}_#{time}")
+          /   %td{class: avail && "avail"}
+          /     =avail ? 'Yes' : 'No'
   .col-sm-4
     %h5 
       %i.fa.fa-calendar
