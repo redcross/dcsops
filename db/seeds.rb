@@ -41,54 +41,59 @@ day = Scheduler::ShiftGroup.create chapter: arcba, name: 'Day', start_offset: 25
 night = Scheduler::ShiftGroup.create chapter: arcba, name: 'Night', start_offset: 68400, end_offset: 111600, period: 'daily'
 week = Scheduler::ShiftGroup.create chapter: arcba, name: 'Weekly', start_offset: 0, end_offset: 7.days, period: 'weekly'
 month = Scheduler::ShiftGroup.create chapter: arcba, name: 'Monthly', start_offset: 0, end_offset: 31, period: 'monthly'
+ 
+# dispatch_role was moved to class MoveDispatchRoleToDispatchConfig - migration 20140607010947 
+# shift_group was added to shift_assignments AddShiftGroupToShiftAssignments- migration 20140606172945
+[day, night].each do |group|
+  [sf, al, sm, so, mr, cc].each do |county|
+    Scheduler::Shift.create county: county, name: 'Team Lead', abbrev: 'TL', positions: [tl], ordinal: 1, max_signups: 1, spreadsheet_ordinal: 1 # dispatch_role: 1
+    Scheduler::Shift.create county: county, name: 'Backup Lead', abbrev: 'BTL', positions: [tl], ordinal: 2, max_signups: 1, spreadsheet_ordinal: 2 # dispatch_role: 2
+    if county == sf
+      Scheduler::Shift.create county: county, name: 'Dispatch', abbrev: 'Disp', positions: [disp], ordinal: 5, max_signups: 1, spreadsheet_ordinal: 3
+    end
+  end
+end
 
-# Commented lines 49-63 because shift_group is an undefined method
-# 
-# [day, night].each do |group|
-#   [sf, al, sm, so, mr, cc].each do |county|
-#     Scheduler::Shift.create county: county, name: 'Team Lead', abbrev: 'TL', positions: [tl], shift_group: group, ordinal: 1, max_signups: 1, spreadsheet_ordinal: 1, dispatch_role: 1
-#     Scheduler::Shift.create county: county, name: 'Backup Lead', abbrev: 'BTL', positions: [tl], shift_group: group, ordinal: 2, max_signups: 1, spreadsheet_ordinal: 2, dispatch_role: 2
-#     if county == sf
-#       Scheduler::Shift.create county: county, name: 'Dispatch', abbrev: 'Disp', positions: [disp], shift_group: group, ordinal: 5, max_signups: 1, spreadsheet_ordinal: 3
-#     end
-#   end
-# end
-
-# Scheduler::Shift.create county: sf, name: 'Mental Health', abbrev: 'DMH', positions: [tl], shift_group: week, ordinal: 5, max_signups: 1
-# Scheduler::Shift.create county: sf, name: 'Health Services', abbrev: 'DHS', positions: [tl], shift_group: month, ordinal: 6, max_signups: 1
+Scheduler::Shift.create county: sf, name: 'Mental Health', abbrev: 'DMH', positions: [tl], ordinal: 5, max_signups: 1
+Scheduler::Shift.create county: sf, name: 'Health Services', abbrev: 'DHS', positions: [tl], ordinal: 6, max_signups: 1
   
 
-# Scheduler::Shift.create county: sf, name: 'Team Lead', abbrev: 'TL', positions: [tl], shift_group: night, ordinal: 1, max_signups: 1
+Scheduler::Shift.create county: sf, name: 'Team Lead', abbrev: 'TL', positions: [tl], ordinal: 1, max_signups: 1
 
 
 #load "lib/vc_importer.rb"; 
 #vc = Roster::VCImporter.new; 
 #vc.import_data(Roster::Chapter.first, "/Users/jlaxson/Downloads/LMSync1.xls")
 
+
+
+
 # User Sample Data
 # joe = Roster::Person.find_by_username('joe')
-joe = Roster::Person.create
-joe.chapter_id = 1
-joe.primary_county_id = 1
-joe.username = 'joe'
-joe.password = 'test'
-joe.first_name = "Joe"
-joe.last_name = "Schmo"
-joe.email = "joe@gmail.com"
-joe.home_phone = "909-342-9568"
-joe.cell_phone = "312-123-4574"
-joe.alternate_phone = "717-224-1150"
-joe.sms_phone = "131-234-5444"
-# joe.phone_1_preference = "948-234-8592"
-# joe.phone_2_preference = "203-023-9586"
-# joe.phone_3_preference = "767-219-4857"
-# joe.phone_4_preference = "164-283-2324"
-joe.address1 = "24 N. State Street"
-joe.address2 = "Apt. 001"
-joe.city = "Chicago"
-joe.state = "IL"
-joe.zip = "60611"
-joe.save!
+test_user = Roster::Person.create
+test_user.chapter_id = 1
+test_user.primary_county_id = 1
+test_user.username = 'joe'
+test_user.password = 'test'
+test_user.first_name = "Joe"
+test_user.last_name = "Schmo"
+test_user.email = "joe@gmail.com"
+test_user.home_phone = "909-342-9568"
+test_user.cell_phone = "312-123-4574"
+test_user.alternate_phone = "717-224-1150"
+test_user.sms_phone = "131-234-5444"
+test_user.address1 = "24 N. State Street"
+test_user.address2 = "Apt. 001"
+test_user.city = "Chicago"
+test_user.state = "IL"
+test_user.zip = "60611"
+test_user.save!
+
+# These fields aren't loading
+# test_user.phone_1_preference = "948-234-8592"
+# test_user.phone_2_preference = "203-023-9586"
+# test_user.phone_3_preference = "767-219-4857"
+# test_user.phone_4_preference = "164-283-2324"
 
 # Incident Sample Data (chapter_id: 1, url_slug: 1, abbrev: "INS1", short_name: "Incident 1", name: "Test Incident 1")
 incident1 = Incidents::Scope.create(chapter_id: 1, url_slug: 1, abbrev: "INS1", short_name: "Incident 1", name: "Test Incident 1")
