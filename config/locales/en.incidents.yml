@@ -19,6 +19,7 @@ en:
     cases:
       form:
         add_case: Add Client
+        delete_confirm: Really delete this client?
 
     initial_incident_reports:
       form:
