@@ -33,6 +33,8 @@ gem "spreadsheet" # Import from excel
 gem 'scrypt'
 gem "authlogic", '3.4.0'
 
+gem "omniauth-openid-connect"
+
 gem "ri_cal" # Ical Rendering
 gem "cancan", github: 'jlaxson/cancan'
 gem "ruby-openid", require: 'openid'
@@ -126,11 +128,16 @@ group :development do
   gem 'byebug'
   gem 'unicorn'
 
+  gem 'http_logger'
   gem 'quiet_assets'
 
   gem 'ruby-prof'
   gem 'spring'
   gem 'spring-commands-rspec'
+
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'web-console', '~> 2.0'
 end
 
 # To use ActiveModel has_secure_password
