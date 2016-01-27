@@ -21,6 +21,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     f.inputs 'Details' do
       f.input :first_name
       f.input :last_name
+      f.input :rco_id
     end
     f.actions
     f.inputs do
@@ -127,7 +128,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:first_name, :last_name, 
+      [params.fetch(resource_request_name, {}).permit(:first_name, :last_name, :rco_id,
         county_memberships_attributes: [:id, :_destroy, :persistent, :county_id],
         position_memberships_attributes: [:id, :_destroy, :persistent, :position_id])]
     end

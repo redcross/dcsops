@@ -1,0 +1,21 @@
+.row
+  .col-sm-6.col-sm-offset-3
+    =form_for resource, url: roster_session_path, html: {class: 'login-form'} do |f|
+      %h3 
+        %i.fa.fa-lock
+        Please Sign In
+      %p
+        DCSOps has not been linked to your RedCross.org account yet.  If you just created an account in the new system and linked it to Volunteer Connection, it may take up to two hours to link in the meantime.
+        =link_to "Show Diagnostic Info", '#', data: { toggle: 'collapse', target: ".rco-debug" }
+        .rco-debug.well.collapse
+          RCO ID: #{@session_rco_id}
+      = f.label :username, class: 'sr-only'
+      = f.text_field :username, class: 'text_field col-sm-6 form-control', placeholder: 'Username'
+      = f.label :password, class: 'sr-only'
+      = f.password_field :password, class: 'text_field col-sm-6 form-control', placeholder: 'Password'
+      /.control-group
+      /  = f.label :remember_me, :class => 'control-label'
+      /  .controls
+      /    = f.check_box :remember_me, :class => 'text_field'
+      .submit
+        = f.submit 'Sign In', :class => 'btn btn-primary btn-large btn-block'

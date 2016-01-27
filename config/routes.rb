@@ -9,6 +9,7 @@ Scheduler::Application.routes.draw do
 
   get '/health', to: 'root#health'
   get '/inactive', to: 'root#inactive', as: 'inactive_user'
+  get '/auth/:provider/callback', to: 'roster/sessions#omniauth_callback'
 
   namespace :scheduler do
     root to: "home#root"
@@ -45,7 +46,10 @@ Scheduler::Application.routes.draw do
   namespace :roster do
     resources :chapters
     resources :people
-    resource :session
+    resource :session do
+      get :new_rco
+      get :new_from_rco
+    end
     #resources :cell_carriers
 
     match 'salesforce/new', to: 'salesforce#new', as: :salesforce_initiation, via: [:get, :post]
