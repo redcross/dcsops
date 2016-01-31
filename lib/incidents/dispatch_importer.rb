@@ -19,7 +19,7 @@ class Incidents::DispatchImporter
     {
       /^\s*TAKEN: DATE: ([\d\/]+) TIME: ([\d:]+ (AM|PM))$/ => ->(matches){ {received_at: parse_ampm(matches[1], matches[2])} },
       /^\s*DELIVERED: DATE: ([\d\/]+)\s+TIME: ([\d:]+ (AM|PM))\s*\nDELIVERED TO:\s*(.*)\s*(INCIDENT.*)?$/ => ->(matches){ {delivered_at: parse_ampm(matches[1], matches[2]), :delivered_to => matches[4]} },
-      /^\s*Incident#: (\d{2}-\d{3})$/ => (:incident_number),
+      /^\s*Incident#: (\d{2}-\d{3,4})$/ => (:incident_number),
       /^\s*Incident: (.*)$/ => :incident_type,
       /^\s*Address: (.*)$/ => :address,
       /^\s*X-Street: (.*)$/ => :cross_street,
