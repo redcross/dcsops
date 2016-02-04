@@ -24,7 +24,7 @@ Connect::Config.configure do
     @current_user = nil
   end
 
-  rsa_key = OpenSSL::PKey::RSA.new
+  rsa_key = OpenSSL::PKey::RSA.new(2048)
   name = OpenSSL::X509::Name.parse("CN=dcsops.dev/DC=dcsops")
   cert = OpenSSL::X509::Certificate.new()
   cert.version = 2
