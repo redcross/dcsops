@@ -24,12 +24,26 @@ Connect::Config.configure do
     @current_user = nil
   end
 
-  root = Rails.root.to_s + "/local/id_token/"
+  rsa_key = OpenSSL::PKey::RSA.new
+  name = OpenSSL::X509::Name.parse("CN=dcsops.dev/DC=dcsops")
+  cert = OpenSSL::X509::Certificate.new()
+  cert.version = 2
+  cert.serial = 0
+  cert.not_before = Time.new()
+  cert.not_after = cert.not_before + (60*60*24*365)
+  cert.public_key = rsa_key.public_key
+  cert.subject = name
+  cert.issuer = name
+  cert.sign rsa_key, OpenSSL::Digest::SHA1.new()
 
-  self.jwt_issuer = Rails.env.development?           ? "https://localhost"             : ENV['OPENID_ISSUER']
-  self.private_key = Rails.env.development?          ? File.read(root + "private.key") : ENV['OPENID_KEY']
-  self.private_key_password = Rails.env.development? ? "pass-phrase"                   : ENV['OPENID_PASSPHRASE']
-  self.certificate = Rails.env.development?          ? File.read(root + "cert.pem")    : ENV['OPENID_CERTIFICATE']
+  pass_phrase = "pass-phrase"
+  private_key = rsa_key.export(OpenSSL::Cipher::Cipher.new("AES-128-CBC"), pass_phrase)
+  certificate = cert.to_pem
+
+  self.jwt_issuer = Rails.env.development?           ? "https://localhost" : ENV['OPENID_ISSUER']
+  self.private_key = Rails.env.development?          ? private_key         : ENV['OPENID_KEY']
+  self.private_key_password = Rails.env.development? ? pass_phrase         : ENV['OPENID_PASSPHRASE']
+  self.certificate = Rails.env.development?          ? certificate         : ENV['OPENID_CERTIFICATE']
 
   self.account_last_login = -> person { person.last_login }
   self.account_attributes = -> person, keys, scopes {

@@ -53,7 +53,7 @@ gem 'formtastic-bootstrap', '~> 3.0', github: 'ekubal/formtastic-bootstrap'
 gem 'cocoon'
 gem 'polyamorous'
 gem 'ransack', '~> 1.2'
-gem 'activeadmin', github: 'activeadmin'  
+gem 'activeadmin', github: 'activeadmin'
 gem 'nokogiri'
 
 # Monitoring/Alerting
@@ -86,7 +86,7 @@ gem 'wkhtmltopdf-binary', github: 'dwa012/wkhtmltopdf-binary', group: :developme
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  
+
   gem 'coffee-rails', '~> 4.0'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes

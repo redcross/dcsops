@@ -18,11 +18,11 @@ so = arcba.counties.create name: 'Solano', vc_regex_raw: 'Solano', abbrev: 'SO'
 mr = arcba.counties.create name: 'Marin', vc_regex_raw: 'Marin', abbrev: 'MR'
 cc = arcba.counties.create name: 'Contra Costa', vc_regex_raw: 'Contra Costa', abbrev: 'CC'
 
-arcba.positions.create name: 'Chapter Configuration', hidden: true, grants_role: 'chapter_config'
-arcba.positions.create name: 'Chapter DAT Admin', hidden: true, grants_role: 'chapter_dat_admin'
+arcba.positions.create name: 'Chapter Configuration', hidden: true
+arcba.positions.create name: 'Chapter DAT Admin', hidden: true
 [sf, al, sm, so, mr, cc].each do |county|
-  arcba.positions.create name: "DAT Administrator - #{county.name}", vc_regex_raw: "#{county.name}.*DAT Administrator$", grants_role: 'county_dat_admin', role_scope: county.id
-  arcba.positions.create name: "Disaster Manager - #{county.name}", vc_regex_raw: "#{county.name}.*Disaster Manager$", grants_role: 'county_dat_admin', role_scope: county.id
+  arcba.positions.create name: "DAT Administrator - #{county.name}", vc_regex_raw: "#{county.name}.*DAT Administrator$"
+  arcba.positions.create name: "Disaster Manager - #{county.name}", vc_regex_raw: "#{county.name}.*Disaster Manager$"
 end
 
 tl = arcba.positions.create name: 'DAT Team Lead', vc_regex_raw: 'Team Lead$'
@@ -44,23 +44,24 @@ month = Scheduler::ShiftGroup.create chapter: arcba, name: 'Monthly', start_offs
 
 [day, night].each do |group|
   [sf, al, sm, so, mr, cc].each do |county|
-    Scheduler::Shift.create county: county, name: 'Team Lead', abbrev: 'TL', positions: [tl], shift_group: group, ordinal: 1, max_signups: 1, spreadsheet_ordinal: 1, dispatch_role: 1
-    Scheduler::Shift.create county: county, name: 'Backup Lead', abbrev: 'BTL', positions: [tl], shift_group: group, ordinal: 2, max_signups: 1, spreadsheet_ordinal: 2, dispatch_role: 2
+    Scheduler::Shift.create county: county, name: 'Team Lead', abbrev: 'TL', positions: [tl], ordinal: 1, max_signups: 1, spreadsheet_ordinal: 1
+    Scheduler::Shift.create county: county, name: 'Backup Lead', abbrev: 'BTL', positions: [tl], ordinal: 2, max_signups: 1, spreadsheet_ordinal: 2
     if county == sf
-      Scheduler::Shift.create county: county, name: 'Dispatch', abbrev: 'Disp', positions: [disp], shift_group: group, ordinal: 5, max_signups: 1, spreadsheet_ordinal: 3
+      Scheduler::Shift.create county: county, name: 'Dispatch', abbrev: 'Disp', positions: [disp], ordinal: 5, max_signups: 1, spreadsheet_ordinal: 3
     end
   end
 end
 
-Scheduler::Shift.create county: sf, name: 'Mental Health', abbrev: 'DMH', positions: [tl], shift_group: week, ordinal: 5, max_signups: 1
-Scheduler::Shift.create county: sf, name: 'Health Services', abbrev: 'DHS', positions: [tl], shift_group: month, ordinal: 6, max_signups: 1
-  
+Scheduler::Shift.create county: sf, name: 'Mental Health', abbrev: 'DMH', positions: [tl], ordinal: 5, max_signups: 1
+Scheduler::Shift.create county: sf, name: 'Health Services', abbrev: 'DHS', positions: [tl], ordinal: 6, max_signups: 1
+
+
 
 #Scheduler::Shift.create county: sf, name: 'Team Lead', abbrev: 'TL', positions: [tl], shift_group: night, ordinal: 1, max_signups: 1
 
 
-#load "lib/vc_importer.rb"; 
-#vc = Roster::VCImporter.new; 
+#load "lib/vc_importer.rb";
+#vc = Roster::VCImporter.new;
 #vc.import_data(Roster::Chapter.first, "/Users/jlaxson/Downloads/LMSync1.xls")
 #
 #me = Roster::Person.find_by_last_name 'Laxson'
