@@ -53,6 +53,12 @@ class Roster::SessionsController < ApplicationController
     end
   end
 
+  def new_rco
+    unless params[:rco_idp_mode] == "dcs0"
+      redirect_to rco_idp_mode: "dcs0"
+    end
+  end
+
   def new_from_rco
     unless session[:rco_id]
       redirect_to action: :new

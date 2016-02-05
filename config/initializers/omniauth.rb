@@ -38,24 +38,24 @@ module OpenIDConnect
   end
 end
 
-module OmniAuth
-  module Strategies
-    class OpenIDConnect
-      def authorize_uri
-        client.redirect_uri = client_options.redirect_uri
-        opts = {
-            response_type: options.response_type,
-            scope: options.scope,
-            state: new_state,
-            nonce: (new_nonce if options.send_nonce),
-            hd: options.hd,
-            rco_idp_mode: 'dcs0'
-        }
-        client.authorization_uri(opts.reject{|k,v| v.nil?})
-      end
-    end
-  end
-end
+# module OmniAuth
+#   module Strategies
+#     class OpenIDConnect
+#       def authorize_uri
+#         client.redirect_uri = client_options.redirect_uri
+#         opts = {
+#             response_type: options.response_type,
+#             scope: options.scope,
+#             state: new_state,
+#             nonce: (new_nonce if options.send_nonce),
+#             hd: options.hd,
+#             rco_idp_mode: 'dcs0'
+#         }
+#         client.authorization_uri(opts.reject{|k,v| v.nil?})
+#       end
+#     end
+#   end
+# end
 
 [WebFinger, Rack::OAuth2].each do |klass|
   klass.http_config do |client|
