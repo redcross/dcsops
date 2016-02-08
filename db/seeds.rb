@@ -8,7 +8,7 @@
 
 Roster::CellCarrier.create name: 'Verizon', sms_gateway: '@vtext.com'
 
-arcba = Roster::Chapter.create name:'American Red Cross Bay Area', short_name:'ARCBA', code: '05503', time_zone_raw: 'America/Los_Angeles', scheduler_flex_night_start: '64800', scheduler_flex_day_start: '21600'
+arcba = Roster::Chapter.create name:'American Red Cross Bay Area', short_name:'ARCBA', code: '05503', time_zone_raw: 'America/Los_Angeles', scheduler_flex_night_start: '64800', scheduler_flex_day_start: '21600', url_slug: 'arcba'
 
 all = arcba.counties.create name: 'Chapter', abbrev: 'CH'
 sf = arcba.counties.create name: 'San Francisco', vc_regex_raw: 'San Francisco', abbrev: 'SF'
@@ -75,6 +75,8 @@ HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'DCSOps Training V
 
 # Add scope for Dispatch Console 
 Incidents::Scope.create chapter_id: 1, url_slug: 'example_dispatch'
+# Add scope for chapter incidents
+Incidents::Scope.create chapter_id: 1, url_slug: 'arcba'
 
 Scheduler::ShiftAssignment.create person_id: 1, date: '2016-02-01', shift_group_id: 4, shift_id: 1
 Scheduler::ShiftAssignment.create person_id: 1, date: '2016-02-07', shift_group_id: 3, shift_id: 1
