@@ -758,7 +758,7 @@ ActiveRecord::Schema.define(version: 20150204173729) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "tenant_id"
-    t.string   "tenant_type",       limit: nil
+    t.string   "tenant_type"
   end
 
   create_table "logistics_vehicles", force: true do |t|
@@ -852,6 +852,8 @@ ActiveRecord::Schema.define(version: 20150204173729) do
     t.integer  "vc_unit"
     t.string   "url_slug"
     t.integer  "incident_number_sequence_id"
+    t.text     "scheduler_flex_day_start"
+    t.text     "scheduler_flex_night_start"
   end
 
   add_index "roster_chapters", ["url_slug"], name: "index_roster_chapters_on_url_slug", unique: true, using: :btree
