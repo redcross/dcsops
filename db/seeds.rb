@@ -64,7 +64,9 @@ Scheduler::Shift.create county: sf, name: 'Health Services', abbrev: 'DHS', posi
 #vc = Roster::VCImporter.new;
 #vc.import_data(Roster::Chapter.first, "/Users/jlaxson/Downloads/LMSync1.xls")
 #
-#me = Roster::Person.find_by_last_name 'Laxson'
-#me.email = 'jlaxson@mac.com'
-#me.password = 'test123'
-#me.save!
+
+# Create an example user.  Change the credentials here as desired.
+Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example@example.com", password: "password", last_name: "Example")
+me = Roster::Person.find_by_last_name 'Example'
+me.password = 'test123'
+me.save!

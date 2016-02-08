@@ -449,7 +449,6 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
-    sqlite3 (1.3.9)
     swd (0.2.1)
       activesupport (>= 3)
       attr_required (>= 0.0.5)
@@ -577,7 +576,6 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   sprockets (~> 2.11.0)
-  sqlite3
   squeel (~> 1.2.1)!
   therubyracer
   threach

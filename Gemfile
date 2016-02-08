@@ -102,7 +102,6 @@ group :test do
   gem 'rspec-activemodel-mocks'
   gem 'faker'
   gem 'zonebie'
-  gem 'sqlite3'
 
   gem 'shoulda-matchers'
   gem 'factory_girl_rails'
