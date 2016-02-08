@@ -56,14 +56,22 @@ Scheduler::Shift.create county: sf, name: 'Mental Health', abbrev: 'DMH', positi
 Scheduler::Shift.create county: sf, name: 'Health Services', abbrev: 'DHS', positions: [tl], ordinal: 6, max_signups: 1
 
 
+# Add all links to front page:
 
-#Scheduler::Shift.create county: sf, name: 'Team Lead', abbrev: 'TL', positions: [tl], shift_group: night, ordinal: 1, max_signups: 1
+HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'Volunteer Connection', url: 'http://volunteerconnection.redcross.org', group: 'Other Tools', group_ordinal: 1, ordinal: 1, icon: 'fa fa-2x fa-home'
 
+HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'NorCen Dispatch Console', url: 'placeholder', group: 'Dispatch', group_ordinal: 2, ordinal: 1, icon: 'fa fa-2x fa-check-square-o'
+HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'Dispatcher Updates', url: 'placeholder', group: 'Dispatch', group_ordinal: 2, ordinal: 2, icon: 'fa fa-2x fa-exclamation-circle'
+HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'Fire Department Contacts', url: 'placeholder', group: 'Dispatch', group_ordinal: 2, ordinal: 3, icon: 'fa fa-2x fa-phone'
+HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'Cas 2.0', url: 'placeholder', group: 'Dispatch', group_ordinal: 2, ordinal: 4, icon: 'fa fa-2x fa-credit-card'
+HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'Dispatch Mini-Manual', url: 'placeholder', group: 'Dispatch', group_ordinal: 2, ordinal: 5, icon: 'fa fa-2x fa-book'
+HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'Chicago and Northwest Illinois Region Map', url: 'placeholder', group: 'Dispatch', group_ordinal: 2, ordinal: 6, icon: 'fa fa-2x fa-map-marker'
 
-#load "lib/vc_importer.rb";
-#vc = Roster::VCImporter.new;
-#vc.import_data(Roster::Chapter.first, "/Users/jlaxson/Downloads/LMSync1.xls")
-#
+HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'Response Handbook', url: 'placeholder', group: 'Admin / Staff Back-Up', group_ordinal: 3, ordinal: 1, icon: 'fa fa-2x fa-list-alt'
+
+HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'SitCell Common Operating Picture', url: 'placeholder', group: 'SitCell', group_ordinal: 4, ordinal: 1, icon: 'fa fa-2x fa-compass'
+
+HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'DCSOps Training Videos', url: 'placeholder', group: 'Help', group_ordinal: 5, ordinal: 1, icon: 'fa fa-2x fa-youtube'
 
 # Create an example user.  Change the credentials here as desired.
 Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example@example.com", password: "password", last_name: "Example")
