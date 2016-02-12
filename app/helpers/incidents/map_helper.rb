@@ -2,7 +2,7 @@ module Incidents::MapHelper
   def map_config scope
     bounds = scope.chapter.try(:incidents_geocode_bounds).try(:presence) || '0,0,0,0'
     bounds = bounds.split(',').map(&:to_f)
-    {lat: scope.incidents_map_center_lat.try(:to_f), lng: scope.incidents_map_center_lng.try(:to_f), zoom: scope.incidents_map_zoom, geocode_bounds: bounds}
+    {lat: scope.chapter.config['incidents_map_center_lat'], lng: scope.chapter.config['incidents_map_center_lng'], zoom: scope.chapter.config['incidents_map_zoom'].to_i, geocode_bounds: bounds}
   end
 
   def google_maps_javascript(libraries=[])

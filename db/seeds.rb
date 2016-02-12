@@ -8,7 +8,7 @@
 
 Roster::CellCarrier.create name: 'Verizon', sms_gateway: '@vtext.com'
 
-arcba = Roster::Chapter.create name:'American Red Cross Bay Area', short_name:'ARCBA', code: '05503', time_zone_raw: 'America/Los_Angeles', scheduler_flex_night_start: '64800', scheduler_flex_day_start: '21600', url_slug: 'arcba'
+arcba = Roster::Chapter.create name:'American Red Cross Bay Area', short_name:'ARCBA', code: '05503', time_zone_raw: 'America/Los_Angeles', url_slug: 'arcba', config: {"incidents_map_zoom"=>9, "incidents_geocode_bounds"=>"36.5407938301337,-124.57967382718749,39.143091210253154,-119.52596288968749", "incidents_map_center_lat"=>"37.81871654", "incidents_map_center_lng"=>"-122.19014746", "incidents_resources_tracked"=>"blankets,comfort_kits", "incidents_timeline_collect"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_timeline_mandatory"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_enabled_report_frequencies"=>"weekly,weekdays,daily", "scheduler_flex_day_start"=>"25200", "scheduler_flex_night_start"=>"68400"}
 
 all = arcba.counties.create name: 'Chapter', abbrev: 'CH'
 sf = arcba.counties.create name: 'San Francisco', vc_regex_raw: 'San Francisco', abbrev: 'SF'
@@ -76,7 +76,15 @@ HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'DCSOps Training V
 # Add scope for Dispatch Console 
 Incidents::Scope.create chapter_id: 1, url_slug: 'example_dispatch'
 # Add scope for chapter incidents
-Incidents::Scope.create chapter_id: 1, url_slug: 'arcba'
+Incidents::Scope.create chapter_id: 1, url_slug: 'arcba', short_name: 'Bay Area'
+# Create some incidents
+Incidents::NumberSequence.create name: 'test', current_year: '2016', current_number: '0', format: '%<fy_short>02d-%<number>04d'
+Incidents::Territory.create chapter_id: 1, name: 'test_territory', enabled: true
+incident = Incidents::Incident.create(chapter_id: 1, incident_number: '1602d-004d', date: '2016-01-05', num_adults:2, num_children: 3, address: '3500 S Western Ave', city: 'Chicago', state: 'IL', zip: '60609', lat: '41.830402', lng: '-87.685342', status: 'open', territory_id: 1)
+incident.save(validate: false)
+bay_incident = Incidents::Incident.create(chapter_id: 1, incident_number: '1602d-014d', date: '2016-02-10', num_adults:2, num_children: 3, address: '1 Dr Carlton B Goodlett Pl', city: 'San Francisco', state: 'CA', zip: '94102', lat: '37.779361', lng: '-122.419264', status: 'open', territory_id: 1)
+bay_incident.save(validate: false)
+
 
 Scheduler::ShiftAssignment.create person_id: 1, date: '2016-02-01', shift_group_id: 4, shift_id: 1
 Scheduler::ShiftAssignment.create person_id: 1, date: '2016-02-07', shift_group_id: 3, shift_id: 1
