@@ -22,6 +22,9 @@ class Roster::SessionsController < ApplicationController
   def create
     if login_with_credentials resource.username, params[:roster_session][:password]
       resource.person.update_attribute :last_login, Time.now
+      if session[:rco_id]
+        resource.person.update_attribute :rco_id, session.delete(:rco_id)
+      end
       redirect_to after_login_path(resource.person)
     else
       render action: :new
