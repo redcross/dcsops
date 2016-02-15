@@ -72,6 +72,13 @@ HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'Response Handbook
 HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'SitCell Common Operating Picture', url: 'placeholder', group: 'SitCell', group_ordinal: 4, ordinal: 1, icon: 'fa fa-2x fa-compass'
 
 HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'DCSOps Training Videos', url: 'placeholder', group: 'Help', group_ordinal: 5, ordinal: 1, icon: 'fa fa-2x fa-youtube'
+# trying to make an admin person:
+
+Roster::CountyMembership.create county_id: 1, person_id: 1, persistent: true
+Roster::PositionMembership.create position_id: 3, person_id: 1, persistent: true
+Roster::Role.create name: 'incidents_admin', grant_name: 'incidents_admin'
+Roster::RoleMembership.create role_id: 1, position_id: 3
+
 
 # Add scope for Dispatch Console 
 Incidents::Scope.create chapter_id: 1, url_slug: 'example_dispatch'
@@ -95,8 +102,13 @@ Scheduler::Shift.create name: 'test'
 
 Scheduler:: FlexSchedule.create person_id: 1, available_sunday_day: true
 
-# Create an example user.  Change the credentials here as desired.
-Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example@example.com", password: "password", last_name: "Example")
+# Create an example admin user.  Change the credentials here as desired.
+Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example_admin", password: "password", last_name: "Admin")
+me = Roster::Person.find_by_last_name 'Admin'
+me.password = 'test123'
+me.save!
+# Create an example non-admin user.  Change the credentials here as desired.
+Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example_user", password: "password", last_name: "Example")
 me = Roster::Person.find_by_last_name 'Example'
 me.password = 'test123'
 me.save!
