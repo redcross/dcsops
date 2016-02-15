@@ -75,10 +75,34 @@ HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'DCSOps Training V
 # trying to make an admin person:
 
 Roster::CountyMembership.create county_id: 1, person_id: 1, persistent: true
-Roster::PositionMembership.create position_id: 3, person_id: 1, persistent: true
-Roster::Role.create name: 'incidents_admin', grant_name: 'incidents_admin'
-Roster::RoleMembership.create role_id: 1, position_id: 3
 
+# all the roles I can find mentioned:
+inc_ad = Roster::Role.create name: 'incidents_admin', grant_name: 'incidents_admin'
+config = Roster::Role.create name: 'chapter_config', grant_name: 'chapter_config'
+chap_ad = Roster::Role.create name: 'chapter_admin', grant_name: 'chapter_admin'
+dat_ad = Roster::Role.create name: 'chapter_dat_admin', grant_name: 'chapter_dat_admin'
+active = Roster::Role.create name: 'always_active', grant_name: 'always_active'
+sched = Roster::Role.create name: 'chapter_scheduler', grant_name: 'chapter_scheduler'
+disp = Roster::Role.create name: 'dispatch_console', grant_name: 'dispatch_console'
+cre = Roster::Role.create name: 'create_incident', grant_name: 'create_incident'
+sub = Roster::Role.create name: 'submit_incident_report', grant_name: 'submit_incident_report'
+cas = Roster::Role.create name: 'cas_admin', grant_name: 'cas_admin'
+det = Roster::Role.create name: 'incident_details', grant_name: 'incident_details'
+cas_det = Roster::Role.create name: 'cas_details', grant_name: 'cas_details'
+resp = Roster::Role.create name: 'see_responses', grant_name: 'see_responses'
+iir = Roster::Role.create name: 'approve_iir', grant_name: 'approve_iir'
+
+# assign all these roles to the first position: "Chapter Configuration"
+[inc_ad, config, chap_ad, dat_ad, active, sched, disp, cre, sub, cas, det, cas_det, resp, iir].each do |role|
+  role_id = role.id
+  Roster::RoleMembership.create role_id: role_id, position_id: 1
+  Roster::RoleMembership.create role_id: role_id, position_id: 1
+end
+
+# Add admin user (created below) to the "Chapter Configuration"
+# position, thus giving that user all the permissions listed in the
+# roles above
+Roster::PositionMembership.create position_id: 1, person_id: 1, persistent: true
 
 # Add scope for Dispatch Console 
 Incidents::Scope.create chapter_id: 1, url_slug: 'example_dispatch'
@@ -103,8 +127,8 @@ Scheduler::Shift.create name: 'test'
 Scheduler:: FlexSchedule.create person_id: 1, available_sunday_day: true
 
 # Create an example admin user.  Change the credentials here as desired.
-Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example_admin", password: "password", last_name: "Admin")
-me = Roster::Person.find_by_last_name 'Admin'
+Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example_admin", password: "password", last_name: "Admin_User")
+me = Roster::Person.find_by_last_name 'Admin_User'
 me.password = 'test123'
 me.save!
 # Create an example non-admin user.  Change the credentials here as desired.
