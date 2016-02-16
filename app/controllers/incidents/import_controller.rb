@@ -1,5 +1,5 @@
 class Incidents::ImportController < ApplicationController
-  skip_before_filter :require_valid_user!, only: [:import_dispatch]
+  skip_before_filter :require_valid_user!, only: [:import_dispatch, :import]
   before_filter :validate_webhook
   protect_from_forgery except: [:import_dispatch]
 
@@ -18,7 +18,7 @@ class Incidents::ImportController < ApplicationController
   def validate_webhook
     return if request.head?
 
-    key_env = "WEBHOOK_#{params[:action].to_s.upcase}_KEY"
+    key_env = "WEBHOOK_#{[params[:action], params[:route]].compact.map(&:to_s).join("_").upcase}_KEY"
     key = ENV[key_env]
 
     url = request.original_url
@@ -45,6 +45,24 @@ class Incidents::ImportController < ApplicationController
     head :ok
   end
 
+  def import
+    if request.head?
+      head :ok and return
+    end
+
+    json = JSON.parse( params[:mandrill_events])
+    json.each do |evt|
+      Core::JobLog.capture(self.class.to_s + '#' + params[:route]) do |logger, import_log|
+        message = evt['msg']
+        import_log.message_subject = message['subject']
+
+        public_send("import_#{params[:route]}", message, import_log)
+      end
+    end
+
+    head :ok
+  end
+
   def import_dispatch_body_handler(message, body, import_log)
     # Todo: move this to the importer where it belongs
     matches = body.match(/Account: (\d+)/i)
@@ -61,6 +79,17 @@ class Incidents::ImportController < ApplicationController
 
   def importer
     @importer ||= Incidents::DispatchImporter.new
+  end
+
+  def import_rco_id(message, log)
+    message['attachments'].each do |fname, attach|
+      body = attach['content']
+      body = Base64.decode64 body if attach['base64']
+
+      puts body
+
+      Roster::RcoIdImporter.new(body).import
+    end
   end
 
 end

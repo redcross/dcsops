@@ -19,7 +19,7 @@ Scheduler::Application.routes.draw do
     end
     resources :shift_groups
 
-    get 'calendar/:year/:month(/:display)',  year: /\d{4}/, 
+    get 'calendar/:year/:month(/:display)',  year: /\d{4}/,
                                   month: /(january|february|march|april|may|june|july|august|september|october|november|december)/,
                                   to: 'calendar#show',
                                   as: 'calendar'
@@ -107,7 +107,7 @@ Scheduler::Application.routes.draw do
           post :acknowledge, on: :member
         end
         resources :responder_recruitments
-        
+
         collection do
           get :needs_report
           get :activity
@@ -135,7 +135,7 @@ Scheduler::Application.routes.draw do
       scope "responses", controller: :responses do
         root to: :responders, as: 'responders'
       end
-      
+
     end
 
     namespace :api do
@@ -169,6 +169,8 @@ Scheduler::Application.routes.draw do
   end
 
   match 'import/dispatch', via: [:head, :post], to: 'incidents/import#import_dispatch'
+
+  match 'import/:route', via: [:head, :post], to: 'incidents/import#import'
 
   mount Connect::Engine, at: '/'
 

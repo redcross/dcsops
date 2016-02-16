@@ -9,7 +9,9 @@ module ApplicationHelper
         motd.path_regex.nil? or motd.path_regex.match(request.fullpath)
       }
     else
-      []
+      @_current_messages ||= MOTD.where(chapter_id: nil).to_a.select{|motd|
+        motd.path_regex.nil? or motd.path_regex.match(request.fullpath)
+      }
     end
   end
 
