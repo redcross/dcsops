@@ -55,6 +55,10 @@ end
 Scheduler::Shift.create county: sf, name: 'Mental Health', abbrev: 'DMH', positions: [tl], ordinal: 5, max_signups: 1
 Scheduler::Shift.create county: sf, name: 'Health Services', abbrev: 'DHS', positions: [tl], ordinal: 6, max_signups: 1
 
+# add initial vehicles
+# see and alter the allowable vehicle categories in app/models/logistics/vehicle.rb
+Logistics::Vehicle.create chapter_id: 1, name: 'pick-up truck', category: 'suv'
+Logistics::Vehicle.create chapter_id: 1, name: 'ambulance', category: 'erv'
 
 # Add all links to front page:
 
@@ -111,10 +115,12 @@ Incidents::Scope.create chapter_id: 1, url_slug: 'arcba', short_name: 'Bay Area'
 # Create some incidents
 Incidents::NumberSequence.create name: 'test', current_year: '2016', current_number: '0', format: '%<fy_short>02d-%<number>04d'
 Incidents::Territory.create chapter_id: 1, name: 'test_territory', enabled: true
-incident = Incidents::Incident.create(chapter_id: 1, incident_number: '1602d-004d', date: '2016-01-05', num_adults:2, num_children: 3, address: '3500 S Western Ave', city: 'Chicago', state: 'IL', zip: '60609', lat: '41.830402', lng: '-87.685342', status: 'open', territory_id: 1)
-incident.save(validate: false)
-bay_incident = Incidents::Incident.create(chapter_id: 1, incident_number: '1602d-014d', date: '2016-02-10', num_adults:2, num_children: 3, address: '1 Dr Carlton B Goodlett Pl', city: 'San Francisco', state: 'CA', zip: '94102', lat: '37.779361', lng: '-122.419264', status: 'open', territory_id: 1)
-bay_incident.save(validate: false)
+
+# incident numbers must match regex: \A\w*\d{2}-\d{3,}\z
+incident = Incidents::Incident.create(chapter_id: 1, incident_number: '16-001', date: '2016-01-05', num_adults:2, num_children: 3, address: '3500 S Western Ave', city: 'Chicago', state: 'IL', zip: '60609', lat: '41.830402', lng: '-87.685342', status: 'open', territory_id: 1)
+incident.save!
+bay_incident = Incidents::Incident.create(chapter_id: 1, incident_number: '16-002', date: '2016-02-10', num_adults:2, num_children: 3, address: '1 Dr Carlton B Goodlett Pl', city: 'San Francisco', state: 'CA', zip: '94102', lat: '37.779361', lng: '-122.419264', status: 'open', territory_id: 1)
+bay_incident.save!
 
 
 Scheduler::ShiftAssignment.create person_id: 1, date: '2016-02-01', shift_group_id: 4, shift_id: 1
@@ -127,12 +133,18 @@ Scheduler::Shift.create name: 'test'
 Scheduler:: FlexSchedule.create person_id: 1, available_sunday_day: true
 
 # Create an example admin user.  Change the credentials here as desired.
-Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example_admin", password: "password", last_name: "Admin_User")
+Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "admin", password: "password", last_name: "Admin_User", first_name: 'TestUser', vc_is_active: 1)
 me = Roster::Person.find_by_last_name 'Admin_User'
 me.password = 'test123'
 me.save!
 # Create an example non-admin user.  Change the credentials here as desired.
-Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example_user", password: "password", last_name: "Example")
+Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example_user", password: "password", last_name: "Example", first_name: 'TestUser', vc_is_active: 1)
 me = Roster::Person.find_by_last_name 'Example'
 me.password = 'test123'
 me.save!
+
+# Add some sample responders.
+
+['Mary', 'Joe', 'Jane', 'Ashley', 'Tom'].each do |name|
+  Roster::Person.create(chapter: Roster::Chapter.first, username: "example_user", last_name: "Example", first_name: name, vc_is_active: 1)
+end
