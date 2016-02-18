@@ -18,7 +18,7 @@ so = arcba.counties.create name: 'Solano', vc_regex_raw: 'Solano', abbrev: 'SO'
 mr = arcba.counties.create name: 'Marin', vc_regex_raw: 'Marin', abbrev: 'MR'
 cc = arcba.counties.create name: 'Contra Costa', vc_regex_raw: 'Contra Costa', abbrev: 'CC'
 
-arcba.positions.create name: 'Chapter Configuration', hidden: true
+chap_config = arcba.positions.create name: 'Chapter Configuration', hidden: true
 arcba.positions.create name: 'Chapter DAT Admin', hidden: true
 [sf, al, sm, so, mr, cc].each do |county|
   arcba.positions.create name: "DAT Administrator - #{county.name}", vc_regex_raw: "#{county.name}.*DAT Administrator$"
@@ -29,6 +29,7 @@ tl = arcba.positions.create name: 'DAT Team Lead', vc_regex_raw: 'Team Lead$'
 tech = arcba.positions.create name: 'DAT Technician', vc_regex_raw: 'Technician$'
 trainee = arcba.positions.create name: 'DAT Trainee', vc_regex_raw: 'Trainee$'
 disp = arcba.positions.create name: 'DAT Dispatcher', vc_regex_raw: 'Dispatch$'
+dispatch = arcba.positions.create name: 'Dispatch', vc_regex_raw: 'disp'
 arcba.positions.create name: 'ERV Driver', vc_regex_raw: '^ERV$'
 arcba.positions.create name: 'Bay Responder Driver', vc_regex_raw: '^Bay Responder$'
 arcba.positions.create name: 'Forklift', vc_regex_raw: '^Forklift'
@@ -36,6 +37,64 @@ arcba.positions.create name: 'Tow Shelter Trailer', vc_regex_raw: '^Tow Shelter 
 arcba.positions.create name: 'Chapter Vehicle', vc_regex_raw: '^Chapter Vehicle'
 arcba.positions.create name: 'CAC Activator', vc_regex_raw: '^CAC Activator'
 arcba.positions.create name: 'DSHR', vc_regex_raw: 'DSHR'
+calmgr = arcba.positions.create name: 'Calendar Manager', vc_regex_raw: 'CalMgr'
+chapter_admin = arcba.positions.create name: 'Chapter Admin'
+scheduler = arcba.positions.create name: 'Scheduling Administrator'
+admin = arcba.positions.create name: 'Admin'
+cas_admin = arcba.positions.create name: 'CAS Admin'
+# all roles to certain positions
+
+# calendar manager
+dat_ad = Roster::Role.create name: 'Chapter DAT Admin', grant_name: 'chapter_dat_admin'
+Roster::RoleMembership.create role_id: dat_ad.id, position_id: calmgr.id
+# chapter admin
+chap_ad = Roster::Role.create name: 'Chapter Admin', grant_name: 'chapter_admin'
+county_roster = Roster::Role.create name: 'County Roster', grant_name: 'county_roster'
+resp = Roster::Role.create name: 'See Responses', grant_name: 'see_responses'
+[chap_ad, county_roster, resp].each do |role|
+  Roster::RoleMembership.create role_id: role.id, position_id: chapter_admin.id
+end
+# chapter configuration
+config = Roster::Role.create name: 'Chapter Config', grant_name: 'chapter_config'
+Roster::RoleMembership.create role_id: config.id, position_id: chap_config.id
+# dispatch
+cre = Roster::Role.create name: 'Create Incident', grant_name: 'create_incident'
+sub = Roster::Role.create name: 'Submit Incident Report', grant_name: 'submit_incident_report'
+det = Roster::Role.create name: 'Incident Details', grant_name: 'incident_details'
+cas_det = Roster::Role.create name: 'CAS Details', grant_name: 'cas_details'
+disp_role = Roster::Role.create name: 'Dispatch Console', grant_name: 'dispatch_console'
+###homepage link?
+[cre, sub, det, cas_det, disp_role].each do |role|
+  Roster::RoleMembership.create role_id: role.id, position_id: dispatch.id
+end
+# scheduling administrator
+sched = Roster::Role.create name: 'Chapter Scheduler', grant_name: 'chapter_scheduler'
+[sched, dat_ad].each do |role|
+  Roster::RoleMembership.create role_id: role.id, position_id: scheduler.id
+end
+# admin
+inc_ad = Roster::Role.create name: 'Incidents Admin', grant_name: 'incidents_admin'
+[cre, sched, det, cas_det, inc_ad].each do |role|
+  Roster::RoleMembership.create role_id: role.id, position_id: admin.id
+end
+
+# Making up the CAS admin position to have these roles
+cas = Roster::Role.create name: 'CAS Admin', grant_name: 'cas_admin'
+active = Roster::Role.create name: 'Always Active', grant_name: 'always_active'
+iir = Roster::Role.create name: 'Approve IIR', grant_name: 'approve_iir'
+[cas, active, iir].each do |role|
+  Roster::RoleMembership.create role_id: role.id, position_id: cas_admin.id
+end
+
+
+# Add admin user (created below) to the positions with roles, thus
+# giving that user all the permissions listed in the roles above
+[calmgr, chapter_admin,  chap_config, dispatch, scheduler, admin, cas_admin].each do |position|
+  Roster::PositionMembership.create position_id: position.id, person_id: 1, persistent: true
+end
+
+
+
 
 day = Scheduler::ShiftGroup.create chapter: arcba, name: 'Day', start_offset: 25200, end_offset: 68400, period: 'daily'
 night = Scheduler::ShiftGroup.create chapter: arcba, name: 'Night', start_offset: 68400, end_offset: 111600, period: 'daily'
@@ -79,34 +138,6 @@ HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'DCSOps Training V
 # trying to make an admin person:
 
 Roster::CountyMembership.create county_id: 1, person_id: 1, persistent: true
-
-# all the roles I can find mentioned:
-inc_ad = Roster::Role.create name: 'incidents_admin', grant_name: 'incidents_admin'
-config = Roster::Role.create name: 'chapter_config', grant_name: 'chapter_config'
-chap_ad = Roster::Role.create name: 'chapter_admin', grant_name: 'chapter_admin'
-dat_ad = Roster::Role.create name: 'chapter_dat_admin', grant_name: 'chapter_dat_admin'
-active = Roster::Role.create name: 'always_active', grant_name: 'always_active'
-sched = Roster::Role.create name: 'chapter_scheduler', grant_name: 'chapter_scheduler'
-disp = Roster::Role.create name: 'dispatch_console', grant_name: 'dispatch_console'
-cre = Roster::Role.create name: 'create_incident', grant_name: 'create_incident'
-sub = Roster::Role.create name: 'submit_incident_report', grant_name: 'submit_incident_report'
-cas = Roster::Role.create name: 'cas_admin', grant_name: 'cas_admin'
-det = Roster::Role.create name: 'incident_details', grant_name: 'incident_details'
-cas_det = Roster::Role.create name: 'cas_details', grant_name: 'cas_details'
-resp = Roster::Role.create name: 'see_responses', grant_name: 'see_responses'
-iir = Roster::Role.create name: 'approve_iir', grant_name: 'approve_iir'
-
-# assign all these roles to the first position: "Chapter Configuration"
-[inc_ad, config, chap_ad, dat_ad, active, sched, disp, cre, sub, cas, det, cas_det, resp, iir].each do |role|
-  role_id = role.id
-  Roster::RoleMembership.create role_id: role_id, position_id: 1
-  Roster::RoleMembership.create role_id: role_id, position_id: 1
-end
-
-# Add admin user (created below) to the "Chapter Configuration"
-# position, thus giving that user all the permissions listed in the
-# roles above
-Roster::PositionMembership.create position_id: 1, person_id: 1, persistent: true
 
 # Add scope for Dispatch Console 
 Incidents::Scope.create chapter_id: 1, url_slug: 'example_dispatch'
