@@ -24,37 +24,45 @@
 
 4. Run `./bin/setup` in the project directory
 
-   If you see an error about `capybara-webkit` and you're running
-   Debian, check your version of `qmake`.  You may want to follow the
-   suggestion
+   If you see an error about `capybara-webkit`, check your version of
+   `qmake`.  You may want to follow the suggestion
    [here](https://github.com/thoughtbot/capybara-webkit/wiki/Installing-Qt-and-compiling-capybara-webkit)
-   to run this:
+   to run this on Debian:
 
         $ sudo apt-get install qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
 
-   Or, on a Mac:
+   Or this on a Mac:
 
-       $ brew install qt
+        $ brew install qt
 
    ...in order to update qmake and install capybara-webkit
    successfully.
 
 
-5. The setup script should create your db, but if it fails, try the
-   following, with your login user in place of `myuser`:
+5. The setup script should create your db, but if it fails for
+   permission reasons, try the following, with your system username in
+   place of `myuser`:
 
    ```
    $ su - postgres  
    $ psql  
-   postgres=# CREATE DATABASE "arcdata-dev";  
-   postgres=# ALTER USER myuser WITH SUPERUSER;  
+   postgres=# CREATE DATABASE "arcdata-dev";
+
+   # if your user is not already a postgres user:
+   postgres=# CREATE USER myuser WITH SUPERUSER;
+   
+   # otherwise, if your user is already a postgres user:
+   postgres=# ALTER USER myuser WITH SUPERUSER;
+
+   # either way, continue with:
    postgres=# GRANT ALL ON DATABASE "arcdata-dev" TO myuser;  
    postgres=# \q  
    ```
 
-6. Run `./bin/setup` again.  Once it works correctly, your app is set up.
+6. Run `./bin/setup` again.  Once it runs without errors, your app is set up.
 
 7. Run `bundle exec unicorn -c unicorn.rb` to start the development
    server and visit [http://0.0.0.0:8080](http://0.0.0.0:8080) in your
-   browser.  Login with your credentials from seeds.rb.
+   browser.  Login with the credentials you created in seeds.rb.  The
+   defaults are `admin` and `test123`.
 
