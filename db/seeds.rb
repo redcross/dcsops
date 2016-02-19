@@ -8,6 +8,7 @@
 
 Roster::CellCarrier.create name: 'Verizon', sms_gateway: '@vtext.com'
 
+arcil = Roster::Chapter.create name:'American Red Cross Illinois Area', short_name:'ARCIL', code: '05503', time_zone_raw: 'America/Chicago', url_slug: 'arcil', config: {"incidents_map_zoom"=>7, "incidents_geocode_bounds"=>"42.363599, -90.675103,38.639380, -87.829644", "incidents_map_center_lat"=>"40.435855", "incidents_map_center_lng"=>"-89.496991", "incidents_resources_tracked"=>"blankets,comfort_kits", "incidents_timeline_collect"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_timeline_mandatory"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_enabled_report_frequencies"=>"weekly,weekdays,daily", "scheduler_flex_day_start"=>"25200", "scheduler_flex_night_start"=>"68400"}
 arcba = Roster::Chapter.create name:'American Red Cross Bay Area', short_name:'ARCBA', code: '05503', time_zone_raw: 'America/Los_Angeles', url_slug: 'arcba', config: {"incidents_map_zoom"=>9, "incidents_geocode_bounds"=>"36.5407938301337,-124.57967382718749,39.143091210253154,-119.52596288968749", "incidents_map_center_lat"=>"37.81871654", "incidents_map_center_lng"=>"-122.19014746", "incidents_resources_tracked"=>"blankets,comfort_kits", "incidents_timeline_collect"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_timeline_mandatory"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_enabled_report_frequencies"=>"weekly,weekdays,daily", "scheduler_flex_day_start"=>"25200", "scheduler_flex_night_start"=>"68400"}
 
 all = arcba.counties.create name: 'Chapter', abbrev: 'CH'
@@ -18,30 +19,30 @@ so = arcba.counties.create name: 'Solano', vc_regex_raw: 'Solano', abbrev: 'SO'
 mr = arcba.counties.create name: 'Marin', vc_regex_raw: 'Marin', abbrev: 'MR'
 cc = arcba.counties.create name: 'Contra Costa', vc_regex_raw: 'Contra Costa', abbrev: 'CC'
 
-chap_config = arcba.positions.create name: 'Chapter Configuration', hidden: true
-arcba.positions.create name: 'Chapter DAT Admin', hidden: true
+chap_config = arcil.positions.create name: 'Chapter Configuration', hidden: true
+arcil.positions.create name: 'Chapter DAT Admin', hidden: true
 [sf, al, sm, so, mr, cc].each do |county|
-  arcba.positions.create name: "DAT Administrator - #{county.name}", vc_regex_raw: "#{county.name}.*DAT Administrator$"
-  arcba.positions.create name: "Disaster Manager - #{county.name}", vc_regex_raw: "#{county.name}.*Disaster Manager$"
+  arcil.positions.create name: "DAT Administrator - #{county.name}", vc_regex_raw: "#{county.name}.*DAT Administrator$"
+  arcil.positions.create name: "Disaster Manager - #{county.name}", vc_regex_raw: "#{county.name}.*Disaster Manager$"
 end
 
-tl = arcba.positions.create name: 'DAT Team Lead', vc_regex_raw: 'Team Lead$'
-tech = arcba.positions.create name: 'DAT Technician', vc_regex_raw: 'Technician$'
-trainee = arcba.positions.create name: 'DAT Trainee', vc_regex_raw: 'Trainee$'
-disp = arcba.positions.create name: 'DAT Dispatcher', vc_regex_raw: 'Dispatch$'
-dispatch = arcba.positions.create name: 'Dispatch', vc_regex_raw: 'disp'
-arcba.positions.create name: 'ERV Driver', vc_regex_raw: '^ERV$'
-arcba.positions.create name: 'Bay Responder Driver', vc_regex_raw: '^Bay Responder$'
-arcba.positions.create name: 'Forklift', vc_regex_raw: '^Forklift'
-arcba.positions.create name: 'Tow Shelter Trailer', vc_regex_raw: '^Tow Shelter Trailer$'
-arcba.positions.create name: 'Chapter Vehicle', vc_regex_raw: '^Chapter Vehicle'
-arcba.positions.create name: 'CAC Activator', vc_regex_raw: '^CAC Activator'
-arcba.positions.create name: 'DSHR', vc_regex_raw: 'DSHR'
-calmgr = arcba.positions.create name: 'Calendar Manager', vc_regex_raw: 'CalMgr'
-chapter_admin = arcba.positions.create name: 'Chapter Admin'
-scheduler = arcba.positions.create name: 'Scheduling Administrator'
-admin = arcba.positions.create name: 'Admin'
-cas_admin = arcba.positions.create name: 'CAS Admin'
+tl = arcil.positions.create name: 'DAT Team Lead', vc_regex_raw: 'Team Lead$'
+tech = arcil.positions.create name: 'DAT Technician', vc_regex_raw: 'Technician$'
+trainee = arcil.positions.create name: 'DAT Trainee', vc_regex_raw: 'Trainee$'
+disp = arcil.positions.create name: 'DAT Dispatcher', vc_regex_raw: 'Dispatch$'
+dispatch = arcil.positions.create name: 'Dispatch', vc_regex_raw: 'disp'
+arcil.positions.create name: 'ERV Driver', vc_regex_raw: '^ERV$'
+arcil.positions.create name: 'Bay Responder Driver', vc_regex_raw: '^Bay Responder$'
+arcil.positions.create name: 'Forklift', vc_regex_raw: '^Forklift'
+arcil.positions.create name: 'Tow Shelter Trailer', vc_regex_raw: '^Tow Shelter Trailer$'
+arcil.positions.create name: 'Chapter Vehicle', vc_regex_raw: '^Chapter Vehicle'
+arcil.positions.create name: 'CAC Activator', vc_regex_raw: '^CAC Activator'
+arcil.positions.create name: 'DSHR', vc_regex_raw: 'DSHR'
+calmgr = arcil.positions.create name: 'Calendar Manager', vc_regex_raw: 'CalMgr'
+chapter_admin = arcil.positions.create name: 'Chapter Admin'
+scheduler = arcil.positions.create name: 'Scheduling Administrator'
+admin = arcil.positions.create name: 'Admin'
+cas_admin = arcil.positions.create name: 'CAS Admin'
 # all roles to certain positions
 
 # calendar manager
@@ -96,10 +97,10 @@ end
 
 
 
-day = Scheduler::ShiftGroup.create chapter: arcba, name: 'Day', start_offset: 25200, end_offset: 68400, period: 'daily'
-night = Scheduler::ShiftGroup.create chapter: arcba, name: 'Night', start_offset: 68400, end_offset: 111600, period: 'daily'
-week = Scheduler::ShiftGroup.create chapter: arcba, name: 'Weekly', start_offset: 0, end_offset: 7.days, period: 'weekly'
-month = Scheduler::ShiftGroup.create chapter: arcba, name: 'Monthly', start_offset: 0, end_offset: 31, period: 'monthly'
+day = Scheduler::ShiftGroup.create chapter: arcil, name: 'Day', start_offset: 25200, end_offset: 68400, period: 'daily'
+night = Scheduler::ShiftGroup.create chapter: arcil, name: 'Night', start_offset: 68400, end_offset: 111600, period: 'daily'
+week = Scheduler::ShiftGroup.create chapter: arcil, name: 'Weekly', start_offset: 0, end_offset: 7.days, period: 'weekly'
+month = Scheduler::ShiftGroup.create chapter: arcil, name: 'Monthly', start_offset: 0, end_offset: 31, period: 'monthly'
 
 [day, night].each do |group|
   [sf, al, sm, so, mr, cc].each do |county|
@@ -142,17 +143,15 @@ Roster::CountyMembership.create county_id: 1, person_id: 1, persistent: true
 # Add scope for Dispatch Console 
 Incidents::Scope.create chapter_id: 1, url_slug: 'example_dispatch'
 # Add scope for chapter incidents
-Incidents::Scope.create chapter_id: 1, url_slug: 'arcba', short_name: 'Bay Area'
+Incidents::Scope.create chapter_id: 1, url_slug: 'arcil', short_name: 'Illinois Area'
 # Create some incidents
 Incidents::NumberSequence.create name: 'test', current_year: '2016', current_number: '0', format: '%<fy_short>02d-%<number>04d'
 Incidents::Territory.create chapter_id: 1, name: 'test_territory', enabled: true
 
 # incident numbers must match regex: \A\w*\d{2}-\d{3,}\z
-incident = Incidents::Incident.create(chapter_id: 1, incident_number: '16-001', date: '2016-01-05', num_adults:2, num_children: 3, address: '3500 S Western Ave', city: 'Chicago', state: 'IL', zip: '60609', lat: '41.830402', lng: '-87.685342', status: 'open', territory_id: 1)
-incident.save!
-bay_incident = Incidents::Incident.create(chapter_id: 1, incident_number: '16-002', date: '2016-02-10', num_adults:2, num_children: 3, address: '1 Dr Carlton B Goodlett Pl', city: 'San Francisco', state: 'CA', zip: '94102', lat: '37.779361', lng: '-122.419264', status: 'open', territory_id: 1)
-bay_incident.save!
-
+Incidents::Incident.create(chapter_id: 1, incident_number: '16-001', date: '2016-02-10', num_adults: 2, num_children: 3, address: '3500 S Western Ave', city: 'Chicago', state: 'IL', zip: '60609', lat: '41.830146', lng: '-87.685041', status: 'open', territory_id: 1)
+Incidents::Incident.create(chapter_id: 1, incident_number: '16-002', date: '2016-02-15', num_adults: 2, num_children: 3, address: '1001 S 2nd Street', city: 'Springfield', state: 'IL', zip: '62707', lat: '39.790943', lng: '-89.653209', status: 'open', territory_id: 1)
+Incidents::Incident.create(chapter_id: 1, incident_number: '16-003', date: '2016-02-18', num_adults: 2, num_children: 3, address: '10 E Willow St', city: 'Normal', state: 'IL', zip: '61761', lat: '40.513898', lng: '-88.984202', status: 'open', territory_id: 1)
 
 Scheduler::ShiftAssignment.create person_id: 1, date: '2016-02-01', shift_group_id: 4, shift_id: 1
 Scheduler::ShiftAssignment.create person_id: 1, date: '2016-02-07', shift_group_id: 3, shift_id: 1
@@ -169,13 +168,13 @@ me = Roster::Person.find_by_last_name 'Admin_User'
 me.password = 'test123'
 me.save!
 # Create an example non-admin user.  Change the credentials here as desired.
-Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example_user", password: "password", last_name: "Example", first_name: 'TestUser', vc_is_active: 1)
-me = Roster::Person.find_by_last_name 'Example'
+Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example_user", password: "password", last_name: "Example_User", first_name: 'TestUser', vc_is_active: 1)
+me = Roster::Person.find_by_last_name 'Example_User'
 me.password = 'test123'
 me.save!
 
 # Add some sample responders.
 
-['Mary', 'Joe', 'Jane', 'Ashley', 'Tom'].each do |name|
-  Roster::Person.create(chapter: Roster::Chapter.first, username: "example_user", last_name: "Example", first_name: name, vc_is_active: 1)
+['Ashley', 'Destiny', 'Imani', 'Jayden', 'Jane', 'John', 'Lucia', 'Mateo', 'Tom'].each do |name|
+  Roster::Person.create(chapter: Roster::Chapter.first, last_name: "Example", first_name: name, vc_is_active: 1)
 end
