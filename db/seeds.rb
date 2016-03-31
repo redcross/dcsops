@@ -11,13 +11,32 @@ Roster::CellCarrier.create name: 'Verizon', sms_gateway: '@vtext.com'
 arcil = Roster::Chapter.create name:'American Red Cross Illinois Area', short_name:'ARCIL', code: '05503', time_zone_raw: 'America/Chicago', url_slug: 'arcil', config: {"incidents_map_zoom"=>7, "incidents_geocode_bounds"=>"42.363599, -90.675103,38.639380, -87.829644", "incidents_map_center_lat"=>"40.435855", "incidents_map_center_lng"=>"-89.496991", "incidents_resources_tracked"=>"blankets,comfort_kits", "incidents_timeline_collect"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_timeline_mandatory"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_enabled_report_frequencies"=>"weekly,weekdays,daily", "scheduler_flex_day_start"=>"25200", "scheduler_flex_night_start"=>"68400", "incidents_enable_dispatch_console"=>true}
 arcba = Roster::Chapter.create name:'American Red Cross Bay Area', short_name:'ARCBA', code: '05503', time_zone_raw: 'America/Los_Angeles', url_slug: 'arcba', config: {"incidents_map_zoom"=>9, "incidents_geocode_bounds"=>"36.5407938301337,-124.57967382718749,39.143091210253154,-119.52596288968749", "incidents_map_center_lat"=>"37.81871654", "incidents_map_center_lng"=>"-122.19014746", "incidents_resources_tracked"=>"blankets,comfort_kits", "incidents_timeline_collect"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_timeline_mandatory"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_enabled_report_frequencies"=>"weekly,weekdays,daily", "scheduler_flex_day_start"=>"25200", "scheduler_flex_night_start"=>"68400", "incidents_enable_dispatch_console"=>true}
 
+# Create an example admin user.  Change the credentials here as desired.
+Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "admin", password: "password", last_name: "Admin_User", first_name: 'TestUser', vc_is_active: 1)
+me = Roster::Person.find_by_last_name 'Admin_User'
+me.password = 'test123'
+me.save!
+# Create an example non-admin user.  Change the credentials here as desired.
+Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example_user", password: "password", last_name: "Example_User", first_name: 'TestUser', vc_is_active: 1)
+me = Roster::Person.find_by_last_name 'Example_User'
+me.password = 'test123'
+me.save!
+
+
+
 all = arcba.counties.create name: 'Chapter', abbrev: 'CH'
-sf = arcba.counties.create name: 'San Francisco', vc_regex_raw: 'San Francisco', abbrev: 'SF'
-al = arcba.counties.create name: 'Alameda', vc_regex_raw: 'Alameda', abbrev: 'AL'
-sm = arcba.counties.create name: 'San Mateo', vc_regex_raw: 'San Mateo', abbrev: 'SM'
+#sf = arcba.counties.create name: 'San Francisco', vc_regex_raw: 'San Francisco', abbrev: 'SF'
+#al = arcba.counties.create name: 'Alameda', vc_regex_raw: 'Alameda', abbrev: 'AL'
+#sm = arcba.counties.create name: 'San Mateo', vc_regex_raw: 'San Mateo', abbrev: 'SM'
 so = arcba.counties.create name: 'Solano', vc_regex_raw: 'Solano', abbrev: 'SO'
 mr = arcba.counties.create name: 'Marin', vc_regex_raw: 'Marin', abbrev: 'MR'
 cc = arcba.counties.create name: 'Contra Costa', vc_regex_raw: 'Contra Costa', abbrev: 'CC'
+
+sf = arcil.counties.create name: 'Greater Cook', vc_regex_raw: 'Greater Cook', abbrev: 'CK'
+al = arcil.counties.create name: 'Chicago', vc_regex_raw: 'Chicago', abbrev: 'CH'
+sm = arcil.counties.create name: 'SW Suburbs', vc_regex_raw: 'SW Suburbs', abbrev: 'SW'
+
+
 
 chap_config = arcil.positions.create name: 'Chapter Configuration', hidden: true
 arcil.positions.create name: 'Chapter DAT Admin', hidden: true
@@ -90,7 +109,9 @@ end
 
 # Add admin user (created below) to the positions with roles, thus
 # giving that user all the permissions listed in the roles above
-[calmgr, chapter_admin,  chap_config, dispatch, scheduler, admin, cas_admin].each do |position|
+#
+# Also give user the positions associated with shifts, below
+[calmgr, chapter_admin,  chap_config, dispatch, scheduler, admin, cas_admin, tl, disp].each do |position|
   Roster::PositionMembership.create position_id: position.id, person_id: 1, persistent: true
 end
 
@@ -99,21 +120,25 @@ end
 
 day = Scheduler::ShiftGroup.create chapter: arcil, name: 'Day', start_offset: 25200, end_offset: 68400, period: 'daily'
 night = Scheduler::ShiftGroup.create chapter: arcil, name: 'Night', start_offset: 68400, end_offset: 111600, period: 'daily'
-week = Scheduler::ShiftGroup.create chapter: arcil, name: 'Weekly', start_offset: 0, end_offset: 7.days, period: 'weekly'
+#week = Scheduler::ShiftGroup.create chapter: arcil, name: 'Weekly', start_offset: 0, end_offset: 7.days, period: 'weekly'
 month = Scheduler::ShiftGroup.create chapter: arcil, name: 'Monthly', start_offset: 0, end_offset: 31, period: 'monthly'
 
-[day, night].each do |group|
+Scheduler::ShiftCategory.create chapter: arcil, name: 'Response', show: true
+
   [sf, al, sm, so, mr, cc].each do |county|
-    Scheduler::Shift.create county: county, name: 'Team Lead', abbrev: 'TL', positions: [tl], ordinal: 1, max_signups: 1, spreadsheet_ordinal: 1
-    Scheduler::Shift.create county: county, name: 'Backup Lead', abbrev: 'BTL', positions: [tl], ordinal: 2, max_signups: 1, spreadsheet_ordinal: 2
+    Scheduler::Shift.create county: county, name: 'Team Lead', abbrev: 'TL', positions: [tl], ordinal: 1, max_signups: 1, spreadsheet_ordinal: 1, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
+    Scheduler::Shift.create county: county, name: 'Backup Lead', abbrev: 'BTL', positions: [tl], ordinal: 2, max_signups: 1, spreadsheet_ordinal: 2, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
     if county == sf
-      Scheduler::Shift.create county: county, name: 'Dispatch', abbrev: 'Disp', positions: [disp], ordinal: 5, max_signups: 1, spreadsheet_ordinal: 3
+      Scheduler::Shift.create county: county, name: 'Dispatch', abbrev: 'Disp', positions: [disp], ordinal: 5, max_signups: 1, spreadsheet_ordinal: 3, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
     end
   end
-end
 
-Scheduler::Shift.create county: sf, name: 'Mental Health', abbrev: 'DMH', positions: [tl], ordinal: 5, max_signups: 1
-Scheduler::Shift.create county: sf, name: 'Health Services', abbrev: 'DHS', positions: [tl], ordinal: 6, max_signups: 1
+test_shift = Scheduler::Shift.create county: sf, name: 'Mental Health', abbrev: 'DMH', positions: [tl], ordinal: 5, max_signups: 1, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
+Scheduler::Shift.create county: sf, name: 'Health Services', abbrev: 'DHS', positions: [tl], ordinal: 6, max_signups: 1, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
+
+# assign shifts to groups?
+test_shift.shift_groups = [day]
+test_shift.save
 
 # add initial vehicles
 # see and alter the allowable vehicle categories in app/models/logistics/vehicle.rb
@@ -139,6 +164,11 @@ HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'DCSOps Training V
 # trying to make an admin person:
 
 Roster::CountyMembership.create county_id: 1, person_id: 1, persistent: true
+Roster::CountyMembership.create county_id: 2, person_id: 1, persistent: true
+Roster::CountyMembership.create county_id: 3, person_id: 1, persistent: true
+Roster::CountyMembership.create county_id: 4, person_id: 1, persistent: true
+Roster::CountyMembership.create county_id: 5, person_id: 1, persistent: true
+Roster::CountyMembership.create county_id: 6, person_id: 1, persistent: true
 
 # Add scope for Dispatch Console 
 Incidents::Scope.create chapter_id: 1, url_slug: 'example_dispatch'
@@ -146,7 +176,9 @@ Incidents::Scope.create chapter_id: 1, url_slug: 'example_dispatch'
 Incidents::Scope.create chapter_id: 1, url_slug: 'arcil', short_name: 'Illinois Area'
 # Create some incidents
 Incidents::NumberSequence.create name: 'test', current_year: '2016', current_number: '0', format: '%<fy_short>02d-%<number>04d'
-Incidents::Territory.create chapter_id: 1, name: 'test_territory', enabled: true
+backup_person = Roster::Person.create(chapter: Roster::Chapter.first, last_name: "Example", first_name: "Backup", vc_is_active: 1)
+dc = Scheduler::DispatchConfig.create chapter: Roster::Chapter.first, backup_first: backup_person
+Incidents::Territory.create chapter_id: 1, name: 'test_territory', enabled: true, dispatch_config: dc
 
 # incident numbers must match regex: \A\w*\d{2}-\d{3,}\z
 Incidents::Incident.create(chapter_id: 1, incident_number: '16-001', date: '2016-02-10', num_adults: 2, num_children: 3, address: '3500 S Western Ave', city: 'Chicago', state: 'IL', zip: '60609', lat: '41.830146', lng: '-87.685041', status: 'open', territory_id: 1)
@@ -154,24 +186,13 @@ Incidents::Incident.create(chapter_id: 1, incident_number: '16-002', date: '2016
 Incidents::Incident.create(chapter_id: 1, incident_number: '16-003', date: '2016-02-18', num_adults: 2, num_children: 3, address: '10 E Willow St', city: 'Normal', state: 'IL', zip: '61761', lat: '40.513898', lng: '-88.984202', status: 'open', territory_id: 1)
 
 Scheduler::ShiftAssignment.create person_id: 1, date: '2016-02-01', shift_group_id: 4, shift_id: 1
-Scheduler::ShiftAssignment.create person_id: 1, date: '2016-02-07', shift_group_id: 3, shift_id: 1
+Scheduler::ShiftAssignment.create person_id: 1, date: '2016-02-07', shift_group_id: 2, shift_id: 1
 Scheduler::ShiftAssignment.create person_id: 1, date: '2016-02-05', shift_group_id: 1, shift_id: 1
 Scheduler::ShiftAssignment.create person_id: 1, date: '2020-01-01', shift_group_id: 1, shift_id: 1
 
 Scheduler::Shift.create name: 'test'
 
 Scheduler:: FlexSchedule.create person_id: 1, available_sunday_day: true
-
-# Create an example admin user.  Change the credentials here as desired.
-Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "admin", password: "password", last_name: "Admin_User", first_name: 'TestUser', vc_is_active: 1)
-me = Roster::Person.find_by_last_name 'Admin_User'
-me.password = 'test123'
-me.save!
-# Create an example non-admin user.  Change the credentials here as desired.
-Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example_user", password: "password", last_name: "Example_User", first_name: 'TestUser', vc_is_active: 1)
-me = Roster::Person.find_by_last_name 'Example_User'
-me.password = 'test123'
-me.save!
 
 # Add some sample responders.
 
