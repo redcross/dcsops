@@ -11,6 +11,10 @@ ARCData is a Ruby on Rails app and depends on:
 
 ARCData expects to be able to connect to postgres using your user account without a password.
 
+For now, use the `dev-setup` branch for development:
+
+    $ git checkout dev-setup
+
 Once you have Ruby and PostgreSQL installed, run `./bin/setup` in the project directory.
 
 You may get errors during setup if the dependencies of the dependencies aren't installed. The best way to resolve these issues is to search for the issue you're encountering for your operating system and repeat.

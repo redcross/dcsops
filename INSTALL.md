@@ -58,10 +58,29 @@
    postgres=# GRANT ALL ON DATABASE "arcdata-dev" TO myuser;  
    postgres=# \q  
    ```
+6. Try ./bin/setup again.  If you get an error like:
 
-6. Run `./bin/setup` again.  Once it runs without errors, your app is set up.
+    ```
+    ActiveRecord::UnknownAttributeError: unknown attribute: password
+    /home/cdonnelly/Documents/arcdata/db/seeds.rb:166:in `<top (required)>'
+    -e:1:in `<main>'
+    NoMethodError: undefined method `password=' for #<Roster::Person:0x00559a076ac498>
+    /home/cdonnelly/Documents/arcdata/db/seeds.rb:166:in `<top (required)>'
+    -e:1:in `<main>'
+    ```
 
-7. Run `bundle exec unicorn -c unicorn.rb` to start the development
+    then do the following workaround, as outlined in issue #91:
+
+    ```
+    $ git checkout ec88f9307dbcbb6eec33d0307773df5372bb62f5
+    $ ./bin/setup
+    $ git checkout dev-setup
+    $ ./bin/setup
+    ```
+    
+7. Run `./bin/setup` again.  Once it runs without errors, your app is set up.
+
+8. Run `bundle exec unicorn -c unicorn.rb` to start the development
    server and visit [http://0.0.0.0:8080](http://0.0.0.0:8080) in your
    browser.  Login with the credentials you created in seeds.rb.  The
    defaults are `admin` and `test123`.
