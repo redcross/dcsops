@@ -85,3 +85,15 @@
    browser.  Login with the credentials you created in seeds.rb.  The
    defaults are `admin` and `test123`.
 
+
+
+Appendix A: Getting a trial Twilio account
+
+Some
+[issues](https://github.com/redcross/arcdata/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sms)
+are about SMS notifications, so may involve sending sample texts through
+Twilio as part of testing.
+
+Go to [Twilio](https://www.twilio.com/try-twilio) to sign up for a trial
+account and verify your phone number.  With a trial account, you'll only
+be able to text yourself.
