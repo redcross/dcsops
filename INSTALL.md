@@ -87,7 +87,7 @@
 
 
 
-Appendix A: Getting a trial Twilio account
+## Appendix A: Getting a trial Twilio account
 
 Some
 [issues](https://github.com/redcross/arcdata/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sms)
