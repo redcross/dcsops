@@ -13,16 +13,17 @@ arcba = Roster::Chapter.create name:'American Red Cross Bay Area', short_name:'A
 
 # Create an example admin user.  Change the credentials here as desired.
 Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "admin", password: "password", last_name: "Admin_User", first_name: 'TestUser', vc_is_active: 1)
-me = Roster::Person.find_by_last_name 'Admin_User'
-me.password = 'test123'
-me.save!
+admin = Roster::Person.find_by_last_name 'Admin_User'
+admin.password = 'test123'
+admin.save!
 # Create an example non-admin user.  Change the credentials here as desired.
 Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example_user", password: "password", last_name: "Example_User", first_name: 'TestUser', vc_is_active: 1)
-me = Roster::Person.find_by_last_name 'Example_User'
-me.password = 'test123'
-me.save!
+example = Roster::Person.find_by_last_name 'Example_User'
+example.password = 'test123'
+example.save!
 
 
+#foooooo
 
 all = arcba.counties.create name: 'Chapter', abbrev: 'CH'
 #sf = arcba.counties.create name: 'San Francisco', vc_regex_raw: 'San Francisco', abbrev: 'SF'
@@ -60,7 +61,7 @@ arcil.positions.create name: 'DSHR', vc_regex_raw: 'DSHR'
 calmgr = arcil.positions.create name: 'Calendar Manager', vc_regex_raw: 'CalMgr'
 chapter_admin = arcil.positions.create name: 'Chapter Admin'
 scheduler = arcil.positions.create name: 'Scheduling Administrator'
-admin = arcil.positions.create name: 'Admin'
+admin_pos = arcil.positions.create name: 'Admin'
 cas_admin = arcil.positions.create name: 'CAS Admin'
 # all roles to certain positions
 
@@ -95,7 +96,7 @@ end
 # admin
 inc_ad = Roster::Role.create name: 'Incidents Admin', grant_name: 'incidents_admin'
 [cre, sched, det, cas_det, inc_ad].each do |role|
-  Roster::RoleMembership.create role_id: role.id, position_id: admin.id
+  Roster::RoleMembership.create role_id: role.id, position_id: admin_pos.id
 end
 
 # Making up the CAS admin position to have these roles
@@ -111,8 +112,13 @@ end
 # giving that user all the permissions listed in the roles above
 #
 # Also give user the positions associated with shifts, below
-[calmgr, chapter_admin,  chap_config, dispatch, scheduler, admin, cas_admin, tl, disp].each do |position|
+[calmgr, chapter_admin,  chap_config, dispatch, scheduler, admin_pos, cas_admin, tl, disp].each do |position|
   Roster::PositionMembership.create position_id: position.id, person_id: 1, persistent: true
+end
+
+# give example user some positions, too
+[dispatch, tl, disp].each do | position|
+  Roster::PositionMembership.create position_id: position.id, person_id: example.id, persistent: true
 end
 
 
@@ -126,19 +132,25 @@ month = Scheduler::ShiftGroup.create chapter: arcil, name: 'Monthly', start_offs
 Scheduler::ShiftCategory.create chapter: arcil, name: 'Response', show: true
 
   [sf, al, sm, so, mr, cc].each do |county|
-    Scheduler::Shift.create county: county, name: 'Team Lead', abbrev: 'TL', positions: [tl], ordinal: 1, max_signups: 1, spreadsheet_ordinal: 1, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
-    Scheduler::Shift.create county: county, name: 'Backup Lead', abbrev: 'BTL', positions: [tl], ordinal: 2, max_signups: 1, spreadsheet_ordinal: 2, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
+    team_lead_shift = Scheduler::Shift.create county: county, name: 'Team Lead', abbrev: 'TL', positions: [tl], ordinal: 1, max_signups: 1, spreadsheet_ordinal: 1, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
+    btl_shift = Scheduler::Shift.create county: county, name: 'Backup Lead', abbrev: 'BTL', positions: [tl], ordinal: 2, max_signups: 1, spreadsheet_ordinal: 2, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
+    [team_lead_shift, btl_shift].each do |shift|
+      shift.shift_groups = [day, night]
+    end
     if county == sf
-      Scheduler::Shift.create county: county, name: 'Dispatch', abbrev: 'Disp', positions: [disp], ordinal: 5, max_signups: 1, spreadsheet_ordinal: 3, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
+      disp_shift = Scheduler::Shift.create county: county, name: 'Dispatch', abbrev: 'Disp', positions: [disp], ordinal: 5, max_signups: 1, spreadsheet_ordinal: 3, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
+      disp_shift.shift_groups = [day, night]
     end
   end
 
-test_shift = Scheduler::Shift.create county: sf, name: 'Mental Health', abbrev: 'DMH', positions: [tl], ordinal: 5, max_signups: 1, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
-Scheduler::Shift.create county: sf, name: 'Health Services', abbrev: 'DHS', positions: [tl], ordinal: 6, max_signups: 1, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
+mental_health_shift = Scheduler::Shift.create county: sf, name: 'Mental Health', abbrev: 'DMH', positions: [tl], ordinal: 5, max_signups: 1, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
+health_services_shift = Scheduler::Shift.create county: sf, name: 'Health Services', abbrev: 'DHS', positions: [tl], ordinal: 6, max_signups: 1, shift_category: Scheduler::ShiftCategory.first, min_desired_signups: 1
 
-# assign shifts to groups?
-test_shift.shift_groups = [day]
-test_shift.save
+# assign shifts to groups
+[mental_health_shift, health_services_shift].each do |shift|
+  shift.shift_groups = [day]
+  shift.save
+end
 
 # add initial vehicles
 # see and alter the allowable vehicle categories in app/models/logistics/vehicle.rb
@@ -163,12 +175,16 @@ HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'SitCell Common Op
 HomepageLink.create chapter_id: Roster::Chapter.first,  name: 'DCSOps Training Videos', url: 'placeholder', group: 'Help', group_ordinal: 5, ordinal: 1, icon: 'fa fa-2x fa-youtube'
 # trying to make an admin person:
 
-Roster::CountyMembership.create county_id: 1, person_id: 1, persistent: true
-Roster::CountyMembership.create county_id: 2, person_id: 1, persistent: true
-Roster::CountyMembership.create county_id: 3, person_id: 1, persistent: true
-Roster::CountyMembership.create county_id: 4, person_id: 1, persistent: true
-Roster::CountyMembership.create county_id: 5, person_id: 1, persistent: true
-Roster::CountyMembership.create county_id: 6, person_id: 1, persistent: true
+Roster::CountyMembership.create county_id: so.id, person_id: admin.id, persistent: true
+Roster::CountyMembership.create county_id: sf.id, person_id: admin.id, persistent: true
+Roster::CountyMembership.create county_id: mr.id, person_id: admin.id, persistent: true
+Roster::CountyMembership.create county_id: cc.id, person_id: admin.id, persistent: true
+Roster::CountyMembership.create county_id: al.id, person_id: admin.id, persistent: true
+Roster::CountyMembership.create county_id: sm.id, person_id: admin.id, persistent: true
+
+Roster::CountyMembership.create county_id: sf.id, person_id: example.id, persistent: true
+Roster::CountyMembership.create county_id: al.id, person_id: example.id, persistent: true
+
 
 # Add scope for Dispatch Console 
 Incidents::Scope.create chapter_id: 1, url_slug: 'example_dispatch'
