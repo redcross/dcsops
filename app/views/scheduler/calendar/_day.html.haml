@@ -1,6 +1,6 @@
-%table.shifts
-  %tr
-    %th.date-header(colspan=2)=date.day
+%div.shifts
+  %div
+    %div.date-header(colspan=2)=date.day
   - calendar.daily_groups.each_with_index do |(group, shifts), group_idx|
     - assignments = calendar.assignments_for_group_on_day group, date
     -# cache [group, shifts, assignments, date, ajax_params] do
@@ -11,13 +11,12 @@
     -if person
       - my_shifts = calendar.my_shifts_for_group_on_day(group.id, date)
     - group_class = my_shifts.present? ? 'my-shift' : ''
-    %tr
-      %th.shift-header-normal.shift-side{class: [group_class, is_last_group && 'last-group'], rowspan: shifts.count+1}=group.name
-      %th.shift-header-normal.shift-top{class: group_class}=group.name
-    
-    - render_shifts group, shifts, date, editable do |idx, is_first, is_last, needs_signups, row_html|
-      %tr{class: [group_class, (!is_last_group && is_last && 'end-group')]}
-        %td{class: needs_signups&&'open'}=row_html
+    %div.shift
+      %div.shift-header-normal.shift-top{class: group_class}=group.name
+
+      - render_shifts group, shifts, date, editable do |idx, is_first, is_last, needs_signups, row_html|
+        %div{class: [group_class, (!is_last_group && is_last && 'end-group')]}
+          %div{class: needs_signups&&'open'}=row_html
 
 -if request.xhr?
   :javascript

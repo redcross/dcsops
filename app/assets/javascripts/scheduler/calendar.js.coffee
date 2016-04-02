@@ -65,6 +65,10 @@ class window.CalendarController
     val
 
   highlightRecommendedShifts: (toggleIndicator) ->
+    ###
+    if toggleIndicator true
+      get all of the
+    ###
     console.log("highlighting with " + toggleIndicator);
 
   renderArgs: () ->
