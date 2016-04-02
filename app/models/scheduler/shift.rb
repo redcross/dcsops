@@ -183,7 +183,4 @@ class Scheduler::Shift < ActiveRecord::Base
     "#{shift_groups.first.try :chapter_id} - #{county.try(:abbrev)} #{name} - #{shift_groups.map(&:name).join ', '}"
   end
 
-  def recommendation_score
-    rand(5).to_f
-  end
 end

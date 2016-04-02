@@ -141,11 +141,4 @@ describe Scheduler::Shift, :type => :model do
     end
   end
 
-  describe "recommendation_score" do
-    it "returns a number" do
-      recommendation_score = shift.recommendation_score
-      expect(recommendation_score).to be <= 5
-      expect(recommendation_score).to be >= 0
-    end
-  end
 end
