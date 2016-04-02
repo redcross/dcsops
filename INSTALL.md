@@ -8,13 +8,13 @@
 2. You'll need to install Ruby inside rbenv.  This assumes that you have
    both Ruby and rbenv installed.
 
-    $ rbenv install 2.1.2
+        $ rbenv install 2.1.2
 
    If you get an error here about OpenSSL, see
    [here](https://github.com/rbenv/ruby-build/issues/834) for more
    information and to find out whether this fix is appropriate.  Try:
 
-    $ curl -fsSL https://gist.github.com/mislav/055441129184a1512bb5.txt | rbenv install --patch 2.1.2
+        $ curl -fsSL https://gist.github.com/mislav/055441129184a1512bb5.txt | rbenv install --patch 2.1.2
 
 3. (Optional) Open seeds.rb and edit the username and password in the last code
    block of that file.  The last few lines of seeds.rb create an example
@@ -22,9 +22,9 @@
    definitely want to change them for any production use.  Be sure not
    to store real creds in seeds.rb!
 
-   Note: If you do not change your username and password, see below
-   Default username: admin
-   Default password: test123
+        Note: If you do not change your username and password, see below
+        Default username: admin
+        Default password: test123
 
 4. Run rails c in project directory and assign your number to admin or any other responder account
 
@@ -138,6 +138,19 @@ Some
 are about SMS notifications, so may involve sending sample texts through
 Twilio as part of testing.
 
-Go to [Twilio](https://www.twilio.com/try-twilio) to sign up for a trial
+1. Go to [Twilio](https://www.twilio.com/try-twilio) to sign up for a trial
 account and verify your phone number.  With a trial account, you'll only
 be able to text yourself.
+
+2. Retrieve your Twilio SID and Token
+   a. Click on your email to the top bar to the right
+   a. In the drop down, click Account Settings  Visit Twilio Account Settings 
+   b. Copy Twilio Account & Token 
+
+3. Assign Twilio to Chapter 
+        $ rails c
+        $ chapter = Roster::Chapter
+        $ chapter.twilio_account_sid = [INSERT TWILIO ACCOUNT SID]
+        $ chapter.twilio_auth_token = [INSERT TWILIO AUTH TOKEN]
+        Note: Remove brackets when inserting the account sid and token
+        $ chapter.save
