@@ -15,7 +15,7 @@ class Scheduler::ShiftRecommendationScore
   end
 
   def unique_shift(shift, shift_group, day)
-	generate_unique_shift = { day: day,
+	   generate_unique_shift = { day: day,
 				  start_time: shift_group.start_offset/(60*60),
 				  end_time: shift_group.end_offset/(60*60),
 				  chapter: shift.chapter }
@@ -44,5 +44,4 @@ class Scheduler::ShiftRecommendationScore
       #need to match day/time
       count.to_f
   end
-
 end
