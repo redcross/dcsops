@@ -156,7 +156,7 @@ be able to text yourself.
 
    a. Click on your email to the top bar to the right
 
-   a. In the drop down, click Account Settings
+   b. In the drop down, click Account Settings
    
    b. Copy Twilio Account SID & Token 
 
