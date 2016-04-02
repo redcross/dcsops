@@ -157,7 +157,7 @@ be able to text yourself.
 
    a. In the drop down, click Account Settings
    
-   b. Copy Twilio Account & Token 
+   b. Copy Twilio Account SID & Token 
 
 3. Assign Twilio to Chapter 
         
