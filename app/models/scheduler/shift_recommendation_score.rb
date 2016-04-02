@@ -4,7 +4,7 @@ class Scheduler::ShiftRecommendationScore
     rand(5).to_i
   end
 
-  def expected_number_of_incidents(unique_shift)
+  def self.expected_number_of_incidents(unique_shift)
  	matching_incidents = Incidents::Incident
             .where(:chapter => unique_shift[:chapter])
             .where(:created_at => 12.months.ago..Time.now)
@@ -14,11 +14,11 @@ class Scheduler::ShiftRecommendationScore
         return matching_incidents/52
   end
 
-  def unique_shift(shift, shift_group, day)
+  def self.unique_shift(shift, shift_group, day)
 	   generate_unique_shift = { day: day,
 				  start_time: shift_group.start_offset/(60*60),
 				  end_time: shift_group.end_offset/(60*60),
-				  chapter: shift.chapter }
+				  chapter: shift.chapter.name }
        return generate_unique_shift
   end
 
