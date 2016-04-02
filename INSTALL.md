@@ -26,17 +26,19 @@
    Default username: admin
    Default password: test123
 
-4a. Run rails c in project directory and assign your number to admin or any other responder account
+4. Run rails c in project directory and assign your number to admin or any other responder account
 
-   $ rails c
-   $ responder = Roster::Person.find_by_last_name 'Admin_User'
-   $ responder.sms_phone = [YOUR NUMBER]
-   $ responder.save
+        $ rails c
+        $ responder = Roster::Person.find_by_last_name 'Admin_User'
+        $ responder.sms_phone = [YOUR NUMBER]
+        $ responder.save
 
-4b. Still in rails c, assign your cell carrier.
-    To see all the list of carriers already in the database, run:
-      $ Roster::CellCarrier.all
-    List of all carriers already installed:
+5. Still in rails c, assign your cell carrier.
+        To see all the list of carriers already in the database, run:
+        
+        $ Roster::CellCarrier.all
+   
+  List of all carriers already installed:
         Alltel
         AT&T
         Boost Mobile
@@ -46,23 +48,25 @@
         Verizon
         Virgin Mobile
 
-    Get your carrier:
+  Get your carrier:
+        
         $ carrier = Rooster::CellCarrier.find_by_name([NAME OF CARRIER])
-    Example:
+        Example:
         $ carrier = Rooster::CellCarrier.find_by_name("AT&T")
 
-    If your carrier is not in the list, do this:
+  If your carrier is not in the list, do this:
+        
         $ carrier = Roster::CellCarrier.create(:name => [NAME OF CARRIER], :sms_gateway => [SMS GATEWAY FOR CARRIER])
-    Example:
+        Example:
         $ carrier = Roster::CellCarrier.create(:name => 'Verizon', :sms_gateway => '@vtext.com')
 
+  Now associate the carrier to  your account (perhaps admin) like this:
+        
+        $ responder.sms_phone_carrier = carrier
+        $ responder.save
 
-    Now associate the carrier to  your account (perhaps admin) like this:
-        responder.sms_phone_carrier = carrier
-        responder.save
 
-
-5. Run `./bin/setup` in the project directory
+6. Run `./bin/setup` in the project directory
 
    If you see an error about `capybara-webkit`, check your version of
    `qmake`.  You may want to follow the suggestion
