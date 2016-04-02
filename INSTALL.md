@@ -26,47 +26,7 @@
         Default username: admin
         Default password: test123
 
-4. Run rails c in project directory and assign your number to admin or any other responder account
-
-        $ rails c
-        $ responder = Roster::Person.find_by_last_name 'Admin_User'
-        $ responder.sms_phone = [YOUR NUMBER]
-        $ responder.save
-
-5. Still in rails c, assign your cell carrier.
-        To see all the list of carriers already in the database, run:
-        
-        $ Roster::CellCarrier.all
-   
-  List of all carriers already installed:
-        Alltel
-        AT&T
-        Boost Mobile
-        Sprint
-        T-Mobile
-        US Cellular
-        Verizon
-        Virgin Mobile
-
-  Get your carrier:
-        
-        $ carrier = Rooster::CellCarrier.find_by_name([NAME OF CARRIER])
-        Example:
-        $ carrier = Rooster::CellCarrier.find_by_name("AT&T")
-
-  If your carrier is not in the list, do this:
-        
-        $ carrier = Roster::CellCarrier.create(:name => [NAME OF CARRIER], :sms_gateway => [SMS GATEWAY FOR CARRIER])
-        Example:
-        $ carrier = Roster::CellCarrier.create(:name => 'Verizon', :sms_gateway => '@vtext.com')
-
-  Now associate the carrier to  your account (perhaps admin) like this:
-        
-        $ responder.sms_phone_carrier = carrier
-        $ responder.save
-
-
-6. Run `./bin/setup` in the project directory
+4. Run `./bin/setup` in the project directory
 
    If you see an error about `capybara-webkit`, check your version of
    `qmake`.  You may want to follow the suggestion
@@ -83,7 +43,7 @@
    successfully.
 
 
-6. The setup script should create your db, but if it fails for
+5. The setup script should create your db, but if it fails for
    permission reasons, try the following, with your system username in
    place of `myuser`:
 
@@ -102,7 +62,7 @@
    postgres=# GRANT ALL ON DATABASE "arcdata-dev" TO myuser;  
    postgres=# \q  
    ```
-7. Try ./bin/setup again.  If you get an error like:
+6. Try ./bin/setup again.  If you get an error like:
 
     ```
     ActiveRecord::UnknownAttributeError: unknown attribute: password
@@ -122,9 +82,58 @@
     $ ./bin/setup
     ```
     
-8. Run `./bin/setup` again.  Once it runs without errors, your app is set up.
+7. Run `./bin/setup` again.  Once it runs without errors, your app is set up.
 
-9. Run `bundle exec unicorn -c unicorn.rb` to start the development
+8. Run rails c in project directory and assign your number to admin or any other responder account
+
+        $ rails c
+        $ responder = Roster::Person.find_by_last_name 'Admin_User'
+        $ responder.sms_phone = [YOUR NUMBER]
+        $ responder.save
+
+9. Still in rails c, assign your cell carrier.
+        To see all the list of carriers already in the database, run:
+        
+        $ Roster::CellCarrier.all
+   
+  List of all carriers already installed:
+  
+  Alltel
+
+  AT&T
+        
+  Boost Mobile
+        
+  Sprint
+        
+  T-Mobile
+        
+  US Cellular
+        
+  Verizon
+        
+  Virgin Mobile
+        
+
+  
+  Get your carrier:
+        
+        $ carrier = Rooster::CellCarrier.find_by_name([NAME OF CARRIER])
+        Example:
+        $ carrier = Rooster::CellCarrier.find_by_name("AT&T")
+
+  If your carrier is not in the list, do this:
+        
+        $ carrier = Roster::CellCarrier.create(:name => [NAME OF CARRIER], :sms_gateway => [SMS GATEWAY FOR CARRIER])
+        Example:
+        $ carrier = Roster::CellCarrier.create(:name => 'Verizon', :sms_gateway => '@vtext.com')
+
+  Now associate the carrier to  your account (perhaps admin) like this:
+        
+        $ responder.sms_phone_carrier = carrier
+        $ responder.save
+
+10. Run `bundle exec unicorn -c unicorn.rb` to start the development
    server and visit [http://0.0.0.0:8080](http://0.0.0.0:8080) in your
    browser.  Login with the credentials you created in seeds.rb.  The
    defaults are `admin` and `test123`.
@@ -143,11 +152,15 @@ account and verify your phone number.  With a trial account, you'll only
 be able to text yourself.
 
 2. Retrieve your Twilio SID and Token
+
    a. Click on your email to the top bar to the right
-   a. In the drop down, click Account Settings  Visit Twilio Account Settings 
+
+   a. In the drop down, click Account Settings
+   
    b. Copy Twilio Account & Token 
 
 3. Assign Twilio to Chapter 
+        
         $ rails c
         $ chapter = Roster::Chapter
         $ chapter.twilio_account_sid = [INSERT TWILIO ACCOUNT SID]
