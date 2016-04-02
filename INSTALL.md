@@ -16,13 +16,53 @@
 
     $ curl -fsSL https://gist.github.com/mislav/055441129184a1512bb5.txt | rbenv install --patch 2.1.2
 
-3. Open seeds.rb and edit the username and password in the last code
+3. (Optional) Open seeds.rb and edit the username and password in the last code
    block of that file.  The last few lines of seeds.rb create an example
    / test user.  You're welcome to use those creds locally, but will
    definitely want to change them for any production use.  Be sure not
    to store real creds in seeds.rb!
 
-4. Run `./bin/setup` in the project directory
+   Note: If you do not change your username and password, see below
+   Default username: admin
+   Default password: test123
+
+4a. Run rails c in project directory and assign your number to admin or any other responder account
+
+   $ rails c
+   $ responder = Roster::Person.find_by_last_name 'Admin_User'
+   $ responder.sms_phone = [YOUR NUMBER]
+   $ responder.save
+
+4b. Still in rails c, assign your cell carrier.
+    To see all the list of carriers already in the database, run:
+      $ Roster::CellCarrier.all
+    List of all carriers already installed:
+        Alltel
+        AT&T
+        Boost Mobile
+        Sprint
+        T-Mobile
+        US Cellular
+        Verizon
+        Virgin Mobile
+
+    Get your carrier:
+        $ carrier = Rooster::CellCarrier.find_by_name([NAME OF CARRIER])
+    Example:
+        $ carrier = Rooster::CellCarrier.find_by_name("AT&T")
+
+    If your carrier is not in the list, do this:
+        $ carrier = Roster::CellCarrier.create(:name => [NAME OF CARRIER], :sms_gateway => [SMS GATEWAY FOR CARRIER])
+    Example:
+        $ carrier = Roster::CellCarrier.create(:name => 'Verizon', :sms_gateway => '@vtext.com')
+
+
+    Now associate the carrier to  your account (perhaps admin) like this:
+        responder.sms_phone_carrier = carrier
+        responder.save
+
+
+5. Run `./bin/setup` in the project directory
 
    If you see an error about `capybara-webkit`, check your version of
    `qmake`.  You may want to follow the suggestion
@@ -39,7 +79,7 @@
    successfully.
 
 
-5. The setup script should create your db, but if it fails for
+6. The setup script should create your db, but if it fails for
    permission reasons, try the following, with your system username in
    place of `myuser`:
 
@@ -58,7 +98,7 @@
    postgres=# GRANT ALL ON DATABASE "arcdata-dev" TO myuser;  
    postgres=# \q  
    ```
-6. Try ./bin/setup again.  If you get an error like:
+7. Try ./bin/setup again.  If you get an error like:
 
     ```
     ActiveRecord::UnknownAttributeError: unknown attribute: password
@@ -78,9 +118,9 @@
     $ ./bin/setup
     ```
     
-7. Run `./bin/setup` again.  Once it runs without errors, your app is set up.
+8. Run `./bin/setup` again.  Once it runs without errors, your app is set up.
 
-8. Run `bundle exec unicorn -c unicorn.rb` to start the development
+9. Run `bundle exec unicorn -c unicorn.rb` to start the development
    server and visit [http://0.0.0.0:8080](http://0.0.0.0:8080) in your
    browser.  Login with the credentials you created in seeds.rb.  The
    defaults are `admin` and `test123`.

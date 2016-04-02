@@ -7,6 +7,15 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 Roster::CellCarrier.create name: 'Verizon', sms_gateway: '@vtext.com'
+Roster::CellCarrier.create name: 'AT&T', sms_gateway: '@txt.att.net'
+Roster::CellCarrier.create name: 'Boost Mobile', sms_gateway: '@myboostmobile.com'
+Roster::CellCarrier.create name: 'Alltel', sms_gateway: '@message.alltel.com'
+Roster::CellCarrier.create name: 'T-Mobile', sms_gateway: '@tmomail.net'
+Roster::CellCarrier.create name: 'US Cellular', sms_gateway: '@email.uscc.net'
+Roster::CellCarrier.create name: 'Virgin Mobile', sms_gateway: '@vmobl.com'
+Roster::CellCarrier.create name: 'Sprint', sms_gateway: '@messaging.sprintpcs.com'
+
+
 
 arcil = Roster::Chapter.create name:'American Red Cross Illinois Area', short_name:'ARCIL', code: '05503', time_zone_raw: 'America/Chicago', url_slug: 'arcil', config: {"incidents_map_zoom"=>7, "incidents_geocode_bounds"=>"42.363599, -90.675103,38.639380, -87.829644", "incidents_map_center_lat"=>"40.435855", "incidents_map_center_lng"=>"-89.496991", "incidents_resources_tracked"=>"blankets,comfort_kits", "incidents_timeline_collect"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_timeline_mandatory"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_enabled_report_frequencies"=>"weekly,weekdays,daily", "scheduler_flex_day_start"=>"25200", "scheduler_flex_night_start"=>"68400", "incidents_enable_dispatch_console"=>true}
 arcba = Roster::Chapter.create name:'American Red Cross Bay Area', short_name:'ARCBA', code: '05503', time_zone_raw: 'America/Los_Angeles', url_slug: 'arcba', config: {"incidents_map_zoom"=>9, "incidents_geocode_bounds"=>"36.5407938301337,-124.57967382718749,39.143091210253154,-119.52596288968749", "incidents_map_center_lat"=>"37.81871654", "incidents_map_center_lng"=>"-122.19014746", "incidents_resources_tracked"=>"blankets,comfort_kits", "incidents_timeline_collect"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_timeline_mandatory"=>"dat_received,dat_on_scene,dat_departed_scene", "incidents_enabled_report_frequencies"=>"weekly,weekdays,daily", "scheduler_flex_day_start"=>"25200", "scheduler_flex_night_start"=>"68400", "incidents_enable_dispatch_console"=>true}
