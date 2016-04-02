@@ -88,7 +88,18 @@ describe Scheduler::ShiftRecommendationScore, :type => :model do
         expect(score).to eq 0
       end
     end
+  end
 
+  xdescribe("unique shift") do
+    it "to return a unqiue shift" do
+     shift_group = FactoryGirl.create :shift_group, chapter: chapter
+     day = "Monday"
+
+     unique_shift = Scheduler::ShiftRecommendationScore.unique_shift(shift, shift_group, day )
+
+     p unique_shift
+
+    end
   end
 
 end
