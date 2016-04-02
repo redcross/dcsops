@@ -97,6 +97,7 @@ end
 
 
 group :test do
+  gem 'byebug'
   gem 'rspec', '~> 3.0'
   gem 'rspec-rails'
   gem 'rspec-activemodel-mocks'
