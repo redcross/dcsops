@@ -1,4 +1,4 @@
-class Incidents::RespondersController < Incidents::BaseController
+ class Incidents::RespondersController < Incidents::BaseController
   inherit_resources
   respond_to :html, :json, :js
   belongs_to :chapter, finder: :find_by_url_slug!, parent_class: Roster::Chapter do
@@ -56,6 +56,7 @@ class Incidents::RespondersController < Incidents::BaseController
   protected
 
   def notify_assignment
+    p "NOTIFY"
     Incidents::UpdatePublisher.new(parent.chapter, parent).publish_responders
     return unless resource.was_available
 
@@ -69,6 +70,8 @@ class Incidents::RespondersController < Incidents::BaseController
   end
 
   def send_assignment_sms
+    p "SMS CLIENT"
+    p sms_client
     message = build_assignment_sms_message
     sms_client.send_message(message)
     flash[:notice] = 'Sent assignment SMS.'

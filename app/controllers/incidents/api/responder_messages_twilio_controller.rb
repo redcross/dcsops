@@ -5,16 +5,19 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
   protect_from_forgery with: :null_session
 
   def incoming
+    p "INCOMING"
     body = params[:Body]
     person = find_person_by_phone params[:From]
 
     if params[:NumMedia] && (media_count = params[:NumMedia].to_i) > 0
+      media_urls = []
       media = media_count.times.map do |i|
         {content_type: params["MediaContentType#{i}"],
          url: params["MediaUrl#{i}"]}
+         media_urls << params["MediaUrl#{i}"]
       end
-
-      body += " [The message had #{media_count} #{media_count == 1 ? 'attachment' : 'attachments'}]"
+      media_urls = media_urls.join(", ");
+      body += " [The message has #{media_count} #{media_count == 1 ? 'attachment' : 'attachments'}. They can be found at #{media_urls}]"
     else
       media = []
     end
@@ -59,6 +62,7 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
   end
 
   def chapter
+    p "CHAPTER"
     @chapter ||= Roster::Chapter.with_twilio_account_sid_value(params[:AccountSid])
                                 .with_incidents_twilio_number_value(params[:To]).first!
   end

@@ -1,9 +1,12 @@
 class Incidents::SMSClient
   def initialize(chapter)
+    p "CHAPTER INITIALIZE"
     @chapter = chapter
   end
 
   def send_message(responder_message)
+    p "RESPONDER MESSAGE"
+    p responder_message
     return unless have_credentials?
 
     responder_message.direction = 'outgoing'
@@ -13,7 +16,8 @@ class Incidents::SMSClient
     client.account.messages.create(
       :from => from_phone_number,
       :to => responder_message.remote_number,
-      :body => responder_message.message
+      :body => responder_message.message,
+      :mediaUrl => responder_message.mediaUrl
     )
 
     responder_message.save validate: false
@@ -22,6 +26,7 @@ class Incidents::SMSClient
   protected
 
   def have_credentials?
+    p "HAVE CREDENTIALS"
     @chapter.twilio_account_sid.present? && @chapter.twilio_auth_token.present?
   end
 
