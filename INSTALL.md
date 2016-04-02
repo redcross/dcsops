@@ -118,9 +118,9 @@
   
   Get your carrier:
         
-        $ carrier = Rooster::CellCarrier.find_by_name([NAME OF CARRIER])
+        $ carrier = Roster::CellCarrier.find_by_name([NAME OF CARRIER])
         Example:
-        $ carrier = Rooster::CellCarrier.find_by_name("AT&T")
+        $ carrier = Roster::CellCarrier.find_by_name("AT&T")
 
   If your carrier is not in the list, do this:
         
