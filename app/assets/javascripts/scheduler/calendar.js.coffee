@@ -65,7 +65,20 @@ class window.CalendarController
     val
 
   highlightRecommendedShifts: (toggleIndicator) ->
-    $(".shift").toggleClass("recommended", toggleIndicator);
+    all_shift_scores = $('.shift[data-recommendation]')
+
+    sorted_shift_scores = all_shift_scores.sort (first_shift, second_shift) ->
+      first_score = parseInt($(first_shift).attr('data-recommendation'));
+      second_score = parseInt($(second_shift).attr('data-recommendation'));
+
+      if(second_score < first_score)
+        return -1;
+      else if(second_score > first_score)
+        return 1;
+      else
+        return 0;
+
+    sorted_shift_scores.slice(0,5).toggleClass("recommended", toggleIndicator);
 
   renderArgs: () ->
     @params
