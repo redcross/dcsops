@@ -106,13 +106,23 @@ body.calendar {
     }
 
     .shift {
-      border: 1px solid #fdad7c;
+      border-bottom: 1px dashed black;
 
       div.shift-header-normal {
         text-align: center;
         font-size: 110%;
         font-weight: bold;
       }
+    }
+
+    .shift:last-child {
+      border-bottom: none;
+    }
+
+
+    .recommended {
+      border: 1px solid #fdad7c;
+      background-color: #fedcc7;
     }
 
   }
