@@ -553,7 +553,7 @@ DEPENDENCIES
   pdfkit
   polyamorous
   pubnub
-  puma (~> 2.3.2)
+  puma
   quiet_assets
   rack-rewrite
   rack-zippy
