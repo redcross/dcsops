@@ -162,7 +162,7 @@ be able to text yourself.
 3. Assign Twilio to Chapter 
         
         $ rails c
-        $ chapter = Roster::Chapter
+        $ chapter = Roster::Chapter.first // OR THE CHAPTER YOUR APP WILL BE RUNNING THE LOCAL INSTANCE ON
         $ chapter.twilio_account_sid = [INSERT TWILIO ACCOUNT SID]
         $ chapter.twilio_auth_token = [INSERT TWILIO AUTH TOKEN]
         Note: Remove brackets when inserting the account sid and token
