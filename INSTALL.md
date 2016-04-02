@@ -168,3 +168,8 @@ be able to text yourself.
         $ chapter.twilio_auth_token = [INSERT TWILIO AUTH TOKEN]
         Note: Remove brackets when inserting the account sid and token
         $ chapter.save
+
+4. Create a Twilio Phone Number 
+
+5. Assign your Twilio number to chapter
+        $ chapter.incidents_twilio_number = [TWILIO PHONE NUMBER]
