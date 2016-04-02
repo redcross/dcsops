@@ -89,6 +89,7 @@
         $ rails c
         $ responder = Roster::Person.find_by_last_name 'Admin_User'
         $ responder.sms_phone = [YOUR NUMBER]
+        NOTE: Do not include country code such as +1
         $ responder.save
 
 9. Still in rails c, assign your cell carrier.
