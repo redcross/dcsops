@@ -11,7 +11,7 @@
     -if person
       - my_shifts = calendar.my_shifts_for_group_on_day(group.id, date)
     - group_class = my_shifts.present? ? 'my-shift' : ''
-    %div.shift
+    %div.shift{"data-recommendation" => retrieve_recommendation_score(group, shifts, date) }
       %div.shift-header-normal.shift-top{class: group_class}=group.name
 
       - render_shifts group, shifts, date, editable do |idx, is_first, is_last, needs_signups, row_html|

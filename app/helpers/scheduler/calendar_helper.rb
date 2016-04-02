@@ -16,6 +16,10 @@ module Scheduler::CalendarHelper
     end
   end
 
+  def retrieve_recommendation_score(group, shifts, date)
+    Scheduler::ShiftRecommendationScore.get_score(shifts.first, group, date)
+  end
+
   def group_to_period group
     case group.period
     when 'daily' then 'day'
@@ -71,10 +75,10 @@ module Scheduler::CalendarHelper
       s << check_box_tag(shift.id.to_s, # Name
                          date.to_s,     # Value
                          is_signed_up,  # Checked?
-                         id: cbid, 
+                         id: cbid,
                          class: 'shift-checkbox',
                           data: {
-                            :assignment => this_assignment.try(:id), 
+                            :assignment => this_assignment.try(:id),
                             :period => period,
                             params: create_params(person, shift, shift_group, date)
                           }) << " "
