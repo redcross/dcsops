@@ -18,6 +18,21 @@ describe Scheduler::ShiftRecommendationScore, :type => :model do
     end
   end
 
+  describe "shift_response_rate" do
+    it "returns rate of calls with positive responses" do
+        FactoryGirl.create(:responder_assignment, incident: incident)
+        FactoryGirl.create(:responder_assignment, incident: incident, role: Incidents::ResponderAssignment::RESPONSES.first)
+
+        score = Scheduler::ShiftRecommendationScore.shift_response_rate(shift, shift_group, date)
+        expect(score).to eq 0.5
+    end
+
+    it "returns zero if no calls" do
+        score = Scheduler::ShiftRecommendationScore.shift_response_rate(shift, shift_group, date)
+        expect(score).to eq 0
+    end
+  end
+
   describe "calls_with_positive_response" do
     context "matches chapter" do
       it "returns the number of calls including matching chapter" do

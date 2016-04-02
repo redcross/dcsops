@@ -20,13 +20,29 @@ class Scheduler::ShiftRecommendationScore
 				  end_time: shift_group.end_offset/(60*60),
 				  chapter: shift.chapter }
        return generate_unique_shift
-  
+  end
+
+  def self.shift_response_rate(shift, shift_group, date)
+    total_calls = total_calls(shift,shift_group,date)
+    return 0 if total_calls.zero?
+    calls_with_positive_response(shift,shift_group,date)/total_calls
+  end
+
+  private
+
   def self.calls_with_positive_response(shift, shift_group, date)
     Incidents::ResponderAssignment.
       for_chapter(shift.chapter).
       was_available.
-      #need to match day of week, time slot, and prev 12 months of shift group and date here
-      count
+      #need to match day/time
+      count.to_f
+  end
+
+  def self.total_calls(shift, shift_group, date)
+    Incidents::ResponderAssignment.
+      for_chapter(shift.chapter).
+      #need to match day/time
+      count.to_f
   end
 
 end
