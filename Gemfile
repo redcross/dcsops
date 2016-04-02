@@ -5,7 +5,7 @@ ruby "2.1.2"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.1.0'
 gem 'squeel', '~> 1.2.1', github: 'activerecord-hackery/squeel'
-gem 'puma'
+gem 'puma', '~> 2.3.2'
 gem 'rack-rewrite'
 
 gem 'arcdata_core', github: 'redcross/arcdata_core', branch: 'master'
