@@ -174,7 +174,7 @@ be able to text yourself.
 
 ## Appendix B Get a local instance accessible to Twilio (Optional But Recommended)
 
-In order to receive inbound messages from Twilio, Twilio recommends setting up ngrok to make localhost to be accessible via Twilio. 
+In order to receive inbound messages from Twilio, Twilio recommends setting up ngrok to make localhost accessible via Twilio. 
 
 See this url: https://www.twilio.com/blog/2013/10/test-your-webhooks-locally-with-ngrok.html 
 
