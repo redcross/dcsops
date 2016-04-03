@@ -167,3 +167,4 @@ be able to text yourself.
 5. Assign your Twilio number to chapter
         
         $ chapter.incidents_twilio_number = [TWILIO PHONE NUMBER]
+        $ chapter.save
