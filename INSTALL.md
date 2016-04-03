@@ -90,7 +90,7 @@
    defaults are `admin` and `test123`.
 
 
-### Note: These next steps are necessary to get test getting messages from Twilio to your application and to your phone
+### Note: These next steps are necessary to test getting messages from Twilio to your application and to your phone.
 
 ## Appendix A: Getting a trial Twilio account
 
@@ -150,7 +150,9 @@ See this url: https://www.twilio.com/blog/2013/10/test-your-webhooks-locally-wit
 4. Under Messaging, select 'Create a New Messaging Service' and follow the routes to create a service.
 5. Under inbound settings, in Request URL, place your complete forwarding address. 
 6. Your complete forwarding address is {BASE_URL}/incidents/api/twilio_incoming
-   ### Example: http://dbff6aa5.ngrok.io/incidents/api/twilio_incoming.
+   
+
+   Example: http://dbff6aa5.ngrok.io/incidents/api/twilio_incoming.
    See above on creating a local instance available for Twilio
 
 ## Appendix B -- Set up a Responder Account
