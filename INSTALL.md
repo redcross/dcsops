@@ -90,6 +90,7 @@
         $ responder = Roster::Person.find_by_last_name 'Admin_User'
         $ responder.sms_phone = [YOUR NUMBER]
         NOTE: Do not include country code such as +1
+        Example: 123456789 (NO DASHES)
         $ responder.save
 
 9. Still in rails c, assign your cell carrier.
@@ -167,4 +168,34 @@ be able to text yourself.
 5. Assign your Twilio number to chapter
         
         $ chapter.incidents_twilio_number = [TWILIO PHONE NUMBER]
+        NOTE: The Twilio Phone number must be formatted with a +1 as that is the way Twilio will send it to the server
+        Example: +12143126493 (NO DASHES)
         $ chapter.save
+
+## Appendix B Get a local instance accessible to Twilio (Optional But Recommended)
+
+In order to receive inbound messages from Twilio, Twilio recommends setting up ngrok to make localhost to be accessible via Twilio. 
+
+See this url: https://www.twilio.com/blog/2013/10/test-your-webhooks-locally-with-ngrok.html 
+
+1. Download ngrok to your computer
+2. In terminal, navigate to folder where ngrok is installed
+2. Run ngrok to point your server
+        $ ngrok http 8080
+3. Copy the forwarding address i.e. http://dbff6aa5.ngrok.io/
+4. Your complete forwarding address is {BASE_URL}/incidents/api/twilio_incoming
+   #Example: http://dbff6aa5.ngrok.io/incidents/api/twilio_incoming
+4. Keep full forwarding address in mind to create messaging service. 
+
+## Appendix C Create a Messaging Service
+1. In Twilio, click Products on the top
+2. In Drop down, select Phone Numbers
+3. Under Manage Numbers, select your phone number 
+   You will be redirected to a page to manage phone number
+4. Under Messaging, select 'Create a New Messaging Service' and follow the routes to create a service
+5. Under inbound settings, in Request URL, place your complete forwarding address
+   #Example: http://dbff6aa5.ngrok.io/incidents/api/twilio_incoming
+   See above on creating a local instance available for Twilio
+
+
+Now you should be ready to send messages from your app to a responder and back
