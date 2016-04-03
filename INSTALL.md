@@ -84,56 +84,13 @@
     
 7. Run `./bin/setup` again.  Once it runs without errors, your app is set up.
 
-8. Run rails c in project directory and assign your number to admin or any other responder account
-
-        $ rails c
-        $ responder = Roster::Person.find_by_last_name 'Admin_User'
-        $ responder.sms_phone = [YOUR NUMBER]
-        NOTE: Do not include country code such as +1
-        Example: 123456789 (NO DASHES)
-        $ responder.save
-
-9. Still in rails c, assign your cell carrier.
-        To see all the list of carriers already in the database, run:
-        
-        $ Roster::CellCarrier.all
-   
-  List of all carriers already installed:
-  
-  * Alltel
-  * AT&T
-  * Boost Mobile
-  * Sprint
-  * T-Mobile
-  * US Cellular
-  * Verizon
-  * Virgin Mobile
-        
-
-  
-  Get your carrier:
-        
-        $ carrier = Roster::CellCarrier.find_by_name([NAME OF CARRIER])
-        Example:
-        $ carrier = Roster::CellCarrier.find_by_name("AT&T")
-
-  If your carrier is not in the list, do this:
-        
-        $ carrier = Roster::CellCarrier.create(:name => [NAME OF CARRIER], :sms_gateway => [SMS GATEWAY FOR CARRIER])
-        Example:
-        $ carrier = Roster::CellCarrier.create(:name => 'Verizon', :sms_gateway => '@vtext.com')
-
-  Now associate the carrier to  your account (perhaps admin) like this:
-        
-        $ responder.sms_phone_carrier = carrier
-        $ responder.save
-
-10. Run `bundle exec unicorn -c unicorn.rb` to start the development
+8. Run `bundle exec unicorn -c unicorn.rb` to start the development
    server and visit [http://0.0.0.0:8080](http://0.0.0.0:8080) in your
    browser.  Login with the credentials you created in seeds.rb.  The
    defaults are `admin` and `test123`.
 
 
+### Note: These next steps are necessary to get test getting messages from Twilio to your application and to your phone
 
 ## Appendix A: Getting a trial Twilio account
 
@@ -172,7 +129,8 @@ be able to text yourself.
         Example: +12143126493 (NO DASHES)
         $ chapter.save
 
-## Appendix B Get a local instance accessible to Twilio (Optional But Recommended)
+## Appendix B Get a local instance accessible to Twilio 
+#### Note: If you already have your local instance hosted publicly (e.g. on Heroku) you can skip to the next appendix 
 
 In order to receive inbound messages from Twilio, Twilio recommends setting up ngrok to make localhost accessible via Twilio. 
 
@@ -182,20 +140,62 @@ See this url: https://www.twilio.com/blog/2013/10/test-your-webhooks-locally-wit
 2. In terminal, navigate to folder where ngrok is installed
 2. Run ngrok to point your server
         $ ngrok http 8080
-3. Copy the forwarding address i.e. http://dbff6aa5.ngrok.io/
-4. Your complete forwarding address is {BASE_URL}/incidents/api/twilio_incoming
-   #Example: http://dbff6aa5.ngrok.io/incidents/api/twilio_incoming
-4. Keep full forwarding address in mind to create messaging service. 
+3. Copy the forwarding address given to you by ngrok after typing the above prompt. Place this in the browser and test to see that it points to the application. 
+4. Keep note of the forwarding address/base url to be used for setting up the messaging service.
 
 ## Appendix C Create a Messaging Service
-1. In Twilio, click Products on the top
-2. In Drop down, select Phone Numbers
-3. Under Manage Numbers, select your phone number 
+1. In Twilio, click Products on the top and in Drop down, select 'Phone Numbers'
+3. Under Manage Numbers, select the phone number you will be using for application.
    You will be redirected to a page to manage phone number
-4. Under Messaging, select 'Create a New Messaging Service' and follow the routes to create a service
-5. Under inbound settings, in Request URL, place your complete forwarding address
-   #Example: http://dbff6aa5.ngrok.io/incidents/api/twilio_incoming
+4. Under Messaging, select 'Create a New Messaging Service' and follow the routes to create a service.
+5. Under inbound settings, in Request URL, place your complete forwarding address. 
+6. Your complete forwarding address is {BASE_URL}/incidents/api/twilio_incoming
+   ### Example: http://dbff6aa5.ngrok.io/incidents/api/twilio_incoming.
    See above on creating a local instance available for Twilio
+
+## Appendix B -- Set up a Responder Account
+1. Run rails c in project directory and assign your number to admin or any other responder account
+
+        $ rails c
+        $ responder = Roster::Person.find_by_last_name 'Admin_User'
+        $ responder.sms_phone = [YOUR NUMBER]
+        NOTE: Do not include country code such as +1
+        Example: 123456789 (NO DASHES)
+        $ responder.save
+
+2. Still in rails c, assign your cell carrier.
+        To see all the list of carriers already in the database, run:
+        
+        $ Roster::CellCarrier.all
+   
+  List of all carriers already installed:
+  
+  * Alltel
+  * AT&T
+  * Boost Mobile
+  * Sprint
+  * T-Mobile
+  * US Cellular
+  * Verizon
+  * Virgin Mobile
+  
+  Get your carrier:
+        
+        $ carrier = Roster::CellCarrier.find_by_name([NAME OF CARRIER])
+        Example:
+        $ carrier = Roster::CellCarrier.find_by_name("AT&T")
+
+  If your carrier is not in the list, do this:
+        
+        $ carrier = Roster::CellCarrier.create(:name => [NAME OF CARRIER], :sms_gateway => [SMS GATEWAY FOR CARRIER])
+        Example:
+        $ carrier = Roster::CellCarrier.create(:name => 'Verizon', :sms_gateway => '@vtext.com')
+
+  Now associate the carrier to  your account (perhaps admin) like this:
+        
+        $ responder.sms_phone_carrier = carrier
+        $ responder.save
+
 
 
 Now you should be ready to send messages from your app to a responder and back
