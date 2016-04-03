@@ -99,21 +99,14 @@
    
   List of all carriers already installed:
   
-  Alltel
-
-  AT&T
-        
-  Boost Mobile
-        
-  Sprint
-        
-  T-Mobile
-        
-  US Cellular
-        
-  Verizon
-        
-  Virgin Mobile
+  * Alltel
+  * AT&T
+  * Boost Mobile
+  * Sprint
+  * T-Mobile
+  * US Cellular
+  * Verizon
+  * Virgin Mobile
         
 
   
@@ -156,9 +149,9 @@ be able to text yourself.
 
    a. Click on your email to the top bar to the right
 
-   b. In the drop down, click Account Settings
+   b. In the drop down, click Account
    
-   b. Copy Twilio Account SID & Token 
+   c. Copy Twilio Account SID & Token 
 
 3. Assign Twilio to Chapter 
         
