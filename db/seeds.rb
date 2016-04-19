@@ -17,7 +17,7 @@ admin = Roster::Person.find_by_last_name 'Admin_User'
 admin.password = 'test123'
 admin.save!
 # Create an example non-admin user.  Change the credentials here as desired.
-Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "example_user", password: "password", last_name: "Example_User", first_name: 'TestUser', vc_is_active: 1)
+Roster::Person.create(chapter: Roster::Chapter.first, email: "example@example.com", username: "arieldiamond", password: "password", last_name: "Example_User", first_name: 'TestUser', vc_is_active: 1)
 example = Roster::Person.find_by_last_name 'Example_User'
 example.password = 'test123'
 example.save!

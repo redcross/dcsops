@@ -20,6 +20,7 @@ class Incidents::ResponderRecruitmentsController < Incidents::EditPanelControlle
   helper_method :all_recipients
 
   def send_message resource
+    p "MESSAGE"
     message = resource.build_outbound_message message: recruitment_message, chapter: incident.chapter
 
     client = Incidents::SMSClient.new(incident.chapter)
@@ -27,6 +28,7 @@ class Incidents::ResponderRecruitmentsController < Incidents::EditPanelControlle
   end
 
   def recruitment_message
+    p "Recruitment MESSAGE"
     "DCSOps Incident Recruitment: #{parent.recruitment_message} - Reply with yes or no."
   end
 

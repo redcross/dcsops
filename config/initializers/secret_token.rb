@@ -9,4 +9,5 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Scheduler::Application.config.secret_key_base = Rails.env.production? ? ENV['RAILS_SECRET_KEY'] : '8f2bbc36c698298224963ef68cec4a731c9408f438ff86a55f0d649aaa965e29363d03a97c1d4ac098f2ddf261b4db36ba36d3457f29c20217fc688278f35e48'
+Scheduler::Application.config.secret_key_base = '8f2bbc36c698298224963ef68cec4a731c9408f438ff86a55f0d649aaa965e29363d03a97c1d4ac098f2ddf261b4db36ba36d3457f29c20217fc688278f35e48'
+

@@ -9,7 +9,7 @@ module Vc
 
     attr_accessor :cookies
     attr_accessor :username, :password
-    attr_accessible :password
+    attr_accessor :password
     attr_accessor :logger
 
     def initialize(user, pass, logger=Rails.logger)

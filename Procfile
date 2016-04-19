@@ -1,1 +1,1 @@
-web: env ENABLE_DJ_WORKER=true bundle exec puma -p $PORT -e $RAILS_ENV -t 0:8
+web: bundle exec puma -C config/puma.rb
