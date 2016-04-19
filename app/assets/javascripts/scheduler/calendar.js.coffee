@@ -26,14 +26,18 @@ class window.CalendarController
         complete: (xhr, status) =>
           this.reloadDate(date, period)
 
-    new PersonTypeaheadController $('#select-person'), ((id, record) => @params.person_id = id; this.reload()), 'select-person', 
+    new PersonTypeaheadController $('#select-person'), ((id, record) => @params.person_id = id; this.reload()), 'select-person',
       active: false
       has_position: true
 
     $(document).on 'click', '#highlighting-group > button', (evt) =>
       active = if ($(evt.target).hasClass('active')) then false else true
       $(evt.target).toggleClass('active', active)
-      $('.calendar-container').toggleClass($(evt.target).data('style'), active)
+      style = $(evt.target).data('style')
+      if style == 'highlight-recommended-shifts'
+        this.highlightRecommendedShifts(active)
+      else
+        $('.calendar-container').toggleClass($(evt.target).data('style'), active)
 
     $(document).on 'click', '#select-shift-group > button', (evt) =>
       $('#select-shift-group > button').removeClass('active')
@@ -59,6 +63,22 @@ class window.CalendarController
       if $(el).is(':checked')
         val[val.length] = $(el).val()
     val
+
+  highlightRecommendedShifts: (toggleIndicator) ->
+    all_shift_scores = $('.shift[data-recommendation]')
+
+    sorted_shift_scores = all_shift_scores.sort (first_shift, second_shift) ->
+      first_score = parseInt($(first_shift).attr('data-recommendation'));
+      second_score = parseInt($(second_shift).attr('data-recommendation'));
+
+      if(second_score < first_score)
+        return -1;
+      else if(second_score > first_score)
+        return 1;
+      else
+        return 0;
+
+    sorted_shift_scores.slice(0,5).toggleClass("recommended", toggleIndicator);
 
   renderArgs: () ->
     @params
@@ -97,5 +117,5 @@ class window.CalendarController
             $('tbody[data-week=' + date + ']').html(data)
           when 'monthly'
             $('.month').html(data)
-          else 
+          else
             $('.day[data-day=' + date + ']').html(data)

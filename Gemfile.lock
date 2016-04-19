@@ -589,6 +589,3 @@ DEPENDENCIES
   wkhtmltopdf-binary!
   wkhtmltopdf-heroku!
   zonebie
-
-BUNDLED WITH
-   1.11.2

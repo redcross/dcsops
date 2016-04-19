@@ -140,4 +140,5 @@ describe Scheduler::Shift, :type => :model do
       expect(shift.active_on_day?(date, shift_group)).to be_falsey
     end
   end
+
 end

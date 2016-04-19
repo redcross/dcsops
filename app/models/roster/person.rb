@@ -3,6 +3,9 @@ class Roster::Person < ActiveRecord::Base
   include Mappable
 
   PHONE_TYPES = [:cell_phone, :home_phone, :work_phone, :alternate_phone, :sms_phone]
+  NEWNESS_LOW = 0.5
+  NEWNESS_MED = 0.7
+  NEWNESS_HIGH = 1.0
 
   belongs_to :chapter, class_name: 'Roster::Chapter'
   belongs_to :primary_county, class_name: 'Roster::County'
@@ -20,7 +23,7 @@ class Roster::Person < ActiveRecord::Base
   belongs_to :alternate_phone_carrier, class_name: 'Roster::CellCarrier'
   belongs_to :sms_phone_carrier, class_name: 'Roster::CellCarrier'
 
-  scope :name_contains, lambda {|query| 
+  scope :name_contains, lambda {|query|
     where{lower(first_name.op('||', ' ').op('||', last_name)).like("%#{query.downcase}%")}
   }
 
@@ -192,5 +195,12 @@ class Roster::Person < ActiveRecord::Base
 
   def is_active?
     vc_is_active or has_role 'always_active'
+  end
+
+  def newness_factor
+    opportunities = Incidents::ResponderAssignment.for_person(self).count
+    return NEWNESS_HIGH if opportunities < 5
+    return NEWNESS_MED if opportunities >= 5 && opportunities < 20
+    NEWNESS_LOW
   end
 end

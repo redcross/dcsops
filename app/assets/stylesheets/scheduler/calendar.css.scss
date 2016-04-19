@@ -9,7 +9,7 @@ body.calendar {
   table.calendar {
     &.loading {
       opacity: 0.5;
-      
+
     }
     width: 100%;
     td.day, td.week, td.month[colspan="1"] {
@@ -23,7 +23,7 @@ body.calendar {
       width: 14.2%;
     }
     td.week {
-      
+
     }
     td label {
       font-size: inherit;
@@ -46,6 +46,10 @@ body.calendar {
     .my-shift td, div.my-shift {
       background-color: yellow;
     }
+  }
+
+  .hightlight-recommended-shifts {
+
   }
 
   @mixin rotate($rot) {
@@ -81,11 +85,12 @@ body.calendar {
         border-bottom-style: none;
       }
     }
-    th.date-header {
+    div.date-header, th.date-header {
       font-size: 130%;
       amax-width: 1em;
       padding: 0;
       text-align: center;
+      font-weight: bold;
     }
     tr.end-group {
       td,th {
@@ -99,6 +104,27 @@ body.calendar {
       afont-size: 125%;
       line-height: 1.2;
     }
+
+    .shift {
+      border-bottom: 1px dashed black;
+
+      div.shift-header-normal {
+        text-align: center;
+        font-size: 110%;
+        font-weight: bold;
+      }
+    }
+
+    .shift:last-child {
+      border-bottom: none;
+    }
+
+
+    .recommended {
+      border: 1px solid #fdad7c;
+      background-color: #fedcc7;
+    }
+
   }
 
   .calendar-spreadsheet {
@@ -168,7 +194,7 @@ body.calendar {
       //border-bottom: 1px solid rgb(221,221,221);
     }
   }
-  
+
 }
 
 thead {
@@ -279,4 +305,4 @@ body.steven {
 }
 
 
-  
+

@@ -48,9 +48,28 @@ describe Roster::Person, :type => :model do
       membership.role_scopes.build scope: "424242"
       membership.save!
 
-      c = person.counties.create name: 'Test County', chapter: chapter
+      person.counties.create name: 'Test County', chapter: chapter
 
       expect(person.scope_for_role( grant_name)).to match_array(person.county_ids + [424242])
+    end
+  end
+
+   describe "newness" do
+    let(:grant_name) { "test_grant" }
+
+    it "returns 1.0 if less than 5 opportunites" do
+      rand(4).times {FactoryGirl.create(:responder_assignment, { person: person }) }
+      expect(person.newness_factor).to eq Roster::Person::NEWNESS_HIGH
+    end
+
+    it "returns 0.7 if opportunites are less than or eq 5 and less than 20" do
+      rand(5...20).times { FactoryGirl.create :responder_assignment, { person: person } }
+      expect(person.newness_factor).to eq Roster::Person::NEWNESS_MED
+    end
+
+     it "returns 0.5 if opportunites are greater or eq than 20" do
+       rand(20..25).times { FactoryGirl.create :responder_assignment, { person: person } }
+       expect(person.newness_factor).to eq Roster::Person::NEWNESS_LOW
     end
   end
 end
