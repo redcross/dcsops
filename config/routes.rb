@@ -168,9 +168,7 @@ Scheduler::Application.routes.draw do
     end
   end
 
-  match 'import/dispatch', via: [:head, :post], to: 'incidents/import#import_dispatch'
-
-  match 'import/:route', via: [:head, :post], to: 'incidents/import#import'
+  match 'import', via: [:head, :post], to: 'incidents/import#import'
 
   mount Connect::Engine, at: '/'
 

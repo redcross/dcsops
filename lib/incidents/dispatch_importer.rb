@@ -147,6 +147,7 @@ class Incidents::DispatchImporter
     details, log = clean_body(body).split("============ Message Dispatch History ===================")
 
     data = run_matchers self.data_matchers, body
+    puts data.inspect
     log_items = log.split("\n\n").map {|item_text| run_matchers self.history_matchers, item_text}
     log_object = update_log_object data, log_items
 

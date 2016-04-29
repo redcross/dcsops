@@ -1,6 +1,6 @@
 class Incidents::ImportController < ApplicationController
   skip_before_filter :require_valid_user!, only: [:import_dispatch, :import]
-  before_filter :validate_webhook
+  #before_filter :validate_webhook
   protect_from_forgery except: [:import_dispatch]
 
   def user_for_paper_trail
@@ -27,44 +27,26 @@ class Incidents::ImportController < ApplicationController
     head :unauthorized unless webhook_valid? key, url, request.POST, signature
   end
 
-  def import_dispatch
-    if request.head?
-      head :ok and return
-    end
-
-    json = JSON.parse( params[:mandrill_events])
-    json.each do |evt|
-      Core::JobLog.capture(self.class.to_s + '#import_dispatch') do |logger, import_log|
-        message = evt['msg']
-        import_log.message_subject = message['subject']
-
-        import_dispatch_body_handler message, message['text'], import_log
-      end
-    end
-
-    head :ok
-  end
-
   def import
     if request.head?
       head :ok and return
     end
 
-    json = JSON.parse( params[:mandrill_events])
-    json.each do |evt|
-      Core::JobLog.capture(self.class.to_s + '#' + params[:route]) do |logger, import_log|
-        message = evt['msg']
-        import_log.message_subject = message['subject']
+    message = parsed_message
 
-        public_send("import_#{params[:route]}", message, import_log)
-      end
+    Core::JobLog.capture(self.class.to_s + '#' + message['route']) do |logger, import_log|
+      import_log.message_subject = message['subject']
+
+      public_send("import_#{message['route']}", message, import_log)
     end
 
     head :ok
   end
 
-  def import_dispatch_body_handler(message, body, import_log)
+  def import_dispatch_v1(message, import_log)
+    body = message['body']
     # Todo: move this to the importer where it belongs
+    puts body.inspect
     matches = body.match(/Account: (\d+)/i)
     if matches
       account_number = matches[1]
@@ -77,19 +59,30 @@ class Incidents::ImportController < ApplicationController
     end
   end
 
+  def import_rco_id_v1(message, log)
+    message['attachments'].each do |fname, attach|
+      data = attach['Content']
+      data = Base64.decode64 body
+
+      puts data
+
+      Roster::RcoIdImporter.new(data).import
+    end
+  end
+
+  private
+
   def importer
     @importer ||= Incidents::DispatchImporter.new
   end
 
-  def import_rco_id(message, log)
-    message['attachments'].each do |fname, attach|
-      body = attach['content']
-      body = Base64.decode64 body if attach['base64']
-
-      puts body
-
-      Roster::RcoIdImporter.new(body).import
-    end
+  def parsed_message
+    {
+      'route' => params[:ToFull].first[:Email].split("@").first.tr('-', '_'),
+      'subject' => params[:Subject],
+      'body' => params[:TextBody].gsub("\r\n", "\n"),
+      'attachments' => params[:Attachments]
+    }
   end
 
 end
