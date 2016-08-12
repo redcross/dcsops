@@ -16,6 +16,7 @@
       =f.input :lat, as: :hidden, input_html: detail_options
       =f.input :lng, as: :hidden, input_html: detail_options
       =f.input :neighborhood, input_html: detail_options
+      =f.input :territory, collection: Incidents::Territory.for_chapter(f.object.chapter)
       =f.input :county, input_html: detail_options
       =f.input :address_directly_entered, as: :hidden, input_html: {value: '1'}
       -if f.object.chapter.incidents_report_allow_manual_address
