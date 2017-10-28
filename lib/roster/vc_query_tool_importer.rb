@@ -15,9 +15,9 @@ class Roster::VcQueryToolImporter
 
   def query_mappings
     {#members: 'Active Members', 
-      positions: 'Active Members Positions', 
-      qualifications: 'Active Members Qualifications', 
-      usage: 'Active Members Usage'
+      positions: '_DCSOps1', 
+      qualifications: '_DCSOps2', 
+      usage: '_DCSOps3'
     }
   end
 
