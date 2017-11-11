@@ -46,7 +46,6 @@ class Incidents::ImportController < ApplicationController
   def import_dispatch_v1(message, import_log)
     body = message['body']
     # Todo: move this to the importer where it belongs
-    puts body.inspect
     matches = body.match(/Account: (\d+)/i)
     if matches
       account_number = matches[1]
