@@ -146,8 +146,5 @@ end
 # Use unicorn as the app server
 # gem 'unicorn'
 
-# Deploy with Capistrano
-# gem 'capistrano', group: :development
-
 # To use debugger
 # gem 'debugger'
