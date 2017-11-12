@@ -24,12 +24,10 @@ Connect::Config.configure do
     @current_user = nil
   end
 
-  root = Rails.root.to_s + "/local/id_token/"
-
-  self.jwt_issuer = Rails.env.development?           ? "https://localhost"             : ENV['OPENID_ISSUER']
-  self.private_key = Rails.env.development?          ? File.read(root + "private.key") : ENV['OPENID_KEY']
-  self.private_key_password = Rails.env.development? ? "pass-phrase"                   : ENV['OPENID_PASSPHRASE']
-  self.certificate = Rails.env.development?          ? File.read(root + "cert.pem")    : ENV['OPENID_CERTIFICATE']
+  self.jwt_issuer             = ENV['OPENID_ISSUER']
+  self.private_key            = ENV['OPENID_KEY']
+  self.private_key_password   = ENV['OPENID_PASSPHRASE']
+  self.certificate            = ENV['OPENID_CERTIFICATE']
 
   self.account_last_login = -> person { person.last_login }
   self.account_attributes = -> person, keys, scopes {
