@@ -10,7 +10,7 @@ unless Rails.env.development? || ENV['ALLOW_DATA_SEEDING'].to_i == 1
   abort 'Data seeding disabled in this environment. Run again with ALLOW_DATA_SEEDING=1 to force.'
 end
 
-Roster::CellCarrier.create! name: 'Verizon', sms_gateway: '@vtext.com'
+cell_carrier = Roster::CellCarrier.create! name: 'Verizon', sms_gateway: '@vtext.com'
 
 chapter_config_role     = Roster::Role.create!(name: 'Chapter Config',     grant_name: 'chapter_config')
 chapter_dat_admin_role  = Roster::Role.create!(name: 'Chapter DAT Admin',  grant_name: 'chapter_dat_admin')
@@ -26,21 +26,24 @@ so = arcba.counties.create! name: 'Solano', vc_regex_raw: 'Solano', abbrev: 'SO'
 mr = arcba.counties.create! name: 'Marin', vc_regex_raw: 'Marin', abbrev: 'MR'
 cc = arcba.counties.create! name: 'Contra Costa', vc_regex_raw: 'Contra Costa', abbrev: 'CC'
 
-arcba.positions.create!(name: 'Chapter Configuration', hidden: true).tap do |position|
+chapter_config_position = arcba.positions.create!(name: 'Chapter Configuration', hidden: true).tap do |position|
   position.role_memberships.create!(role: chapter_config_role)
 end
 
-arcba.positions.create!(name: 'Chapter DAT Admin', hidden: true).tap do |position|
+chapter_dat_admin_position = arcba.positions.create!(name: 'Chapter DAT Admin', hidden: true).tap do |position|
   position.role_memberships.create!(role: chapter_dat_admin_role)
 end
 
+county_dat_admin_position = nil
+
 [sf, al, sm, so, mr, cc].each do |county|
-  [
+  positions = [
     arcba.positions.create!(name: "DAT Administrator - #{county.name}", vc_regex_raw: "#{county.name}.*DAT Administrator$"),
     arcba.positions.create!(name: "Disaster Manager - #{county.name}",  vc_regex_raw: "#{county.name}.*Disaster Manager$")
   ].each do |position|
     position.role_memberships.create!(role: county_dat_admin_role)
   end
+  county_dat_admin_position = positions.first if county == sf
 end
 
 tl = arcba.positions.create! name: 'DAT Team Lead', vc_regex_raw: 'Team Lead$'
@@ -73,7 +76,6 @@ shift_category = Scheduler::ShiftCategory.create!
 
     [team_lead_shift, backup_lead_shift, dispatch_shift].compact.each do |created_shift|
       created_shift.shift_groups << group
-      created_shift.save!
     end
 
     Scheduler::DispatchConfig.create!(
@@ -94,6 +96,35 @@ Scheduler::Shift.create!(county: sf, shift_category: shift_category, name: 'Heal
   shift.shift_groups << month
 end
 
+# For some reason, when seeding immediately after database creation (in the same
+# rake context) the authlogic-provided `password=` method is unavailable here.
+# This is a quick and easy hack to work around this and allow password setting.
+class Roster::Person
+  acts_as_authentic
+end
+
+test_username = 'test'
+test_password = 'password'
+Roster::Person.create!(
+  first_name: 'Test',
+  last_name: 'User',
+  email: 'test@example.com',
+  username: test_username,
+  password: test_password,
+  password_confirmation: test_password,
+  chapter: arcba,
+  primary_county: sf,
+  cell_phone_carrier: cell_carrier
+).tap do |user|
+  user.position_memberships.create!(position: chapter_config_position)
+  user.position_memberships.create!(position: chapter_dat_admin_position)
+  user.position_memberships.create!(position: county_dat_admin_position)
+  user.counties << sf
+end
+
+puts 'Seeding finished. Created test user with:'
+puts "Username: #{test_username}"
+puts "Password: #{test_password}"
 
 #Scheduler::Shift.create! county: sf, name: 'Team Lead', abbrev: 'TL', positions: [tl], shift_group: night, ordinal: 1, max_signups: 1
 
@@ -101,8 +132,3 @@ end
 #load "lib/vc_importer.rb"; 
 #vc = Roster::VCImporter.new; 
 #vc.import_data(Roster::Chapter.first, "/Users/jlaxson/Downloads/LMSync1.xls")
-#
-#me = Roster::Person.find_by_last_name 'Laxson'
-#me.email = 'jlaxson@mac.com'
-#me.password = 'test123'
-#me.save!
