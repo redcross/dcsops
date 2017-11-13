@@ -1,6 +1,0 @@
-test:
-  adapter: postgresql
-  database: arcdata-test
-  pool: 5
-  timeout: 5000
-  username: postgres
