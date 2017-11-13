@@ -8,6 +8,10 @@
 
 Roster::CellCarrier.create name: 'Verizon', sms_gateway: '@vtext.com'
 
+chapter_config_role     = Roster::Role.create(name: 'Chapter Config',     grant_name: 'chapter_config')
+chapter_dat_admin_role  = Roster::Role.create(name: 'Chapter DAT Admin',  grant_name: 'chapter_dat_admin')
+county_dat_admin_role   = Roster::Role.create(name: 'County DAT Admin',   grant_name: 'county_dat_admin')
+
 arcba = Roster::Chapter.create name:'American Red Cross Bay Area', short_name:'ARCBA', code: '05503', time_zone_raw: 'America/Los_Angeles'
 
 all = arcba.counties.create name: 'Chapter', abbrev: 'CH'
@@ -18,11 +22,21 @@ so = arcba.counties.create name: 'Solano', vc_regex_raw: 'Solano', abbrev: 'SO'
 mr = arcba.counties.create name: 'Marin', vc_regex_raw: 'Marin', abbrev: 'MR'
 cc = arcba.counties.create name: 'Contra Costa', vc_regex_raw: 'Contra Costa', abbrev: 'CC'
 
-arcba.positions.create name: 'Chapter Configuration', hidden: true, grants_role: 'chapter_config'
-arcba.positions.create name: 'Chapter DAT Admin', hidden: true, grants_role: 'chapter_dat_admin'
+arcba.positions.create(name: 'Chapter Configuration', hidden: true).tap do |position|
+  position.role_memberships.create(role: chapter_config_role)
+end
+
+arcba.positions.create(name: 'Chapter DAT Admin', hidden: true).tap do |position|
+  position.role_memberships.create(role: chapter_dat_admin_role)
+end
+
 [sf, al, sm, so, mr, cc].each do |county|
-  arcba.positions.create name: "DAT Administrator - #{county.name}", vc_regex_raw: "#{county.name}.*DAT Administrator$", grants_role: 'county_dat_admin', role_scope: county.id
-  arcba.positions.create name: "Disaster Manager - #{county.name}", vc_regex_raw: "#{county.name}.*Disaster Manager$", grants_role: 'county_dat_admin', role_scope: county.id
+  [
+    arcba.positions.create(name: "DAT Administrator - #{county.name}", vc_regex_raw: "#{county.name}.*DAT Administrator$"),
+    arcba.positions.create(name: "Disaster Manager - #{county.name}",  vc_regex_raw: "#{county.name}.*Disaster Manager$")
+  ].each do |position|
+    position.role_memberships.create(role: county_dat_admin_role)
+  end
 end
 
 tl = arcba.positions.create name: 'DAT Team Lead', vc_regex_raw: 'Team Lead$'
