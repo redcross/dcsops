@@ -56,19 +56,40 @@ night = Scheduler::ShiftGroup.create chapter: arcba, name: 'Night', start_offset
 week = Scheduler::ShiftGroup.create chapter: arcba, name: 'Weekly', start_offset: 0, end_offset: 7.days, period: 'weekly'
 month = Scheduler::ShiftGroup.create chapter: arcba, name: 'Monthly', start_offset: 0, end_offset: 31, period: 'monthly'
 
+shift_category = Scheduler::ShiftCategory.create!
+
 [day, night].each do |group|
   [sf, al, sm, so, mr, cc].each do |county|
-    Scheduler::Shift.create county: county, name: 'Team Lead', abbrev: 'TL', positions: [tl], shift_group: group, ordinal: 1, max_signups: 1, spreadsheet_ordinal: 1, dispatch_role: 1
-    Scheduler::Shift.create county: county, name: 'Backup Lead', abbrev: 'BTL', positions: [tl], shift_group: group, ordinal: 2, max_signups: 1, spreadsheet_ordinal: 2, dispatch_role: 2
+    team_lead_shift = Scheduler::Shift.create!(county: county, shift_category: shift_category, name: 'Team Lead', abbrev: 'TL', positions: [tl], ordinal: 1, min_desired_signups: 0, max_signups: 1, spreadsheet_ordinal: 1)
+    backup_lead_shift = Scheduler::Shift.create!(county: county, shift_category: shift_category, name: 'Backup Lead', abbrev: 'BTL', positions: [tl], ordinal: 2, min_desired_signups: 0, max_signups: 1, spreadsheet_ordinal: 2)
+
     if county == sf
-      Scheduler::Shift.create county: county, name: 'Dispatch', abbrev: 'Disp', positions: [disp], shift_group: group, ordinal: 5, max_signups: 1, spreadsheet_ordinal: 3
+      dispatch_shift = Scheduler::Shift.create!(county: county, shift_category: shift_category, name: 'Dispatch', abbrev: 'Disp', positions: [disp], ordinal: 5, min_desired_signups: 0, max_signups: 1, spreadsheet_ordinal: 3)
     end
+
+    [team_lead_shift, backup_lead_shift, dispatch_shift].compact.each do |created_shift|
+      created_shift.shift_groups << group
+      created_shift.save!
+    end
+
+    Scheduler::DispatchConfig.create!(
+      name: county.name,
+      county_id: county.id,
+      chapter_id: county.chapter_id,
+      shift_first_id: team_lead_shift.id,
+      shift_second_id: backup_lead_shift.id
+    )
   end
 end
 
-Scheduler::Shift.create county: sf, name: 'Mental Health', abbrev: 'DMH', positions: [tl], shift_group: week, ordinal: 5, max_signups: 1
-Scheduler::Shift.create county: sf, name: 'Health Services', abbrev: 'DHS', positions: [tl], shift_group: month, ordinal: 6, max_signups: 1
-  
+Scheduler::Shift.create!(county: sf, shift_category: shift_category, name: 'Mental Health', abbrev: 'DMH', positions: [tl], ordinal: 5, min_desired_signups: 0, max_signups: 1).tap do |shift|
+  shift.shift_groups << week
+end
+
+Scheduler::Shift.create!(county: sf, shift_category: shift_category, name: 'Health Services', abbrev: 'DHS', positions: [tl], ordinal: 6, min_desired_signups: 0, max_signups: 1).tap do |shift|
+  shift.shift_groups << month
+end
+
 
 #Scheduler::Shift.create county: sf, name: 'Team Lead', abbrev: 'TL', positions: [tl], shift_group: night, ordinal: 1, max_signups: 1
 
