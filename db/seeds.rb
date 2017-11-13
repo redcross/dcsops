@@ -6,6 +6,10 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
+unless Rails.env.development? || ENV['ALLOW_DATA_SEEDING'].to_i == 1
+  abort 'Data seeding disabled in this environment. Run again with ALLOW_DATA_SEEDING=1 to force.'
+end
+
 Roster::CellCarrier.create! name: 'Verizon', sms_gateway: '@vtext.com'
 
 chapter_config_role     = Roster::Role.create!(name: 'Chapter Config',     grant_name: 'chapter_config')
