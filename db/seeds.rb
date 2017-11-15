@@ -16,7 +16,7 @@ chapter_config_role     = Roster::Role.create!(name: 'Chapter Config',     grant
 chapter_dat_admin_role  = Roster::Role.create!(name: 'Chapter DAT Admin',  grant_name: 'chapter_dat_admin')
 county_dat_admin_role   = Roster::Role.create!(name: 'County DAT Admin',   grant_name: 'county_dat_admin')
 
-arcba = Roster::Chapter.create! name:'American Red Cross Bay Area', short_name:'ARCBA', code: '05503', time_zone_raw: 'America/Los_Angeles'
+arcba = Roster::Chapter.create! name:'American Red Cross Bay Area', short_name:'ARCBA', url_slug: 'arcba', code: '05503', time_zone_raw: 'America/Los_Angeles'
 
 all = arcba.counties.create! name: 'Chapter', abbrev: 'CH'
 sf = arcba.counties.create! name: 'San Francisco', vc_regex_raw: 'San Francisco', abbrev: 'SF'

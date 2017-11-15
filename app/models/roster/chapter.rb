@@ -14,6 +14,8 @@ class Roster::Chapter < ActiveRecord::Base
   has_many :cas_incidents, class_name: "Incidents::CasIncident"
   belongs_to :incident_number_sequence, class_name: "Incidents::NumberSequence"
 
+  validates :url_slug, presence: true
+
   def time_zone
     @_tz ||= ActiveSupport::TimeZone[self.time_zone_raw]
   end
