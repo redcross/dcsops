@@ -60,9 +60,9 @@ describe Roster::LoginService, :type => :model do
   context "for a new user" do
     before do
       person.update_attribute :vc_id, 9999
-      @chapter = Roster::Chapter.create! id: 0, name: 'Deployment'
     end
 
+    let!(:chapter) { FactoryGirl.create(:chapter, id: 0, name: 'Deployment') }
     let(:new_person) { Roster::Person.find_by(vc_id: 1234) }
 
     it "should create a person" do

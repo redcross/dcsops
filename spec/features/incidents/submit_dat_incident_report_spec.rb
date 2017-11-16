@@ -41,7 +41,7 @@ describe "DAT Incident Report", type: :feature, versions: true do
     expect(@incident.all_responder_assignments.size).to eq(3)
     expect(@incident.all_responder_assignments.map(&:person)).to match_array([@team_lead, @responder, @flex_responder])
 
-    expect(@incident.address).to eq("1663 Market Street")
+    expect(@incident.address).to eq("1663 Market St")
     expect(@incident.status).to eq('closed')
 
   end

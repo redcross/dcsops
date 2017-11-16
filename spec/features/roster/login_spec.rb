@@ -5,7 +5,7 @@ describe "View Timeline", type: :feature, logged_in: false do
   it "Logs in with valid credentials", vcr: {cassette_name: "Vc_Login/makes_a_query_with_uneditable_name"} do
     person = FactoryGirl.create :person, vc_id: 123123, first_name: 'Bob', last_name: 'Boberson' # Name needs to match the recorded cassette
 
-    visit "/"
+    visit "/?legacy=true"
     fill_in 'Username', with: 'username'
     fill_in 'Password', with: 'password'
     click_on 'Sign In'
@@ -20,7 +20,7 @@ describe "View Timeline", type: :feature, logged_in: false do
   it "Logs in with invalid credentials", vcr: {cassette_name: "Vc_Login/incorrect_credentials/raises_an_error"} do
     person = FactoryGirl.create :person, vc_id: 123123, first_name: 'Bob', last_name: 'Boberson' # Name needs to match the recorded cassette
 
-    visit "/"
+    visit "/?legacy=true"
     fill_in 'Username', with: 'invalid_username'
     fill_in 'Password', with: 'invalid_password'
     click_on 'Sign In'

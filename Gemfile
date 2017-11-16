@@ -78,12 +78,14 @@ gem 'pubnub'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder'
 
-gem 'rails_12factor', group: :production
-gem 'rack-zippy', group: :production
-
 gem 'pdfkit'
 gem 'wkhtmltopdf-heroku', group: :production
 gem 'wkhtmltopdf-binary', github: 'dwa012/wkhtmltopdf-binary', group: :development
+
+group :production do
+  gem 'rails_12factor'
+  gem 'rack-zippy'
+end
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -145,9 +147,6 @@ end
 
 # Use unicorn as the app server
 # gem 'unicorn'
-
-# Deploy with Capistrano
-# gem 'capistrano', group: :development
 
 # To use debugger
 # gem 'debugger'
