@@ -93,7 +93,9 @@ class ImportParser
   end
 
   def log_rate(total_rate, period_rate)
-    logger.info "#{self.class.name} Processing row #{row_count}/#{@csv.count} at #{'%.1f' % [total_rate]} rows/sec total #{'%.1f' % [period_rate]} rows/sec now"
+    if row_count % 1000 == 0
+      logger.info "#{self.class.name} Processing row #{row_count}/#{@csv.count} at #{'%.1f' % [total_rate]} rows/sec total #{'%.1f' % [period_rate]} rows/sec now"
+    end
   end
 
   def parse_columns(row, columns)
