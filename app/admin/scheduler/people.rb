@@ -44,7 +44,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
 
   show do |person|
     attributes_table do
-      attrs = %i(id chapter primary_county full_name email last_login vc_imported_at vc_is_active gap_primary gap_secondary gap_tertiary vc_last_login vc_last_profile_update address1 address2 city state zip lat lng)
+      attrs = %i(id chapter primary_county full_name email last_login vc_imported_at vc_is_active gap_primary gap_secondary gap_tertiary vc_last_login vc_last_profile_update address1 address2 city state zip lat lng rco_id)
       attrs.each do |a|
         row a
       end
