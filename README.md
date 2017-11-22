@@ -119,10 +119,3 @@ $ heroku run rake db:migrate
 ## License
 
 This project is licensed under the AGPL-3.0 License. See the [LICENSE.md](LICENSE.md) file for details.
-
-## Acknowledgments
-
-- TODO...
-- Hat tip to folks who helped
-- Inspirations
-- Etc.
