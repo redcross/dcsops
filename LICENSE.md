@@ -1,4 +1,4 @@
-Copyright © `2013, 2014, 2015 American Red Cross`
+Copyright © `2013-2017 American Red Cross`
 
 GNU Affero General Public License
 =================================
