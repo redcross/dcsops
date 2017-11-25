@@ -7,17 +7,6 @@ introduction to this project.
 Please note that we expect all participants to abide by the project
 [code of conduct](doc/CODE_OF_CONDUCT.md).
 
-## Where to ask questions or make suggestions
-
-You can communicate with the other developers by filing issue tickets
-(or commenting on existing tickets) in the [issue
-tracker](https://github.com/redcross/arcdata/issues).
-
-You can also talk to other participants in real-time in the [#DCSOps
-chat room](https://chat.opentechstrategies.com/#narrow/stream/DCSOps).
-You'll need to create a login on that server to join, but accounts are
-free and open to anyone.
-
 ## Submitting and Reviewing Code
 
 The DCSOps home repository is
