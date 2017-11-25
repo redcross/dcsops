@@ -87,6 +87,8 @@ $ rake
 
 ## Deployment
 
+We always deploy a commit on the `master` branch, typically the latest commit (the HEAD) as of the time of deployment.  The only exception to this would be when an emergency rollback is necessary because a problem has been discovered in an already-deployed commit on `master` and no new, fixed commit is available yet; in that case, rolling back to a known-good previous commit on `master` is the temporary remedy.
+
 DCSOps is deployed on Heroku, so you'll need a Heroku account and collaborator access granted to do anything with the production instance.
 
 Once you've got that, you'll probably want the [Heroku command line tools](https://devcenter.heroku.com/articles/heroku-cli#download-and-install) installed:

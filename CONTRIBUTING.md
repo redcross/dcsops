@@ -99,9 +99,18 @@ if one thinks there is any chance of controversy or disagreement about
 the change, then the best thing to do is put it into a PR so it can go
 through the regular review process.
 
+### Keep Master Deployable
+
+As implied by the "Deployment" section in [INSTALL.md](INSTALL.md),
+the tip (HEAD) of the `master` branch should always be deployable.
+
+Development work should be done on branches, as described in the next
+section, and merged to `master` only when it is ready and passing all
+tests.
+
 ### Branching and Branch Names
 
-We try to do development on lightweight branches, with each branch
+We do development on lightweight branches, with each branch
 encapsulating one logical changeset (that is, one group of related
 commits).  Please try to keep changesets small and well-bounded: a
 branch should usually be short-lived, and should be turned into a PR,
