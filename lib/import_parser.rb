@@ -7,7 +7,7 @@ class ImportParser
 
   attr_accessor :logger
 
-  self.log_progress_every = 200
+  self.log_progress_every = 1000
   self.batch_size = 100
   self.preload_identities = true
 
