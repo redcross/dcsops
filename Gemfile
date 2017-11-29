@@ -1,15 +1,16 @@
 source 'https://rubygems.org'
-ruby "2.1.2"
+ruby "2.2.3"
 #ruby-gemset=arcdata
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.1.0'
+gem 'rails', '>= 4.2'
 gem 'squeel', '~> 1.2.1', github: 'activerecord-hackery/squeel'
 gem 'puma'
 gem 'rack-rewrite'
 
-gem 'arcdata_core', github: 'redcross/arcdata_core', branch: 'master'
-gem 'connect', github: 'jlaxson/openid-connect-engine', branch: 'master'
+# gem 'arcdata_core', github: 'redcross/arcdata_core', branch: 'master'
+gem 'arcdata_core', path: '~/Desktop/redcross/arcdata_core'
+# gem 'connect', github: 'jlaxson/openid-connect-engine', branch: 'master'
 
 gem 'activerecord-postgresql-adapter'
 gem 'activerecord-import'
@@ -19,7 +20,7 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'haml-rails'
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
-gem "sprockets", '~> 2.11.0'
+gem "sprockets", '~> 3.0'
 
 gem 'delayed_job_active_record'
 
@@ -44,7 +45,7 @@ gem "kaminari"
 gem "paper_trail", '~> 3.0'
 gem "assignable_values"
 gem 'bootstrap-kaminari-views'
-gem 'paperclip', '~> 4.0.0'
+gem 'paperclip', '~> 4.2.2'
 gem 'threach'
 gem 'dotiw', '~> 2.0'
 
@@ -55,7 +56,7 @@ gem 'formtastic-bootstrap', '~> 3.0', github: 'ekubal/formtastic-bootstrap'
 gem 'cocoon'
 gem 'polyamorous'
 gem 'ransack', '~> 1.2'
-gem 'activeadmin', github: 'activeadmin'  
+gem 'activeadmin', github: 'activeadmin'
 gem 'nokogiri'
 
 # Monitoring/Alerting
@@ -90,7 +91,7 @@ end
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  
+
   gem 'coffee-rails', '~> 4.0'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
