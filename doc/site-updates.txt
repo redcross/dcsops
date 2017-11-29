@@ -3,6 +3,11 @@ Log of changes to DCSOps sites.
   PROD == production site (dcsops.org; runs at Heroku)
   STAG == staging site    (not yet set up as of 2017-11-22)
 
+* [2017-11-29] PROD: master:2e4a871
+
+  Deployed pull request #114 to reduce the number of lines logged
+  during import.
+
 * [2017-11-29] PROD
 
   Updated all database credentials with the command:
