@@ -7,7 +7,7 @@ class ImportParser
 
   attr_accessor :logger
 
-  self.log_progress_every = 200
+  self.log_progress_every = 1000
   self.batch_size = 100
   self.preload_identities = true
 
@@ -93,9 +93,7 @@ class ImportParser
   end
 
   def log_rate(total_rate, period_rate)
-    if row_count % 1000 == 0
       logger.info "#{self.class.name} Processing row #{row_count}/#{@csv.count} at #{'%.1f' % [total_rate]} rows/sec total #{'%.1f' % [period_rate]} rows/sec now"
-    end
   end
 
   def parse_columns(row, columns)
