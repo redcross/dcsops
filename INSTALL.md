@@ -111,3 +111,20 @@ $ heroku run rake db:migrate
 ```
 
 **IMPORTANT:** Once you have finished a new deployment, please log it in `site-updates.txt`.
+
+## Database Management
+
+Heroku Postgres is being used for the PostgreSQL database, so backups and credentials can be managed with the Heroku command line tools. The Heroku Postgres backups are compatible with the Postgres native tools `pg_dump` and `pg_restore`, and you can refer to their [documentation on CLI commands](https://devcenter.heroku.com/articles/heroku-postgres-backups). To create and then download a backup, you'll need to run:
+
+```bash
+$ heroku pg:backups:capture --app arcdata
+$ heroku pg:backups:download --app arcdata
+```
+
+Credentials are also managed through the CLI rather than directly through Postgres itself. You can specify usernames for new database credentials, but passwords are always automatically created by Heroku. Databases running earlier versions of Postgres (~9.3) don't support the [full set of commands and functionality](https://devcenter.heroku.com/articles/heroku-postgresql-credentials), but you can reset the database credentials with:
+
+```bash
+$ heroku pg:credentials <DATABASE_NAME> --reset --app arcdata
+```
+
+**IMPORTANT:** Periscope, a tool integrated with the app for analytics and reporting, relies on a direct database connection. If the Heroku Postgres credentials are changed, the credentials used in periscope will need to be changed as well.
