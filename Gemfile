@@ -9,8 +9,9 @@ gem 'puma'
 gem 'rack-rewrite'
 
 # gem 'arcdata_core', github: 'redcross/arcdata_core', branch: 'master'
-gem 'arcdata_core', path: '~/Desktop/redcross/arcdata_core'
 # gem 'connect', github: 'jlaxson/openid-connect-engine', branch: 'master'
+gem 'arcdata_core', path: '~/Desktop/redcross/arcdata_core'
+gem 'connect', path: '~/Desktop/redcross/openid-connect-engine'
 
 gem 'activerecord-postgresql-adapter'
 gem 'activerecord-import'

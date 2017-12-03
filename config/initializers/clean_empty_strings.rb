@@ -8,10 +8,19 @@ module CleanEmptyStrings
     type_cast_for_write_without_nil_strings value
   end
 
-  included do
-    alias_method_chain :type_cast_for_write, :nil_strings
-  end
+  # included do
+  #   alias_method_chain :type_cast_for_write, :nil_strings
+  # end
 end
 
 ActiveRecord::ConnectionAdapters::Column.send(:include, CleanEmptyStrings)
 ActiveRecord::ConnectionAdapters::PostgreSQLColumn.send(:include, CleanEmptyStrings)
+
+# class ActiveRecord::ConnectionAdapters::Column
+#   alias_method_chain :type_cast_for_write, :nil_strings
+# end
+
+
+# class ActiveRecord::ConnectionAdapters::PostgreSQLColumn
+#   alias_method_chain :type_cast_for_write, :nil_strings
+# end
