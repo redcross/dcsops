@@ -114,7 +114,16 @@ $ heroku run rake db:migrate
 
 ## Database Management
 
-Heroku Postgres is being used for the PostgreSQL database, so backups and credentials can be managed with the Heroku command line tools. The Heroku Postgres backups are compatible with the Postgres native tools `pg_dump` and `pg_restore`, and you can refer to their [documentation on CLI commands](https://devcenter.heroku.com/articles/heroku-postgres-backups). To create and then download a backup, you'll need to run:
+Heroku Postgres is being used for the PostgreSQL database, so backups and credentials can be managed with the Heroku command line tools. The Heroku Postgres backups are compatible with the Postgres native tools `pg_dump` and `pg_restore`, and you can refer to their [documentation](https://devcenter.heroku.com/articles/heroku-postgres-backups) for more information on creating and managing backups.
+
+We run daily automated backups on Heroku. To schedule automated backups and verify that they are running, you can run the following commands, specifying a 24-hour time and time zone for backups to take be created (with more detail in the [documentation](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)):
+
+```bash
+$ heroku pg:backups:schedule DATABASE_URL --at '02:00 America/Chicago' --app arcdata
+$ heroku pg:backups --app arcdata
+```
+
+To create and then download a backup manually, you'll need to run:
 
 ```bash
 $ heroku pg:backups:capture --app arcdata
