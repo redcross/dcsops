@@ -10,8 +10,10 @@ gem 'rack-rewrite'
 
 # gem 'arcdata_core', github: 'redcross/arcdata_core', branch: 'master'
 # gem 'connect', github: 'jlaxson/openid-connect-engine', branch: 'master'
-gem 'arcdata_core', path: '~/Desktop/redcross/arcdata_core'
-gem 'connect', path: '~/Desktop/redcross/openid-connect-engine'
+# gem 'arcdata_core', path: '~/Desktop/redcross/arcdata_core'
+# gem 'connect', path: '~/Desktop/redcross/openid-connect-engine'
+gem 'arcdata_core', path: '../arcdata_core'
+gem 'connect', path: '../openid-connect-engine'
 
 gem 'activerecord-postgresql-adapter'
 gem 'activerecord-import'
@@ -33,7 +35,7 @@ gem 'bootstrap-x-editable-rails'
 gem "spreadsheet" # Import from excel
 
 gem 'scrypt'
-gem "authlogic", '3.4.0'
+gem "authlogic", '3.4.4'
 
 gem "omniauth-openid-connect"
 

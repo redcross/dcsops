@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   end
 
   def annotate_newrelic_user
-    ::NewRelic::Agent.add_custom_parameters(user_id: current_user.try(:id), user_name: current_user.try(:full_name), chapter_id: current_chapter.id)
+    ::NewRelic::Agent.add_custom_attributes(user_id: current_user.try(:id), user_name: current_user.try(:full_name), chapter_id: current_chapter.id)
   end
 
   #check_authorization
