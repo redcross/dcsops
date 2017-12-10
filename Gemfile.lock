@@ -68,7 +68,7 @@ PATH
       html5_validators
       openid_connect
       rack-oauth2
-      rails (~> 4.0)
+      rails (>= 4.2)
       squeel (~> 1.1)
 
 GEM
