@@ -29,7 +29,6 @@ GIT
 GIT
   remote: git://github.com/redcross/arcdata_core.git
   revision: d997d3f3e601d8692c9d9d93a21bc4f9e5ebfd2a
-  branch: rails-upgrade
   specs:
     arcdata_core (0.0.1)
       activeadmin (= 1.0.0.pre1)
@@ -38,7 +37,6 @@ GIT
 GIT
   remote: git://github.com/redcross/openid-connect-engine.git
   revision: 9ec7187c9612b2afbbac63f91ae3c70726697342
-  branch: rails-upgrade
   specs:
     connect (0.0.1)
       html5_validators

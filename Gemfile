@@ -8,8 +8,8 @@ gem 'squeel', '~> 1.2.1', github: 'activerecord-hackery/squeel'
 gem 'puma'
 gem 'rack-rewrite'
 
-gem 'arcdata_core', github: 'redcross/arcdata_core', branch: 'rails-upgrade'
-gem 'connect', github: 'redcross/openid-connect-engine', branch: 'rails-upgrade'
+gem 'arcdata_core', github: 'redcross/arcdata_core'
+gem 'connect', github: 'redcross/openid-connect-engine'
 
 gem 'activerecord-postgresql-adapter'
 gem 'activerecord-import'
