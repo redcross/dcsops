@@ -132,7 +132,7 @@ class window.AllIncidentsMapController
       query:
         select: 'geometry'
         from: tableId
-        where: "UNIT_CODE='#{filter}'"
+        where: "name='#{filter}'"
       styles: [
         polygonOptions:
           fillColor: '#000000'
