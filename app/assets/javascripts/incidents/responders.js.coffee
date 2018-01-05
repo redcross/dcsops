@@ -37,21 +37,22 @@ class window.IncidentRespondersController
 
     this.fillTimesFromCache()
 
-    elements = $('[data-person]:not([data-travel-lookup])').slice(0, 25)
+    elements = $('[data-person]:not([data-travel-lookup])').toArray().slice(0, 25)
 
     if elements.length == 0
       this.sortTables()
       return
 
-    people = elements.map((idx, el) -> $(el).data('person'))
-    origins = people.map((idx, el) -> new google.maps.LatLng(parseFloat(el.lat), parseFloat(el.lng)))
+    people = elements.map((el, idx) -> $(el).data('person'))
+    origins = people.map((el, idx) -> new google.maps.LatLng(parseFloat(el.lat), parseFloat(el.lng)))
 
     @distanceService.getDistanceMatrix
       origins: origins
       destinations: [@incidentLocation]
       travelMode: google.maps.TravelMode.DRIVING
       unitSystem: google.maps.UnitSystem.IMPERIAL
-      durationInTraffic: true
+      drivingOptions:
+        departureTime: new Date()
       (resp, status) => 
         if status != "OK"
           console.log resp, status
@@ -147,7 +148,8 @@ class window.IncidentAssignmentController
       destination: @incidentLocation
       travelMode: google.maps.TravelMode.DRIVING
       unitSystem: google.maps.UnitSystem.IMPERIAL
-      durationInTraffic: true
+      drivingOptions:
+        departureTime: new Date()
       (resp, status) =>
         if status == google.maps.DirectionsStatus.OK
           @renderer.setDirections resp
