@@ -77,6 +77,30 @@ In production, DCSOps uses Red Cross SSO for authentication. If you want to sign
 
 That will get you the traditional username/password auth, where you can use the test user credentials set up by the bootstrap script.
 
+## Loading Data from a Backup
+
+Currently the production database is on Postgres 9.3, which has a [documented bug on restoring hstore fields](https://www.postgresql.org/message-id/53702D20.4070505@2ndquadrant.com). To load data from a database dump, run the following commands:
+
+```bash
+$ rake db:schema:load
+$ pg_restore -a -d <dbname> <dump_filename>
+```
+
+Then, to modify an existing user's login (to test on real data locally), run `rails c` and in the console enter:
+
+```ruby
+> class Roster::Person
+>   acts_as_authentic
+> end
+>
+> test_user = Roster::Person.where("INSERT QUERY")[0]
+> test_user.password = "NEW_PASSWORD"
+> test_user.password_confirmation = "NEW_PASSWORD"
+> test_user.save!
+```
+
+You should now be able to log in as this modified user at the legacy login URL: [http://localhost:3000/roster/session/new?legacy=true](http://localhost:3000/roster/session/new?legacy=true)
+
 ## Running the test suite
 
 Pretty simple:
