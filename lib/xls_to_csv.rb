@@ -17,7 +17,8 @@ class XlsToCsv
   def self.convert(xls_body)
     install!
 
-    f = Tempfile.new(["convert", '.xls'], Dir.tmpdir, "wb")
+    f = Tempfile.new(["convert", '.xls'], Dir.tmpdir)
+    f.binmode
     f.write xls_body.force_encoding("UTF-8")
     f.close
 
