@@ -3,6 +3,11 @@ Log of changes to DCSOps sites.
   PROD == production site (dcsops.org; runs at Heroku)
   STAG == staging site    (not yet set up as of 2017-11-22)
 
+* [2018-01-05] PROD: master:0462d7c
+
+  Deployed pull request #134, bringing Heroku up to the tip of master
+  and fixing a bug in the import script.
+
 * [2018-01-05] PROD: master:20c2437
 
   Deployed pull requests #109, #131, and #132 for multiple patches
