@@ -21,26 +21,30 @@ module Vc
       hours_type = hours_type.titleize
       status = status.titleize
 
-      args = {
-        nd: 'xmlhttp-vms_calendar_hours_submission_save',
-        action: 'hours_submission_save',
-        dosave: 1,
-        group_id: '',
-        sku: '',
+      # Use each_slice to iterate through hours in increments of 40 or less
+      hours_arr = (1..number_of_hours).to_a
+      hours_arr.each_slice(40) do |hours|
+        args = {
+          nd: 'xmlhttp-vms_calendar_hours_submission_save',
+          action: 'hours_submission_save',
+          dosave: 1,
+          group_id: '',
+          sku: '',
 
-        account_id: account_id,
-        activity_name: description,
-        activity_datetime: date.to_s,
-        activity_type: hours_type,
-        activity_program: '',
-        activity_reference: '',
-        status_lookup: status,
-        comments: comments,
-        admin_comments: admin_comments,
-        hours_worked: ("%.02f" % number_of_hours.to_f)
-      }.merge(xml_token)
+          account_id: account_id,
+          activity_name: description,
+          activity_datetime: date.to_s,
+          activity_type: hours_type,
+          activity_program: '',
+          activity_reference: '',
+          status_lookup: status,
+          comments: comments,
+          admin_comments: admin_comments,
+          hours_worked: ("%.02f" % hours.length.to_f)
+        }.merge(xml_token)
 
-      resp = client.post '', body: args
+        resp = client.post '', body: args
+      end
     end
   end
 end
