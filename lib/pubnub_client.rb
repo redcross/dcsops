@@ -4,7 +4,8 @@ class PubnubClient
       subscribe_key: subscribe_key,
       publish_key: ENV['PUBNUB_PUBLISH_KEY'],
       origin: ENV['PUBNUB_ORIGIN'],
-      logger: Rails.logger
+      logger: Rails.logger,
+      ssl: true
       )
   end
 
