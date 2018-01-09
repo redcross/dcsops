@@ -226,3 +226,18 @@ ActiveAdmin.setup do |config|
     end
   end
 end
+
+module ActiveAdmin
+  module Views
+    class TableFor < Arbre::HTML::Table
+      protected
+      def is_boolean?(data, item)
+        if (item.respond_to? :has_attribute?) && (!item.class.ancestors.include? Core::SerializedColumns)
+          item.has_attribute?(data) &&
+            item.column_for_attribute(data) &&
+            item.column_for_attribute(data).type == :boolean
+        end
+      end
+    end
+  end
+end

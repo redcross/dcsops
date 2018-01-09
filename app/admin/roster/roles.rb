@@ -15,7 +15,7 @@ ActiveAdmin.register Roster::Role, as: 'Role' do
     column :name
     column :grant_name
     column :positions do |role|
-      safe_join(role.role_memberships.map{|pm| "#{pm.position.name} (#{pm.role_scopes.map(&:scope).join ','})"}, tag(:br))
+      safe_join(role.role_memberships.map{|pm| "#{pm.position.name if pm.position} (#{pm.role_scopes.map(&:scope).join ','})"}, tag(:br))
     end
     actions
   end
