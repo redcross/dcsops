@@ -3,6 +3,11 @@ Log of changes to DCSOps sites.
   PROD == production site (dcsops.org; runs at Heroku)
   STAG == staging site    (not yet set up as of 2017-11-22)
 
+* [2018-01-09] PROD: master:eb2b81e
+
+  Deployed pull requests #125, #137 allowing PubNub to use SSL and
+  fixing some errors with the admin site.
+
 * [2018-01-06] PROD: master:d50908b
 
   Deployed pull request #135, submitting Volunteer Connection hours
