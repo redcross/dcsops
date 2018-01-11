@@ -56,7 +56,7 @@ gem 'cocoon'
 gem 'polyamorous'
 gem 'ransack', '~> 1.2'
 gem 'activeadmin', "1.0.0.pre1"
-gem 'nokogiri'
+gem 'nokogiri', '~> 1.8'
 
 # Monitoring/Alerting
 gem 'sentry-raven', '~> 0.12.2'
