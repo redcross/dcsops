@@ -65,8 +65,8 @@ describe Incidents::Notifications::Mailer, :type => :mailer do
       before(:each) { person.stub(sms_addresses: ['test@vtext.com']) }
 
       it "renders" do
-        expect(mail.to).to eq([person.sms_addresses.first])
-        expect(mail.from).to eq([from_address])
+        expect(mail.message.to).to eq([person.sms_addresses.first])
+        expect(mail.message.from).to eq([from_address])
       end
     end
   end
@@ -101,8 +101,8 @@ describe Incidents::Notifications::Mailer, :type => :mailer do
       before(:each) { person.stub(sms_addresses: ['test@vtext.com']) }
 
       it "renders" do
-        expect(mail.to).to eq([person.sms_addresses.first])
-        expect(mail.from).to eq([from_address])
+        expect(mail.message.to).to eq([person.sms_addresses.first])
+        expect(mail.message.from).to eq([from_address])
       end
     end
   end
@@ -133,8 +133,8 @@ describe Incidents::Notifications::Mailer, :type => :mailer do
       before(:each) { person.stub(sms_addresses: ['test@vtext.com']) }
 
       it "renders" do
-        expect(mail.to).to eq([person.sms_addresses.first])
-        expect(mail.from).to eq([from_address])
+        expect(mail.message.to).to eq([person.sms_addresses.first])
+        expect(mail.message.from).to eq([from_address])
       end
     end
   end
@@ -164,8 +164,8 @@ describe Incidents::Notifications::Mailer, :type => :mailer do
       before(:each) { person.stub(sms_addresses: ['test@vtext.com']) }
 
       it "renders" do
-        expect(mail.to).to eq([person.sms_addresses.first])
-        expect(mail.from).to eq([from_address])
+        expect(mail.message.to).to eq([person.sms_addresses.first])
+        expect(mail.message.from).to eq([from_address])
       end
     end
   end
@@ -196,8 +196,8 @@ describe Incidents::Notifications::Mailer, :type => :mailer do
       before(:each) { person.stub(sms_addresses: ['test@vtext.com']) }
 
       it "renders" do
-        expect(mail.to).to eq([person.sms_addresses.first])
-        expect(mail.from).to eq([from_address])
+        expect(mail.message.to).to eq([person.sms_addresses.first])
+        expect(mail.message.from).to eq([from_address])
       end
     end
   end

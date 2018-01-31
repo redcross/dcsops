@@ -79,23 +79,17 @@ That will get you the traditional username/password auth, where you can use the 
 
 ## Loading Data from a Backup
 
-Currently the production database is on Postgres 9.3, which has a [documented bug on restoring hstore fields](https://www.postgresql.org/message-id/53702D20.4070505@2ndquadrant.com). To load data from a database dump, run the following commands:
+To load data from a database dump, run the following command:
 
 ```bash
-$ rake db:schema:load
-$ pg_restore -a -d <dbname> <dump_filename>
+$ pg_restore --no-owner -d <dbname> <dump_filename>
 ```
 
 Then, to modify an existing user's login (to test on real data locally), run `rails c` and in the console enter:
 
 ```ruby
-> class Roster::Person
->   acts_as_authentic
-> end
->
 > test_user = Roster::Person.where("INSERT QUERY")[0]
 > test_user.password = "NEW_PASSWORD"
-> test_user.password_confirmation = "NEW_PASSWORD"
 > test_user.save!
 ```
 

@@ -1,2 +1,2 @@
 <% row_id = params[:row_id] || resource.id %>
-$('tr[data-resource-id=<%=row_id%>]').replaceWith(<%= raw render('row', resource: resource, css: (resource.errors.present? ? 'error' : 'success'), row_id: row_id).to_json %>);
+$("tr[data-resource-id='<%=row_id%>']").replaceWith(<%= raw render('row', resource: resource, css: (resource.errors.present? ? 'error' : 'success'), row_id: row_id).to_json %>);
