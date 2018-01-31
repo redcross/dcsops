@@ -3,23 +3,29 @@ ruby "2.2.3"
 #ruby-gemset=arcdata
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '< 4.2'
+gem 'rails', '~> 4.2'
 gem 'squeel', '~> 1.2.1', github: 'activerecord-hackery/squeel'
 gem 'puma'
 gem 'rack-rewrite'
+gem 'pg', '~> 0.2'
 
-gem 'arcdata_core', github: 'redcross/arcdata_core'
-gem 'connect', github: 'redcross/openid-connect-engine'
+# gem 'arcdata_core', github: 'redcross/arcdata_core'
+# gem 'connect', github: 'redcross/openid-connect-engine'
+gem 'arcdata_core', path: '../arcdata_core'
+gem 'connect', path: '../openid-connect-engine'
 
 gem 'activerecord-postgresql-adapter'
 gem 'activerecord-import'
+# gem 'activerecord-typedstore'
 
 gem 'sass-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'haml-rails'
+# gem "less-rails"
 gem "less-rails", "~> 2.5" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem "sprockets", "~> 2.11.0"
+# gem "sprockets"
 
 gem 'delayed_job_active_record'
 
@@ -44,7 +50,7 @@ gem "kaminari"
 gem "paper_trail", '~> 3.0'
 gem "assignable_values"
 gem 'bootstrap-kaminari-views'
-gem 'paperclip', '~> 4.2'
+gem 'paperclip'
 gem 'threach'
 gem 'dotiw', '~> 2.0'
 
@@ -61,12 +67,12 @@ gem 'nokogiri'
 # Monitoring/Alerting
 gem 'sentry-raven', '~> 0.12.2'
 gem 'hashie', '~>2.0.0'
-gem 'newrelic_rpm'
+gem 'newrelic_rpm', '< 4'
 
 gem 'httparty'
 gem 'couchrest'
 gem 'bitly'
-gem 'aws-sdk'
+gem 'aws-sdk', '~> 1.56'
 gem "memcachier"
 gem "dalli"
 gem "twilio-ruby"
