@@ -24,7 +24,7 @@ class window.DatIncidentsFormController
 
         el.val(val)
 
-      $(template).find("[name*=was_flex]").attr('checked', $(evt.target).data('was-flex'))
+      $(template).find("[name*='was_flex']").attr('checked', $(evt.target).data('was-flex'))
 
 
 
@@ -97,7 +97,7 @@ class window.DatIncidentsFormController
     $(document).on 'click', '[data-toggle=remote-tab]', (evt) =>
       $target = $(evt.target)
       href = $target.data('target')
-      $("[data-target=#{href}][data-toggle=tab]").tab('show')
+      $("[data-target='#{href}'][data-toggle='tab']").tab('show')
 
     $('.collapse').collapse({toggle: false})
 
