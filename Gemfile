@@ -9,23 +9,18 @@ gem 'puma'
 gem 'rack-rewrite'
 gem 'pg', '~> 0.2'
 
-# gem 'arcdata_core', github: 'redcross/arcdata_core'
-# gem 'connect', github: 'redcross/openid-connect-engine'
-gem 'arcdata_core', path: '../arcdata_core'
-gem 'connect', path: '../openid-connect-engine'
+gem 'arcdata_core', github: 'redcross/arcdata_core', branch: 'upgrade/rails-42'
+gem 'connect', github: 'redcross/openid-connect-engine', branch: 'rails-42-upgrade'
 
 gem 'activerecord-postgresql-adapter'
 gem 'activerecord-import'
-# gem 'activerecord-typedstore'
 
 gem 'sass-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'haml-rails'
-# gem "less-rails"
 gem "less-rails", "~> 2.5" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem "sprockets", "~> 2.11.0"
-# gem "sprockets"
 
 gem 'delayed_job_active_record'
 
