@@ -18,7 +18,7 @@ gem 'activerecord-import'
 gem 'sass-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'haml-rails'
+gem 'haml-rails', "~> 0.5.0"
 gem "less-rails", "~> 2.5" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem "sprockets", "~> 2.11.0"
 

@@ -206,7 +206,7 @@ class window.IncidentsTrackerController
 
 class window.IncidentTerritoryController
   constructor: (@url) ->
-    $(document).on 'change', 'select[id$=territory_id]', () =>
+    $(document).on 'change', "select[id$='territory_id']", () =>
       @updateTerritory(true)
 
   updateTerritory: (preserveTerritory) ->

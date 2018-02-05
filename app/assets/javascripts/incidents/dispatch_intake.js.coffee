@@ -2,13 +2,13 @@ class window.DispatchIntakeController
   constructor: () ->
     $('.collapse').collapse({toggle: false})
 
-    $(document).on 'change', 'input[id*=call_type]', (evt) =>
+    $(document).on 'change', "input[id*='call_type']", (evt) =>
       val = $(evt.target).val()
       @updateCollapse(val)
 
       
 
-    @addressSelector = 'input[id$=address_entry]'
+    @addressSelector = "input[id$='address_entry']"
     $(document).on 'change', @addressSelector, (evt) =>
       @addressChanged(evt)
       evt.preventDefault()
@@ -31,7 +31,7 @@ class window.DispatchIntakeController
 
     @geocoder = new google.maps.Geocoder()
 
-    @updateCollapse($('input:checked[id*=call_type]').val())
+    @updateCollapse($("input:checked[id*='call_type']").val())
 
   updateCollapse: (val) ->
     console.log val
