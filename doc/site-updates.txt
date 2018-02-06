@@ -8,6 +8,23 @@ about recovery from downtime or from other functionality disruptions.
 E.g., "[2018-02-01] PROD: RECOVERY from downtime due to DB upgrade".
 That way we can easily find and study unusual incidents.
 
+* [2018-02-01] PROD: RECOVERY from downtime during DB resizing
+  See [[https://groups.google.com/forum/#!topic/dcsops-dev/nEI_PQ8G9_8]["Database Outage Initial Post-Mortem"]] on the DCSOps Dev Forum.
+
+  The two main new checklist items from that experience are summarized
+  in [[https://groups.google.com/d/msg/dcsops-dev/nEI_PQ8G9_8/3NfFwqAtBQAJ][this message]]:
+
+    1) Always rehearse locally, even if it makes the whole process
+       take more time.
+  
+    2) Preserve resources needed for rollback until at least 72 hours
+       after the change, and then only after receiving some
+       confirmation from multiple testers/users that the changed
+       system is working as expected.
+
+  I'm not sure where to document those yet -- ../INSTALL.md, maybe?
+  Anyway, for now they go in here so we don't lose them, but they
+  should go into administrative documentation.
 * [2018-02-01] PROD: (infrastructure change, no associated commit)
 
   Delete inactive databases (color codes, aqua, jade, and olive) to reduce heroku bill. Move data from previous active database (color code black, plan premium-0) into a new smaller db (color code olive, plan standard-0; this is not the same as the previous olive db, the names are just a coincidence). Backups of all 4 old databases have been captured and saved on 2 local machines. Storing them somewhere more accessible is pending approval.
