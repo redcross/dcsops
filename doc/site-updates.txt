@@ -8,6 +8,11 @@ about recovery from downtime or from other functionality disruptions.
 E.g., "[2018-02-01] PROD: RECOVERY from downtime due to DB upgrade".
 That way we can easily find and study unusual incidents.
 
+* [2018-02-06] PROD: Re-add indexes and constrains to DB after resizing
+
+  Indexes and constraints from the larger database weren't maintained in
+  the migration, so those were re-added to fix issue #150.
+
 * [2018-02-01] PROD: RECOVERY from downtime during DB resizing
   See [[https://groups.google.com/forum/#!topic/dcsops-dev/nEI_PQ8G9_8]["Database Outage Initial Post-Mortem"]] on the DCSOps Dev Forum.
 
