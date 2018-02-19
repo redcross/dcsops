@@ -8,6 +8,14 @@ about recovery from downtime or from other functionality disruptions.
 E.g., "[2018-02-01] PROD: RECOVERY from downtime due to DB upgrade".
 That way we can easily find and study unusual incidents.
 
+* [2018-02-19] PROD: RECOVERY Twilio credential update
+
+  SMS messages through Twilio weren't being sent because the account being
+  used for all chapters was changed. Twilio credentials are managed on a per-
+  chapter basis, so we needed to update them for all chapters. The auth token
+  was also rotated after the initial rotation because it was exposed briefly on
+  GitHub.
+
 * [2018-02-06] PROD: Re-add indexes and constrains to DB after resizing
 
   Indexes and constraints from the larger database weren't maintained in
