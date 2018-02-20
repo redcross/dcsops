@@ -85,13 +85,12 @@ gem 'wkhtmltopdf-binary', github: 'dwa012/wkhtmltopdf-binary', group: :developme
 
 group :production do
   gem 'rails_12factor'
-  gem 'rack-zippy'
 end
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  
+
   gem 'coffee-rails', '~> 4.0'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes

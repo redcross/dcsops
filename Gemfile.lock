@@ -412,8 +412,6 @@ GEM
     rack-rewrite (1.5.1)
     rack-test (0.6.3)
       rack (>= 1.0)
-    rack-zippy (4.0.0)
-      actionpack (~> 4.2.4)
     rails (4.2.10)
       actionmailer (= 4.2.10)
       actionpack (= 4.2.10)
@@ -648,7 +646,6 @@ DEPENDENCIES
   puma
   quiet_assets
   rack-rewrite
-  rack-zippy
   rails (~> 4.2)
   rails_12factor
   ransack (~> 1.2)
