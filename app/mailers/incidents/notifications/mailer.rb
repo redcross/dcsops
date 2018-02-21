@@ -1,7 +1,6 @@
 module Incidents::Notifications
   class Mailer < ActionMailer::Base
     include MailerCommon
-    include Rails.application.routes.url_helpers
     default from: "DCSOps <incidents@dcsops.org>"
     helper ApplicationHelper
 
