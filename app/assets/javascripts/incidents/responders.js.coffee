@@ -162,7 +162,7 @@ class window.IncidentAssignmentController
 
   setDistanceMeters: (distance) ->
     distance = distance / 1609.3
-    $("input[id$='driving_distance']").val(distance)
+    $('input[id$=driving_distance]').val(distance)
 
 
 

@@ -1,4 +1,2 @@
-Aws.config.update({
-  region: ENV['AWS_DEFAULT_REGION'] || 'us-east-1',
-  config: Aws::Credentials.new(ENV['AWS_SECRET_KEY_ID'], ENV['AWS_SECRET_KEY'])
-})
+AWS.config( :access_key_id => ENV['AWS_SECRET_KEY_ID'],
+            :secret_access_key => ENV['AWS_SECRET_KEY'])

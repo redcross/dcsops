@@ -69,7 +69,7 @@ private
     Incidents::Deployment.for_chapter(chapters).seen_since(@date_range.first)
                           .preload{[disaster, person.counties]}
                           .joins{disaster}
-                          .where{ disaster.dr_number.not_in(ignore) }
+                          .where{ disaster.dr_number.not_like_any(ignore) }
                           .order{ date_first_seen.desc }
                           .to_a
                           .uniq{|a| [a.person_id, a.disaster_id] }

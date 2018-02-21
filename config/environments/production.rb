@@ -90,4 +90,5 @@ Scheduler::Application.configure do
       ENV['WWW_HOSTNAME'].present? && rack_env['SERVER_NAME'] != ENV['WWW_HOSTNAME']
     }
   end
+  Rails.application.config.middleware.insert_before(ActionDispatch::Static, Rack::Zippy::AssetServer)
 end

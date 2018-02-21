@@ -2,16 +2,15 @@ namespace :import_queue do
   task :work => :environment do
     logger = Rails.logger
     Raven.capture do
-      sqs = Aws::SQS::Client.new
-      s3 = Aws::S3::Client.new
+      sqs = AWS::SQS.new
+      s3 = AWS::S3.new
 
       logger.info "Checking import queue..."
 
       queue_name = ENV['IMPORT_QUEUE_NAME']
-      queue = (queue_name =~ /^http/) ? queue_name : sqs.get_queue_url(queue_name: queue_name).queue_url
-      poller = Aws::SQS::QueuePoller.new(queue_name)
+      queue = (queue_name =~ /^http/) ? sqs.queues[queue_name] : sqs.queues.named(queue_name)
 
-      poller.poll(wait_time_seconds: 10, idle_timeout: 10) do |envelope|
+      queue.poll(wait_time_seconds: 10, idle_timeout: 10) do |envelope|
         message = JSON.parse envelope.body
         subject = message['message']['subject']
         endpoint = message['endpoint']
@@ -23,8 +22,9 @@ namespace :import_queue do
 
         # Retrieve associated data
         if message['object']
-          s3obj = s3.get_object({bucket: message['object']['bucket'], key: message['object']['key']})
-          file = s3obj.body.read
+          bucket = s3.buckets[message['object']['bucket']]
+          s3obj = bucket.objects[message['object']['key']]
+          file = s3obj.read
           io = StringIO.new file
         end
 

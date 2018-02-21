@@ -46,7 +46,7 @@
       respondersController.setIncidentLocation(#{parent.lat.to_json}, #{parent.lng.to_json});
       respondersController.loadTravelTimes();
       respondersController.mapResponders();
-      $("[data-toggle='tooltip']").tooltip()
+      $("[data-toggle=tooltip]").tooltip()
     });
   = google_maps_javascript
   = incidents_pubnub_setup(parent)

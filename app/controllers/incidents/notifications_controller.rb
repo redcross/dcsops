@@ -13,6 +13,11 @@ class Incidents::NotificationsController < Incidents::EditPanelController
 
   protected
 
+  # Inherited Resources reverses the chain for a singleton.  Not sure why, but it breaks everything...
+  def symbols_for_association_chain
+    super.reverse
+  end
+
   def resource
     @message ||= resource_class.new
   end

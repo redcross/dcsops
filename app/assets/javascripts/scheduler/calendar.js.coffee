@@ -77,7 +77,7 @@ class window.CalendarController
         $('.open-shifts').html(data)
 
   reloadMonth: (params) ->
-    $('.calendar-container table').addClass('loading').find("input[type='checkbox']").attr('disabled', true)
+    $('.calendar-container table').addClass('loading').find('input[type=checkbox]').attr('disabled', true)
     $.ajax
       url: '/scheduler/calendar/' + @month
       type: 'GET'

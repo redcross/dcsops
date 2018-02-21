@@ -4,11 +4,11 @@ class window.IncidentNotificationsController
       this.showRecipients()
       evt.preventDefault()
 
-    $(document).on 'change', "[id$='event_id']", (evt) =>
+    $(document).on 'change', '[id$=event_id]', (evt) =>
       this.reset()
 
   showRecipients: () ->
-    event = $("[id$='event_id']").val()
+    event = $('[id$=event_id]').val()
     url = $('.modal-body.send-notifications a.show-recipients').data('recipients-url')
     return unless event? and event != ''
     $.ajax

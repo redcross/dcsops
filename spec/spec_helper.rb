@@ -90,9 +90,6 @@ RSpec.configure do |config|
   config.include Delorean
   config.include Authlogic::TestCase
 
-  config.include(Shoulda::Matchers::ActiveModel, type: :model)
-  config.include(Shoulda::Matchers::ActiveRecord, type: :model)
-
   config.filter_run_excluding :type => :feature if ENV['SKIP_FEATURES']
 
   config.before(:suite) do

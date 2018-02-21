@@ -128,6 +128,11 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     @resource ||= super.tap{|obj| prepare_resource(obj) }
   end
 
+  # Inherited Resources reverses the chain for a singleton.  Not sure why, but it breaks everything...
+  def symbols_for_association_chain
+    super.reverse
+  end
+
   #def end_of_association_chain
   #  Incidents::Incident.includes{[dat_incident.completed_by, dat_incident.vehicles, responder_assignments.person]}
   #                     .for_chapter(current_chapter)
