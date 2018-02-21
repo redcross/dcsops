@@ -44,7 +44,7 @@ class Incidents::EventLog < Incidents::DataModel
 
   assignable_values_for :event do
     if has_incident?
-      INCIDENT_EVENT_TYPES
+      INCIDENT_EVENT_TYPES.keys
     else
       GLOBAL_EVENT_TYPES
     end
