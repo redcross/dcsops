@@ -8,6 +8,23 @@ about recovery from downtime or from other functionality disruptions.
 E.g., "[2018-02-01] PROD: RECOVERY from downtime due to DB upgrade".
 That way we can easily find and study unusual incidents.
 
+* [2018-02-26] PROD: RECOVERY Incident import unique ID errors
+
+  During the database migration it looks like import_logs_id_seq was
+  changed to job_logs_id_seq (likely due to loading the schema rather
+  than migrating), but more importantly its value was restarted. This
+  caused unique PK errors. We initially implemented exception handling
+  for this exception, and then after figuring out the cause, increased
+  the last_value in job_logs_id_seq and reverted that commit (b71306a).
+
+* [2018-02-21] PROD: RECOVERY master:f32b7fe Infinite loop outage recovery
+
+  Delayed jobs being run in background threads were taking up all
+  of the usable memory on dynos. We moved all delayed jobs to a worker
+  dyno and fixed the infinite loop bug.
+
+  More information: https://groups.google.com/forum/#!topic/dcsops-dev/uWggocST-kE
+
 * [2018-02-19] PROD: RECOVERY Twilio credential update
 
   SMS messages through Twilio weren't being sent because the account being
