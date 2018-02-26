@@ -34,10 +34,14 @@ class Incidents::ImportController < ApplicationController
 
     message = parsed_message
 
-    Core::JobLog.capture(self.class.to_s + '#' + message['route']) do |logger, import_log|
-      import_log.message_subject = message['subject']
+    begin
+      Core::JobLog.capture(self.class.to_s + '#' + message['route']) do |logger, import_log|
+        import_log.message_subject = message['subject']
 
-      public_send("import_#{message['route']}", message, import_log)
+        public_send("import_#{message['route']}", message, import_log)
+      end
+    rescue ActiveRecord::RecordNotUnique => e
+      puts "Cannot create job log: #{e}"
     end
 
     head :ok
