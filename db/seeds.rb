@@ -111,7 +111,6 @@ Roster::Person.create!(
   email: 'test@example.com',
   username: test_username,
   password: test_password,
-  password_confirmation: test_password,
   chapter: arcba,
   primary_county: sf,
   cell_phone_carrier: cell_carrier
