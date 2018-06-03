@@ -8,6 +8,22 @@ about recovery from downtime or from other functionality disruptions.
 E.g., "[2018-02-01] PROD: RECOVERY from downtime due to DB upgrade".
 That way we can easily find and study unusual incidents.
 
+* [2018-06-02] PROD: RECOVERY Domain SSL updates, Google API fix
+
+  An SSL certificate expired, and because Heroku no longer permits the
+  manual creation of Let's Encrypt certificates (since they use them
+  internally) and also because we didn't have access to the DNS to be
+  able to use Heroku's SSL, we needed to update the redirect to the
+  Heroku domain (arcdata.herokuapp.com) so that HTTPS was preserved.
+  We then purchased a new domain (datresponse.org), set up the DNS,
+  and set it up with Heroku SSL.
+
+  Additionally, Google APIs stopped working (potentially related to the
+  domain change), which prevented the creation of new issues because of
+  a setting disallowing the manual entry of addresses. We updated the
+  Google Maps API script URL to include an updated API key which
+  resolved the issues.
+
 * [2018-02-26] PROD: RECOVERY Incident import unique ID errors
 
   During the database migration it looks like import_logs_id_seq was
