@@ -17,7 +17,7 @@ module Incidents::ReportMailerHelper
   def static_maps_url(retina=false, width=map_width, height=map_height)
     size = "#{width}x#{height}"
     scale = retina ? "2" : "1"
-    "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=#{size}&markers=#{URI::encode incidents_marker_param}&path=#{URI::encode path_param}&scale=#{scale}&key=AIzaSyBabBKA3eRH_Pj1UdHEvzISS0crsOScsf4"
+    "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=#{size}&markers=#{URI::encode incidents_marker_param}&path=#{URI::encode path_param}&scale=#{scale}&key=#{ENV["GOOGLE_MAPS_API_KEY"]}"
   end
 
   def image_content

@@ -1,5 +1,9 @@
 module Incidents::InitialIncidentReportsHelper
 
+  def maps_api_key
+    ENV["GOOGLE_MAPS_API_KEY"]
+  end
+
   def timeline_time event
     tl = resource.incident.event_logs.find_by event: event
     tl && tl.event_time.to_s(:mdy_time_tz)
