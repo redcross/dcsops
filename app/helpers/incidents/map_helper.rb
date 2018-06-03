@@ -12,6 +12,6 @@ module Incidents::MapHelper
     else
       api_key = ""
     end
-    javascript_include_tag "https://maps.googleapis.com/maps/api/js?#{api_key}"
+    javascript_include_tag "https://maps.googleapis.com/maps/api/js?#{api_key}&libraries=places"
   end
 end
