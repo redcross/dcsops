@@ -8,10 +8,10 @@ module Incidents::MapHelper
   def google_maps_javascript(libraries=[])
     api_key = ENV['GOOGLE_MAPS_API_KEY']
     if api_key
-      api_key = "&client=#{api_key}"
+      api_key = "&key=#{api_key}"
     else
       api_key = ""
     end
-    javascript_include_tag "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=#{Array(libraries).join ','}#{api_key}"
+    javascript_include_tag "https://maps.googleapis.com/maps/api/js?#{api_key}"
   end
 end
