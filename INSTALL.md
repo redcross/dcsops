@@ -131,6 +131,52 @@ $ heroku run rake db:migrate
 
 **IMPORTANT:** Once you have finished a new deployment, please log it in `site-updates.txt`.
 
+## External Services
+
+### Volunteer Connection
+
+[Volunteer Connection](https://volunteerconnection.redcross.org) is the primary source of information on Red Cross volunteers that DATResponse regularly syncs data through Rake tasks on the worker server. The syncing is done partially through web scraping, with most of the scraper code in `lib/vc`. Volunteer Connection credentials are configured on a chapter basis and used to log in, navigate through pages, and either generate content from scraped HTML, JSON, or from an Excel file downloaded in the query tool.
+
+All Volunteer Connection hours are uploaded daily, and other data sources including incidents, users, and user positions are imported hourly through background jobs.
+
+### Periscope
+
+[Periscope](https://www.periscopedata.com/) is an analytics tool used for reporting based on application data.
+
+**IMPORTANT:** Periscope relies on a direct database connection. If the Heroku Postgres credentials are changed, the credentials used in Periscope will need to be changed as well.
+
+### Communication, Messaging
+
+#### Postmark
+
+[Postmark](https://postmarkapp.com) is the application's email service for both outbound and inbound email. The outbound email setup is a standard SMTP configuration. Other than standard emails, it uses cell carrier-specific domains (i.e. vtext.com for Verizon) to send non-urgent SMS texts via email.
+
+The inbound mail comes from DirectLine, which sends some incident reports to the application. Inbound emails trigger a webhook to a configurable URL endpoint (currently the `/import` route) which parses the message and imports the contents. Any changes to the site URL or the inbound mail domain forwarding will require updating settings in Postmark.
+
+#### Twilio
+
+[Twilio](https://twilio.com) is used for both sending and receiving SMS messages. Twilio credentials are configured on a per-chapter level, and phone numbers are also configured for each chapter separately.
+
+#### PubNub
+
+[PubNub](https://www.pubnub.com/) allows for real-time updates of information on some of the dispatch and incident pages.
+
+### Monitoring
+
+Several monitoring services are configured through Heroku add-ons, including [Sentry](https://sentry.io) for error reporting, [Papertrail](https://papertrailapp.com/) for storing logs, and [New Relic](https://newrelic.com/) for general application monitoring. Additionally, [UptimeRobot](https://uptimerobot.com/) is used for monitoring outages
+
+### Heroku Scheduler
+
+Scheduler is a cron-like service in Heroku for running commands at regular intervals.
+
+### Google Maps API
+
+The Google Maps API is used for generating driving directions for distance times, geocoding, and any maps that are displayed throughout the application. In particular, it's relevant for creating new incidents, because the application defaults to requiring users to search for an address through Google instead of entering it manually, but this behavior can be turned off on a chapter basis.
+
+### AWS
+
+SQS is used as a queue for the imports from Volunteer Connection, and S3 is used for storing any uploaded files.
+
 ## Database Management
 
 Heroku Postgres is being used for the PostgreSQL database, so backups and credentials can be managed with the Heroku command line tools. The Heroku Postgres backups are compatible with the Postgres native tools `pg_dump` and `pg_restore`, and you can refer to their [documentation](https://devcenter.heroku.com/articles/heroku-postgres-backups) for more information on creating and managing backups.
@@ -154,5 +200,3 @@ Credentials are also managed through the CLI rather than directly through Postgr
 ```bash
 $ heroku pg:credentials <DATABASE_NAME> --reset --app arcdata
 ```
-
-**IMPORTANT:** Periscope, a tool integrated with the app for analytics and reporting, relies on a direct database connection. If the Heroku Postgres credentials are changed, the credentials used in periscope will need to be changed as well.
