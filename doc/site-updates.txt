@@ -8,6 +8,13 @@ about recovery from downtime or from other functionality disruptions.
 E.g., "[2018-02-01] PROD: RECOVERY from downtime due to DB upgrade".
 That way we can easily find and study unusual incidents.
 
+* [2018-06-15] PROD: Remove Heroku SSL Endpoint add-on
+
+  Now that the site is using Heroku SSL through Let's Encrypt rather
+  than the static endpoint add-on, we were able to remove this after
+  migrating all of the endpoints to point to their respective
+  herokudns.com domains.
+
 * [2018-06-02] PROD: RECOVERY Domain SSL updates, Google API fix
 
   An SSL certificate expired, and because Heroku no longer permits the
