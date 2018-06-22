@@ -34,7 +34,11 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     f.actions
     f.inputs do
       f.has_many :position_memberships do |form|
-        form.input :position, collection: (f.object.chapter && f.object.chapter.positions)
+        if current_user.has_role 'chapter_config'
+          form.input :position, collection: Roster::Position.all
+        else
+          form.input :position, collection: (f.object.chapter && f.object.chapter.positions)
+        end
         form.input :persistent
         form.input :_destroy, as: :boolean, label: "Remove"
       end
