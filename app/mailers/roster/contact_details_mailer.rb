@@ -24,7 +24,7 @@ class Roster::ContactDetailsMailer < ActionMailer::Base
   end
 
   def vc_profile_url
-    "https://volunteerconnection.redcross.org/?nd=profile_edit"
+    "https://#{ENV["VCN_SERVER"]}/?nd=profile_edit"
   end
 
   def dcsops_profile_url

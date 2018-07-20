@@ -3,7 +3,7 @@ module Vc
     include HTTParty
     class InvalidCredentials < StandardError; end
 
-    base_uri 'https://volunteerconnection.redcross.org'
+    base_uri "https://#{ENV["VCN_SERVER"]}"
     headers "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36"
     debug_output if Rails.env.development?
 

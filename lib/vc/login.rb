@@ -1,7 +1,7 @@
 module Vc
   class Login
     include HTTParty
-    base_uri "https://volunteerconnection.redcross.org"
+    base_uri "https://#{ENV["VCN_SERVER"]}"
     default_timeout 25
     headers "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.65 Safari/537.36"
     #debug_output

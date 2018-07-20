@@ -166,11 +166,11 @@ class Roster::Person < ActiveRecord::Base
   end
 
   def vc_email_url
-    "https://volunteerconnection.redcross.org/?nd=email_member&account_id=#{self.vc_id}"
+    "https://#{ENV["VCN_SERVER"]}/?nd=email_member&account_id=#{self.vc_id}"
   end
 
   def vc_profile_url
-    "https://volunteerconnection.redcross.org/?nd=vms_profile&account_id=#{self.vc_id}"
+    "https://#{ENV["VCN_SERVER"]}/?nd=vms_profile&account_id=#{self.vc_id}"
   end
 
   def validate_disabled_phones
