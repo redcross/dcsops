@@ -123,9 +123,10 @@ class Incidents::DispatchImporter
     if res.success? && res.state == log_object.state
       incident.take_location_from res
     end
-    Incidents::TerritoryMatcher.new(incident, Incidents::Territory.for_chapter(@chapter)).perform(true)
   rescue Geokit::Geocoders::TooManyQueriesError
     # Not the end of the world
+  ensure
+    Incidents::TerritoryMatcher.new(incident, Incidents::Territory.for_chapter(@chapter)).perform(true)
   end
 
   def update_log_object(attrs, log_items)
