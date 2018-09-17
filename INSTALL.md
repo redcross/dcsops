@@ -8,7 +8,7 @@ You'll need the following on your system to get started:
 
 - Ruby
 
-  You'll need a working Ruby installation.  DCSOps expects Ruby 2.1.2. [rvm](https://rvm.io) or a similar tool is recommended for managing Ruby installations and gemsets.
+  You'll need a working Ruby installation.  DCSOps expects Ruby 2.2.3. [rvm](https://rvm.io) or a similar tool is recommended for managing Ruby installations and gemsets.
 
 - Postgres
 
