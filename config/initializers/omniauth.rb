@@ -62,8 +62,6 @@ end
     Dir[File.join(Rails.root, "config", "ca", "*.crt")].each do |ca|
       client.ssl_config.set_trust_ca(ca)
     end
-     #Temporary fix, remove once SSL certificate issue is resolved
-    client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE 
   end
 end
 
