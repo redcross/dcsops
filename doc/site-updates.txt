@@ -8,6 +8,15 @@ about recovery from downtime or from other functionality disruptions.
 E.g., "[2018-02-01] PROD: RECOVERY from downtime due to DB upgrade".
 That way we can easily find and study unusual incidents.
 
+* [2018-10-26] PROD: RECOVERY master:e315227 SSO login issues
+
+  After the main Red Cross SSO server updated its SSL certificates (due
+  to Symantec certificates no longer being supported in Chrome) users of
+  DCSOps were no longer able to log in with Red Cross SSO. After attempting
+  to modify the certificates in config/ca/ without resolving the error,
+  allowing TLS to be negotiated without specified certificates fixed the
+  issue.
+
 * [2018-08-08] PROD: RECOVERY master:12ccb58 Direct Line outage issues
 
   Inbound emails from Direct Line predominantly, but not exclusively,
