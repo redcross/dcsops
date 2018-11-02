@@ -24,7 +24,10 @@ module AutoGeocode
   end
 
   def self.geocode address
-    res = Geokit::Geocoders::GoogleGeocoder.geocode(address)
+    geocodio_api_key = ENV['GEOCODIO_KEY']
+    Geokit::Geocoders::GeocodioGeocode.key = geocodio_api_key
+    res = Geokit::Geocoders::GeocodioGeocode.geocode(address)
+#     res = Geokit::Geocoders::GoogleGeocoder.geocode(address)
     AutoGeocode.count! false, address
     res
   rescue Geokit::Geocoders::TooManyQueriesError
