@@ -8,6 +8,10 @@ about recovery from downtime or from other functionality disruptions.
 E.g., "[2018-02-01] PROD: RECOVERY from downtime due to DB upgrade".
 That way we can easily find and study unusual incidents.
 
+* [2018-12-20] PROD: master:bc002e2
+
+  Deploy pull request #180, updating DAT incident labels.
+
 * [2018-12-06] PROD: master:cb79b7a
 
   Deploy pull request #179, fixing county param in dispatch intake form.
