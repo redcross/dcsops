@@ -10,6 +10,8 @@ FactoryGirl.define do
     incident_call_type 'hot'
     structure_type 'apartment'
 
+    units_not_livable 10
+    units_livable 10
     units_affected 10
     units_minor 10
     units_major 10
@@ -19,7 +21,7 @@ FactoryGirl.define do
     num_people_hospitalized 5
     num_people_deceased 5
 
-    services ['food']
+    services ['immediate']
     #resources( {'comfort_kits' => 1, 'blankets' => 10})
     comfort_kits 1
     blankets 10

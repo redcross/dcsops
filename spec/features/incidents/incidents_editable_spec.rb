@@ -23,10 +23,8 @@ describe "Invalid Incident Report", :type => :feature do
 
     open_panel "Damage Assessment"
     select 'Apartment', from: 'Structure type*'
-    fill_in 'Units affected*', with: 1
-    fill_in 'Units minor*', with: 1
-    fill_in 'Units major*', with: 1
-    fill_in 'Units destroyed*', with: 1
+    fill_in 'Units not livable*', with: 1
+    fill_in 'Units livable*', with: 1
     click_button "Update Incident"
 
     open_panel "Demographics"

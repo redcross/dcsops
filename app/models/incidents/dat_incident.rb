@@ -13,7 +13,7 @@ class Incidents::DatIncident < Incidents::DataModel
   end
 
   assignable_values_for :structure_type, allow_blank: true do
-    %w(single_family_home apartment sro mobile_home commercial none)
+    %w(single_family_home multi_family_home apartment sro mobile_home commercial none)
   end
 
   assignable_values_for :vacate_type, allow_blank: true do
@@ -46,7 +46,7 @@ class Incidents::DatIncident < Incidents::DataModel
   end
 
   def units_total
-    [units_affected, units_minor, units_major, units_destroyed].compact.sum
+    [units_not_livable, units_livable, units_affected, units_minor, units_major, units_destroyed].compact.sum
   end
 
   def cant_update_incident

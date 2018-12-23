@@ -86,7 +86,7 @@ class window.DatIncidentsFormController
       if (data.hide)
         $(data.hide).not(shown).collapse('hide')
 
-    @da_fields = ['incidents_dat_incident_units_affected', 'incidents_dat_incident_units_minor', 'incidents_dat_incident_units_major', 'incidents_dat_incident_units_destroyed']
+    @da_fields = ['incidents_dat_incident_units_not_livable', 'incidents_dat_incident_units_livable', 'incidents_dat_incident_units_affected', 'incidents_dat_incident_units_minor', 'incidents_dat_incident_units_major', 'incidents_dat_incident_units_destroyed']
     $(document).on 'change', @da_fields.map((el)->"##{el}").join(","), (evt) =>
       total = 0
       @da_fields.forEach (el) ->

@@ -3,8 +3,8 @@ CREATE VIEW reporting.incident_data AS
   SELECT 
     inc.region_id, inc.incident_number, inc.incident_type, di.incident_call_type, inc.status, inc.date,
     inc.address, inc.city, inc.state, inc.zip, inc.county, inc.lat, inc.lng,
-    di.units_destroyed, di.units_major, di.units_minor, di.units_affected, di.units_unknown,
-    di.units_destroyed + di.units_major + di.units_minor + di.units_affected AS units_total,
+    di.units_destroyed, di.units_major, di.units_minor, di.units_affected, di.units_unknown, di.units_livable, di.units_not_livable,
+    di.units_destroyed + di.units_major + di.units_minor + di.units_affected + di.units_livable + di.units_not_livable + d AS units_total,
     inc.num_adults + inc.num_children as num_people, inc.num_adults, inc.num_children,
     di.num_people_injured, di.num_people_hospitalized, di.num_people_deceased, di.num_people_missing,
     inc.cas_event_number, inc.cas_event_id, inc.num_cases as num_cases_in_cas,

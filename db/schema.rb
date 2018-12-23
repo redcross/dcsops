@@ -380,6 +380,8 @@ ActiveRecord::Schema.define(version: 20200616210846) do
     t.integer  "num_people_missing"
     t.string   "hazardous_materials"
     t.integer  "units_unknown"
+    t.integer  "units_not_livable"
+    t.integer  "units_livable"
   end
 
   add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true, using: :btree

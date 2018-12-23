@@ -143,6 +143,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
              :incident_type, :incident_description, :narrative_brief, :narrative,
              :num_people_injured, :num_people_hospitalized, :num_people_deceased, :num_people_missing,
              :responder_notified, :responder_arrived, :responder_departed,
+             :units_not_livable, :units_livable,
              :units_affected, :units_minor, :units_major, :units_destroyed, :units_unknown,
              :structure_type, :num_first_responders,
              :suspicious_fire, :injuries_black, :injuries_red, :injuries_yellow,

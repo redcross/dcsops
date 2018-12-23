@@ -17,11 +17,15 @@
     %td.table-nested-container(colspan="2")
       %table.table.table-bordered.table-condensed.table-nested
         %tr
-          %th(style="width: 25%") Affected
-          %th(style="width: 25%") Minor
-          %th(style="width: 25%") Major
-          %th(style="width: 25%") Destroyed
+          %th(style="width: 16.6%") Not Livable
+          %th(style="width: 16.6%") Livable
+          %th(style="width: 16.6%") Affected
+          %th(style="width: 16.6%") Minor
+          %th(style="width: 16.6%") Major
+          %th(style="width: 16.6%") Destroyed
         %tr
+          %td=dat.units_not_livable
+          %td=dat.units_livable
           %td=dat.units_affected
           %td=dat.units_minor
           %td=dat.units_major
