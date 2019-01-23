@@ -62,7 +62,7 @@ class window.IncidentRespondersController
           result = row['elements'][0]
           @cache[people[idx].id] = result
           this.processTravelTime(elements[idx], result)
-        this.loadTravelTimes()
+        # this.loadTravelTimes()
         this.sortTables()
 
   travelTimeClass: (element, time) ->
