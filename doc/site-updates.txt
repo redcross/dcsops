@@ -66,6 +66,11 @@ That way we can easily find and study unusual incidents.
   Google Maps API script URL to include an updated API key which
   resolved the issues.
 
+* [2018-05-28] STAGING: staging-environment:f4d5a84 Create staging environment
+
+  Setup the initial staging environment with a copy of the production
+  database with some unnecessary records removed.
+
 * [2018-02-26] PROD: RECOVERY Incident import unique ID errors
 
   During the database migration it looks like import_logs_id_seq was

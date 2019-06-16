@@ -7,7 +7,6 @@ require File.expand_path("../../lib/active_record_monkeypatch", __FILE__)
 Bundler.require(*Rails.groups(assets: %w(development test)))
 
 require File.expand_path("../../lib/ics_handler", __FILE__)
-require File.expand_path("../../lib/sandbox_mail_interceptor", __FILE__)
 
 require File.expand_path("../../lib/exposure", __FILE__)
 ActiveSupport.on_load :action_controller do
@@ -40,9 +39,6 @@ module Scheduler
 
     config.roadie.provider = Roadie::AssetPipelineProvider.new
 
-    #config.action_mailer.interceptors = [SandboxMailInterceptor]
-
-    config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
       address: ENV['SMTP_ADDRESS'] || ENV['MAILGUN_SMTP_SERVER'],
       port: ENV['SMTP_PORT'] || ENV['MAILGUN_SMTP_PORT'],
