@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby "2.2.3"
+ruby "2.4.6"
 #ruby-gemset=arcdata
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -113,9 +113,9 @@ group :test do
   gem 'delorean'
   gem 'coveralls', require: false
 
-  gem 'capybara', require: false
-  gem 'capybara-webkit', require: false
-  gem 'capybara-screenshot', require: false
+  # gem 'capybara', require: false
+  # gem 'capybara-webkit', require: false
+  # gem 'capybara-screenshot', require: false
   gem 'database_cleaner', '~> 1.0.1', require: false # Current 1.1.1 version has catastrophic issue that breaks DB adapters.  Can upgrade when fixed
   #gem 'sauce' # Quite possibly the most annoying, complex, fragile gem in existence
   gem 'parallel_tests'
