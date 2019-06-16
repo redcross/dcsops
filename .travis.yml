@@ -2,7 +2,7 @@ language: ruby
 sudo: false
 cache: bundler
 rvm:
-- 2.2.3
+- 2.4.6
 bundler_args: --without development
 before_script:
 - bundle exec rake bootstrap:db_config db:test:prepare
