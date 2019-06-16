@@ -15,8 +15,8 @@
   .maps.pull-right
     - inc = resource.incident
     - size = "200x200"
-    .lowmap=image_tag "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=#{size}&markers=#{URI::encode "|#{inc.lat},#{inc.lng}"}&zoom=10&scale=2&key=AIzaSyBabBKA3eRH_Pj1UdHEvzISS0crsOScsf4"
-    .highmap=image_tag "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=#{size}&markers=#{URI::encode "|#{inc.lat},#{inc.lng}"}&zoom=6&scale=2&key=AIzaSyBabBKA3eRH_Pj1UdHEvzISS0crsOScsf4"
+    .lowmap=image_tag "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=#{size}&markers=#{URI::encode "|#{inc.lat},#{inc.lng}"}&zoom=10&scale=2&key=#{maps_api_key}"
+    .highmap=image_tag "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=#{size}&markers=#{URI::encode "|#{inc.lat},#{inc.lng}"}&zoom=6&scale=2&key=#{maps_api_key}"
   %h3 Basic Information
   Incident Number: #{resource.incident.incident_number}
   =link_to 'View in DCSOps', incidents_chapter_incident_url(resource.incident.chapter, resource.incident)
