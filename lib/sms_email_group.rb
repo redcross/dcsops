@@ -15,7 +15,9 @@ class SmsEmailGroup
         remaining = ""
       else
         split_pos = remaining.rindex /\s/, limit
-        split_pos ||= limit
+        if split_pos.nil? || split_pos == 0
+          split_pos = limit
+        end
 
         new_body = remaining.slice(0, split_pos).strip
         remaining = remaining.slice(split_pos..-1)

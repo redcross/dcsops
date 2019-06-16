@@ -1,6 +1,7 @@
 development:
   adapter: postgresql
   database: arcdata-dev
+  username: postgres
   pool: 5
   timeout: 5000
 

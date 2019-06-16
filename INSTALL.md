@@ -8,7 +8,7 @@ You'll need the following on your system to get started:
 
 - Ruby
 
-  You'll need a working Ruby installation.  DCSOps expects Ruby 2.1.2. [rvm](https://rvm.io) or a similar tool is recommended for managing Ruby installations and gemsets.
+  You'll need a working Ruby installation.  DCSOps expects Ruby 2.2.3. [rvm](https://rvm.io) or a similar tool is recommended for managing Ruby installations and gemsets.
 
 - Postgres
 
@@ -79,10 +79,11 @@ That will get you the traditional username/password auth, where you can use the 
 
 ## Loading Data from a Backup
 
-To load data from a database dump, run the following command:
+To load data from a database dump, run the following commands:
 
 ```bash
-$ pg_restore --no-owner -d <dbname> <dump_filename>
+$ rake db:create
+$ pg_restore -d <dbname> <dump_filename>
 ```
 
 Then, to modify an existing user's login (to test on real data locally), run `rails c` and in the console enter:
@@ -129,6 +130,18 @@ $ heroku run rake db:migrate
 ```
 
 **IMPORTANT:** Once you have finished a new deployment, please log it in `site-updates.txt`.
+
+## Staging Site Setup
+
+We have a staging instance setup at `arcdata-staging` for testing out updates before they're pushed into production. It uses a different database (pulled from production backups), doesn't send emails or text messages, and doesn't contact any external services where changes are made including SQS for the Volunteer Connection import or S3. Delayed job tasks are run every hour until they are completed with `rake jobs:workoff` on a Heroku Scheduler dyno.
+
+In order to update the staging database with a more recent copy of the production database, we have a rake task that downloads a production backup, loads it into a local temporary database, removes unneeded records (to reduce the size of the staging DB), and replaces the Heroku staging database with the modified local data. It can be run with:
+
+```bash
+$ rake staging:update_staging_db
+```
+
+**Note**: Downloading the production backup and pushing the local data to staging can take some time, but user input is required to confirm the overwriting of the `arcdata-staging` database. This is left in as an extra precaution against accidentally deleting production data.
 
 ## Database Management
 

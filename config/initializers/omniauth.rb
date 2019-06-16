@@ -57,6 +57,7 @@ end
 #   end
 # end
 
+# Activate specific cert verification by adding .crt files to config/ca/
 [WebFinger, Rack::OAuth2].each do |klass|
   klass.http_config do |client|
     Dir[File.join(Rails.root, "config", "ca", "*.crt")].each do |ca|

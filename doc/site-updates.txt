@@ -3,6 +3,129 @@ Log of changes to DCSOps sites.
   PROD == production site (dcsops.org; runs at Heroku)
   STAG == staging site    (not yet set up as of 2017-11-22)
 
+Please put the label "RECOVERY" in the first line of an item that is
+about recovery from downtime or from other functionality disruptions.
+E.g., "[2018-02-01] PROD: RECOVERY from downtime due to DB upgrade".
+That way we can easily find and study unusual incidents.
+
+* [2018-12-20] PROD: master:bc002e2
+
+  Deploy pull request #180, updating DAT incident labels.
+
+* [2018-12-06] PROD: master:cb79b7a
+
+  Deploy pull request #179, fixing county param in dispatch intake form.
+
+* [2018-10-26] PROD: RECOVERY master:e315227 SSO login issues
+
+  After the main Red Cross SSO server updated its SSL certificates (due
+  to Symantec certificates no longer being supported in Chrome) users of
+  DCSOps were no longer able to log in with Red Cross SSO. After attempting
+  to modify the certificates in config/ca/ without resolving the error,
+  allowing TLS to be negotiated without specified certificates fixed the
+  issue.
+
+* [2018-08-08] PROD: RECOVERY master:12ccb58 Direct Line outage issues
+
+  Inbound emails from Direct Line predominantly, but not exclusively,
+  for the Cascades region were not being processed. This was caused by
+  geocode_incident in the dispatch importer not adding the required
+  territory field to incidents when receiving an error from the Google
+  geocoder. Moving the adding of a territory to an ensure block
+  resolved the issue.
+
+* [2018-08-01] PROD: RECOVERY NCCR Chapter Direct Line outage
+
+  Inbound emails from Direct Line for NCCR were not being processed
+  and returning a HTTP 422 code at the /import path. This was caused
+  by incident numbers from several years ago overlapping with the new
+  set of incident numbers coming in. The older incidents starting with
+  "19-" (the prefix at the time) were changed to start with "13-" which
+  resolved the error.
+
+* [2018-06-15] PROD: Remove Heroku SSL Endpoint add-on
+
+  Now that the site is using Heroku SSL through Let's Encrypt rather
+  than the static endpoint add-on, we were able to remove this after
+  migrating all of the endpoints to point to their respective
+  herokudns.com domains.
+
+* [2018-06-02] PROD: RECOVERY Domain SSL updates, Google API fix
+
+  An SSL certificate expired, and because Heroku no longer permits the
+  manual creation of Let's Encrypt certificates (since they use them
+  internally) and also because we didn't have access to the DNS to be
+  able to use Heroku's SSL, we needed to update the redirect to the
+  Heroku domain (arcdata.herokuapp.com) so that HTTPS was preserved.
+  We then purchased a new domain (datresponse.org), set up the DNS,
+  and set it up with Heroku SSL.
+
+  Additionally, Google APIs stopped working (potentially related to the
+  domain change), which prevented the creation of new issues because of
+  a setting disallowing the manual entry of addresses. We updated the
+  Google Maps API script URL to include an updated API key which
+  resolved the issues.
+
+* [2018-05-28] STAGING: staging-environment:f4d5a84 Create staging environment
+
+  Setup the initial staging environment with a copy of the production
+  database with some unnecessary records removed.
+
+* [2018-02-26] PROD: RECOVERY Incident import unique ID errors
+
+  During the database migration it looks like import_logs_id_seq was
+  changed to job_logs_id_seq (likely due to loading the schema rather
+  than migrating), but more importantly its value was restarted. This
+  caused unique PK errors. We initially implemented exception handling
+  for this exception, and then after figuring out the cause, increased
+  the last_value in job_logs_id_seq and reverted that commit (b71306a).
+
+* [2018-02-21] PROD: RECOVERY master:f32b7fe Infinite loop outage recovery
+
+  Delayed jobs being run in background threads were taking up all
+  of the usable memory on dynos. We moved all delayed jobs to a worker
+  dyno and fixed the infinite loop bug.
+
+  More information: https://groups.google.com/forum/#!topic/dcsops-dev/uWggocST-kE
+
+* [2018-02-19] PROD: RECOVERY Twilio credential update
+
+  SMS messages through Twilio weren't being sent because the account being
+  used for all chapters was changed. Twilio credentials are managed on a per-
+  chapter basis, so we needed to update them for all chapters. The auth token
+  was also rotated after the initial rotation because it was exposed briefly on
+  GitHub.
+
+* [2018-02-06] PROD: Re-add indexes and constrains to DB after resizing
+
+  Indexes and constraints from the larger database weren't maintained in
+  the migration, so those were re-added to fix issue #150.
+
+* [2018-02-01] PROD: RECOVERY from downtime during DB resizing
+  See [[https://groups.google.com/forum/#!topic/dcsops-dev/nEI_PQ8G9_8]["Database Outage Initial Post-Mortem"]] on the DCSOps Dev Forum.
+
+  The two main new checklist items from that experience are summarized
+  in [[https://groups.google.com/d/msg/dcsops-dev/nEI_PQ8G9_8/3NfFwqAtBQAJ][this message]]:
+
+    1) Always rehearse locally, even if it makes the whole process
+       take more time.
+  
+    2) Preserve resources needed for rollback until at least 72 hours
+       after the change, and then only after receiving some
+       confirmation from multiple testers/users that the changed
+       system is working as expected.
+
+  I'm not sure where to document those yet -- ../INSTALL.md, maybe?
+  Anyway, for now they go in here so we don't lose them, but they
+  should go into administrative documentation.
+* [2018-02-01] PROD: (infrastructure change, no associated commit)
+
+  Delete inactive databases (color codes, aqua, jade, and olive) to reduce heroku bill. Move data from previous active database (color code black, plan premium-0) into a new smaller db (color code olive, plan standard-0; this is not the same as the previous olive db, the names are just a coincidence). Backups of all 4 old databases have been captured and saved on 2 local machines. Storing them somewhere more accessible is pending approval.
+
+* [2018-02-01] PROD: master:c48c6e7
+
+  Deploy pull request #147, adding empty apple-touch-icon assets to stop 404 responses
+
 * [2018-01-10] PROD: Set up UptimeRobot monitoring.                     :KARL:
   See [[https://groups.google.com/d/msg/dcsops-dev/lQ1c8UuZhtU/jewCsFeMAAAJ][this post]] for details:
 
@@ -65,7 +188,7 @@ Log of changes to DCSOps sites.
   'rotate' is only supported on Postgres 9.6.
 
   Created issue #122 to track updating Postgres. More information on
-  rotating Heroku credentials is here: 
+  rotating Heroku credentials is here:
   https://devcenter.heroku.com/articles/heroku-postgresql-credentials
 
 * [2017-11-28] PROD: master:5076e49
@@ -75,8 +198,8 @@ Log of changes to DCSOps sites.
 * [2017-11-28] PROD: master:2e6b8d4
 
   Tested a trivial deployment out with only documentation changes to
-  make sure everything is working (related to issue #118). Brought 
-  the Heroku production site to the tip of 'master'. Deployment is 
+  make sure everything is working (related to issue #118). Brought
+  the Heroku production site to the tip of 'master'. Deployment is
   managed through Heroku, and can be triggered with the command:
 
   $ git push heroku master

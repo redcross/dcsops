@@ -24,6 +24,8 @@ module AutoGeocode
   end
 
   def self.geocode address
+    api_key = ENV['GOOGLE_MAPS_API_KEY']
+    Geokit::Geocoders::GoogleGeocoder.api_key = api_key
     res = Geokit::Geocoders::GoogleGeocoder.geocode(address)
     AutoGeocode.count! false, address
     res

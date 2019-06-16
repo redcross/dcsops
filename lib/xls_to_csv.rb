@@ -3,7 +3,7 @@ require 'open3'
 class XlsToCsv
 
   def self.install!
-    return unless Rails.env.production?
+    return unless Rails.env.production? || Rails.env.staging?
     return if File.exist? File.join(Rails.root, 'bin', 'xls2csv')
 
     system("curl -Lo /tmp/catdoc.tar.gz https://www.dropbox.com/s/o6eo9wh67vidrz0/catdoc.tar.gz")
@@ -11,7 +11,7 @@ class XlsToCsv
   end
 
   def self.executable_name
-    Rails.env.production? ? File.join(Rails.root, 'bin', 'xls2csv') : 'xls2csv'
+    Rails.env.production? || Rails.env.staging? ? File.join(Rails.root, 'bin', 'xls2csv') : 'xls2csv'
   end
 
   def self.convert(xls_body)

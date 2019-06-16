@@ -81,6 +81,8 @@ Scheduler::Application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
+  config.action_mailer.delivery_method = :smtp
+
   config.action_mailer.default_url_options = { host: ENV['WWW_HOSTNAME'] }
 
   config.paperclip_defaults = {storage: :s3, s3_permissions: :private, bucket: ENV['S3_FILE_BUCKET']}

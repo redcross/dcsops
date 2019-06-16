@@ -80,10 +80,10 @@ gem 'pubnub'
 gem 'jbuilder'
 
 gem 'pdfkit'
-gem 'wkhtmltopdf-heroku', group: :production
+gem 'wkhtmltopdf-heroku', :group => [:staging, :production]
 gem 'wkhtmltopdf-binary', github: 'dwa012/wkhtmltopdf-binary', group: :development
 
-group :production do
+group :staging, :production do
   gem 'rails_12factor'
 end
 
