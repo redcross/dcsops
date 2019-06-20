@@ -8,6 +8,48 @@ about recovery from downtime or from other functionality disruptions.
 E.g., "[2018-02-01] PROD: RECOVERY from downtime due to DB upgrade".
 That way we can easily find and study unusual incidents.
 
+* [2018-12-20] PROD: master:bc002e2
+
+  Deploy pull request #180, updating DAT incident labels.
+
+* [2018-12-06] PROD: master:cb79b7a
+
+  Deploy pull request #179, fixing county param in dispatch intake form.
+
+* [2018-10-26] PROD: RECOVERY master:e315227 SSO login issues
+
+  After the main Red Cross SSO server updated its SSL certificates (due
+  to Symantec certificates no longer being supported in Chrome) users of
+  DCSOps were no longer able to log in with Red Cross SSO. After attempting
+  to modify the certificates in config/ca/ without resolving the error,
+  allowing TLS to be negotiated without specified certificates fixed the
+  issue.
+
+* [2018-08-08] PROD: RECOVERY master:12ccb58 Direct Line outage issues
+
+  Inbound emails from Direct Line predominantly, but not exclusively,
+  for the Cascades region were not being processed. This was caused by
+  geocode_incident in the dispatch importer not adding the required
+  territory field to incidents when receiving an error from the Google
+  geocoder. Moving the adding of a territory to an ensure block
+  resolved the issue.
+
+* [2018-08-01] PROD: RECOVERY NCCR Chapter Direct Line outage
+
+  Inbound emails from Direct Line for NCCR were not being processed
+  and returning a HTTP 422 code at the /import path. This was caused
+  by incident numbers from several years ago overlapping with the new
+  set of incident numbers coming in. The older incidents starting with
+  "19-" (the prefix at the time) were changed to start with "13-" which
+  resolved the error.
+
+* [2018-06-15] PROD: Remove Heroku SSL Endpoint add-on
+
+  Now that the site is using Heroku SSL through Let's Encrypt rather
+  than the static endpoint add-on, we were able to remove this after
+  migrating all of the endpoints to point to their respective
+  herokudns.com domains.
+
 * [2018-06-02] PROD: RECOVERY Domain SSL updates, Google API fix
 
   An SSL certificate expired, and because Heroku no longer permits the
@@ -23,6 +65,11 @@ That way we can easily find and study unusual incidents.
   a setting disallowing the manual entry of addresses. We updated the
   Google Maps API script URL to include an updated API key which
   resolved the issues.
+
+* [2018-05-28] STAGING: staging-environment:f4d5a84 Create staging environment
+
+  Setup the initial staging environment with a copy of the production
+  database with some unnecessary records removed.
 
 * [2018-02-26] PROD: RECOVERY Incident import unique ID errors
 
