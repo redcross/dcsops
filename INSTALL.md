@@ -177,6 +177,10 @@ The Google Maps API is used for generating driving directions for distance times
 
 SQS is used as a queue for the imports from Volunteer Connection, and S3 is used for storing any uploaded files.
 
+## Direct Line
+
+Direct Line is a call center service used by some of the regions in DCSOps. It syncs shift information by sending an email for each region with two CSVs of schedule data attached several times a day.
+
 ## Staging Site Setup
 
 We have a staging instance setup at `arcdata-staging` for testing out updates before they're pushed into production. It uses a different database (pulled from production backups), doesn't send emails or text messages, and doesn't contact any external services where changes are made including SQS for the Volunteer Connection import or S3. Delayed job tasks are run every hour until they are completed with `rake jobs:workoff` on a Heroku Scheduler dyno.
