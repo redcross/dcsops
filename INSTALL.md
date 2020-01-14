@@ -147,11 +147,21 @@ All Volunteer Connection hours are uploaded daily, and other data sources includ
 
 ### Communication, Messaging
 
-#### Postmark
+#### Email and Postmark
 
 [Postmark](https://postmarkapp.com) is the application's email service for both outbound and inbound email. The outbound email setup is a standard SMTP configuration. Other than standard emails, it uses cell carrier-specific domains (i.e. vtext.com for Verizon) to send non-urgent SMS texts via email.
 
-The inbound mail comes from DirectLine, which sends some incident reports to the application. Inbound emails trigger a webhook to a configurable URL endpoint (currently the `/import` route) which parses the message and imports the contents. Any changes to the site URL or the inbound mail domain forwarding will require updating settings in Postmark.
+##### DirectLine
+
+The inbound mail comes from DirectLine (see below), which sends some incident reports to the application. Inbound emails trigger a webhook to a configurable URL endpoint (currently the `/import` route) which parses the message and imports the contents. Any changes to the site URL or the inbound mail domain forwarding will require updating settings in Postmark.
+
+DirectLine is a call center that three regions use.  They take some basic information and put it into their own proprietary system, and then when they have all the info they send that to DCSOps, which turns it into an incident report for which various people are notified.  The three regions are Cascades (Oregon), Gold Country (Sacramento and Northern CA), and N. CA Coastal (SF and environs).
+
+Each region has a specific email address to which DirectLine pushes incidents; that's how DCSOps knows what region the incident is for.  Those email addresses are in the chapter configuration settings.  (Questions: does DCSOps reconcile that email address with information in the incident, such as zip code?  What if they mutually contradict?  Also, does DirectLine do some validation on their end before sending the incident to DCSOps?)
+
+DirectLine apparently does some dispatch notification on its own.  Every day, DCSOps pushes schedule data to DirectLine so that DirectLine knows who should get notified.
+
+The dispatch logs (available in the admin tool in DCSOps) contain all the information that is pushed to create an incident report, as well as who gets notified, etc.
 
 #### Twilio
 
