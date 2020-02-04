@@ -1,7 +1,8 @@
 %h4 Recent Incidents
 -recent_incidents.first(7).each do |inc|
   
-  - inc = Incidents::IncidentPresenter.new in
+  - inc = Incidents::IncidentPresenter.new inc
+  =inc.id
   -new_sms =incoming_messages(inc.id).present?
   =new_sms
   .incident-box(data-incident-id="#{inc.id}")
