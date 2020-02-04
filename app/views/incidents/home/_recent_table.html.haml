@@ -6,7 +6,7 @@
       .pull-right
         -if inc.status == 'open'
           %span.label.label-success Open
-        -if incoming_messages(incident).present?
+        -if incoming_messages(inc).present?
           %span.label.label-success SMS
         =inc.humanized_incident_type
       =incident_link inc
