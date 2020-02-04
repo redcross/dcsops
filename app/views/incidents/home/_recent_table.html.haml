@@ -4,8 +4,7 @@
   .incident-box(data-incident-id="#{inc.id}")
     %strong
       .pull-right
-        -if incoming_messages(inc.id).present? 
-          %span.label.label-success SMS
+        %span.label.label-success incoming_messages(inc.id).present
         -if inc.status == 'open'
           %span.label.label-success Open
         =inc.humanized_incident_type
