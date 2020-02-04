@@ -6,7 +6,7 @@
     %strong
       .pull-right
         -if new_sms 
-           %i.fa.fa-comment
+          %i.fa.fa-comment(style="color: red")
         -if inc.status == 'open'
           %span.label.label-success Open
         =inc.humanized_incident_type
