@@ -1,9 +1,12 @@
 %h4 Recent Incidents
 -recent_incidents.first(7).each do |inc|
   - inc = Incidents::IncidentPresenter.new inc
+  - @new_sms=Incidents::ResponderMessage.unacknowledged_for_incident(inc.id)
   .incident-box(data-incident-id="#{inc.id}")
     %strong
       .pull-right
+        -if @new_sms.present? 
+          %i.fa.fa-comment(style="color: red")
         -if inc.status == 'open'
           %span.label.label-success Open
         =inc.humanized_incident_type
