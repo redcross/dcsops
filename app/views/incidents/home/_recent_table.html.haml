@@ -2,7 +2,8 @@
 -recent_incidents.first(7).each do |inc|
   
   - inc = Incidents::IncidentPresenter.new in
-  =incoming_messages(inc.id).present?
+  -new_sms =incoming_messages(inc.id).present?
+  =new_sms
   .incident-box(data-incident-id="#{inc.id}")
     %strong
       .pull-right
