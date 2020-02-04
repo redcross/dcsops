@@ -1,11 +1,11 @@
 %h4 Recent Incidents
 -recent_incidents.first(7).each do |inc|
-  - new_sms =incoming_messages(inc).present
+  - new_sms = incoming_messages(inc).present?
   - inc = Incidents::IncidentPresenter.new inc
   .incident-box(data-incident-id="#{inc.id}")
     %strong
       .pull-right
-        -if new_sms? 
+        -if new_sms 
           %span.label.label-success SMS
         -else 
           %span.label.label-success NO SMS
