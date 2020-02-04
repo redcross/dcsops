@@ -2,7 +2,7 @@
 -recent_incidents.first(7).each do |inc|
   
   - inc = Incidents::IncidentPresenter.new inc
-  - new_sms=true
+  = new_sms=Incidents::ResponderMessage.unacknowledged_for_incident(inc.id).includes{person}.order{created_at.asc}
   .incident-box(data-incident-id="#{inc.id}")
     %strong
       .pull-right
