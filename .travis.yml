@@ -13,3 +13,6 @@ env:
   - secure: "lL1b4I/Cr33b14VeB2c8HFcwiET0ZepBcRZUHIK09v7txHOApQrU2zLb1LJEYPVGVLQrbIbiOB3w5wrVzXbOHvijuU3Zz6FN1FMBU4booVKVPFKW7PcrArebeKDqWAHLjI3PmUe0aDLoXYUnEBFohCPx2TsOPsf/u6V5uW2uPuw="
 addons:
   postgresql: "9.3"
+  apt:
+    packages:
+      - libqtwebkit-dev
