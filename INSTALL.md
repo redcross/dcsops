@@ -131,6 +131,66 @@ $ heroku run rake db:migrate
 
 **IMPORTANT:** Once you have finished a new deployment, please log it in `site-updates.txt`.
 
+## External Services
+
+### Volunteer Connection
+
+[Volunteer Connection](https://volunteerconnection.redcross.org) is the primary source of information on Red Cross volunteers that DATResponse regularly syncs data through Rake tasks on the worker server. The syncing is done partially through web scraping, with most of the scraper code in `lib/vc`. Volunteer Connection credentials are configured on a chapter basis and used to log in, navigate through pages, and either generate content from scraped HTML, JSON, or from an Excel file downloaded in the query tool.
+
+All Volunteer Connection hours are uploaded daily, and other data sources including incidents, users, and user positions are imported hourly through background jobs.
+
+### Periscope
+
+[Periscope](https://www.periscopedata.com/) is an analytics tool used for reporting based on application data.
+
+**IMPORTANT:** Periscope relies on a direct database connection. If the Heroku Postgres credentials are changed, the credentials used in Periscope will need to be changed as well.
+
+### Communication, Messaging
+
+#### Email and Postmark
+
+[Postmark](https://postmarkapp.com) is the application's email service for both outbound and inbound email. The outbound email setup is a standard SMTP configuration. Other than standard emails, it uses cell carrier-specific domains (i.e. vtext.com for Verizon) to send non-urgent SMS texts via email.
+
+##### DirectLine
+
+The inbound mail comes from DirectLine (see below), which sends some incident reports to the application. Inbound emails trigger a webhook to a configurable URL endpoint (currently the `/import` route) which parses the message and imports the contents. Any changes to the site URL or the inbound mail domain forwarding will require updating settings in Postmark.
+
+DirectLine is a call center that three regions use.  They take some basic information and put it into their own proprietary system, and then when they have all the info they send that to DCSOps, which turns it into an incident report for which various people are notified.  The three regions are Cascades (Oregon), Gold Country (Sacramento and Northern CA), and N. CA Coastal (SF and environs).
+
+Each region has a specific email address to which DirectLine pushes incidents; that's how DCSOps knows what region the incident is for.  Those email addresses are in the chapter configuration settings.  (Questions: does DCSOps reconcile that email address with information in the incident, such as zip code?  What if they mutually contradict?  Also, does DirectLine do some validation on their end before sending the incident to DCSOps?)
+
+DirectLine apparently does some dispatch notification on its own.  Every day, DCSOps pushes schedule data to DirectLine so that DirectLine knows who should get notified.
+
+The dispatch logs (available in the admin tool in DCSOps) contain all the information that is pushed to create an incident report, as well as who gets notified, etc.
+
+#### Twilio
+
+[Twilio](https://twilio.com) is used for both sending and receiving SMS messages. Twilio credentials are configured on a per-chapter level, and phone numbers are also configured for each chapter separately.
+
+#### PubNub
+
+[PubNub](https://www.pubnub.com/) allows for real-time updates of information on some of the dispatch and incident pages.
+
+### Monitoring
+
+Several monitoring services are configured through Heroku add-ons, including [Sentry](https://sentry.io) for error reporting, [Papertrail](https://papertrailapp.com/) for storing logs, and [New Relic](https://newrelic.com/) for general application monitoring. Additionally, [UptimeRobot](https://uptimerobot.com/) is used for monitoring outages
+
+### Heroku Scheduler
+
+Scheduler is a cron-like service in Heroku for running commands at regular intervals.
+
+### Google Maps API
+
+The Google Maps API is used for generating driving directions for distance times, geocoding, and any maps that are displayed throughout the application. In particular, it's relevant for creating new incidents, because the application defaults to requiring users to search for an address through Google instead of entering it manually, but this behavior can be turned off on a chapter basis.
+
+### AWS
+
+SQS is used as a queue for the imports from Volunteer Connection, and S3 is used for storing any uploaded files.
+
+## Direct Line
+
+Direct Line is a call center service used by some of the regions in DCSOps. It syncs shift information by sending an email for each region with two CSVs of schedule data attached several times a day.
+
 ## Staging Site Setup
 
 We have a staging instance setup at `arcdata-staging` for testing out updates before they're pushed into production. It uses a different database (pulled from production backups), doesn't send emails or text messages, and doesn't contact any external services where changes are made including SQS for the Volunteer Connection import or S3. Delayed job tasks are run every hour until they are completed with `rake jobs:workoff` on a Heroku Scheduler dyno.
@@ -166,5 +226,3 @@ Credentials are also managed through the CLI rather than directly through Postgr
 ```bash
 $ heroku pg:credentials <DATABASE_NAME> --reset --app arcdata
 ```
-
-**IMPORTANT:** Periscope, a tool integrated with the app for analytics and reporting, relies on a direct database connection. If the Heroku Postgres credentials are changed, the credentials used in periscope will need to be changed as well.
