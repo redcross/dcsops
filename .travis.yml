@@ -4,12 +4,16 @@ cache: bundler
 rvm:
 - 2.2.3
 bundler_args: --without development
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install g++ qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
 before_script:
-- bundle exec rake bootstrap:db_config db:test:prepare
+  - psql -c 'create database arcdata-test;' -U postgres
+  - bundle exec rake bootstrap:db_config db:test:prepare
 script: xvfb-run bundle exec rspec spec
 env:
   global:
   - secure: "RQjcEYGShb2H5bd319PcqEQsSOSkHzeE5gB9j473CQzZ+pkuj5ovB4rxjFEWMn+isaHc1TRG8ha09RZMAgMM63x03wN/2b/HMmUIg3L1t/Bih5x0DelktSJHWUtyisaOt4hL8XS4QxevrhwPYZfCz7WxB389E+dTSTREXbEXmCk="
   - secure: "lL1b4I/Cr33b14VeB2c8HFcwiET0ZepBcRZUHIK09v7txHOApQrU2zLb1LJEYPVGVLQrbIbiOB3w5wrVzXbOHvijuU3Zz6FN1FMBU4booVKVPFKW7PcrArebeKDqWAHLjI3PmUe0aDLoXYUnEBFohCPx2TsOPsf/u6V5uW2uPuw="
-addons:
-  postgresql: "9.3"
+services:
+  - postgresql
