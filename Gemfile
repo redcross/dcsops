@@ -19,7 +19,7 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'haml-rails'
 gem "less-rails", "~> 2.5" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
-gem "sprockets", "~> 2.11.0"
+gem "sprockets", "~> 3.7.2"
 
 gem 'delayed_job_active_record'
 
