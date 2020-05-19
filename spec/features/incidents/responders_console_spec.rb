@@ -77,7 +77,7 @@ describe "Incident Responders Console", :type => :feature do
     message = Faker::Lorem.sentence
     click_link "Empty"
     find(".editable-input input").set message
-    find(".editable-buttons i.glyphicon-ok").click
+    find(".editable-buttons .editable-submit").click
     expect(page).to have_text message
     
     within 'tbody.responders-list tr', text: @committed_responder.full_name do
