@@ -18,7 +18,7 @@ describe "Manually create incident", :type => :feature do
 		click_on 'Create New Incident'
 
 		fill_in 'Incident number*', with: @incident_number
-		select '2013'
+		select '2015'
 		select Date.today.strftime("%B")
 		select Date.today.day.to_s
 
@@ -42,7 +42,7 @@ describe "Manually create incident", :type => :feature do
 
   	expect(page).to_not have_text('Incident number')
 
-  	select '2013'
+	select '2015'
 		select Date.today.strftime("%B")
 		select Date.today.day.to_s
 		select 'Fire', from: 'Incident type*'
