@@ -127,7 +127,6 @@ describe "DAT Incident Report", type: :feature, versions: true do
 
   def fill_in_services
     fill_in 'Narrative*', with: 'This is my narrative'
-    check 'Food'
     check 'Translation'
     check 'Spanish'
 
