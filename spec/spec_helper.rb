@@ -21,19 +21,19 @@ require 'factory_girl_rails'
 require 'delorean'
 require 'faker'
 require 'zonebie'
-# require 'capybara/rspec'
-# require 'capybara/rails'
-# require 'capybara-webkit'
-# require 'capybara-screenshot'
-# require 'capybara-screenshot/rspec'
+require 'capybara/rspec'
+require 'capybara/rails'
+require 'capybara-webkit'
+require 'capybara-screenshot'
+require 'capybara-screenshot/rspec'
 require 'database_cleaner'
 require 'paper_trail/frameworks/rspec'
 require 'vcr'
 #require "sauce_helper"
 
 #Capybara.default_driver = SauceConfig.use_sauce? ? :sauce : :selenium
-# Capybara.default_driver = :webkit
-# Capybara.server_port = ENV['TEST_ENV_NUMBER'] ? (9999+ENV['TEST_ENV_NUMBER'].to_i) : 9999
+Capybara.default_driver = :webkit
+Capybara.server_port = ENV['TEST_ENV_NUMBER'] ? (9999+ENV['TEST_ENV_NUMBER'].to_i) : 9999
 
 # Require Formtastic Inputs
 Dir[Rails.root.join("app/inputs/**/*.rb")].each { |f| require f }
@@ -93,7 +93,7 @@ RSpec.configure do |config|
   config.include(Shoulda::Matchers::ActiveModel, type: :model)
   config.include(Shoulda::Matchers::ActiveRecord, type: :model)
 
-  config.filter_run_excluding :type => :feature # if ENV['SKIP_FEATURES']
+  config.filter_run_excluding :type => :feature if ENV['SKIP_FEATURES']
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
@@ -137,23 +137,23 @@ VCR.configure do |c|
   c.configure_rspec_metadata!
 end
 
-# Capybara::Webkit.configure do |config|
-#   config.allow_unknown_urls
-#   config.ignore_ssl_errors
-# end
+Capybara::Webkit.configure do |config|
+  config.allow_unknown_urls
+  config.ignore_ssl_errors
+end
 
-# module WaitForAjax
-#   def wait_for_ajax
-#     Timeout.timeout(Capybara.default_wait_time) do
-#       loop until finished_all_ajax_requests?
-#     end
-#   end
+module WaitForAjax
+  def wait_for_ajax
+    Timeout.timeout(Capybara.default_wait_time) do
+      loop until finished_all_ajax_requests?
+    end
+  end
 
-#   def finished_all_ajax_requests?
-#     page.evaluate_script('jQuery.active').zero?
-#   end
-# end
+  def finished_all_ajax_requests?
+    page.evaluate_script('jQuery.active').zero?
+  end
+end
 
-# RSpec.configure do |config|
-#   config.include WaitForAjax, type: :feature
-# end
+RSpec.configure do |config|
+  config.include WaitForAjax, type: :feature
+end
