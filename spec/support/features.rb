@@ -9,22 +9,18 @@ module FeatureSpec
   included do
     self.use_transactional_fixtures = false
 
-
-
     before(:each) do |example|
       next if example.metadata[:logged_in] == false
-      secret = Rails.application.config.secret_token
-      cookies = ActionDispatch::Cookies::CookieJar.new(secret)
-      allow(cookies).to receive(:close!)
-
-      allow_any_instance_of(ActionDispatch::Request).to receive(:cookie_jar){ cookies }
-      allow_any_instance_of(ActionDispatch::Request).to receive(:cookies){ cookies }
 
       @person ||= FactoryGirl.create :person
-      @person.reset_persistence_token!
+      @person.rco_id = 12345
       @person.save!
-
-      cookies['roster/person_credentials'] = "#{@person.persistence_token}::#{@person.id}"
+      OmniAuth.config.test_mode = true
+      OmniAuth.config.mock_auth[:default] = OmniAuth::AuthHash.new({
+        :uid => '12345'
+      })
+      visit "/"
+      click_on "Log in with Red Cross Single Sign On"
     end
 
     after(:each) do
