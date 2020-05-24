@@ -230,6 +230,12 @@ generated from the materials in the repository using
 commonly-available tools, please do not put it in the repository
 without raising it for discussion.
 
+## For more project management information, see the wiki.
+
+See the [DCSOps Development
+Wiki](https://github.com/redcross/arcdata/wiki) for more information
+about how we run the project, records of meetings and decisions, etc.
+
 ## Thank you!
 
 DCSOps exists to help Red Cross volunteers and staff serve people in
