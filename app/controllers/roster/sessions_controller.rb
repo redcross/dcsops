@@ -46,7 +46,6 @@ class Roster::SessionsController < ApplicationController
 
   def omniauth_callback
     auth_env = request.env['omniauth.auth']
-    puts auth_env.inspect
 
     rco_id = auth_env['uid']
 
@@ -86,20 +85,12 @@ class Roster::SessionsController < ApplicationController
   end
 
   def login_with_credentials username, password
-    service = Roster::LoginService.new(username, password)
     if resource.save
-      service.deferred_update
       true
     else
-      service.call
-      resource.save
+      flash.now[:error] = "The credentials you provided are incorrect."
+      false
     end
-  rescue Net::ReadTimeout, Net::OpenTimeout
-    flash.now[:error] = "There was an error validating your password.  Please try again."
-    false
-  rescue Vc::Login::InvalidCredentials
-    flash.now[:error] = "The credentials you provided are incorrect."
-    false
   end
 
   helper_method :resource

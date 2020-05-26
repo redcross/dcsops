@@ -1,34 +1,39 @@
-require File.expand_path("../authentication", __FILE__) # Provides LoggedIn module
-require_relative 'truncation_strategy'
 module FeatureSpec
   extend ActiveSupport::Concern
 
-  include LoggedIn
   include TruncationStrategy
 
   included do
+    def login_person(person)
+      OmniAuth.config.test_mode = true
+      OmniAuth.config.mock_auth[:default] = OmniAuth::AuthHash.new({
+        :uid => person.rco_id.to_s
+      })
+
+      # Have to go to the deep login page, not "/" and let redirect
+      # because travis + capybara wasn't following the redirects correctly
+      visit "/roster/session/new_rco?rco_idp_mode=dcs0"
+      click_on "Log in with Red Cross Single Sign On"
+    end
+
+    def logout
+      click_on "Logout"
+    end
+
     self.use_transactional_fixtures = false
-
-
 
     before(:each) do |example|
       next if example.metadata[:logged_in] == false
-      secret = Rails.application.config.secret_token
-      cookies = ActionDispatch::Cookies::CookieJar.new(secret)
-      allow(cookies).to receive(:close!)
 
-      allow_any_instance_of(ActionDispatch::Request).to receive(:cookie_jar){ cookies }
-      allow_any_instance_of(ActionDispatch::Request).to receive(:cookies){ cookies }
-
-      @person ||= FactoryGirl.create :person
-      @person.reset_persistence_token!
-      @person.save!
-
-      cookies['roster/person_credentials'] = "#{@person.persistence_token}::#{@person.id}"
+      @person ||= FactoryGirl.create(:person, rco_id: rand(100000))
+      login_person @person
     end
 
-    after(:each) do
+    after(:each) do |example|
+      next if example.metadata[:logged_in] == false
+
       @person = nil
+      logout
     end
 
     # For some incredibly stupid reason the Sauce gem aliases page to call 'selenium',

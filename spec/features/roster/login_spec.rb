@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe "View Timeline", type: :feature, logged_in: false do
+describe "Logins", type: :feature, logged_in: false do
 
-  it "Logs in with valid credentials", vcr: {cassette_name: "Vc_Login/makes_a_query_with_uneditable_name"} do
-    person = FactoryGirl.create :person, vc_id: 123123, first_name: 'Bob', last_name: 'Boberson' # Name needs to match the recorded cassette
+  it "Logs in legacy mode with valid credentials" do
+    person = FactoryGirl.create :person, username: 'username', password: 'password', first_name: 'Bob', last_name: 'Boberson'
 
     visit "/?legacy=true"
     fill_in 'Username', with: 'username'
@@ -17,8 +17,8 @@ describe "View Timeline", type: :feature, logged_in: false do
     expect(person.encrypted_password).not_to be_nil
   end
 
-  it "Logs in with invalid credentials", vcr: {cassette_name: "Vc_Login/incorrect_credentials/raises_an_error"} do
-    person = FactoryGirl.create :person, vc_id: 123123, first_name: 'Bob', last_name: 'Boberson' # Name needs to match the recorded cassette
+  it "Logs in legacy mode with invalid credentials" do
+    person = FactoryGirl.create :person, username: 'username', password: 'password', first_name: 'Bob', last_name: 'Boberson'
 
     visit "/?legacy=true"
     fill_in 'Username', with: 'invalid_username'
@@ -26,8 +26,32 @@ describe "View Timeline", type: :feature, logged_in: false do
     click_on 'Sign In'
 
     expect(page).to have_text("The credentials you provided are incorrect.")
-    person.reload
-    expect(person.username).to be_nil
-    expect(person.encrypted_password).to be_nil
+  end
+
+  it "Logs in via single signon" do
+    person = FactoryGirl.create(:person, rco_id: 123, first_name: "Test", last_name: "User")
+    login_person person
+    page.should have_text("Test User")
+    person.destroy
+  end
+
+  it "Logs in via single signon with no database entry" do
+    OmniAuth.config.test_mode = true
+    OmniAuth.config.mock_auth[:default] = OmniAuth::AuthHash.new({
+      :uid => '123'
+    })
+    visit "/"
+    click_on "Log in with Red Cross Single Sign On"
+
+    page.should have_text("Please Sign In")
+  end
+
+  it "Logs in and Logs out" do
+    person = FactoryGirl.create(:person, rco_id: 123, first_name: "Test", last_name: "User")
+    login_person person
+    logout
+    page.should_not have_text("Test User")
+    page.should have_text("Log in with Red Cross Single Sign On")
+    person.destroy
   end
 end

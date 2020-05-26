@@ -97,7 +97,9 @@ describe "DAT Incident Report", type: :feature, versions: true do
   end
 
   def fill_in_responders
-    fill_in 'incidents_dat_incident_incident_attributes_team_lead_attributes_person_id_text', with: @team_lead.first_name[0..4]
+    fill_in 'incidents_dat_incident_incident_attributes_team_lead_attributes_person_id_text', with: @team_lead.first_name[0..2]
+
+    page.should have_content(@team_lead.full_name)
     find('.tt-suggestion', text: @team_lead.full_name).click
 
     # Add the flex person

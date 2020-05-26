@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Scheduler::Ability, :type => :model do
   before(:each) do
     @person = FactoryGirl.create :person
-    @logged_in_person = @person
     @position = @person.positions.first
 
     @other_person = FactoryGirl.create :person, chapter: @person.chapter, counties: @person.counties
