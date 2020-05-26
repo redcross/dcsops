@@ -1,6 +1,8 @@
 module FeatureSpec
   extend ActiveSupport::Concern
 
+  include TruncationStrategy
+
   included do
     def login_person(person)
         OmniAuth.config.test_mode = true
@@ -20,9 +22,7 @@ module FeatureSpec
     before(:each) do |example|
       next if example.metadata[:logged_in] == false
 
-      @person ||= FactoryGirl.create :person
-      @person.rco_id = rand(100000)
-      @person.save!
+      @person ||= FactoryGirl.create(:person, rco_id: rand(100000))
       login_person @person
     end
 
