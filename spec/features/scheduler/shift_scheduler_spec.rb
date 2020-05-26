@@ -77,8 +77,7 @@ describe "Shift Scheduler Spec", :type => :feature do
 
     visit next_month_calendar
     
-    checkbox = first(".shift-checkbox")
-    checkbox.click
+    first(".shift-checkbox").click
     page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
     
     checkbox = first(".shift-checkbox:checked")
@@ -113,5 +112,36 @@ describe "Shift Scheduler Spec", :type => :feature do
     find("#choose-county").select("County 2")
     page.should_not have_text("Shift 1")
     page.should have_text("Shift 2")
+  end
+
+  it "Allows a swap between two users" do
+    @person.positions = @positions
+    @person.counties = @counties
+
+    other_person = FactoryGirl.create(:person, rco_id: rand(100000))
+    other_person.counties = @counties
+    other_person.positions = @positions
+
+    visit next_month_calendar
+    all(".shift-checkbox")[5].click
+    page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
+    visit "/scheduler/"
+
+    click_on "All Upcoming Shifts"
+    click_on "Swap"
+    click_on "Start Swap"
+
+    logout
+    login_person other_person
+    visit "/scheduler/"
+    click_on "Claim"
+    click_on "Confirm Swap"
+    visit "/scheduler/"
+    page.should_not have_text "You have no upcoming shifts scheduled."
+
+    logout
+    login_person @person
+    visit "/scheduler/"
+    page.should have_text "You have no upcoming shifts scheduled."
   end
 end
