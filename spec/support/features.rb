@@ -1,26 +1,29 @@
-require File.expand_path("../authentication", __FILE__) # Provides LoggedIn module
-require_relative 'truncation_strategy'
 module FeatureSpec
   extend ActiveSupport::Concern
 
-  include LoggedIn
-  include TruncationStrategy
-
   included do
+    def login_person(person)
+        OmniAuth.config.test_mode = true
+        OmniAuth.config.mock_auth[:default] = OmniAuth::AuthHash.new({
+          :uid => person.rco_id.to_s
+        })
+        visit "/"
+        click_on "Log in with Red Cross Single Sign On"
+    end
+
+    def logout
+        click_on "Logout"
+    end
+
     self.use_transactional_fixtures = false
 
     before(:each) do |example|
       next if example.metadata[:logged_in] == false
 
       @person ||= FactoryGirl.create :person
-      @person.rco_id = 12345
+      @person.rco_id = rand(100000)
       @person.save!
-      OmniAuth.config.test_mode = true
-      OmniAuth.config.mock_auth[:default] = OmniAuth::AuthHash.new({
-        :uid => '12345'
-      })
-      visit "/"
-      click_on "Log in with Red Cross Single Sign On"
+      login_person @person
     end
 
     after(:each) do

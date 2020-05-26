@@ -29,26 +29,29 @@ describe "Logins", type: :feature, logged_in: false do
   end
 
   it "Logs in via single signon" do
-    FactoryGirl.create(:person, rco_id: 12345, first_name: "Test", last_name: "User")
-
-    OmniAuth.config.test_mode = true
-    OmniAuth.config.mock_auth[:default] = OmniAuth::AuthHash.new({
-      :uid => '12345'
-    })
-    visit "/"
-    click_on "Log in with Red Cross Single Sign On"
-
+    person = FactoryGirl.create(:person, rco_id: 123, first_name: "Test", last_name: "User")
+    login_person person
     page.should have_text("Test User")
+    person.destroy
   end
 
   it "Logs in via single signon with no database entry" do
     OmniAuth.config.test_mode = true
     OmniAuth.config.mock_auth[:default] = OmniAuth::AuthHash.new({
-      :uid => '12345'
+      :uid => '123'
     })
     visit "/"
     click_on "Log in with Red Cross Single Sign On"
 
     page.should have_text("Please Sign In")
+  end
+
+  it "Logs in and Logs out" do
+    person = FactoryGirl.create(:person, rco_id: 123, first_name: "Test", last_name: "User")
+    login_person person
+    logout
+    page.should_not have_text("Test User")
+    page.should have_text("Log in with Red Cross Single Sign On")
+    person.destroy
   end
 end
