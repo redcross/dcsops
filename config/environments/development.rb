@@ -28,6 +28,9 @@ Scheduler::Application.configure do
   # Debug mode disables concatenation and preprocessing of assets.
   config.assets.debug = true
 
+  # When upgrading and removing quiet_assets, they sugested doing this
+  config.assets.quiet = true
+
   email_path = File.join(Rails.root, 'config', 'email.yml')
    if File.file? email_path
     c = YAML.load(File.read(email_path))

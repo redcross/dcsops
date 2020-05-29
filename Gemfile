@@ -1,16 +1,15 @@
 source 'https://rubygems.org'
-ruby "2.4.6"
+ruby "2.7.1"
 #ruby-gemset=arcdata
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.2'
-gem 'squeel', '~> 1.2.1', github: 'activerecord-hackery/squeel'
+gem 'rails', "~> 6.0"
 gem 'puma'
 gem 'rack-rewrite'
-gem 'pg', '~> 0.2'
+gem 'pg'
 
-gem 'arcdata_core', github: 'redcross/arcdata_core', branch: 'upgrade/rails-42'
-gem 'connect', github: 'redcross/openid-connect-engine', branch: 'rails-42-upgrade'
+gem 'arcdata_core', github: 'redcross/arcdata_core', branch: 'upgrade/rails-6'
+gem 'connect', github: 'redcross/openid-connect-engine', branch: 'rails-6-upgrade'
 
 gem 'activerecord-postgresql-adapter'
 gem 'activerecord-import'
@@ -18,21 +17,21 @@ gem 'activerecord-import'
 gem 'sass-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'haml-rails', "~> 0.5.0"
-gem "less-rails", "~> 2.5" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
-gem "sprockets", "~> 2.11.0"
+gem 'haml-rails'
+gem "less-rails"
+gem "sprockets"
 
 gem 'delayed_job_active_record'
 
 gem 'inherited_resources'
 gem 'responders'
 gem 'has_scope'
-gem "twitter-bootstrap-rails", '~> 3.1.0', github: 'seyhunak/twitter-bootstrap-rails', branch: 'bootstrap3'
+gem "twitter-bootstrap-rails"
 gem 'bootstrap-x-editable-rails'
 gem "spreadsheet" # Import from excel
 
 gem 'scrypt'
-gem "authlogic", '3.4.0'
+gem "authlogic"
 
 gem "omniauth-openid-connect"
 
@@ -40,34 +39,34 @@ gem "ri_cal" # Ical Rendering
 gem "cancan", github: 'jlaxson/cancan'
 gem "ruby-openid", require: 'openid'
 gem "timeliness"
-gem "roadie", '~> 2.4'
+gem "roadie"
 gem "kaminari"
-gem "paper_trail", '~> 3.0'
+gem "paper_trail"
 gem "assignable_values"
-gem 'bootstrap-kaminari-views'
+gem 'bootstrap4-kaminari-views'
 gem 'paperclip'
 gem 'threach'
-gem 'dotiw', '~> 2.0'
+gem 'dotiw'
 
 gem 'geokit'#, github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 
-gem 'formtastic', '~> 3.0'
-gem 'formtastic-bootstrap', '~> 3.0', github: 'ekubal/formtastic-bootstrap'
+gem 'formtastic'
+gem 'formtastic-bootstrap'
 gem 'cocoon'
 gem 'polyamorous'
-gem 'ransack', '~> 1.2'
-gem 'activeadmin', "1.0.0.pre1"
+gem 'ransack'
+gem 'activeadmin'
 gem 'nokogiri'
 
 # Monitoring/Alerting
-gem 'sentry-raven', '~> 0.12.2'
-gem 'hashie', '~>2.0.0'
-gem 'newrelic_rpm', '< 4'
+gem 'sentry-raven'
+gem 'hashie'
+gem 'newrelic_rpm'
 
 gem 'httparty'
 gem 'couchrest'
 gem 'bitly'
-gem 'aws-sdk', '< 3.0'
+gem 'aws-sdk'
 gem "memcachier"
 gem "dalli"
 gem "twilio-ruby"
@@ -131,7 +130,6 @@ group :development do
   gem 'unicorn'
 
   gem 'http_logger'
-  gem 'quiet_assets'
 
   gem 'ruby-prof'
   gem 'spring'

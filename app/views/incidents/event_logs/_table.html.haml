@@ -1,4 +1,4 @@
-.text-center= paginate collection, :theme => 'twitter-bootstrap-3', remote: true
+.text-center= paginate collection, :theme => 'twitter-bootstrap-4', remote: true
 %table.table.table-bordered.table-condensed
   %thead
     %tr
@@ -17,4 +17,4 @@
         %td=evt.humanized_event
         %td(style="width: 50%")=simple_format evt.message, {}, wrapper_tag: :span
         %td=evt.person.try(:full_name)
-.text-center= paginate collection, :theme => 'twitter-bootstrap-3', remote: true
+.text-center= paginate collection, :theme => 'twitter-bootstrap-4', remote: true
