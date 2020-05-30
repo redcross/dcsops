@@ -49,6 +49,17 @@ PaperTrail.enabled = false
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
+# Load rake tasks so they can be tested.
+module TempFixForRakeLastComment
+  def last_comment
+    last_description
+  end
+end
+Rake::Application.send :include, TempFixForRakeLastComment
+
+Rake.application = Rake::Application.new
+Rails.application.load_tasks
+
 RSpec.configure do |config|
   # ## Mock Framework
   #
