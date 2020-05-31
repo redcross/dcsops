@@ -28,9 +28,4 @@ class GridController < ApplicationController
   helper_method :columns
 
   Column = Struct.new(:name, :form_options)
-
-  def form_path(resource)
-    resource.persisted? ? resource_path(resource) : collection_path
-  end
-  helper_method :form_path
 end
