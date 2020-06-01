@@ -2,10 +2,19 @@ require 'spec_helper'
 
 describe "Shift Scheduler Spec", :type => :feature do
 
-  def next_month_calendar
-    next_month = Date.current.next_month.strftime("%B").downcase
-    next_month_year = Date.current.next_month.strftime("%Y")
-    "/scheduler/calendar/#{next_month_year}/#{next_month}"
+  def month_of_interest_link
+    # If we're in the first half of the month, use the current month,
+    # otherwise next month.  We need to ensure that the shifts we're
+    # signing up for aren't too far out so they don't show up for stuff
+    # like swaps.
+    if Date.current.day < 15
+      d = Date.current
+    else
+      d = Date.current.next_month
+    end
+    month_str = d.strftime("%B").downcase
+    year_str = d.strftime("%Y")
+    "/scheduler/calendar/#{year_str}/#{month_str}"
   end
 
   before :each do
@@ -50,7 +59,7 @@ describe "Shift Scheduler Spec", :type => :feature do
   end
 
   it "Looks at all shifts" do
-    visit next_month_calendar
+    visit month_of_interest_link
     click_on "All Shifts"
 
     page.should have_text("OPEN")
@@ -65,7 +74,7 @@ describe "Shift Scheduler Spec", :type => :feature do
     page.should have_text "You have no upcoming shifts scheduled."
     page.should have_text "#{Date.current.next_month.end_of_month.day * @person.positions.length} Shifts Available"
 
-    visit next_month_calendar
+    visit month_of_interest_link
     page.should have_text "OPEN"
     
     checkbox = first(".shift-checkbox")
@@ -80,7 +89,7 @@ describe "Shift Scheduler Spec", :type => :feature do
     @person.positions = @positions[0..0]
     @person.counties = @counties
 
-    visit next_month_calendar
+    visit month_of_interest_link
     
     first(".shift-checkbox").click
     page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
@@ -93,7 +102,7 @@ describe "Shift Scheduler Spec", :type => :feature do
   it "Looks at and filters county shifts by County and Category" do
     @person.positions = @positions
     @person.counties = @counties
-    visit next_month_calendar
+    visit month_of_interest_link
     click_on "County Shifts"
 
     # The county with shifts isn't the default, so no shifts should show up here
@@ -127,7 +136,7 @@ describe "Shift Scheduler Spec", :type => :feature do
     @other_person.counties = @counties
     @other_person.positions = @positions
 
-    visit next_month_calendar
+    visit month_of_interest_link
     all(".shift-checkbox")[5].click
     page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
     visit "/scheduler/"
@@ -157,13 +166,13 @@ describe "Shift Scheduler Spec", :type => :feature do
     @other_person.positions = @positions
     @other_person.counties = @counties
 
-    visit next_month_calendar
+    visit month_of_interest_link
     all(".shift-checkbox")[5].click
     page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
     logout
 
     login_person @other_person
-    visit next_month_calendar
+    visit month_of_interest_link
     page.should have_text "Shift 1"
     page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
     page.should_not have_css ".my-shift"
@@ -182,13 +191,13 @@ describe "Shift Scheduler Spec", :type => :feature do
 
     grant_role! 'county_dat_admin', @other_person.county_ids, @other_person
 
-    visit next_month_calendar
+    visit month_of_interest_link
     all(".shift-checkbox")[5].click
     page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
     logout
 
     login_person @other_person
-    visit next_month_calendar
+    visit month_of_interest_link
     page.should have_text "Shift 1"
     page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
     page.should_not have_css ".my-shift"
