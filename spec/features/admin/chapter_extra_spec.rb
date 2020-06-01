@@ -13,7 +13,9 @@ describe "Chapter Extra Configuration Pages", :type => :feature do
 
     click_on "Add Row"
 
-    within("#resource-1") do
+    county_id = @person.chapter.counties.first.id
+
+    within("#resource-#{county_id}") do
       fill_in "roster_county[abbrev]", with: "County"
       fill_in "roster_county[vc_regex_raw]", with: "count.*"
       click_on "Save"
@@ -33,7 +35,8 @@ describe "Chapter Extra Configuration Pages", :type => :feature do
 
     click_on "Add Row"
 
-    within("#resource-1") do
+    position_id = @person.chapter.positions.first.id
+    within("#resource-#{position_id}") do
       fill_in "roster_position[abbrev]", with: "Position"
       fill_in "roster_position[vc_regex_raw]", with: "count.*"
       click_on "Save"
