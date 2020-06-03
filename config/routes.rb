@@ -133,7 +133,7 @@ Scheduler::Application.routes.draw do
       end
 
       scope "responses", controller: :responses do
-        root to: :responders, as: 'responders'
+        root to: "responders#index", as: 'responders'
       end
 
     end

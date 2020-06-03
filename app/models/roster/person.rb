@@ -34,7 +34,7 @@ class Roster::Person < ActiveRecord::Base
     includes{[home_phone_carrier, cell_phone_carrier, work_phone_carrier, alternate_phone_carrier, sms_phone_carrier]}
   }
 
-  sifter :with_position do
+  def self.with_position
     (lat != nil) & (lng != nil) & (lat != 0) & (lng != 0)
   end
 
@@ -126,12 +126,7 @@ class Roster::Person < ActiveRecord::Base
     end
   end
 
-  acts_as_authentic do |c|
-    c.validate_password_field false
-    c.validate_email_field false
-    c.validate_login_field false
-    #c.login_field :email
-  end
+  acts_as_authentic
 
   def phone_order(include_disabled: false, sms_only: false)
     phones = []
