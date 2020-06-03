@@ -171,10 +171,4 @@ Scheduler::Application.routes.draw do
   match 'import', via: [:head, :post], to: 'incidents/import#import'
 
   mount Connect::Engine, at: '/'
-
-  if Rails.env.development?
-    controller :mailer_debug do
-      get 'debug/mailers/:action'
-    end
-  end
 end
