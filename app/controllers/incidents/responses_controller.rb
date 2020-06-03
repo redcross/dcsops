@@ -1,9 +1,5 @@
 class Incidents::ResponsesController < Incidents::BaseController
 
-  def responders
-    authorize! :show, :responders
-  end
-
   has_scope :with_person_in_counties, as: :county_id, default: ->controller{controller.current_user.primary_county_id}
   has_scope :response_in_last, default: 180 do |controller, scope, val|
     date = Date.current - val.to_i
@@ -11,6 +7,7 @@ class Incidents::ResponsesController < Incidents::BaseController
   end
 
   expose(:responders) {
+    authorize! :show, :responders
     apply_scopes(Incidents::ResponderAssignment).for_chapter(current_chapter)
                                                 .includes{[incident, person]}
                                                 .order{incident.date.desc}
