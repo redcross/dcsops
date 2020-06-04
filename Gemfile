@@ -27,7 +27,7 @@ gem 'delayed_job_active_record'
 #     gem 'responders'
 #     gem 'has_scope'
 #     gem "twitter-bootstrap-rails"
-#     gem 'bootstrap-x-editable-rails'
+gem 'bootstrap-x-editable-rails'
 #     gem "spreadsheet" # Import from excel
 #     
 #     gem 'scrypt'

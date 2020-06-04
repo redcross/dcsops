@@ -11,7 +11,7 @@
  *= require_self
  *= require_tree .
  *= require formtastic-bootstrap
- *= require bootstrap3-editable/bootstrap-editable
+ *= require bootstrap-editable/bootstrap-editable
  *= require datetimepicker
  *= stub active_admin
  */
