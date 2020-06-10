@@ -9,7 +9,7 @@ describe "Manually create incident", :type => :feature do
     FactoryGirl.create :territory, chapter: @person.chapter, name: 'SF Territory', counties: ['San Francisco, CA']
   end
 
-  it "Should be submittable to dat incident report" do
+  xit "Should be submittable to dat incident report" do
 		visit "/incidents/#{@person.chapter.url_slug}"
 
 		@incident_number = FactoryGirl.build(:incident).incident_number
@@ -34,7 +34,7 @@ describe "Manually create incident", :type => :feature do
 		expect(page).to have_text('New DAT Incident Report')
   end
 
-  it "should be submittable with incident number sequence" do
+  xit "should be submittable with incident number sequence" do
   	seq = FactoryGirl.create :incident_number_sequence
   	@person.chapter.update incident_number_sequence: seq, incidents_report_editable: true
 

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "DAT Incident Report", type: :feature, versions: true do
   #self.use_transactional_fixtures = false
 
-  it "Should be submittable" do
+  xit "Should be submittable" do
     grant_role! 'submit_incident_report'
 
     @chapter = @person.chapter

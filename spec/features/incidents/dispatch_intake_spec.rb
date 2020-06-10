@@ -26,7 +26,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     "/incidents/#{@scope.url_slug}/dispatch_intake/new"
   end
 
-  it "handles a referral" do
+  xit "handles a referral" do
     visit intake_url
 
     choose "No"
@@ -57,7 +57,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     expect(log.chapter_id).to eq @chapter.id
   end
 
-  it "handles an incident in territory" do
+  xit "handles an incident in territory" do
     visit intake_url
     choose 'Yes'
     page.should have_text "What is the address of the incident?"
@@ -82,7 +82,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     page.should have_text log.incident.incident_number
   end
 
-  it "handles invalid input to an incident" do
+  xit "handles invalid input to an incident" do
     visit intake_url
     choose 'Yes'
     page.should have_text "What is the address of the incident?"
@@ -104,7 +104,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
   end
 
 
-  it "handles an incident in an unknown territory" do
+  xit "handles an incident in an unknown territory" do
     visit intake_url
     choose 'Yes'
     page.should have_text "What is the address of the incident?"
@@ -115,7 +115,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     page.should_not have_text "Create Incident"
   end
 
-  it "handles an incident in an unauthorized territory" do
+  xit "handles an incident in an unauthorized territory" do
     @other_terr = FactoryGirl.create :territory, counties: ["Alameda, CA"]
 
     visit intake_url
