@@ -114,7 +114,7 @@ group :test do
   gem 'coveralls', require: false
 
   gem 'capybara', require: false
-  gem 'capybara-webkit', require: false
+  gem 'apparition'
   gem 'capybara-screenshot', require: false
   gem 'database_cleaner', '~> 1.0.1', require: false # Current 1.1.1 version has catastrophic issue that breaks DB adapters.  Can upgrade when fixed
   #gem 'sauce' # Quite possibly the most annoying, complex, fragile gem in existence
