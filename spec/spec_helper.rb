@@ -20,16 +20,14 @@ require 'faker'
 require 'zonebie'
 require 'capybara/rspec'
 require 'capybara/rails'
-require 'capybara-webkit'
+require 'capybara/apparition'
 require 'capybara-screenshot'
 require 'capybara-screenshot/rspec'
 require 'database_cleaner'
 require 'paper_trail/frameworks/rspec'
 require 'vcr'
-#require "sauce_helper"
 
-#Capybara.default_driver = SauceConfig.use_sauce? ? :sauce : :selenium
-Capybara.default_driver = :webkit
+Capybara.default_driver = :apparition
 Capybara.server_port = ENV['TEST_ENV_NUMBER'] ? (9999+ENV['TEST_ENV_NUMBER'].to_i) : 9999
 
 # Require Formtastic Inputs
@@ -143,11 +141,6 @@ VCR.configure do |c|
   #c.debug_logger = STDERR
   c.ignore_localhost = true
   c.configure_rspec_metadata!
-end
-
-Capybara::Webkit.configure do |config|
-  config.allow_unknown_urls
-  config.ignore_ssl_errors
 end
 
 module WaitForAjax
