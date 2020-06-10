@@ -96,13 +96,6 @@ Scheduler::Shift.create!(shift_territory: sf, shift_category: shift_category, na
   shift.shift_times << month
 end
 
-# For some reason, when seeding immediately after database creation (in the same
-# rake context) the authlogic-provided `password=` method is unavailable here.
-# This is a quick and easy hack to work around this and allow password setting.
-class Roster::Person
-  acts_as_authentic
-end
-
 test_username = 'test'
 test_password = 'password'
 Roster::Person.create!(
