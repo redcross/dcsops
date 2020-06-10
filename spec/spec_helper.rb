@@ -27,6 +27,10 @@ require 'database_cleaner'
 require 'paper_trail/frameworks/rspec'
 require 'vcr'
 
+Capybara.register_driver :apparition do |app|
+  Capybara::Apparition::Driver.new(app, js_errors: false)
+end
+
 Capybara.default_driver = :apparition
 Capybara.server_port = ENV['TEST_ENV_NUMBER'] ? (9999+ENV['TEST_ENV_NUMBER'].to_i) : 9999
 
@@ -36,10 +40,6 @@ Dir[Rails.root.join("app/inputs/**/*.rb")].each { |f| require f }
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
-
-#if SauceConfig.use_sauce?
-#  ::RSpec.configuration.include(Sauce::RSpec::SeleniumExampleGroup, :type => :feature)
-#end
 
 PaperTrail.enabled = false
 
