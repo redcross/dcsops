@@ -187,7 +187,6 @@ class Incidents::Incident < ApplicationRecord
     if region && (seq = region.incident_number_sequence)
       self.incident_number = seq.next_sequence!
     end
-    true
   end
 
   def take_location_from geocode

@@ -207,9 +207,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
   def check_frozen_shift
     if !is_swapping_to and shift.signups_frozen_before and shift.signups_frozen_before > date
       errors[:shift] = "Signups are frozen and cannot be edited"
-      false
-    else
-      true
+      throw(:abort)
     end
   end
 
