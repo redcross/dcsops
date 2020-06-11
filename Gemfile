@@ -70,7 +70,7 @@ gem 'activeadmin'
 gem 'nokogiri'
 
 # Monitoring/Alerting
-gem 'sentry-raven', '~> 0.12.2'
+gem 'sentry-raven'
 gem 'hashie', '~>2.0.0'
 gem 'newrelic_rpm', '< 4'
 
