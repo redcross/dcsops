@@ -41,8 +41,6 @@ module Scheduler
       config.eager_load_paths << path
     end
 
-    config.roadie.provider = Roadie::AssetPipelineProvider.new
-
     config.action_mailer.smtp_settings = {
       address: ENV['SMTP_ADDRESS'] || ENV['MAILGUN_SMTP_SERVER'],
       port: ENV['SMTP_PORT'] || ENV['MAILGUN_SMTP_PORT'],

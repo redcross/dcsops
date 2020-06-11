@@ -51,7 +51,7 @@ gem "ri_cal" # Ical Rendering
 gem "cancan", github: 'jlaxson/cancan'
 gem "ruby-openid", require: 'openid'
 gem "timeliness"
-gem "roadie"
+gem "roadie-rails"
 gem "kaminari"
 gem "paper_trail"
 gem "assignable_values"

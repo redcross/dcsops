@@ -1,6 +1,8 @@
 module MailerCommon
   extend ActiveSupport::Concern
 
+  include Roadie::Rails::Automatic
+
   module ClassMethods
     def use_sms_relay *actions
       after_filter :set_sms_delivery, only: actions
