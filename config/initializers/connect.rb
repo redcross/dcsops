@@ -1,6 +1,6 @@
 ActiveSupport.on_load :connect_controller do
-  skip_before_filter :require_valid_user!
-  skip_before_filter :require_active_user!
+  skip_before_action :require_valid_user!
+  skip_before_action :require_active_user!
 end
 
 Connect.account_class = "Roster::Person"

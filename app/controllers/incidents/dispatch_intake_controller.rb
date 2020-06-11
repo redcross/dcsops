@@ -5,7 +5,7 @@ class Incidents::DispatchIntakeController < Incidents::BaseController
 
   load_and_authorize_resource class: "Incidents::CallLog"
 
-  before_filter :authorize_dispatch_console!
+  before_action :authorize_dispatch_console!
 
   actions :new, :create, :show
 

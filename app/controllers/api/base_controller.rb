@@ -1,8 +1,8 @@
 class Api::BaseController < ActionController::Base
   include Connect::ControllerAdditions
   protect_from_forgery with: :null_session
-  before_filter :require_access_token
-  before_filter :allow_cors
+  before_action :require_access_token
+  before_action :allow_cors
 
   check_authorization
 

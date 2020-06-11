@@ -2,7 +2,7 @@ module NamedQuerySupport
   extend ActiveSupport::Concern
 
   included do
-    before_filter :parse_named_query
+    before_action :parse_named_query
   end
 
   def named_query

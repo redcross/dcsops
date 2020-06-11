@@ -20,8 +20,8 @@ class Scheduler::ShiftSwapsController < Scheduler::BaseController
     show!
   end
 
-  before_filter :check_can_confirm, only: [:destroy, :show, :confirm]
-  before_filter :check_can_request, only: [:new, :create]
+  before_action :check_can_confirm, only: [:destroy, :show, :confirm]
+  before_action :check_can_request, only: [:new, :create]
 
   def new
 

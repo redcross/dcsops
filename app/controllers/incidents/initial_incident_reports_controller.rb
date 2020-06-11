@@ -5,7 +5,7 @@ class Incidents::InitialIncidentReportsController < Incidents::EditPanelControll
   include RESTfulNotification
   respond_to :html, :js
   custom_actions resource: [:approve, :really_approve, :unapprove]
-  before_filter :check_unapproved, only: [:edit, :update]
+  before_action :check_unapproved, only: [:edit, :update]
 
   def index
     build_resource

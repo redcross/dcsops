@@ -1,6 +1,6 @@
 class Incidents::ImportController < ApplicationController
-  skip_before_filter :require_valid_user!, only: [:import_dispatch, :import]
-  #before_filter :validate_webhook
+  skip_before_action :require_valid_user!, only: [:import_dispatch, :import]
+  #before_action :validate_webhook
   protect_from_forgery except: [:import_dispatch]
 
   def user_for_paper_trail
