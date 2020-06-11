@@ -31,6 +31,11 @@ module Scheduler
     # config.i18n.default_locale = :de
     config.i18n.enforce_available_locales = true
 
+    # In Rails >= 5.0, belongs_to associations are required by default. For
+    # backwards compatibility, we disable this behavior (which it is by default,
+    # however I prefer to make it explicit by adding this config line).
+    config.active_record.belongs_to_required_by_default = false
+
     ["#{Rails.root}/app/inputs", "#{Rails.root}/lib"].each do |path|
       config.autoload_paths << path
       config.eager_load_paths << path
