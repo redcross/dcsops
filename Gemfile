@@ -45,7 +45,7 @@ gem "spreadsheet" # Import from excel
 gem 'scrypt'
 gem "authlogic"
 
-gem "omniauth-openid-connect"
+gem "omniauth_openid_connect"
 
 gem "ri_cal" # Ical Rendering
 gem "cancan", github: 'jlaxson/cancan'
