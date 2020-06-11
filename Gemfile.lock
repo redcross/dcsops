@@ -1,13 +1,4 @@
 GIT
-  remote: https://github.com/activerecord-hackery/squeel.git
-  revision: 5542266d502db8022e14105f9dfb455a79d6fc4a
-  specs:
-    squeel (1.2.3)
-      activerecord (>= 3.0)
-      activesupport (>= 3.0)
-      polyamorous (~> 1.1.0)
-
-GIT
   remote: https://github.com/dwa012/wkhtmltopdf-binary.git
   revision: 377c1a311e2ebbbc368f4067ddd8a2835ed08fcb
   specs:
@@ -143,6 +134,10 @@ GEM
     aws-sdk-resources (2.11.1)
       aws-sdk-core (= 2.11.1)
     aws-sigv4 (1.0.2)
+    baby_squeel (1.3.1)
+      activerecord (>= 4.2.0)
+      join_dependency (~> 0.1.2)
+      polyamorous (~> 1.3)
     better_errors (2.4.0)
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
@@ -314,6 +309,8 @@ GEM
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
     jmespath (1.3.1)
+    join_dependency (0.1.4)
+      activerecord (>= 4.2.0)
     jquery-rails (4.4.0)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
@@ -418,7 +415,7 @@ GEM
     path_expander (1.1.0)
     pdfkit (0.8.2)
     pg (0.21.0)
-    polyamorous (1.1.0)
+    polyamorous (1.3.3)
       activerecord (>= 3.0)
     public_suffix (4.0.5)
     pubnub (4.0.27)
@@ -628,6 +625,7 @@ DEPENDENCIES
   authlogic
   autotest
   aws-sdk (< 3.0)
+  baby_squeel
   better_errors
   binding_of_caller
   bitly
@@ -696,7 +694,6 @@ DEPENDENCIES
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)
   sqlite3
-  squeel (~> 1.2.1)!
   therubyracer
   threach
   timeliness

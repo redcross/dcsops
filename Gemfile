@@ -18,7 +18,7 @@ gem 'jbuilder', '~> 2.5'
 
 # The following are gems required by the application itself:
 
-gem 'squeel', '~> 1.2.1', github: 'activerecord-hackery/squeel'
+gem 'baby_squeel'
 gem 'rack-rewrite'
 gem 'pg', '~> 0.2'
 
