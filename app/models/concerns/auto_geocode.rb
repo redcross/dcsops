@@ -60,12 +60,9 @@ module AutoGeocode
         end
       end
     end
-
-    return true
   rescue Geokit::Geocoders::TooManyQueriesError
     self.lat = nil
     self.lng = nil
-    return true
   end
 
 end
