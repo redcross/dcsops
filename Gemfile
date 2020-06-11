@@ -30,7 +30,7 @@ gem 'activerecord-import'
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'haml-rails', "~> 0.5.0"
+gem 'haml-rails'
 gem "less-rails"
 
 gem 'delayed_job_active_record'
