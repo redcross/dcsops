@@ -18,7 +18,7 @@ class Incidents::EditPanelController < Incidents::BaseController
 
   expose(:panel_name) { Array(self.class.panel_name) }
 
-  before_filter :check_incident_open
+  before_action :check_incident_open
 
   def update
     action = params[:action] == 'create' ? :create! : :update!

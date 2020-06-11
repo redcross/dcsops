@@ -118,7 +118,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
 
   controller do
 
-    before_filter only: :index do
+    before_action only: :index do
       #params['q'] ||= {shift_territories_id_in: current_user.shift_territory_ids}
     end
 

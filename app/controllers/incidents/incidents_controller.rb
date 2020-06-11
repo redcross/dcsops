@@ -60,7 +60,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     authorize! :read_case_details, resource_class
   end
 
-  before_filter :require_open_incident, only: :mark_invalid
+  before_action :require_open_incident, only: :mark_invalid
   def mark_invalid
     if params[:incidents_incident] and resource.update_attributes mark_invalid_params
       flash[:info] = 'The incident has been removed.'

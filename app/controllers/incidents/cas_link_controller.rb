@@ -8,7 +8,7 @@ class Incidents::CasLinkController < Incidents::BaseController
   load_and_authorize_resource :region
   load_and_authorize_resource class: 'Incidents::CasIncident'
 
-  before_filter :check_not_linked, only: [:link, :promote]
+  before_action :check_not_linked, only: [:link, :promote]
 
   def index
   end

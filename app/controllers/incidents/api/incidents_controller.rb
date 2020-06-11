@@ -10,7 +10,7 @@ class Incidents::Api::IncidentsController < Incidents::BaseController
   include NamedQuerySupport
   include Searchable
 
-  around_filter :check_already_building_kml, only: :index, if: :kml?
+  around_action :check_already_building_kml, only: :index, if: :kml?
 
   actions :index
 

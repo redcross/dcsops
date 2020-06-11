@@ -3,7 +3,7 @@ class Incidents::EventLogsController < Incidents::EditPanelController
   belongs_to :region, finder: :find_by_url_slug!, parent_class: Roster::Region
   belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident, optional: true
   #defaults route_prefix: nil
-  before_filter :require_parent_or_global_log
+  before_action :require_parent_or_global_log
   include Searchable, RESTfulNotification
   responders :partial
   respond_to :html, :js

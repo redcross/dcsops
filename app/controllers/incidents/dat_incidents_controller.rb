@@ -12,7 +12,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
   actions :all, except: [:destroy]
 
-  prepend_before_filter :redirect_from_existing_incident, only: :new
+  prepend_before_action :redirect_from_existing_incident, only: :new
 
   def redirect_from_existing_incident
     if parent.dat_incident and !parent.dat_incident.new_record?

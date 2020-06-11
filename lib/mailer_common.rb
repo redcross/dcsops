@@ -5,7 +5,7 @@ module MailerCommon
 
   module ClassMethods
     def use_sms_relay *actions
-      after_filter :set_sms_delivery, only: actions
+      after_action :set_sms_delivery, only: actions
     end
   end
 

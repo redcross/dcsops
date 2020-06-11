@@ -5,13 +5,13 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user, :current_user_session, :current_region, :impersonating_user
 
-  before_filter :require_valid_user!
-  before_filter :require_active_user!
-  before_filter :annotate_newrelic_user, :if => :current_user
+  before_action :require_valid_user!
+  before_action :require_active_user!
+  before_action :annotate_newrelic_user, :if => :current_user
 
-  around_filter :user_time_zone, :if => :current_user
+  around_action :user_time_zone, :if => :current_user
 
-  before_filter :set_frame_options
+  before_action :set_frame_options
 
   def user_time_zone(&block)
     tz = current_user.try(:region).try(:time_zone) || Time.zone 

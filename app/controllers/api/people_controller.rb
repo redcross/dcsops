@@ -4,7 +4,7 @@ class Api::PeopleController < Api::BaseController
   respond_to :json
   actions :index, :show
 
-  prepend_before_filter :require_user_access_token, only: :me
+  prepend_before_action :require_user_access_token, only: :me
   load_and_authorize_resource class: resource_class, except: :me
 
   has_scope :deployed_to do |controller, scope, val|

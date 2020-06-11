@@ -10,8 +10,8 @@ class Roster::OpenIdController < ApplicationController
   include OpenID::Server
   layout nil
 
-  skip_before_filter :require_valid_user!
-  skip_before_filter :verify_authenticity_token
+  skip_before_action :require_valid_user!
+  skip_before_action :verify_authenticity_token
 
   rescue_from ProtocolError do |ex|
     render :text => ex.to_s, :status => 500

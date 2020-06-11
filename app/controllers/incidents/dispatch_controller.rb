@@ -8,7 +8,7 @@ class Incidents::DispatchController < Incidents::BaseController
   actions :index, :update, :show
   custom_actions resource: [:next_contact, :complete]
   layout ->controller{ controller.request.xhr? ? false : nil }
-  before_filter :ensure_has_dispatch_contact, only: [:show, :next_contact, :complete]
+  before_action :ensure_has_dispatch_contact, only: [:show, :next_contact, :complete]
 
   def complete
     log_action params[:dispatch_note]

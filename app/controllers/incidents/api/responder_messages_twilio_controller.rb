@@ -1,7 +1,7 @@
 class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
-  skip_before_filter :require_valid_user!
-  skip_before_filter :require_active_user!
-  before_filter :validate_twilio_incoming
+  skip_before_action :require_valid_user!
+  skip_before_action :require_active_user!
+  before_action :validate_twilio_incoming
   protect_from_forgery with: :null_session
 
   def incoming
