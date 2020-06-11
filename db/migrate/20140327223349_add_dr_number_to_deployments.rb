@@ -1,5 +1,5 @@
 class AddDrNumberToDeployments < ActiveRecord::Migration
-  class Deployment < ActiveRecord::Base
+  class Deployment < ApplicationRecord
     self.table_name = 'incidents_deployments'
   end
 

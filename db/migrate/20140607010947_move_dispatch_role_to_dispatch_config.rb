@@ -1,12 +1,12 @@
 class MoveDispatchRoleToDispatchConfig < ActiveRecord::Migration
-  class Shift < ActiveRecord::Base
+  class Shift < ApplicationRecord
     self.table_name = :scheduler_shifts
     belongs_to :county
   end
-  class County < ActiveRecord::Base
+  class County < ApplicationRecord
     self.table_name = :roster_counties
   end
-  class DispatchConfig < ActiveRecord::Base
+  class DispatchConfig < ApplicationRecord
     self.table_name = :scheduler_dispatch_configs
   end
   def change

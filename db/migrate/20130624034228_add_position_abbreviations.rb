@@ -1,5 +1,5 @@
 class AddPositionAbbreviations < ActiveRecord::Migration
-  class Position < ActiveRecord::Base
+  class Position < ApplicationRecord
     self.table_name = 'roster_positions'
   end
 

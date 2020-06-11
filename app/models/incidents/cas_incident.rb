@@ -1,4 +1,4 @@
-class Incidents::CasIncident < ActiveRecord::Base
+class Incidents::CasIncident < ApplicationRecord
   has_one :incident, class_name: 'Incidents::Incident', primary_key: 'cas_incident_number', foreign_key: 'cas_event_number'
   belongs_to :chapter, class_name: 'Roster::Chapter'
   has_many :cases, class_name: 'Incidents::CasCase', inverse_of: :cas_incident

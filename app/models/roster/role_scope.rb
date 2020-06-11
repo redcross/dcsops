@@ -1,4 +1,4 @@
-class Roster::RoleScope < ActiveRecord::Base
+class Roster::RoleScope < ApplicationRecord
   belongs_to :role_membership
 
   def scope

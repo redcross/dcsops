@@ -1,4 +1,4 @@
-class Incidents::PriceListItem < ActiveRecord::Base
+class Incidents::PriceListItem < ApplicationRecord
   validates :item_class, :name, :unit_price, presence: true
 
   def self.enabled

@@ -1,4 +1,4 @@
-class Incidents::Disaster < ActiveRecord::Base
+class Incidents::Disaster < ApplicationRecord
   has_many :deployments, class_name: 'Incidents::Deployment'
 
   validates :name, presence: true

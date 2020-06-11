@@ -1,4 +1,4 @@
-class Scheduler::Shift < ActiveRecord::Base
+class Scheduler::Shift < ApplicationRecord
   belongs_to :county, class_name: 'Roster::County'
   has_one :chapter, class_name: 'Roster::Chapter', through: :county
   belongs_to :shift_category, class_name: 'Scheduler::ShiftCategory'

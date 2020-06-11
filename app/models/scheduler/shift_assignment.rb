@@ -1,4 +1,4 @@
-class Scheduler::ShiftAssignment < ActiveRecord::Base
+class Scheduler::ShiftAssignment < ApplicationRecord
   class PersonAllowedToTakeShift < ActiveModel::Validator
     def validate(record)
       return false unless record.person and record.shift

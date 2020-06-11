@@ -1,5 +1,5 @@
 class CreateIncidentSequence < ActiveRecord::Migration
-  class Chapter < ActiveRecord::Base
+  class Chapter < ApplicationRecord
     self.table_name = 'roster_chapters'
     belongs_to :incident_number_sequence, class_name: 'Incidents::NumberSequence'
     include Core::SerializedColumns

@@ -1,4 +1,4 @@
-class Incidents::CallLog < ActiveRecord::Base
+class Incidents::CallLog < ApplicationRecord
   belongs_to :chapter, class_name: "Roster::Chapter"
   belongs_to :dispatching_chapter, class_name: "Roster::Chapter"
 

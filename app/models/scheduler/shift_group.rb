@@ -1,4 +1,4 @@
-class Scheduler::ShiftGroup < ActiveRecord::Base
+class Scheduler::ShiftGroup < ApplicationRecord
   belongs_to :chapter, class_name: 'Roster::Chapter'
   has_and_belongs_to_many :shifts, -> {order(:ordinal)}, class_name: 'Scheduler::Shift'
 

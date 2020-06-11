@@ -1,2 +1,2 @@
-class Roster::CellCarrier < ActiveRecord::Base
+class Roster::CellCarrier < ApplicationRecord
 end

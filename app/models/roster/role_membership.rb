@@ -1,4 +1,4 @@
-class Roster::RoleMembership < ActiveRecord::Base
+class Roster::RoleMembership < ApplicationRecord
   belongs_to :position
   belongs_to :role
   has_many :role_scopes

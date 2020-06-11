@@ -1,4 +1,4 @@
-class Logistics::Vehicle < ActiveRecord::Base
+class Logistics::Vehicle < ApplicationRecord
   belongs_to :chapter, class_name: 'Roster::Chapter'
   include AutoGeocode
   self.geocode_columns = %w(address city state zip)

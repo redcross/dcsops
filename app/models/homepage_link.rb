@@ -1,4 +1,4 @@
-class HomepageLink < ActiveRecord::Base
+class HomepageLink < ApplicationRecord
   belongs_to :chapter, class_name: 'Roster::Chapter'
   has_many :roles, class_name: 'HomepageLink::Role'
   has_attached_file :file
@@ -11,7 +11,7 @@ class HomepageLink < ActiveRecord::Base
 
   scope :for_chapter, -> (chapter) { where{(chapter_id == nil) | (chapter_id == chapter)}}
 
-  class Role < ActiveRecord::Base
+  class Role < ApplicationRecord
     self.table_name = :homepage_link_roles
     belongs_to :homepage_link, class_name: 'HomepageLink'
   end

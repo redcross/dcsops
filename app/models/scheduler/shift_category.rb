@@ -1,4 +1,4 @@
-class Scheduler::ShiftCategory < ActiveRecord::Base
+class Scheduler::ShiftCategory < ApplicationRecord
   belongs_to :chapter, class_name: 'Roster::Chapter'
   has_many :shifts, class_name: 'Scheduler::Shift'
 

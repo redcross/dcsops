@@ -1,4 +1,4 @@
-class Roster::Chapter < ActiveRecord::Base
+class Roster::Chapter < ApplicationRecord
   include Core::SerializedColumns
   include Core::ArrayAccessor
   has_many :counties

@@ -1,4 +1,4 @@
-class Lookup < ActiveRecord::Base
+class Lookup < ApplicationRecord
   belongs_to :chapter, class_name: 'Roster::Chapter'
 
   validates :chapter, :scope, :name, :value, presence: true

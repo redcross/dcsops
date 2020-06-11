@@ -1,4 +1,4 @@
-class Incidents::PartnerUse < ActiveRecord::Base
+class Incidents::PartnerUse < ApplicationRecord
   belongs_to :incident, class_name: 'Incidents::PartnerUse'
   belongs_to :partner, class_name: 'Partners::Partner'
 

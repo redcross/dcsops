@@ -1,4 +1,4 @@
-class Roster::Role < ActiveRecord::Base
+class Roster::Role < ApplicationRecord
   has_many :role_memberships, class_name: 'Roster::RoleMembership'
   validates :name, :grant_name, presence: true
 

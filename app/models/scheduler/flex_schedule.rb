@@ -1,4 +1,4 @@
-class Scheduler::FlexSchedule < ActiveRecord::Base
+class Scheduler::FlexSchedule < ApplicationRecord
   belongs_to :person, foreign_key: 'id', class_name: 'Roster::Person'
 
   scope :for_county, lambda {|county_ids| 

@@ -1,5 +1,5 @@
 module Incidents::Notifications
-  class Role < ActiveRecord::Base
+  class Role < ApplicationRecord
     belongs_to :chapter, class_name: 'Roster::Chapter'
     has_and_belongs_to_many :positions, class_name: 'Roster::Position'
     has_and_belongs_to_many :shifts, class_name: 'Scheduler::Shift'

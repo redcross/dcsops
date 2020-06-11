@@ -1,10 +1,10 @@
 class CreateIncidentsDisasters < ActiveRecord::Migration
 
-  class Deployment < ActiveRecord::Base
+  class Deployment < ApplicationRecord
     self.table_name = 'incidents_deployments'
   end
 
-  class Disaster < ActiveRecord::Base
+  class Disaster < ApplicationRecord
     self.table_name = 'incidents_disasters'
   end
 

@@ -1,5 +1,5 @@
 class MoveIncidentCountyToArea < ActiveRecord::Migration
-  class Incident < ActiveRecord::Base
+  class Incident < ApplicationRecord
     self.table_name = "incidents_incidents"
 
     belongs_to :area, class_name: 'Roster::County'

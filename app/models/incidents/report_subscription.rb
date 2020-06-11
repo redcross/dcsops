@@ -1,4 +1,4 @@
-class Incidents::ReportSubscription < ActiveRecord::Base
+class Incidents::ReportSubscription < ApplicationRecord
   belongs_to :person, class_name: 'Roster::Person'
   belongs_to :county, class_name: 'Roster::County'
   belongs_to :scope, class_name: 'Incidents::Scope'

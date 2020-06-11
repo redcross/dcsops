@@ -1,4 +1,4 @@
-class Scheduler::NotificationSetting < ActiveRecord::Base
+class Scheduler::NotificationSetting < ApplicationRecord
   belongs_to :person, class_name: 'Roster::Person', foreign_key: :id
 
   #serialize :shift_notification_phones

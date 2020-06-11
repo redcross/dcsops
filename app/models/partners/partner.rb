@@ -1,4 +1,4 @@
-class Partners::Partner < ActiveRecord::Base
+class Partners::Partner < ApplicationRecord
   belongs_to :chapter, class_name: 'Roster::Chapter'
   include AutoGeocode
 
