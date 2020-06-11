@@ -12,4 +12,4 @@
   Person Contacted by Dispatch: #{@incident.dispatch_log.delivered_to}
 %p
   You can use this link to submit the incident report:
-  =link_to new_incidents_chapter_incident_dat_url(@incident.chapter, @incident), new_incidents_chapter_incident_dat_url(@incident.chapter, @incident)
+  =link_to new_incidents_region_incident_dat_url(@incident.region, @incident), new_incidents_region_incident_dat_url(@incident.region, @incident)

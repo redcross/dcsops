@@ -6,8 +6,8 @@ ActiveAdmin.register Incidents::Scope, as: 'Scope' do
     column :url_slug
     column :name
     column :abbrev
-    column :chapter
-    column :chapter_ids
+    column :region
+    column :region_ids
     actions
   end
 
@@ -17,10 +17,10 @@ ActiveAdmin.register Incidents::Scope, as: 'Scope' do
       f.input :abbrev
       f.input :short_name
       f.input :url_slug
-      f.input :chapter
+      f.input :region
     end
     f.inputs do
-      f.input :chapters, collection: Roster::Chapter.all, as: :check_boxes
+      f.input :regions, collection: Roster::Region.all, as: :check_boxes
     end
     f.inputs do
       # For some reason AA cares about the return value of this block, reduce is a shortcut for that

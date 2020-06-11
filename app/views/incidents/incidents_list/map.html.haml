@@ -14,7 +14,7 @@
           =f.text_field :incident_number_cont, class: "form-control input-sm input-block"
         .field
           %h5 County:
-          =f.select :area_id_eq, options_from_collection_for_select(current_chapter.counties, :id, :name, params[:q].try(:[], :area_id_eq)), {include_blank: true}, class: "form-control input-sm"
+          =f.select :area_id_eq, options_from_collection_for_select(current_region.counties, :id, :name, params[:q].try(:[], :area_id_eq)), {include_blank: true}, class: "form-control input-sm"
         .field
           %h5 City:
           =f.text_field :city_cont, class: "form-control input-sm"

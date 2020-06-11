@@ -11,11 +11,11 @@ describe Scheduler::CalendarController, :type => :controller do
   context "all shifts" do
 
     before(:each) do
-      @ch = @person.chapter
+      @ch = @person.region
 
-      @dg = FactoryGirl.create :shift_group, chapter: @ch, period: 'daily'
-      @wg = FactoryGirl.create :shift_group, chapter: @ch, period: 'weekly', start_offset: 0, end_offset: 7.days
-      @mg = FactoryGirl.create :shift_group, chapter: @ch, period: 'monthly', start_offset: 0, end_offset: 31
+      @dg = FactoryGirl.create :shift_group, region: @ch, period: 'daily'
+      @wg = FactoryGirl.create :shift_group, region: @ch, period: 'weekly', start_offset: 0, end_offset: 7.days
+      @mg = FactoryGirl.create :shift_group, region: @ch, period: 'monthly', start_offset: 0, end_offset: 31
 
       @ds = FactoryGirl.create :shift, shift_groups: [@dg], county: @person.counties.first, positions: @person.positions, spreadsheet_ordinal: 1
       @ws = FactoryGirl.create :shift, shift_groups: [@wg], county: @person.counties.first, positions: @person.positions
@@ -172,8 +172,8 @@ describe Scheduler::CalendarController, :type => :controller do
   periods.each do |partial_name, values|
     describe "#{partial_name} partial" do
       before :each do
-        @ch = @person.chapter
-        @group = FactoryGirl.create :shift_group, chapter: @ch, period: values[:shift_period], start_offset: values[:shift_start_offset], end_offset: values[:shift_end_offset]
+        @ch = @person.region
+        @group = FactoryGirl.create :shift_group, region: @ch, period: values[:shift_period], start_offset: values[:shift_start_offset], end_offset: values[:shift_end_offset]
         @shift = FactoryGirl.create :shift, shift_groups: [@group], county: @person.counties.first, positions: @person.positions
         @assignment = FactoryGirl.create :shift_assignment, shift: @shift, shift_group: @group, person: @person, date: values[:date]
       end
@@ -278,7 +278,7 @@ describe Scheduler::CalendarController, :type => :controller do
       end
 
       it "should not render an empty group's name" do
-        @empty_group = FactoryGirl.create :shift_group, name: "EmptyGroup", chapter: @ch, period: values[:shift_period], start_offset: values[:shift_start_offset], end_offset: values[:shift_end_offset]
+        @empty_group = FactoryGirl.create :shift_group, name: "EmptyGroup", region: @ch, period: values[:shift_period], start_offset: values[:shift_start_offset], end_offset: values[:shift_end_offset]
         @old_shift = FactoryGirl.create :shift, shift_groups: [@empty_group], county: @person.counties.first, positions: @person.positions, shift_ends: values[:date]-5
         xhr :get, :day, date: values[:date].to_s, period: partial_name
         expect(response.body).not_to match(@empty_group.name)

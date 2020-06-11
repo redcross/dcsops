@@ -1,17 +1,17 @@
 module Incidents::Notifications
   class Event < ActiveRecord::Base
-    belongs_to :chapter, class_name: 'Roster::Chapter'
+    belongs_to :region, class_name: 'Roster::Region'
     has_many :triggers
     has_many :roles, through: :triggers
 
-    validates :chapter, :name, presence: true
+    validates :region, :name, presence: true
 
     assignable_values_for :event_type do
       %w(event escalation)
     end
 
-    def self.for_chapter chapter
-      where{chapter_id == chapter}
+    def self.for_region region
+      where{region_id == region}
     end
 
     def self.for_type type

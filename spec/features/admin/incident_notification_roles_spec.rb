@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Incident Notification Roles Admin Page", :type => :feature do
   before(:each) do
-    grant_role! :chapter_config
+    grant_role! :region_config
   end
 
   it "Creates a new Notification Role" do

@@ -32,7 +32,7 @@
         =render 'county_statistics'
         - @incidents.each do |inc|
           .incident-header
-            %a{href:incidents_chapter_incident_url(inc.chapter, inc)}
+            %a{href:incidents_region_incident_url(inc.region, inc)}
               =inc.date.to_s :dow_short
               ==-
               #{inc.city}, #{inc.state}

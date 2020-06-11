@@ -3,15 +3,15 @@ class Roster::Membership < ActiveRecord::Base
 
   belongs_to :person
 
-  def self.for_chapter chapter 
-    joins{person}.where{(person.chapter_id == chapter)}
+  def self.for_region region 
+    joins{person}.where{(person.region_id == region)}
   end
 
   def self.not_persistent
     where{(persistent == nil) | (persistent == false)}
   end
 
-  def self.destroy_all_for_chapter(chapter)
-    self.for_chapter(chapter).not_persistent.delete_all
+  def self.destroy_all_for_region(region)
+    self.for_region(region).not_persistent.delete_all
   end
 end

@@ -9,7 +9,7 @@ class Incidents::RespondersService
     @collection = collection
     set_defaults
 
-    @service = Scheduler::SchedulerService.new(incident.chapter)
+    @service = Scheduler::SchedulerService.new(incident.region)
 
     options.each do |name, val|
       self.send "#{name}=", val
@@ -51,7 +51,7 @@ class Incidents::RespondersService
   end
 
   def set_defaults
-    self.ignore_area_flex = incident.chapter.incidents_dispatch_console_ignore_county
+    self.ignore_area_flex = incident.region.incidents_dispatch_console_ignore_county
     self.limit_flex = 15
   end
 

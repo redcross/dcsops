@@ -6,11 +6,11 @@ describe "Invalid Incident Report", :type => :feature do
   it "Should be submittable" do
     grant_role! 'submit_incident_report'
 
-    @chapter = @person.chapter
-    FactoryGirl.create :incidents_scope, chapter: @person.chapter
-    @incident = FactoryGirl.create :raw_incident, chapter: @person.chapter, area: @person.counties.first
+    @region = @person.region
+    FactoryGirl.create :incidents_scope, region: @person.region
+    @incident = FactoryGirl.create :raw_incident, region: @person.region, area: @person.counties.first
 
-    visit "/incidents/#{@chapter.url_slug}"
+    visit "/incidents/#{@region.url_slug}"
 
     click_link "Submit Incident Report"
     within :xpath, "//td[text()='#{@incident.incident_number}']/ancestor::tr" do

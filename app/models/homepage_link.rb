@@ -1,5 +1,5 @@
 class HomepageLink < ActiveRecord::Base
-  belongs_to :chapter, class_name: 'Roster::Chapter'
+  belongs_to :region, class_name: 'Roster::Region'
   has_many :roles, class_name: 'HomepageLink::Role'
   has_attached_file :file
   do_not_validate_attachment_file_type :file
@@ -9,7 +9,7 @@ class HomepageLink < ActiveRecord::Base
     file.file? && file.expiring_url || url
   end
 
-  scope :for_chapter, -> (chapter) { where{(chapter_id == nil) | (chapter_id == chapter)}}
+  scope :for_region, -> (region) { where{(region_id == nil) | (region_id == region)}}
 
   class Role < ActiveRecord::Base
     self.table_name = :homepage_link_roles

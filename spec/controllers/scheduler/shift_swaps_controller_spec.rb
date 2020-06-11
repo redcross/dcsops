@@ -4,10 +4,10 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
   include LoggedIn
 
   before :each do
-    @chapter = @person.chapter
-    @person = FactoryGirl.create :person, chapter: @chapter
+    @region = @person.region
+    @person = FactoryGirl.create :person, region: @region
     @assignment = FactoryGirl.create :shift_assignment, person: @person
-    @person2 = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties, positions: @person.positions
+    @person2 = FactoryGirl.create :person, region: @region, counties: @person.counties, positions: @person.positions
     @settings = Scheduler::NotificationSetting.create id: @person.id
   end
 
@@ -26,7 +26,7 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
   end
 
   it "should send admin emails when marking a shift swappable" do
-    @admin = FactoryGirl.create :person, chapter: @chapter,  counties: [@assignment.shift.county]
+    @admin = FactoryGirl.create :person, region: @region,  counties: [@assignment.shift.county]
     @adminsettings = Scheduler::NotificationSetting.create id: @admin.id
     @adminsettings.update_attribute :email_all_swaps, true
 
@@ -36,7 +36,7 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
   end
 
   it "should send user emails when marking a shift swappable" do
-    @admin = FactoryGirl.create :person, chapter: @chapter,  counties: [@assignment.shift.county], positions: @person.positions
+    @admin = FactoryGirl.create :person, region: @region,  counties: [@assignment.shift.county], positions: @person.positions
     @adminsettings = Scheduler::NotificationSetting.create id: @admin.id
     @adminsettings.update_attribute :email_swap_requested, true
 
@@ -46,7 +46,7 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
   end
 
   it "should allow marking a shift as swappable with a recipient" do
-    @admin = FactoryGirl.create :person, chapter: @chapter,  counties: [@assignment.shift.county], positions: @person.positions
+    @admin = FactoryGirl.create :person, region: @region,  counties: [@assignment.shift.county], positions: @person.positions
     @adminsettings = Scheduler::NotificationSetting.create id: @admin.id
     @adminsettings.update_attribute :email_all_swaps, true
 
@@ -98,7 +98,7 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
   #
   # See e0bb7e7 for that removal.
   xit "should allow accepting a swap to someone else as admin" do
-    grant_role! 'chapter_dat_admin'#, @person.county_ids
+    grant_role! 'region_dat_admin'#, @person.county_ids
     @assignment.update_attribute :available_for_swap, true
 
     post :confirm, shift_assignment_id: @assignment.id, swap_to_id: @person2.id

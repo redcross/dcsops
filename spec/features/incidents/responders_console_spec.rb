@@ -8,14 +8,14 @@ describe "Incident Responders Console", :type => :feature do
 
   before do
     grant_role! :incidents_admin
-    @chapter = @person.chapter
-    @chapter.incidents_enable_dispatch_console = true
-    @chapter.save!
-    FactoryGirl.create :incidents_scope, chapter: @person.chapter
+    @region = @person.region
+    @region.incidents_enable_dispatch_console = true
+    @region.save!
+    FactoryGirl.create :incidents_scope, region: @person.region
     county = @person.counties.first
 
     @responders = (1..3).map{|x|
-        FactoryGirl.create :person, chapter: @chapter, last_name: "Responder#{x}", counties: @person.counties, positions: @person.positions
+        FactoryGirl.create :person, region: @region, last_name: "Responder#{x}", counties: @person.counties, positions: @person.positions
     }
 
     @flex_responder = @responders.first
@@ -24,12 +24,12 @@ describe "Incident Responders Console", :type => :feature do
 
     @committed_responder = @responders.second
     @committed_responder.update_attributes work_phone_carrier: FactoryGirl.create( :cell_carrier)
-    group = FactoryGirl.create :shift_group, chapter: @chapter
+    group = FactoryGirl.create :shift_group, region: @region
     shift = FactoryGirl.create :shift, shift_groups: [group], county: county, positions: @committed_responder.positions
-    assignment = FactoryGirl.create :shift_assignment, person: @committed_responder, shift: shift, date: @chapter.time_zone.today
+    assignment = FactoryGirl.create :shift_assignment, person: @committed_responder, shift: shift, date: @region.time_zone.today
 
-    @incident = FactoryGirl.create :raw_incident, chapter: @person.chapter, area: county, date: Date.current
-    @log = FactoryGirl.create :event_log, chapter: @chapter, person: @person, incident: @incident
+    @incident = FactoryGirl.create :raw_incident, region: @person.region, area: county, date: Date.current
+    @log = FactoryGirl.create :event_log, region: @region, person: @person, incident: @incident
 
     @outbound_messages = outbound_messages = []
     client = double(:sms_client)
@@ -43,7 +43,7 @@ describe "Incident Responders Console", :type => :feature do
     
   it "Should be submittable" do
     ApplicationController.stub current_user: @person
-    visit "/incidents/#{@chapter.url_slug}/incidents/#{@incident.incident_number}"
+    visit "/incidents/#{@region.url_slug}/incidents/#{@incident.incident_number}"
 
     click_on "Responders"
     click_on "Show Responders Console"
@@ -70,8 +70,8 @@ describe "Incident Responders Console", :type => :feature do
   end
 
   it "Should support SMS recruitments" do
-    @chapter.update_attributes :incidents_enable_messaging => true
-    visit "/incidents/#{@chapter.url_slug}/incidents/#{@incident.incident_number}/responders"
+    @region.update_attributes :incidents_enable_messaging => true
+    visit "/incidents/#{@region.url_slug}/incidents/#{@incident.incident_number}/responders"
 
     # Set recruit message
     message = Faker::Lorem.sentence
@@ -99,8 +99,8 @@ describe "Incident Responders Console", :type => :feature do
   it "Should support SMS messaging" do
     FactoryGirl.create :responder_assignment, person: @committed_responder, role: "responder", incident: @incident
 
-    @chapter.update_attributes :incidents_enable_messaging => true
-    visit "/incidents/#{@chapter.url_slug}/incidents/#{@incident.incident_number}/responders"
+    @region.update_attributes :incidents_enable_messaging => true
+    visit "/incidents/#{@region.url_slug}/incidents/#{@incident.incident_number}/responders"
 
     click_link "Message All"
     message = Faker::Lorem.sentence
@@ -147,8 +147,8 @@ describe "Incident Responders Console", :type => :feature do
   it "should allow updating responder statuses" do
     ra = FactoryGirl.create :responder_assignment, person: @committed_responder, role: "responder", incident: @incident
 
-    @chapter.update_attributes :incidents_enable_messaging => true
-    visit "/incidents/#{@chapter.url_slug}/incidents/#{@incident.incident_number}/responders"
+    @region.update_attributes :incidents_enable_messaging => true
+    visit "/incidents/#{@region.url_slug}/incidents/#{@incident.incident_number}/responders"
 
     within ".assigned-table tr", text: @committed_responder.full_name do
       expect(page).to have_text "Assigned at"
@@ -174,7 +174,7 @@ describe "Incident Responders Console", :type => :feature do
   end
 
   def handle_sms from, body
-    message = Incidents::ResponderMessage.create! person: from, message: body, chapter: @chapter
+    message = Incidents::ResponderMessage.create! person: from, message: body, region: @region
     reply = Incidents::ResponderMessageService.new(message).reply
     reply.message
   end

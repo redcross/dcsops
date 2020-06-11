@@ -7,10 +7,10 @@ describe "Shift Notes Page", :type => :feature do
   before :each do
     grant_role! 'county_dat_admin'
 
-    group = FactoryGirl.create :shift_group, chapter: @person.chapter, start_offset: 10.hours, end_offset: 22.hours
-    county = FactoryGirl.create :county, name: "County", chapter: @person.chapter
-    position = FactoryGirl.create :position, name: "Position", chapter: @person.chapter
-    category = FactoryGirl.create :shift_category, name: "Category", chapter: @person.chapter
+    group = FactoryGirl.create :shift_group, region: @person.region, start_offset: 10.hours, end_offset: 22.hours
+    county = FactoryGirl.create :county, name: "County", region: @person.region
+    position = FactoryGirl.create :position, name: "Position", region: @person.region
+    category = FactoryGirl.create :shift_category, name: "Category", region: @person.region
 
     shift = FactoryGirl.create :shift,
       shift_groups: [group],

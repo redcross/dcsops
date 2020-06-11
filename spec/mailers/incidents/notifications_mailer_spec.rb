@@ -6,10 +6,10 @@ describe Incidents::Notifications::Mailer, :type => :mailer do
   let(:log_items) { [double(:dispatch_log_item, action_at: Time.zone.now, action_type: 'Dial', recipient: '', result: '')] }
   let(:report) {
     mock_model Incidents::Incident, incident_number: "12-345", area: double(name: 'County'), narrative: 'Test 123', created_at: Time.zone.now,
-                                    address: '123', city: '123', state: '123', zip: '123', county: 'County', chapter: chapter, humanized_incident_type: 'Test'
+                                    address: '123', city: '123', state: '123', zip: '123', county: 'County', region: region, humanized_incident_type: 'Test'
   }
 
-  let(:chapter) { FactoryGirl.build_stubbed :chapter }
+  let(:region) { FactoryGirl.build_stubbed :region }
   subject { Incidents::Notifications::Mailer }
   before(:each) { Bitly.stub(client: double(:shorten => double(short_url: "https://short.url"))) }
 

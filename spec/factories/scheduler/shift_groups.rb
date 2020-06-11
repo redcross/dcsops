@@ -7,6 +7,6 @@ FactoryGirl.define do
     start_offset 0
     end_offset 24.hours
 
-    association :chapter
+    association :region
   end
 end

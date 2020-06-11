@@ -1,6 +1,6 @@
 class Incidents::CallLog < ActiveRecord::Base
-  belongs_to :chapter, class_name: "Roster::Chapter"
-  belongs_to :dispatching_chapter, class_name: "Roster::Chapter"
+  belongs_to :region, class_name: "Roster::Region"
+  belongs_to :dispatching_region, class_name: "Roster::Region"
 
   belongs_to :incident, class_name: "Incidents::Incident"
   belongs_to :creator, class_name: "Roster::Person"

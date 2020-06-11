@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Scheduler::CalendarHelper, :type => :helper do
   describe "#render_shift_assignment_info" do
-    let(:chapter) { FactoryGirl.build_stubbed :chapter }
+    let(:region) { FactoryGirl.build_stubbed :region }
     let(:person) { double(:person, id: SecureRandom.random_number(100000), first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, first_initial: Faker::Name.first_name[0], full_name: Faker::Name.name) }
     let(:shift) { double(:shift, id: SecureRandom.random_number(100000), name: "Some Shift #{Faker::Name.first_name}", can_be_taken_by?: true, can_sign_up_on_day: true, can_remove_on_day: true, exclusive: true) }
     let(:shift_group) { double(:shift_group, id: SecureRandom.random_number(100000)) }
@@ -11,7 +11,7 @@ describe Scheduler::CalendarHelper, :type => :helper do
 
     before(:each) { 
       allow(helper).to receive(:show_county_name?).and_return(false)
-      allow(helper).to receive(:current_chapter).and_return(chapter)
+      allow(helper).to receive(:current_region).and_return(region)
     }
 
     it "should render a checkbox when person can sign up" do

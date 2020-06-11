@@ -1,4 +1,4 @@
-ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
+ActiveAdmin.register Roster::Region, as: 'Region' do
   menu parent: 'Roster'
 
   filter :name
@@ -9,7 +9,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Chapter' do
   controller do
     def resource
       param = params[:id]
-      @chapter ||= (end_of_association_chain.where{(url_slug == param)}.first || end_of_association_chain.find(param))
+      @region ||= (end_of_association_chain.where{(url_slug == param)}.first || end_of_association_chain.find(param))
     end
 
     def resource_params

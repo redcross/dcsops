@@ -3,13 +3,13 @@ ActiveAdmin.register Incidents::DispatchLog, as: 'Dispatch Log' do
 
   actions :index, :show
 
-  filter :chapter
+  filter :region
   filter :incident_number
   filter :county_name
   filter :created_at
 
   index do
-    column("CID") { |msg| msg.chapter_id }
+    column("CID") { |msg| msg.region_id }
     column :message_number
     column :incident_number
     column :county_name

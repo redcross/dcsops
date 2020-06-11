@@ -47,7 +47,7 @@
       - shift_times.each do |time|
         %tr
           %th
-            %span{"data-toggle" => 'tooltip', title: flex_time_range(time, current_person.chapter) }
+            %span{"data-toggle" => 'tooltip', title: flex_time_range(time, current_person.region) }
               =time.titleize
           - days_of_week.each do |dow|
             -avail = sched.send("available_#{dow}_#{time}")
@@ -95,7 +95,7 @@
         %i.fa.fa-group
         Current On-Call Team:
         %small=link_to 'See All', scheduler_on_call_path
-      - groups = Scheduler::ShiftGroup.current_groups_for_chapter(current_chapter)
+      - groups = Scheduler::ShiftGroup.current_groups_for_region(current_region)
       - groups.select{|g| g.period == 'daily' }.each do |grp| 
         %strong=grp.start_date.to_s(:dow_long) + " - " + grp.name
         %br
@@ -140,7 +140,7 @@
         - responses.each do |response|
           %tr
             %td
-              =link_to incidents_chapter_incident_path(response.incident.chapter, response.incident) do
+              =link_to incidents_region_incident_path(response.incident.region, response.incident) do
                 = response.incident.incident_number
                 = response.incident.humanized_incident_type
                 = response.incident.address

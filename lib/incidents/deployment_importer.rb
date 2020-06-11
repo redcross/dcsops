@@ -1,19 +1,19 @@
 class Incidents::DeploymentImporter
   include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
-  def self.get_deployments(chapter)
-    Core::JobLog.capture(self.to_s, chapter) do |logger, counter|
+  def self.get_deployments(region)
+    Core::JobLog.capture(self.to_s, region) do |logger, counter|
       logger.level = 0
-      query = Vc::QueryTool.new chapter.vc_username, chapter.vc_password, logger
-      file = query.get_disaster_query '38613', {return_jid: 4942232, prompt0: chapter.vc_unit}, :csv
+      query = Vc::QueryTool.new region.vc_username, region.vc_password, logger
+      file = query.get_disaster_query '38613', {return_jid: 4942232, prompt0: region.vc_unit}, :csv
       StringIO.open file.body do |io|
-        self.new.import_data(chapter, io, counter)
+        self.new.import_data(region, io, counter)
       end
     end
   end
 
-  def import_data(chapter, io, counter)
-    @chapter = chapter
+  def import_data(region, io, counter)
+    @region = region
     workbook = CSV.parse(io)
 
     errs = []
@@ -55,8 +55,8 @@ class Incidents::DeploymentImporter
       disaster.save!
 
       dep = Incidents::Deployment.find_or_initialize_by(person_id: person.id, disaster_id: disaster.id, gap: gap)
-      dep.date_first_seen ||= @chapter.time_zone.today
-      dep.date_last_seen = @chapter.time_zone.today
+      dep.date_first_seen ||= @region.time_zone.today
+      dep.date_last_seen = @region.time_zone.today
       dep.save!
 
       yield "Deployment Data" if block_given?

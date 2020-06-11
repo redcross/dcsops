@@ -1,6 +1,6 @@
 module Incidents::MapHelper
   def map_config scope
-    bounds = scope.chapter.try(:incidents_geocode_bounds).try(:presence) || '0,0,0,0'
+    bounds = scope.region.try(:incidents_geocode_bounds).try(:presence) || '0,0,0,0'
     bounds = bounds.split(',').map(&:to_f)
     {lat: scope.incidents_map_center_lat.try(:to_f), lng: scope.incidents_map_center_lng.try(:to_f), zoom: scope.incidents_map_zoom, geocode_bounds: bounds}
   end

@@ -27,7 +27,7 @@
       %tr
         %th Average Response Time
         %td=average_response_time(collection_for_stats.valid)
-      -if current_chapter.incidents_collect_case_details
+      -if current_region.incidents_collect_case_details
         - assistance = assistance_totals(collection_for_stats.valid)
         %tr
           %th Assistance

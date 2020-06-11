@@ -7,12 +7,12 @@ class Incidents::DispatchImporter
     hr = m[4].to_i
     hr -= 12 if hr == 12
     hr += 12 if m[6] == 'PM'
-    @chapter.time_zone.parse "#{m[3]}-#{m[1]}-#{m[2]} #{hr}:#{m[5]}"
+    @region.time_zone.parse "#{m[3]}-#{m[1]}-#{m[2]} #{hr}:#{m[5]}"
   end
 
   #def parse_24h(date, time)
   #  m = /(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})/.match("#{date} #{time}")
-  #  @chapter.time_zone.parse "#{m[3]}-#{m[1]}-#{m[2]} #{m[4]}:#{m[5]}:#{m[6]}"
+  #  @region.time_zone.parse "#{m[3]}-#{m[1]}-#{m[2]} #{m[4]}:#{m[5]}:#{m[6]}"
   #end
 
   def data_matchers
@@ -67,21 +67,21 @@ class Incidents::DispatchImporter
   end
 
   def incident_date_for(log_object)
-    log_object.received_at ? log_object.received_at.in_time_zone(@chapter.time_zone).to_date : @chapter.time_zone.today
+    log_object.received_at ? log_object.received_at.in_time_zone(@region.time_zone).to_date : @region.time_zone.today
   end
 
   def update_incident(log_object)
     return unless log_object.incident.nil?
-    if inc = Incidents::Incident.find_by( chapter_id: @chapter, incident_number: log_object.incident_number)
+    if inc = Incidents::Incident.find_by( region_id: @region, incident_number: log_object.incident_number)
       log_object.incident = inc
       
       created = false
     else
-      area = @chapter.counties.find_by(name: log_object.county_name)
-      area ||= @chapter.counties.find_by name: 'Region'
-      area ||= @chapter.counties.first
+      area = @region.counties.find_by(name: log_object.county_name)
+      area ||= @region.counties.find_by name: 'Region'
+      area ||= @region.counties.first
       log_object.build_incident incident_number: log_object.incident_number, 
-                                         chapter: @chapter,
+                                         region: @region,
                                             date: incident_date_for(log_object),
                                           county: log_object.county_name,
                                            state: log_object.state,
@@ -126,11 +126,11 @@ class Incidents::DispatchImporter
   rescue Geokit::Geocoders::TooManyQueriesError
     # Not the end of the world
   ensure
-    Incidents::TerritoryMatcher.new(incident, Incidents::Territory.for_chapter(@chapter)).perform(true)
+    Incidents::TerritoryMatcher.new(incident, Incidents::Territory.for_region(@region)).perform(true)
   end
 
   def update_log_object(attrs, log_items)
-    log_object = Incidents::DispatchLog.find_or_initialize_by(chapter_id: @chapter.id, message_number: attrs[:message_number])
+    log_object = Incidents::DispatchLog.find_or_initialize_by(region_id: @region.id, message_number: attrs[:message_number])
     log_object.update_attributes attrs
 
     log_object.log_items.destroy_all
@@ -167,8 +167,8 @@ class Incidents::DispatchImporter
     end
   end
 
-  def import_data(chapter, body)
-    @chapter = chapter
+  def import_data(region, body)
+    @region = region
 
     Incidents::DispatchLog.transaction do      
       parse_body body

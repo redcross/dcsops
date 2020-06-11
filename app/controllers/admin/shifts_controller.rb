@@ -1,17 +1,17 @@
 class Admin::ShiftsController < GridController
-  belongs_to :chapter, parent_class: Roster::Chapter, finder: :find_by_url_slug!
+  belongs_to :region, parent_class: Roster::Region, finder: :find_by_url_slug!
   defaults resource_class: Scheduler::Shift
   load_and_authorize_resource class: Scheduler::Shift
 
   column :name
   column :abbrev, input_html: {style: "width: 60px"}
-  column :county, collection: ->{chapter.counties}, member_label: :name
+  column :county, collection: ->{region.counties}, member_label: :name
   column :ordinal, input_html: {style: "width: 50px"}
   column :max_signups, input_html: {style: "width: 50px"}
   column :min_desired_signups, input_html: {style: "width: 50px"}
   column :ignore_county, as: :boolean
   column :exclusive, label: ''
-  #column :positions, as: :check_boxes, collection: ->{chapter.positions}
+  #column :positions, as: :check_boxes, collection: ->{region.positions}
   column :shift_groups, as: :check_boxes, collection: ->{shift_groups}, member_label: :name, input_html: {class: ""}
   column :shift_category, collection: ->{shift_categories}, member_label: :name
 
@@ -24,7 +24,7 @@ class Admin::ShiftsController < GridController
   end
 
   def end_of_association_chain
-    Scheduler::Shift.for_chapter(parent).order([:ordinal]).includes{[shift_groups, county, positions, shift_category]}
+    Scheduler::Shift.for_region(parent).order([:ordinal]).includes{[shift_groups, county, positions, shift_category]}
   end
 
   def resource
@@ -35,16 +35,16 @@ class Admin::ShiftsController < GridController
     @_coll ||= super.order{[county_id, ordinal]}
   end
 
-  def chapter
+  def region
     parent
   end
-  helper_method :chapter
+  helper_method :region
 
   def shift_groups
-    @groups ||= Scheduler::ShiftGroup.for_chapter(chapter)
+    @groups ||= Scheduler::ShiftGroup.for_region(region)
   end
   def shift_categories
-    @categories ||= Scheduler::ShiftCategory.for_chapter(chapter)
+    @categories ||= Scheduler::ShiftCategory.for_region(region)
   end
   helper_method :shift_groups, :shift_categories
 end

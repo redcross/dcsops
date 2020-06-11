@@ -1,7 +1,7 @@
 DROP VIEW IF EXISTS reporting.incident_data;
 CREATE VIEW reporting.incident_data AS
   SELECT 
-    inc.chapter_id, inc.incident_number, inc.incident_type, di.incident_call_type, inc.status, inc.date,
+    inc.region_id, inc.incident_number, inc.incident_type, di.incident_call_type, inc.status, inc.date,
     inc.address, inc.city, inc.state, inc.zip, inc.county, inc.lat, inc.lng,
     di.units_destroyed, di.units_major, di.units_minor, di.units_affected, di.units_unknown,
     di.units_destroyed + di.units_major + di.units_minor + di.units_affected AS units_total,

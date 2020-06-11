@@ -1,11 +1,11 @@
 class Roster::Position < ActiveRecord::Base
-  belongs_to :chapter
+  belongs_to :region
   has_many :position_memberships
   has_many :people, through: :position_memberships, class_name: 'Roster::Person'
 
   has_many :role_memberships, class_name: 'Roster::RoleMembership'
 
-  validates_presence_of :chapter, :name
+  validates_presence_of :region, :name
 
   scope :visible, ->{where{hidden != true}}
 
@@ -16,6 +16,6 @@ class Roster::Position < ActiveRecord::Base
   end
 
   def display_name
-    "#{chapter_id} - #{name}"
+    "#{region_id} - #{name}"
   end
 end

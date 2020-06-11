@@ -3,10 +3,10 @@ class Scheduler::Calendar
   # assignment) needed to render a calendar for a given date range
   include ::NewRelic::Agent::MethodTracer
 
-  attr_reader :chapter, :start_date, :end_date, :person, :filter, :counties, :categories
+  attr_reader :region, :start_date, :end_date, :person, :filter, :counties, :categories
 
-  def initialize(chapter, start_date, end_date, person: nil, filter: :mine, counties: nil, categories: nil)
-    @chapter = chapter
+  def initialize(region, start_date, end_date, person: nil, filter: :mine, counties: nil, categories: nil)
+    @region = region
     @start_date = start_date
     @end_date = end_date
     @person = person
@@ -97,7 +97,7 @@ class Scheduler::Calendar
   def groups_by_period(period)
     # The references(:shifts) forces all of the preloads to be generated as one massive join.  Maybe
     # not so good for the database, but rails seems to be pathalogically slow on this eager load.
-    @_unfiltered_groups ||= Scheduler::ShiftGroup.references(:shifts).includes{[shifts.positions, shifts.county, shifts.shift_groups]}.where(chapter_id: chapter).order(:start_offset).to_a
+    @_unfiltered_groups ||= Scheduler::ShiftGroup.references(:shifts).includes{[shifts.positions, shifts.county, shifts.shift_groups]}.where(region_id: region).order(:start_offset).to_a
 
     @_unfiltered_groups.select{|sh| sh.period == period}
   end

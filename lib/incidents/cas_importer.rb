@@ -1,8 +1,8 @@
 class Incidents::CasImporter
   include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
-  def import_data(chapter, file)
-    @chapters = Roster::Chapter.all
+  def import_data(region, file)
+    @regions = Roster::Region.all
     workbook = Spreadsheet.open(file)
 
     inc_errors = []
@@ -44,7 +44,7 @@ class Incidents::CasImporter
             puts id
             incident = incidents[id].try(:first) || Incidents::CasIncident.new(cas_incident_number: id)
             cols = [:dr_number, nil, :cas_name, :incident_date, nil, nil, nil, :county_name,
-                    :cases_with_assistance, :cases_service_only, :cases_opened, :num_clients, :cases_closed, :cases_open, :chapter_code]
+                    :cases_with_assistance, :cases_service_only, :cases_opened, :num_clients, :cases_closed, :cases_open, :region_code]
 
             cols.each_with_index do |col_name, idx|
               next unless col_name
@@ -52,8 +52,8 @@ class Incidents::CasImporter
             end
             ids << incident.id
             ids_with_open << incident.id if incident.cases_open and incident.cases_open > 0
-            if incident.chapter_code.present?
-              incident.chapter = @chapters.detect{|ch| ch.cas_chapter_codes_array.include? incident.chapter_code }
+            if incident.region_code.present?
+              incident.region = @regions.detect{|ch| ch.cas_region_codes_array.include? incident.region_code }
             end      
             if !incident.save
               errors << incident

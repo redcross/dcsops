@@ -16,9 +16,9 @@
     .controls
       = f.text_field :end_offset, :class => 'text_field'
   .control-group
-    = f.label :chapter_id, :class => 'control-label'
+    = f.label :region_id, :class => 'control-label'
     .controls
-      = f.text_field :chapter_id, :class => 'text_field'
+      = f.text_field :region_id, :class => 'text_field'
   .form-actions
     = f.submit nil, :class => 'btn btn-primary'
     = link_to t('.cancel', :default => t("helpers.links.cancel")), scheduler_shift_groups_path, :class => 'btn'

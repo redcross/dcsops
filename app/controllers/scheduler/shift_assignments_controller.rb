@@ -24,7 +24,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   has_scope :time_period, default: 'future', only: [:index] do |controller, scope, arg|
     case arg
     when 'future'
-      scope.normalized_date_on_or_after(controller.current_chapter.time_zone.today)
+      scope.normalized_date_on_or_after(controller.current_region.time_zone.today)
     else
       scope
     end
@@ -65,8 +65,8 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
 
   def collection
     @shift_assignments ||= apply_scopes(super).order(:date).joins{person.outer}
-                  .where{(person.chapter_id == my{current_chapter}) & (date <= my{current_chapter.time_zone.today + 30})}
-                  .includes{[person, shift_group.chapter, shift.county, person.counties, person.chapter]}.uniq
+                  .where{(person.region_id == my{current_region}) & (date <= my{current_region.time_zone.today + 30})}
+                  .includes{[person, shift_group.region, shift.county, person.counties, person.region]}.uniq
   end
 
   helper_method :grouped_collection

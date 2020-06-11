@@ -33,7 +33,7 @@ describe ApplicationController, :type => :controller do
 
   describe "Impersonation" do
 
-    let(:impersonated) { FactoryGirl.create(:person, chapter: @person.chapter) }
+    let(:impersonated) { FactoryGirl.create(:person, region: @person.region) }
 
     it "should give the current user when asked" do
       expect(controller.current_user).to eq(@person)

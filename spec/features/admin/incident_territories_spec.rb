@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Incident Territories Admin Page", :type => :feature do
   before(:each) do
-    grant_role! :chapter_config
+    grant_role! :region_config
   end
 
   it "Creates a new Territory" do
@@ -15,7 +15,7 @@ describe "Incident Territories Admin Page", :type => :feature do
     all("#incidents_territory_counties")[2].set("County C")
     click_on "Create Territory"
 
-    find("#incidents_territory_chapter_id").select("Some Chapter")
+    find("#incidents_territory_region_id").select("Some Region")
     click_on "Create Territory"
 
     # This is testing StringArrayInput

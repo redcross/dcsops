@@ -1,6 +1,6 @@
 # The data below is for issue #36 and is in tab-separated-value (TSV)
 # format, with the first row naming the column headers.  The source
-# for the data is the Regional/Chapter Boundaries Google Fusion Table,
+# for the data is the Regional Boundaries Google Fusion Table,
 # which lives in the NorCen Admin SitCell account:
 #
 # https://www.google.com/fusiontables/embedviz?viz=GVIZ&t=TABLE&q=select+col0%2C+col1%2C+col2+from+19-2xEahVmhKmQ8O0zNmceFZ8mSf7gvUD_Bk-hkuV&containerId=googft-gviz-canvas

@@ -36,7 +36,7 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   scope :on_scene, -> { where{ role.in( ON_SCENE_ROLES ) } }
   scope :was_available, -> { where{ role.in( my{ROLES}) }}
   scope :with_person_in_counties, ->(counties){ joins{person.county_memberships}.where{person.county_memberships.county_id.in(my{Array(counties)}) } }
-  scope :for_chapter, -> chapter { joins{incident}.where{incident.chapter_id==chapter} }
+  scope :for_region, -> region { joins{incident}.where{incident.region_id==region} }
   def self.open
     was_available
   end
@@ -51,21 +51,21 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   end
 
   def dispatched!(user=nil)
-    update_attribute :dispatched_at, incident.chapter.time_zone.now unless dispatched_at
+    update_attribute :dispatched_at, incident.region.time_zone.now unless dispatched_at
   end
 
   def on_scene!(user=nil)
-    update_attribute :on_scene_at, incident.chapter.time_zone.now unless on_scene_at
+    update_attribute :on_scene_at, incident.region.time_zone.now unless on_scene_at
 
-    create_event_unless_exists 'dat_on_scene', incident.chapter.time_zone.now, "#{person.full_name} arrived on scene.  (Automatic message)", user
+    create_event_unless_exists 'dat_on_scene', incident.region.time_zone.now, "#{person.full_name} arrived on scene.  (Automatic message)", user
   end
 
   def departed_scene!(user=nil)
-    update_attribute :departed_scene_at, incident.chapter.time_zone.now unless departed_scene_at
+    update_attribute :departed_scene_at, incident.region.time_zone.now unless departed_scene_at
 
     responders_still_on_scene = incident.all_responder_assignments.where{departed_scene_at == nil}.on_scene.exists?
     if !responders_still_on_scene
-     create_event_unless_exists('dat_departed_scene', incident.chapter.time_zone.now, "#{person.full_name} was the last to depart the scene.  (Automatic message)", user)
+     create_event_unless_exists('dat_departed_scene', incident.region.time_zone.now, "#{person.full_name} was the last to depart the scene.  (Automatic message)", user)
     end
   end
 

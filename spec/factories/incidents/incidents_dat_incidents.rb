@@ -4,7 +4,7 @@ FactoryGirl.define do
   factory :dat_incident, :class => 'Incidents::DatIncident' do
     association :incident
 
-    completed_by { |f| f.association :person, chapter: f.incident.chapter}
+    completed_by { |f| f.association :person, region: f.incident.region}
     vehicle_uses { |f| [Incidents::VehicleUse.new( vehicle: f.association(:vehicle))]}
 
     incident_call_type 'hot'

@@ -19,7 +19,7 @@
     .highmap=image_tag "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=#{size}&markers=#{URI::encode "|#{inc.lat},#{inc.lng}"}&zoom=6&scale=2&key=#{maps_api_key}"
   %h3 Basic Information
   Incident Number: #{resource.incident.incident_number}
-  =link_to 'View in DCSOps', incidents_chapter_incident_url(resource.incident.chapter, resource.incident)
+  =link_to 'View in DCSOps', incidents_region_incident_url(resource.incident.region, resource.incident)
   %br
   IIR Completed By: #{resource.completed_by.try :full_name}
   %br
@@ -51,9 +51,9 @@
   %br
   Territory: #{resource.incident.territory.try(:name)}
   %br
-  Region: #{resource.incident.chapter.name}
+  Region: #{resource.incident.region.name}
   %br
-  Division: #{resource.incident.chapter.division_name}
+  Division: #{resource.incident.region.division_name}
 
   %h3 Demographics
   Estimated # homes affected: #{resource.estimated_units}

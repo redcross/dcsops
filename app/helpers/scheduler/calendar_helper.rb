@@ -4,7 +4,7 @@ module Scheduler::CalendarHelper
   def render_shifts group, shifts, date, editable
     # Block expects: idx, is_first, is_last, needs_signups, row_html
     my_shifts = person ? calendar.my_shifts_for_group_on_day(group.id, date) : []
-    today = current_chapter.time_zone.today
+    today = current_region.time_zone.today
 
     shifts.sort_by(&:ordinal).each_with_index do |shift, idx|
       assignments=calendar.assignments_for_shift_on_day_in_group(shift, date, group)
@@ -32,7 +32,7 @@ module Scheduler::CalendarHelper
   end
 
   def today
-    @today ||= current_chapter.time_zone.today
+    @today ||= current_region.time_zone.today
   end
 
 

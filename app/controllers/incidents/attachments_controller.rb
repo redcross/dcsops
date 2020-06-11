@@ -6,7 +6,7 @@ class Incidents::AttachmentsController < Incidents::EditPanelController
   protected
 
   def notify resource
-    Incidents::UpdatePublisher.new(@chapter, parent).publish_attachments
+    Incidents::UpdatePublisher.new(@region, parent).publish_attachments
   end
 
   def resource_params

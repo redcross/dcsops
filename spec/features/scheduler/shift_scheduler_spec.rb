@@ -19,14 +19,14 @@ describe "Shift Scheduler Spec", :type => :feature do
 
   before :each do
     # This has to happen up here, so that the county/position/category create
-    # includes this person, because the chapters have to match before FactoryGirl
+    # includes this person, because the regions have to match before FactoryGirl
     # creates these.
-    @other_person = FactoryGirl.create(:person, rco_id: rand(100000), chapter: @person.chapter)
+    @other_person = FactoryGirl.create(:person, rco_id: rand(100000), region: @person.region)
 
-    group = FactoryGirl.create :shift_group, chapter: @person.chapter, start_offset: 10.hours, end_offset: 22.hours
-    @counties = (1..2).map{|i| FactoryGirl.create :county, name: "County #{i}", chapter: @person.chapter}
-    @positions = (1..2).map{|i| FactoryGirl.create :position, name: "Position #{i}", chapter: @person.chapter}
-    @categories = (1..2).map{|i| FactoryGirl.create :shift_category, name: "Category #{i}", chapter: @person.chapter}
+    group = FactoryGirl.create :shift_group, region: @person.region, start_offset: 10.hours, end_offset: 22.hours
+    @counties = (1..2).map{|i| FactoryGirl.create :county, name: "County #{i}", region: @person.region}
+    @positions = (1..2).map{|i| FactoryGirl.create :position, name: "Position #{i}", region: @person.region}
+    @categories = (1..2).map{|i| FactoryGirl.create :shift_category, name: "Category #{i}", region: @person.region}
 
     FactoryGirl.create :shift,
       shift_groups: [group],

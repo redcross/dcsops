@@ -1,6 +1,6 @@
 class Scheduler::Shift < ActiveRecord::Base
   belongs_to :county, class_name: 'Roster::County'
-  has_one :chapter, class_name: 'Roster::Chapter', through: :county
+  has_one :region, class_name: 'Roster::Region', through: :county
   belongs_to :shift_category, class_name: 'Scheduler::ShiftCategory'
 
   has_and_belongs_to_many :positions, class_name: 'Roster::Position'
@@ -33,7 +33,7 @@ class Scheduler::Shift < ActiveRecord::Base
 
   def can_sign_up_on_day(date, shift_group, num_assignments_on_day=nil, today=nil)
     check_shift_group shift_group
-    today ||= shift_group.chapter.time_zone.today
+    today ||= shift_group.region.time_zone.today
 
     return false if date < today and !allow_signup_in_past?(date, shift_group)
     return false unless active_on_day? date, shift_group
@@ -52,7 +52,7 @@ class Scheduler::Shift < ActiveRecord::Base
 
   def allow_signup_in_past?(date, shift_group)
     check_shift_group shift_group
-    tz = shift_group.chapter.time_zone
+    tz = shift_group.region.time_zone
     key = (shift_group.period == 'monthly' ? :days : :seconds)
     Scheduler::ShiftTimeCalculator.new(tz).local_offset(date, key => shift_group.end_offset) >= tz.now
     #pp(Scheduler::ShiftAssignment.new(date: date, shift: self, shift_group: shift_group).local_end_time) >= tz.now
@@ -60,7 +60,7 @@ class Scheduler::Shift < ActiveRecord::Base
 
   def can_remove_on_day(date, shift_group, today=nil)
     check_shift_group shift_group
-    today ||= shift_group.chapter.time_zone.today
+    today ||= shift_group.region.time_zone.today
     today = normalize_date today, shift_group
     advance = date - today
     (date >= today) and unfrozen_on(date) and (advance >= min_advance_signup)
@@ -71,8 +71,8 @@ class Scheduler::Shift < ActiveRecord::Base
     return shift_group.active_on?(date) && (shift_begins.nil? || shift_begins <= date) && (shift_ends.nil? || shift_ends > date)
   end
 
-  scope :for_chapter, -> chapter {
-    joins{county}.where{county.chapter_id == chapter}
+  scope :for_region, -> region {
+    joins{county}.where{county.region_id == region}
   }
   scope :active_on_day, -> date {
     #Todo: check day of week here
@@ -176,6 +176,6 @@ class Scheduler::Shift < ActiveRecord::Base
   end
 
   def display_name
-    "#{shift_groups.first.try :chapter_id} - #{county.try(:abbrev)} #{name} - #{shift_groups.map(&:name).join ', '}"
+    "#{shift_groups.first.try :region_id} - #{county.try(:abbrev)} #{name} - #{shift_groups.map(&:name).join ', '}"
   end
 end

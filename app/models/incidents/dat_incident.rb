@@ -17,7 +17,7 @@ class Incidents::DatIncident < Incidents::DataModel
   end
 
   assignable_values_for :vacate_type, allow_blank: true do
-    Lookup.for_chapter_and_scope(incident.chapter, "Incidents::Incident#vacate_type").map{|l| {l.name => l.value}}.reduce(&:merge)
+    Lookup.for_region_and_scope(incident.region, "Incidents::Incident#vacate_type").map{|l| {l.name => l.value}}.reduce(&:merge)
   end
 
   delegated_validator Incidents::Validators::CompleteReportValidator, if: :complete_report?
@@ -38,7 +38,7 @@ class Incidents::DatIncident < Incidents::DataModel
   end
 
   def resource_types_to_track
-    TRACKED_RESOURCE_TYPES & (incident.try(:chapter).try(:incidents_resources_tracked_array) || [])
+    TRACKED_RESOURCE_TYPES & (incident.try(:region).try(:incidents_resources_tracked_array) || [])
   end
 
   def complete_report?

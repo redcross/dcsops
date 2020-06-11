@@ -38,7 +38,7 @@ module Incidents::DatIncidentsHelper
 
   def tabs_to_render(f)
     tabs = ['form_basic', 'form_responders', 'form_services']
-    if f.object.incident.chapter.incidents_report_advanced_details
+    if f.object.incident.region.incidents_report_advanced_details
       tabs.insert 1, 'form_details'
     end
     tabs

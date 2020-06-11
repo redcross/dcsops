@@ -1,7 +1,7 @@
 - dat = @incident.dat_incident
 %p
   A New DAT Incident Report was filed.  See full details at 
-  =link_to incidents_chapter_incident_url(@incident.chapter, @incident), incidents_chapter_incident_url(@incident.chapter, @incident)
+  =link_to incidents_region_incident_url(@incident.region, @incident), incidents_region_incident_url(@incident.region, @incident)
 
 %p
   Incident: #{@incident.incident_number}

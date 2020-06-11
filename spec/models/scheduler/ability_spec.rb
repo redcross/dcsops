@@ -5,7 +5,7 @@ describe Scheduler::Ability, :type => :model do
     @person = FactoryGirl.create :person
     @position = @person.positions.first
 
-    @other_person = FactoryGirl.create :person, chapter: @person.chapter, counties: @person.counties
+    @other_person = FactoryGirl.create :person, region: @person.region, counties: @person.counties
   end
 
   let(:ability) { Scheduler::Ability.new(@person) }
@@ -66,7 +66,7 @@ describe Scheduler::Ability, :type => :model do
     before(:each) do
       grant_role! 'county_dat_admin', @person.county_ids
 
-      @non_county_person = FactoryGirl.create :person, chapter: @person.chapter
+      @non_county_person = FactoryGirl.create :person, region: @person.region
     end
 
     it "can read people in county" do

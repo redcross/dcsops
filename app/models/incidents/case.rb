@@ -16,6 +16,6 @@ class Incidents::Case < Incidents::DataModel
 
   def cas_case_url
     return unless incident and cas_case_number.present?
-    "https://#{incident.chapter.cas_host}/zf/client/render/id/#{cas_case_number}"
+    "https://#{incident.region.cas_host}/zf/client/render/id/#{cas_case_number}"
   end
 end

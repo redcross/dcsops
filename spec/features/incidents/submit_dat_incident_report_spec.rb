@@ -6,18 +6,18 @@ describe "DAT Incident Report", type: :feature, versions: true do
   it "Should be submittable" do
     grant_role! 'submit_incident_report'
 
-    @chapter = @person.chapter
-    FactoryGirl.create :incidents_scope, chapter: @person.chapter
+    @region = @person.region
+    FactoryGirl.create :incidents_scope, region: @person.region
 
-    @team_lead = FactoryGirl.create :person, chapter: @person.chapter, counties: @person.counties
-    @responder = FactoryGirl.create :person, chapter: @person.chapter, counties: @person.counties
-    @flex_responder = FactoryGirl.create :person, chapter: @person.chapter, counties: @person.counties
+    @team_lead = FactoryGirl.create :person, region: @person.region, counties: @person.counties
+    @responder = FactoryGirl.create :person, region: @person.region, counties: @person.counties
+    @flex_responder = FactoryGirl.create :person, region: @person.region, counties: @person.counties
 
-    @vehicle = FactoryGirl.create :vehicle, chapter: @chapter
+    @vehicle = FactoryGirl.create :vehicle, region: @region
 
     FactoryGirl.create :flex_schedule, person: @flex_responder
 
-    @incident = FactoryGirl.create :raw_incident, chapter: @person.chapter, area: @person.counties.first
+    @incident = FactoryGirl.create :raw_incident, region: @person.region, area: @person.counties.first
 
     navigate_to_incident
     #visit "/incidents/incidents/#{@incident.incident_number}/dat/new"
@@ -47,7 +47,7 @@ describe "DAT Incident Report", type: :feature, versions: true do
   end
 
   def navigate_to_incident
-    visit "/incidents/#{@chapter.url_slug}"
+    visit "/incidents/#{@region.url_slug}"
 
     click_link "Submit Incident Report"
     within :xpath, "//td[text()='#{@incident.incident_number}']/ancestor::tr" do
@@ -77,7 +77,7 @@ describe "DAT Incident Report", type: :feature, versions: true do
     fill_in 'Units destroyed*', with: 1
 
     # Need the times here
-    t = @chapter.time_zone.now
+    t = @region.time_zone.now
     fill_in_responder_timeline("#incidents_dat_incident_incident_attributes_timeline_attributes_dat_received_attributes_event_time", t)
     fill_in_responder_timeline("#incidents_dat_incident_incident_attributes_timeline_attributes_dat_on_scene_attributes_event_time", t.advance( hours: 1))
     fill_in_responder_timeline("#incidents_dat_incident_incident_attributes_timeline_attributes_dat_departed_scene_attributes_event_time", t.advance( hours: 3))

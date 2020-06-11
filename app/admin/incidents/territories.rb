@@ -3,13 +3,13 @@ ActiveAdmin.register Incidents::Territory, as: 'Territory' do
 
   actions :all, except: :destroy
 
-  filter :chapter
+  filter :region
 
-  permit_params :chapter_id, :name, :enabled, :is_default, :dispatch_number, :non_disaster_number, :special_instructions, :dispatch_config_id, :calendar_county_ids => [], :counties => [], cities: [], zip_codes: []
+  permit_params :region_id, :name, :enabled, :is_default, :dispatch_number, :non_disaster_number, :special_instructions, :dispatch_config_id, :calendar_county_ids => [], :counties => [], cities: [], zip_codes: []
 
   index do
     id_column
-    column :chapter
+    column :region
     column :dispatch_config
     column :name
     column :enabled
@@ -19,8 +19,8 @@ ActiveAdmin.register Incidents::Territory, as: 'Territory' do
 
   form do |f|
     f.inputs do
-      configs = f.object.chapter ? Scheduler::DispatchConfig.for_chapter(f.object.chapter).order{name} : Scheduler::DispatchConfig.order{[chapter_id, name]}
-      f.input :chapter
+      configs = f.object.region ? Scheduler::DispatchConfig.for_region(f.object.region).order{name} : Scheduler::DispatchConfig.order{[region_id, name]}
+      f.input :region
       f.input :dispatch_config, collection: configs
       f.input :is_default
       f.input :name
@@ -40,12 +40,12 @@ ActiveAdmin.register Incidents::Territory, as: 'Territory' do
 
   controller do
     def collection
-      @coll ||= super.includes{chapter}
+      @coll ||= super.includes{region}
     end
 
     def available_counties
-      if resource.chapter
-        resource.chapter.counties
+      if resource.region
+        resource.region.counties
       else
         Roster::County.all
       end

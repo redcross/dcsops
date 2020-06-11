@@ -4,9 +4,9 @@ class Incidents::IncidentsController < Incidents::BaseController
   respond_to :json, only: :update
   respond_to :js, only: :index
   defaults finder: :find_by_incident_number!
-  load_and_authorize_resource :chapter
+  load_and_authorize_resource :region
   load_and_authorize_resource except: [:needs_report, :activity, :new, :create]
-  belongs_to :chapter, parent_class: Roster::Chapter, finder: :find_by_url_slug!
+  belongs_to :region, parent_class: Roster::Region, finder: :find_by_url_slug!
   helper Incidents::MapHelper
   responders :partial
 
@@ -51,7 +51,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   end
 
   def activity
-    association_chain # To load the @chapter variable
+    association_chain # To load the @region variable
     authorize! :read_case_details, resource_class
   end
 
@@ -86,8 +86,8 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     helper_method :inline_editable?
     def inline_editable?
-      chapter = resource.chapter
-      chapter && chapter.incidents_report_editable && resource.open_incident? && can?(:update, resource.dat_incident || Incidents::DatIncident.new(incident: resource))
+      region = resource.region
+      region && region.incidents_report_editable && resource.open_incident? && can?(:update, resource.dat_incident || Incidents::DatIncident.new(incident: resource))
     end
 
     helper_method :tab_authorized?
@@ -95,7 +95,7 @@ class Incidents::IncidentsController < Incidents::BaseController
       case name
       when 'summary','territory' then true
       when 'details', 'timeline', 'responders', 'attachments' then can? :read_details, resource
-      when 'cases' then resource.chapter.incidents_collect_case_details && can?(:read_case_details, resource)
+      when 'cases' then resource.region.incidents_collect_case_details && can?(:read_case_details, resource)
       when 'changes' then can? :read_changes, resource
       when 'iir' then can?(:read, Incidents::InitialIncidentReport) && (resource.status=='open' || resource.initial_incident_report.present?)
       else false
@@ -103,11 +103,11 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
 
     expose(:needs_report_collection) { 
-      Incidents::Incident.for_chapter(delegated_chapter_ids).needs_incident_report.includes{area}.order{incident_number} 
+      Incidents::Incident.for_region(delegated_region_ids).needs_incident_report.includes{area}.order{incident_number} 
     }
 
     expose(:resource_changes) {
-      changes = Version.order{created_at.desc}.for_chapter(@chapter).includes{[root, item]}
+      changes = Version.order{created_at.desc}.for_region(@region).includes{[root, item]}
       if params[:id] # we have a single resource
         changes = changes.for_root(resource.__getobj__)
       else
@@ -127,7 +127,7 @@ class Incidents::IncidentsController < Incidents::BaseController
         unless i.territory
           Incidents::TerritoryMatcher.new(i, Incidents::Territory.all).perform
         end
-        i.chapter = i.territory.try :chapter if i.territory
+        i.region = i.territory.try :region if i.territory
       }
     end
 
@@ -156,21 +156,21 @@ class Incidents::IncidentsController < Incidents::BaseController
       [attrs]
     end
 
-    def delegated_chapter_ids
-      @delgated_chapters ||= [@chapter.id] + Roster::Chapter.with_incidents_delegate_chapter_value(@chapter.id).ids
+    def delegated_region_ids
+      @delgated_regions ||= [@region.id] + Roster::Region.with_incidents_delegate_region_value(@region.id).ids
     end
 
     def counties_for_create
-      Roster::County.where{chapter_id.in my{delegated_chapter_ids}}
+      Roster::County.where{region_id.in my{delegated_region_ids}}
     end
     helper_method :counties_for_create
 
     def publisher
-      @publisher ||= Incidents::UpdatePublisher.new(resource.chapter, resource)
+      @publisher ||= Incidents::UpdatePublisher.new(resource.region, resource)
     end
 
     def scope
-      @scope ||= Incidents::Scope.for_chapter(resource.chapter_id)
+      @scope ||= Incidents::Scope.for_region(resource.region_id)
     end
     helper_method :scope
 

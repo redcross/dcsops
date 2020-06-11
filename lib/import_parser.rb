@@ -12,9 +12,9 @@ class ImportParser
   self.preload_identities = true
 
 
-  def initialize(file, chapter, logger=Rails.logger)
+  def initialize(file, region, logger=Rails.logger)
     @csv = file
-    @chapter = chapter
+    @region = region
     @headers = {}
     @logger = logger
   end

@@ -2,7 +2,7 @@ ActiveAdmin.register Roster::County, as: 'County' do
 
   menu parent: 'Roster'
 
-  filter :chapter
+  filter :region
   filter :name
   filter :enabled
 
@@ -13,7 +13,7 @@ ActiveAdmin.register Roster::County, as: 'County' do
     attributes_table do
       row("Number of Members") { resource.people.count }
     end
-    data = resource.chapter.vc_import_data
+    data = resource.region.vc_import_data
     if data && resource.vc_regex_raw
       positions = data.positions_matching resource.vc_regex_raw
       panel "Matched VC Positions" do
@@ -27,7 +27,7 @@ ActiveAdmin.register Roster::County, as: 'County' do
 
   controller do
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :enabled, :county_code, :fips_code, :gis_name, :vc_regex_raw, :chapter_id)]
+      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :enabled, :county_code, :fips_code, :gis_name, :vc_regex_raw, :region_id)]
     end
   end
 

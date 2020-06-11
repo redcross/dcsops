@@ -2,17 +2,17 @@ require 'spec_helper'
 
 describe Incidents::DispatchImporter do
   subject { Incidents::DispatchImporter.new }
-  let(:chapter) { FactoryGirl.create :chapter }
+  let(:region) { FactoryGirl.create :region }
   let(:fixture_name) { self.class.description }
   let(:fixture_path) { "spec/fixtures/incidents/dispatch_logs/#{fixture_name}" }
   let(:fixture) { File.read fixture_path }
 
   let(:import) do
-    subject.import_data chapter, fixture
+    subject.import_data region, fixture
   end
 
   let(:geocode_result) {double(:geocode_result, success?: true, lat: 0, lng: 0, city: Faker::Address.city, state: Faker::Address.state, district: Faker::Address.city, zip: Faker::Address.zip_code)}
-  let(:territory) { FactoryGirl.create :territory, chapter: chapter }
+  let(:territory) { FactoryGirl.create :territory, region: region }
 
   before do
     allow(Incidents::DispatchImporter.geocoder).to receive(:geocode).and_return(geocode_result)
@@ -21,7 +21,7 @@ describe Incidents::DispatchImporter do
   end
 
   describe "1.txt" do
-    let!(:county) {FactoryGirl.create :county, chapter: chapter, name: 'Contra Costa'}
+    let!(:county) {FactoryGirl.create :county, region: region, name: 'Contra Costa'}
     it "should parse the incident" do
       import
 
@@ -41,8 +41,8 @@ describe Incidents::DispatchImporter do
       expect(inc.state).to eq("CA")
       expect(inc.message_number).to eq("21251520000044")
 
-      expect(inc.received_at).to eq(chapter.time_zone.parse( "2013-06-13 19:16:00"))
-      expect(inc.delivered_at).to eq(chapter.time_zone.parse( "2013-06-13 19:18:00"))
+      expect(inc.received_at).to eq(region.time_zone.parse( "2013-06-13 19:16:00"))
+      expect(inc.delivered_at).to eq(region.time_zone.parse( "2013-06-13 19:18:00"))
       
       expect(inc.delivered_to).to eq('JOHN')
     end
@@ -60,7 +60,7 @@ describe Incidents::DispatchImporter do
       expect(dial).not_to be_nil
       expect(dial.result).to eq("RLY'D")
       expect(dial.recipient).to eq("650-555-1212 DOE, JOHN - CELL")
-      expect(dial.action_at).to eq(chapter.time_zone.parse( "2013-06-13 19:17:00"))
+      expect(dial.action_at).to eq(region.time_zone.parse( "2013-06-13 19:17:00"))
       expect(dial.operator).to eq('FBGL')
     end
 
@@ -73,7 +73,7 @@ describe Incidents::DispatchImporter do
       expect(inc.incident_number).to eq('14-044')
       expect(inc.date).to eq(Date.civil(2013, 6, 13))
       expect(inc.area).to eq(county)
-      expect(inc.chapter).to eq(chapter)
+      expect(inc.region).to eq(region)
       expect(inc.status).to eq('open')
       expect(inc.state).to eq('CA')
     end
@@ -109,7 +109,7 @@ describe Incidents::DispatchImporter do
 
     describe "with an incident already existing" do
       before(:each) do
-        @inc = FactoryGirl.create :incident, incident_number: '14-044', chapter: chapter
+        @inc = FactoryGirl.create :incident, incident_number: '14-044', region: region
       end
       let(:fixture_name) { self.class.superclass.description }
 
@@ -135,7 +135,7 @@ describe Incidents::DispatchImporter do
   end
 
   describe "2.txt" do
-    let!(:county) {FactoryGirl.create :county, chapter: chapter, name: 'San Francisco'}
+    let!(:county) {FactoryGirl.create :county, region: region, name: 'San Francisco'}
     it "should parse the incident" do
       import
 
@@ -153,8 +153,8 @@ describe Incidents::DispatchImporter do
       expect(inc.contact_phone).to eq("(415)555-1212")
       expect(inc.caller_id).to eq("5105551212")
 
-      expect(inc.received_at).to eq(chapter.time_zone.parse( "2013-06-13 18:57:00"))
-      expect(inc.delivered_at).to eq(chapter.time_zone.parse( "2013-06-13 19:07:00"))
+      expect(inc.received_at).to eq(region.time_zone.parse( "2013-06-13 18:57:00"))
+      expect(inc.delivered_at).to eq(region.time_zone.parse( "2013-06-13 19:07:00"))
       
       expect(inc.delivered_to).to eq('MR. DOE')
     end
@@ -171,7 +171,7 @@ describe Incidents::DispatchImporter do
       expect(dial).not_to be_nil
       expect(dial.result).to eq("RELAYED")
       expect(dial.recipient).to eq("650-555-1212 DOE, JOHN - CELL")
-      expect(dial.action_at).to eq(chapter.time_zone.parse( "2013-06-13 19:05:00"))
+      expect(dial.action_at).to eq(region.time_zone.parse( "2013-06-13 19:05:00"))
       expect(dial.operator).to eq('PMED')
     end
 
@@ -184,7 +184,7 @@ describe Incidents::DispatchImporter do
       expect(inc.incident_number).to eq('14-043')
       expect(inc.date).to eq(Date.civil(2013, 6, 13))
       expect(inc.area).to eq(county)
-      expect(inc.chapter).to eq(chapter)
+      expect(inc.region).to eq(region)
     end
 
     it "should create several event logs" do
@@ -206,7 +206,7 @@ describe Incidents::DispatchImporter do
   end
 
   describe "4.txt" do
-    let!(:county) {FactoryGirl.create :county, chapter: chapter, name: 'San Francisco'}
+    let!(:county) {FactoryGirl.create :county, region: region, name: 'San Francisco'}
     let(:incident_details) {
       {incident_number: '14-004',
             incident_type: 'Structure Fire',
@@ -220,11 +220,11 @@ describe Incidents::DispatchImporter do
             contact_phone: '(415)5551212',
             caller_id: '8005551212',
             received_at: nil,
-            delivered_at: chapter.time_zone.parse( "2013-07-05 00:25:00")}
+            delivered_at: region.time_zone.parse( "2013-07-05 00:25:00")}
     }
     let(:num_event_logs) {10}
     let(:incident_attributes) {
-      {incident_number: '14-004', date: chapter.time_zone.today, area: county, chapter: chapter}
+      {incident_number: '14-004', date: region.time_zone.today, area: county, region: region}
     }
     it "should parse the incident" do
       import
@@ -260,12 +260,12 @@ describe Incidents::DispatchImporter do
   end
 
   describe "5.txt" do
-    let!(:county) {FactoryGirl.create :county, chapter: chapter, name: 'San Francisco'}
+    let!(:county) {FactoryGirl.create :county, region: region, name: 'San Francisco'}
     let(:incident_details) {
       {incident_number: '15-047',
             incident_type: '',
             address: ', SPRINGFIELD',
-            delivered_at: chapter.time_zone.parse( "2014-07-18 12:44:00")}
+            delivered_at: region.time_zone.parse( "2014-07-18 12:44:00")}
     }
     it "should parse the incident" do
       import
@@ -282,12 +282,12 @@ describe Incidents::DispatchImporter do
   end
 
   describe "6.txt" do
-    let!(:county) {FactoryGirl.create :county, chapter: chapter, name: 'San Francisco'}
+    let!(:county) {FactoryGirl.create :county, region: region, name: 'San Francisco'}
     let(:incident_details) {
       {incident_number: nil,
             incident_type: 'Structure Fire',
             address: '123 Main St Street, SAN FRANCISCO',
-            delivered_at: chapter.time_zone.parse( "2013-07-05 00:25:00")}
+            delivered_at: region.time_zone.parse( "2013-07-05 00:25:00")}
     }
     it "should parse the incident" do
       import

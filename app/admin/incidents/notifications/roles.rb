@@ -4,13 +4,13 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
 
   menu parent: 'Incidents'
 
-  filter :chapter
+  filter :region
   filter :name
   filter :events
 
   index do 
     id_column
-    column :chapter_id
+    column :region_id
     column :name
     column(:members) { |r|
       safe_join(r.positions.map(&:name) + r.shifts.map(&:name), tag(:br))
@@ -25,19 +25,19 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
     f.inputs
     f.inputs do
       f.has_many :triggers, allow_destroy: true do |rf|
-        rf.input :event, collection: Incidents::Notifications::Event.for_chapter(f.object.chapter)
+        rf.input :event, collection: Incidents::Notifications::Event.for_region(f.object.region)
         rf.input :template, as: :assignable_select_admin
         rf.input :use_sms
       end
       f.has_many :role_scopes, allow_destroy: true do |sf|
         sf.input :level, as: :assignable_select_admin
         sf.input :value
-        sf.input :territory, collection: Incidents::Territory.for_chapter(f.object.chapter)
+        sf.input :territory, collection: Incidents::Territory.for_region(f.object.region)
       end
     end
     f.inputs do
-      f.input :positions, as: :check_boxes, collection: (f.object.chapter.try(:positions) || [])
-      f.input :shifts, as: :check_boxes, collection: Scheduler::Shift.for_chapter(f.object.chapter)
+      f.input :positions, as: :check_boxes, collection: (f.object.region.try(:positions) || [])
+      f.input :shifts, as: :check_boxes, collection: Scheduler::Shift.for_region(f.object.region)
     end
     f.actions
   end
@@ -103,12 +103,12 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :chapter_id, position_ids: [], shift_ids: [], triggers_attributes: [:id, :event_id, :template, :use_sms, :_destroy], role_scopes_attributes: [:id, :_destroy, :level, :value, :territory_id])]
+      [params.fetch(resource_request_name, {}).permit(:name, :region_id, position_ids: [], shift_ids: [], triggers_attributes: [:id, :event_id, :template, :use_sms, :_destroy], role_scopes_attributes: [:id, :_destroy, :level, :value, :territory_id])]
     end
 
-    after_build :set_chapter
-    def set_chapter resource
-      resource.chapter = current_chapter
+    after_build :set_region
+    def set_region resource
+      resource.region = current_region
     end
   end
 end

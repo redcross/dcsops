@@ -7,7 +7,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
   menu parent: 'Roster'
 
   index do
-    column("CID") {|p| p.chapter_id }
+    column("CID") {|p| p.region_id }
     column :name_last_first, sortable: "last_name"
     column :username
     column :last_login
@@ -26,7 +26,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     f.actions
     f.inputs do
       f.has_many :county_memberships do |county_form|
-        county_form.input :county, collection: (f.object.chapter && f.object.chapter.counties)
+        county_form.input :county, collection: (f.object.region && f.object.region.counties)
         county_form.input :persistent
         county_form.input :_destroy, as: :boolean, label: "Remove"
       end
@@ -34,7 +34,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     f.actions
     f.inputs do
       f.has_many :position_memberships do |form|
-        form.input :position, collection: (f.object.chapter && f.object.chapter.positions)
+        form.input :position, collection: (f.object.region && f.object.region.positions)
         form.input :persistent
         form.input :_destroy, as: :boolean, label: "Remove"
       end
@@ -44,7 +44,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
 
   show do |person|
     attributes_table do
-      attrs = %i(id chapter primary_county full_name email last_login vc_imported_at vc_is_active gap_primary gap_secondary gap_tertiary vc_last_login vc_last_profile_update address1 address2 city state zip lat lng rco_id)
+      attrs = %i(id region primary_county full_name email last_login vc_imported_at vc_is_active gap_primary gap_secondary gap_tertiary vc_last_login vc_last_profile_update address1 address2 city state zip lat lng rco_id)
       attrs.each do |a|
         row a
       end
@@ -101,8 +101,8 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
 
   filter :first_name
   filter :last_name
-  filter :counties_id, :as => :check_boxes, :collection => proc {current_chapter.counties}
-  filter :positions_id, as: :check_boxes, collection: proc {current_chapter.positions.sort_by{|i| [i.hidden ? 1 : 0, i.name]}}
+  filter :counties_id, :as => :check_boxes, :collection => proc {current_region.counties}
+  filter :positions_id, as: :check_boxes, collection: proc {current_region.positions.sort_by{|i| [i.hidden ? 1 : 0, i.name]}}
   filter :last_login, as: :date_range
 
   def date_ranges

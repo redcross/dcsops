@@ -3,7 +3,7 @@ class Incidents::IncidentsListController < Incidents::BaseController
   respond_to :html, :js
   defaults finder: :find_by_incident_number!, resource_class: Incidents::Incident, collection_name: :incidents
   load_and_authorize_resource :scope
-  belongs_to :scope, parent_class: Incidents::Scope, finder: :find_by_url_slug!, param: :chapter_id
+  belongs_to :scope, parent_class: Incidents::Scope, finder: :find_by_url_slug!, param: :region_id
   helper Incidents::MapHelper
   include Searchable, Paginatable
 
@@ -30,7 +30,7 @@ class Incidents::IncidentsListController < Incidents::BaseController
   def resource_path(*args)
     opts = args.extract_options!
     obj = args.first || resource
-    incidents_chapter_incident_path(obj.chapter, obj, *opts)
+    incidents_region_incident_path(obj.region, obj, *opts)
   end
   helper_method :resource_path
 

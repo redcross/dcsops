@@ -3,11 +3,11 @@ ActiveAdmin.register Incidents::ResponderMessage, as: 'Responder Message' do
 
   actions :index, :show
 
-  filter :chapter
+  filter :region
   filter :message
 
   index do
-    column("CID") { |msg| msg.chapter_id }
+    column("CID") { |msg| msg.region_id }
     column("Person") { |msg| msg.person.try :full_name }
     column(:incident) { |msg| msg.incident.try :incident_number }
     column :direction

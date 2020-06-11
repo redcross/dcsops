@@ -3,7 +3,7 @@
 FactoryGirl.define do
   factory :responder_assignment, :class => 'Incidents::ResponderAssignment' do
     association :incident
-    person { |ra| ra.association :person, chapter: ra.incident.chapter }
+    person { |ra| ra.association :person, region: ra.incident.region }
     role "responder"
   end
 end

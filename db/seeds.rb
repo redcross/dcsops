@@ -12,13 +12,13 @@ end
 
 cell_carrier = Roster::CellCarrier.create! name: 'Verizon', sms_gateway: '@vtext.com'
 
-chapter_config_role     = Roster::Role.create!(name: 'Chapter Config',     grant_name: 'chapter_config')
-chapter_dat_admin_role  = Roster::Role.create!(name: 'Chapter DAT Admin',  grant_name: 'chapter_dat_admin')
+region_config_role     = Roster::Role.create!(name: 'Region Config',     grant_name: 'region_config')
+region_dat_admin_role  = Roster::Role.create!(name: 'Region DAT Admin',  grant_name: 'region_dat_admin')
 county_dat_admin_role   = Roster::Role.create!(name: 'County DAT Admin',   grant_name: 'county_dat_admin')
 
-arcba = Roster::Chapter.create! name:'American Red Cross Bay Area', short_name:'ARCBA', url_slug: 'arcba', code: '05503', time_zone_raw: 'America/Los_Angeles', scheduler_flex_day_start: 28800, scheduler_flex_night_start: 72000
+arcba = Roster::Region.create! name:'American Red Cross Bay Area', short_name:'ARCBA', url_slug: 'arcba', code: '05503', time_zone_raw: 'America/Los_Angeles', scheduler_flex_day_start: 28800, scheduler_flex_night_start: 72000
 
-all = arcba.counties.create! name: 'Chapter', abbrev: 'CH'
+all = arcba.counties.create! name: 'Region', abbrev: 'CH'
 sf = arcba.counties.create! name: 'San Francisco', vc_regex_raw: 'San Francisco', abbrev: 'SF'
 al = arcba.counties.create! name: 'Alameda', vc_regex_raw: 'Alameda', abbrev: 'AL'
 sm = arcba.counties.create! name: 'San Mateo', vc_regex_raw: 'San Mateo', abbrev: 'SM'
@@ -26,12 +26,12 @@ so = arcba.counties.create! name: 'Solano', vc_regex_raw: 'Solano', abbrev: 'SO'
 mr = arcba.counties.create! name: 'Marin', vc_regex_raw: 'Marin', abbrev: 'MR'
 cc = arcba.counties.create! name: 'Contra Costa', vc_regex_raw: 'Contra Costa', abbrev: 'CC'
 
-chapter_config_position = arcba.positions.create!(name: 'Chapter Configuration', hidden: true).tap do |position|
-  position.role_memberships.create!(role: chapter_config_role)
+region_config_position = arcba.positions.create!(name: 'Region Configuration', hidden: true).tap do |position|
+  position.role_memberships.create!(role: region_config_role)
 end
 
-chapter_dat_admin_position = arcba.positions.create!(name: 'Chapter DAT Admin', hidden: true).tap do |position|
-  position.role_memberships.create!(role: chapter_dat_admin_role)
+region_dat_admin_position = arcba.positions.create!(name: 'Region DAT Admin', hidden: true).tap do |position|
+  position.role_memberships.create!(role: region_dat_admin_role)
 end
 
 county_dat_admin_position = nil
@@ -54,14 +54,14 @@ arcba.positions.create! name: 'ERV Driver', vc_regex_raw: '^ERV$'
 arcba.positions.create! name: 'Bay Responder Driver', vc_regex_raw: '^Bay Responder$'
 arcba.positions.create! name: 'Forklift', vc_regex_raw: '^Forklift'
 arcba.positions.create! name: 'Tow Shelter Trailer', vc_regex_raw: '^Tow Shelter Trailer$'
-arcba.positions.create! name: 'Chapter Vehicle', vc_regex_raw: '^Chapter Vehicle'
+arcba.positions.create! name: 'Region Vehicle', vc_regex_raw: '^Region Vehicle'
 arcba.positions.create! name: 'CAC Activator', vc_regex_raw: '^CAC Activator'
 arcba.positions.create! name: 'DSHR', vc_regex_raw: 'DSHR'
 
-day = Scheduler::ShiftGroup.create! chapter: arcba, name: 'Day', start_offset: 25200, end_offset: 68400, period: 'daily'
-night = Scheduler::ShiftGroup.create! chapter: arcba, name: 'Night', start_offset: 68400, end_offset: 111600, period: 'daily'
-week = Scheduler::ShiftGroup.create! chapter: arcba, name: 'Weekly', start_offset: 0, end_offset: 7.days, period: 'weekly'
-month = Scheduler::ShiftGroup.create! chapter: arcba, name: 'Monthly', start_offset: 0, end_offset: 31, period: 'monthly'
+day = Scheduler::ShiftGroup.create! region: arcba, name: 'Day', start_offset: 25200, end_offset: 68400, period: 'daily'
+night = Scheduler::ShiftGroup.create! region: arcba, name: 'Night', start_offset: 68400, end_offset: 111600, period: 'daily'
+week = Scheduler::ShiftGroup.create! region: arcba, name: 'Weekly', start_offset: 0, end_offset: 7.days, period: 'weekly'
+month = Scheduler::ShiftGroup.create! region: arcba, name: 'Monthly', start_offset: 0, end_offset: 31, period: 'monthly'
 
 shift_category = Scheduler::ShiftCategory.create!
 
@@ -81,7 +81,7 @@ shift_category = Scheduler::ShiftCategory.create!
     Scheduler::DispatchConfig.create!(
       name: county.name,
       county_id: county.id,
-      chapter_id: county.chapter_id,
+      region_id: county.region_id,
       shift_first_id: team_lead_shift.id,
       shift_second_id: backup_lead_shift.id
     )
@@ -112,12 +112,12 @@ Roster::Person.create!(
   username: test_username,
   password: test_password,
   password_confirmation: test_password,
-  chapter: arcba,
+  region: arcba,
   primary_county: sf,
   cell_phone_carrier: cell_carrier
 ).tap do |user|
-  user.position_memberships.create!(position: chapter_config_position)
-  user.position_memberships.create!(position: chapter_dat_admin_position)
+  user.position_memberships.create!(position: region_config_position)
+  user.position_memberships.create!(position: region_dat_admin_position)
   user.position_memberships.create!(position: county_dat_admin_position)
   user.counties << sf
 end
@@ -131,4 +131,4 @@ puts "Password: #{test_password}"
 
 #load "lib/vc_importer.rb"; 
 #vc = Roster::VCImporter.new; 
-#vc.import_data(Roster::Chapter.first, "/Users/jlaxson/Downloads/LMSync1.xls")
+#vc.import_data(Roster::Region.first, "/Users/jlaxson/Downloads/LMSync1.xls")

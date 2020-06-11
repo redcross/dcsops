@@ -48,8 +48,8 @@ module Incidents::RespondersHelper
     recruitment = recruitments[person.id].try(:first)
     if recruitment
       existing_recruit_status recruitment
-    elsif parent.chapter.incidents_enable_messaging && person.sms_addresses.present? && editable
-      link_to 'Send SMS', incidents_chapter_incident_responder_recruitments_path(parent.chapter, parent, person_id: person.id), method: :post, remote: true
+    elsif parent.region.incidents_enable_messaging && person.sms_addresses.present? && editable
+      link_to 'Send SMS', incidents_region_incident_responder_recruitments_path(parent.region, parent, person_id: person.id), method: :post, remote: true
     end
   end
 
@@ -124,6 +124,6 @@ module Incidents::RespondersHelper
   end
 
   def enable_messaging
-    parent.chapter.incidents_enable_messaging
+    parent.region.incidents_enable_messaging
   end
 end

@@ -3,7 +3,7 @@ ActiveAdmin.register Lookup do
 
   form do |f|
     f.inputs do
-      f.input :chapter
+      f.input :region
       f.input :scope, as: :assignable_select_admin
       f.input :name
       f.input :value

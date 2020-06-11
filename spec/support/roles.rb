@@ -5,7 +5,7 @@ module AuthorizationRoles
       person ||= @person
 
       role = Roster::Role.create! name: name, grant_name: name
-      pos = Roster::Position.create! name:name, chapter: person.chapter
+      pos = Roster::Position.create! name:name, region: person.region
       mem = Roster::RoleMembership.create! role: role, position: pos
       if scope
         scope.each do |s|

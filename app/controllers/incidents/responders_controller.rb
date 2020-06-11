@@ -1,13 +1,13 @@
 class Incidents::RespondersController < Incidents::BaseController
   inherit_resources
   respond_to :html, :json, :js
-  belongs_to :chapter, finder: :find_by_url_slug!, parent_class: Roster::Chapter do
+  belongs_to :region, finder: :find_by_url_slug!, parent_class: Roster::Region do
     belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident
   end
   defaults resource_class: Incidents::ResponderAssignment, collection_name: 'all_responder_assignments'
   custom_actions collection: [:available], resource: [:status]
 
-  load_and_authorize_resource :chapter
+  load_and_authorize_resource :region
   load_and_authorize_resource class: 'Incidents::ResponderAssignment'
   helper Incidents::MapHelper
   responders :partial
@@ -42,7 +42,7 @@ class Incidents::RespondersController < Incidents::BaseController
       resource.departed_scene!
     end
 
-    Incidents::UpdatePublisher.new(parent.chapter, parent).publish_responders
+    Incidents::UpdatePublisher.new(parent.region, parent).publish_responders
     respond_with resource, location: smart_resource_url do |fmt|
       fmt.js { render action: :update }
     end
@@ -56,7 +56,7 @@ class Incidents::RespondersController < Incidents::BaseController
   protected
 
   def notify_assignment
-    Incidents::UpdatePublisher.new(parent.chapter, parent).publish_responders
+    Incidents::UpdatePublisher.new(parent.region, parent).publish_responders
     return unless resource.was_available
 
     send_assignment_email if params[:send_assignment_email]
@@ -75,12 +75,12 @@ class Incidents::RespondersController < Incidents::BaseController
   end
 
   def sms_client
-    @sms_client ||= Incidents::SMSClient.new(parent.chapter)
+    @sms_client ||= Incidents::SMSClient.new(parent.region)
   end
 
   def build_assignment_sms_message
     incident = Incidents::IncidentPresenter.new(parent)
-    Incidents::ResponderMessage.new chapter: parent.chapter, incident: parent, person: resource.person, responder_assignment: resource,
+    Incidents::ResponderMessage.new region: parent.region, incident: parent, person: resource.person, responder_assignment: resource,
                                     message: "You are assigned to #{incident.incident_number} as #{resource.humanized_role} at #{incident.address}, #{incident.city}. View location on map: #{view_context.short_url(incident.map_url)} Reply COMMANDS for help."
   end
 
@@ -124,14 +124,14 @@ class Incidents::RespondersController < Incidents::BaseController
   end
   helper_method :recruitments
 
-  expose(:ignore_area) { parent.chapter.incidents_dispatch_console_ignore_county || (params[:ignore_area] == '1') }
+  expose(:ignore_area) { parent.region.incidents_dispatch_console_ignore_county || (params[:ignore_area] == '1') }
   expose(:dispatched) { parent.event_logs.for_type("dispatch_relayed").exists? }
   expose(:service) { 
     Incidents::RespondersService.new(parent, collection, ignore_area_scheduled: ignore_area, ignore_area_flex: ignore_area, ignore_dispatch: dispatched )
   }
 
   def scope
-    @scope ||= Incidents::Scope.for_chapter(parent.chapter_id)
+    @scope ||= Incidents::Scope.for_region(parent.region_id)
   end
   helper_method :scope
 

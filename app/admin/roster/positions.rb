@@ -2,7 +2,7 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
 
   menu parent: 'Roster'
 
-  filter :chapter
+  filter :region
   filter :name
   filter :hidden
   filter :abbrev
@@ -11,7 +11,7 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
 
   index do
     id_column
-    column :chapter_id
+    column :region_id
     column :name
     #column :vc_regex_raw
     column :hidden
@@ -26,7 +26,7 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
     attributes_table do
       row("Number of Members") { resource.people.count }
     end
-    data = resource.chapter.vc_import_data
+    data = resource.region.vc_import_data
     if data && resource.vc_regex_raw
       positions = data.positions_matching resource.vc_regex_raw
       panel "Matched VC Positions" do
@@ -44,7 +44,7 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :vc_regex_raw, :hidden, :chapter_id, :watchfire_role, 
+      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :vc_regex_raw, :hidden, :region_id, :watchfire_role, 
         :role_memberships_attributes => [:id, :_destroy, :role_id, role_scopes_attributes: [:scope, :id, :_destroy]])]
     end
   end

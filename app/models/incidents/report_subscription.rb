@@ -25,8 +25,8 @@ class Incidents::ReportSubscription < ActiveRecord::Base
     where{scope_id == scope}
   end
 
-  #def self.for_chapter chapter
-  #  joins{person}.where{person.chapter_id == chapter}
+  #def self.for_region region
+  #  joins{person}.where{person.region_id == region}
   #end
 #
   #def self.for_county county
@@ -57,7 +57,7 @@ class Incidents::ReportSubscription < ActiveRecord::Base
   end
 
   def time_zone
-    person.chapter.time_zone
+    person.region.time_zone
   end
 
   def range_to_send

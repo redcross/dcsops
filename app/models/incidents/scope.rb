@@ -1,21 +1,21 @@
 class Incidents::Scope < ActiveRecord::Base
   include Core::SerializedColumns
   include Core::ArrayAccessor
-  belongs_to :chapter, class_name: "Roster::Chapter"
-  has_and_belongs_to_many :chapters, class_name: "Roster::Chapter"
+  belongs_to :region, class_name: "Roster::Region"
+  has_and_belongs_to_many :regions, class_name: "Roster::Region"
   has_many :report_subscriptions, class_name: 'Incidents::ReportSubscription'
 
-  def self.for_chapter chapter
-    where{chapter_id == chapter}.first!
+  def self.for_region region
+    where{region_id == region}.first!
   end
 
-  def self.including_chapter chapter_ids
-    joins{chapters}.where{chapters.id.in chapter_ids}
+  def self.including_region region_ids
+    joins{regions}.where{regions.id.in region_ids}
   end
 
   def incidents
-    chapters = chapter_ids.blank? ? [chapter_id] : chapter_ids
-    Incidents::Incident.for_chapter(chapters)
+    regions = region_ids.blank? ? [region_id] : region_ids
+    Incidents::Incident.for_region(regions)
   end
 
   def to_param
@@ -23,7 +23,7 @@ class Incidents::Scope < ActiveRecord::Base
   end
 
   def editable?
-    chapter_ids.blank?
+    region_ids.blank?
   end
 
   serialized_accessor :config, :incidents_map_center_lat, :decimal
@@ -51,8 +51,8 @@ class Incidents::Scope < ActiveRecord::Base
     @_tz ||= ActiveSupport::TimeZone[self.time_zone_raw]
   end
 
-  def all_chapters
-    chapter_id ? [chapter] : chapters
+  def all_regions
+    region_id ? [region] : regions
   end
 
   def call_logs

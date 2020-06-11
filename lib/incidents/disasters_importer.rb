@@ -1,10 +1,10 @@
 module Incidents
   class DisastersImporter
 
-    def self.get_disasters chapter
-      Core::JobLog.capture(self.to_s, chapter) do |logger, counter|
+    def self.get_disasters region
+      Core::JobLog.capture(self.to_s, region) do |logger, counter|
         logger.level = 0
-        query = Vc::DisasterManagement.new chapter.vc_username, chapter.vc_password, logger
+        query = Vc::DisasterManagement.new region.vc_username, region.vc_password, logger
         
         disasters = query.get_active_disasters
         self.new.import_national disasters, counter

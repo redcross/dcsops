@@ -3,13 +3,13 @@ ActiveAdmin.register Scheduler::ShiftGroup, as: 'Shift Group' do
 
   actions :all, except: [:destroy]
 
-  filter :chapter
+  filter :region
   filter :name
   filter :period
 
   index do
     id_column
-    column :chapter
+    column :region
     column :name
     column :period
     column :start_offset
@@ -19,7 +19,7 @@ ActiveAdmin.register Scheduler::ShiftGroup, as: 'Shift Group' do
 
   form do |f|
     f.inputs do
-      f.input :chapter
+      f.input :region
       f.input :name
       f.input :period, as: :assignable_select_admin
       f.input :start_offset, as: :time_offset, week: f.object.period == 'weekly'
@@ -40,7 +40,7 @@ ActiveAdmin.register Scheduler::ShiftGroup, as: 'Shift Group' do
 
   controller do
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :start_offset, :end_offset, :chapter_id, :period, :active_sunday, :active_monday, :active_tuesday, :active_wednesday, :active_thursday, :active_friday, :active_saturday)]
+      [params.fetch(resource_request_name, {}).permit(:name, :start_offset, :end_offset, :region_id, :period, :active_sunday, :active_monday, :active_tuesday, :active_wednesday, :active_thursday, :active_friday, :active_saturday)]
     end
   end
 end

@@ -8,7 +8,7 @@ class Incidents::ResponsesController < Incidents::BaseController
 
   expose(:responders) {
     authorize! :show, :responders
-    apply_scopes(Incidents::ResponderAssignment).for_chapter(current_chapter)
+    apply_scopes(Incidents::ResponderAssignment).for_region(current_region)
                                                 .includes{[incident, person]}
                                                 .order{incident.date.desc}
                                                 .group_by(&:person)

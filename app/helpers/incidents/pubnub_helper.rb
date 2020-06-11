@@ -6,17 +6,17 @@ module Incidents::PubnubHelper
     JS
   end
 
-  def chapter_pubnub_setup chapter=nil
-    chapter ||= current_chapter
-    pubnub_setup chapter
+  def region_pubnub_setup region=nil
+    region ||= current_region
+    pubnub_setup region
   end
 
   def incidents_pubnub_setup incident=nil
     incident ||= resource
-    pubnub_setup incident.chapter, incident
+    pubnub_setup incident.region, incident
   end
 
-  def pubnub_setup chapter, incident=nil
+  def pubnub_setup region, incident=nil
     return "" unless PubnubClient.subscribe_key.present? 
 
     incident_setup = "window.incidentInstantController.setIncident(#{incident.id.to_json});" if incident
@@ -25,7 +25,7 @@ module Incidents::PubnubHelper
       $(function() {
         if (window.pubnub) {
           window.incidentInstantController = new IncidentInstantController(window.pubnub, "incident-updates");
-          window.incidentInstantController.setChapter(#{chapter.id.to_json})
+          window.incidentInstantController.setRegion(#{region.id.to_json})
           #{incident_setup}
         }
       })

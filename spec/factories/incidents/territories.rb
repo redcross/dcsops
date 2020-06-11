@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :territory, :class => 'Incidents::Territory' do
-    association :chapter
+    association :region
     name 'My Territory'
     non_disaster_number{Faker::PhoneNumber.phone_number}
     dispatch_number{Faker::PhoneNumber.phone_number}

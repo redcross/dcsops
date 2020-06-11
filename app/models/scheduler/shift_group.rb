@@ -1,5 +1,5 @@
 class Scheduler::ShiftGroup < ActiveRecord::Base
-  belongs_to :chapter, class_name: 'Roster::Chapter'
+  belongs_to :region, class_name: 'Roster::Region'
   has_and_belongs_to_many :shifts, -> {order(:ordinal)}, class_name: 'Scheduler::Shift'
 
   validates :start_offset, :end_offset, presence: true, numericality: true
@@ -11,7 +11,7 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
   attr_accessor :start_date
 
   def display_name
-    "#{chapter_id} - #{name}"
+    "#{region_id} - #{name}"
   end
 
   def next_period_date
@@ -24,12 +24,12 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
 
   def next_group
     offset = self.start_offset
-    group = self.class.where{(start_offset > offset) & (chapter_id == my{self.chapter_id}) & (period == self.period)}.order{start_offset}.first
+    group = self.class.where{(start_offset > offset) & (region_id == my{self.region_id}) & (period == self.period)}.order{start_offset}.first
     if group
       group.start_date = self.start_date
       return group
     end
-    group = self.class.where{(chapter_id == my{self.chapter_id})}.order{start_offset}.first
+    group = self.class.where{(region_id == my{self.region_id})}.order{start_offset}.first
     if group
       group.start_date = self.next_period_date if self.start_date
       group
@@ -38,27 +38,27 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
     end
   end
 
-  def self.for_chapter(chapter)
-    where{chapter_id == chapter}
+  def self.for_region(region)
+    where{region_id == region}
   end
 
   def self.daily
     where{period == 'daily'}
   end
 
-  def self.first_group(chapter, current_time=Time.zone.now)
-    self.current_groups_for_chapter(chapter, current_time, daily).first || begin
+  def self.first_group(region, current_time=Time.zone.now)
+    self.current_groups_for_region(region, current_time, daily).first || begin
 
-      groups = daily.for_chapter(chapter).order{start_offset.asc}.to_a
+      groups = daily.for_region(region).order{start_offset.asc}.to_a
 
       groups.detect{start_offset <= current_time.seconds_since_midnight} || groups.first
     end
   end
   # Returns a date, group pairing of the count upcoming groups
-  def self.next_groups(chapter, current_time=Time.zone.now)
-    groups = for_chapter(chapter).order{start_offset}.to_a
+  def self.next_groups(region, current_time=Time.zone.now)
+    groups = for_region(region).order{start_offset}.to_a
 
-    current_time = current_time.in_time_zone(chapter.time_zone)
+    current_time = current_time.in_time_zone(region.time_zone)
     since_midnight = current_time.seconds_since_midnight
 
     groups.each do |group|
@@ -75,7 +75,7 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
 
   def unused
 
-    current_group = first_group(chapter, current_time)
+    current_group = first_group(region, current_time)
 
     return [] unless current_group
 
@@ -87,10 +87,10 @@ class Scheduler::ShiftGroup < ActiveRecord::Base
     ret
   end
 
-  def self.current_groups_for_chapter(chapter, current_time=Time.zone.now, scope=all)
-    now = current_time.in_time_zone(chapter.time_zone)
+  def self.current_groups_for_region(region, current_time=Time.zone.now, scope=all)
+    now = current_time.in_time_zone(region.time_zone)
 
-    for_chapter(chapter).merge(scope).select{|group|
+    for_region(region).merge(scope).select{|group|
       group.check_offsets(now)
     }
   end

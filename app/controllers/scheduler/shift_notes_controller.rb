@@ -18,7 +18,7 @@ class Scheduler::ShiftNotesController < Scheduler::BaseController
   end
 
   def end_of_association_chain
-    Scheduler::ShiftAssignment.joins{person}.where{person.chapter_id==my{current_chapter}}.readonly(false)
+    Scheduler::ShiftAssignment.joins{person}.where{person.region_id==my{current_region}}.readonly(false)
   end
 
   def collection

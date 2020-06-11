@@ -137,7 +137,7 @@ class window.DispatchIntakeController
     $('.dispatch-region-name').text(region)
     $('.dispatch-territory-name').text(name)
 
-    @setFieldVal 'chapter_id', territory.chapter_id
+    @setFieldVal 'region_id', territory.region_id
     @setFieldVal 'territory_id', territory.id
 
   getTerritory: (data, callback) ->

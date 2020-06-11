@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :event, :class => 'Incidents::Notifications::Event' do
-    chapter nil
+    region nil
     name "MyString"
     description "MyString"
     event_type "event"

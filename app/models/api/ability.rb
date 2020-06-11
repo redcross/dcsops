@@ -12,11 +12,11 @@ class Api::Ability
 
   def for_person(person)
     can :read, Roster::Person
-    can :read, Roster::Chapter, id: person.chapter_id
+    can :read, Roster::Region, id: person.region_id
   end
 
   def for_client(client)
-    can :read, Roster::Chapter
+    can :read, Roster::Region
   end
 
 end

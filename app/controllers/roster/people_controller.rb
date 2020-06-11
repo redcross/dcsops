@@ -6,7 +6,7 @@ class Roster::PeopleController < Roster::BaseController
   include NamedQuerySupport
   include Searchable
 
-  has_scope :for_chapter
+  has_scope :for_region
   has_scope :name_contains
   has_scope :in_county
   has_scope :with_position, type: :array
@@ -18,9 +18,9 @@ class Roster::PeopleController < Roster::BaseController
   load_and_authorize_resource except: :index
   def index
     unless named_query
-      params[:for_chapter] ||= current_chapter.id
-      chapter = Roster::Chapter.find(params[:for_chapter])
-      authorize! :search_people, chapter
+      params[:for_region] ||= current_region.id
+      region = Roster::Region.find(params[:for_region])
+      authorize! :search_people, region
     end
     index!
   end

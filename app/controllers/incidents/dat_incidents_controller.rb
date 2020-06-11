@@ -2,11 +2,11 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   inherit_resources
   respond_to :html, :json
   
-  belongs_to :chapter, finder: :find_by_url_slug!, parent_class: Roster::Chapter
+  belongs_to :region, finder: :find_by_url_slug!, parent_class: Roster::Region
   belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident
   
   defaults singleton: true, route_instance_name: :dat
-  load_and_authorize_resource :chapter
+  load_and_authorize_resource :region
   load_and_authorize_resource :dat_incident, class: Incidents::DatIncident
  
 
@@ -24,7 +24,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     build_resource
 
     begin
-      idat_db = current_chapter.idat_database
+      idat_db = current_region.idat_database
       if idat_db.present?
         importer = Idat::IncidentImporter.new(idat_db)
         importer.get_incident(params[:incident_id], resource)
@@ -74,7 +74,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
       Incidents::Notifications::Notification.create_for_event resource.incident, 'incident_report_filed', is_new: is_new
       Delayed::Job.enqueue Incidents::UpdateDrivingDistanceJob::ForIncident.new(resource.incident_id)
     end
-    Incidents::UpdatePublisher.new(parent.chapter, parent).publish_details
+    Incidents::UpdatePublisher.new(parent.region, parent).publish_details
   end
 
   helper_method :form_url
@@ -82,7 +82,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     resource_path
   end
 
-  expose(:scheduler_service) { Scheduler::SchedulerService.new(@chapter) }
+  expose(:scheduler_service) { Scheduler::SchedulerService.new(@region) }
 
   def update_resource(obj, attrs)
     super(obj, attrs).tap {|success|
@@ -130,7 +130,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
   #def end_of_association_chain
   #  Incidents::Incident.includes{[dat_incident.completed_by, dat_incident.vehicles, responder_assignments.person]}
-  #                     .for_chapter(current_chapter)
+  #                     .for_region(current_region)
   #                     .where{(incident_number == my{params[:incident_id]})}
   #                     .first!
   #end
@@ -189,7 +189,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
     end
 
     def scope
-      @scope ||= Incidents::Scope.for_chapter(parent.chapter_id)
+      @scope ||= Incidents::Scope.for_region(parent.region_id)
     end
     helper_method :scope
 end

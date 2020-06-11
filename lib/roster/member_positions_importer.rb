@@ -17,11 +17,11 @@ class Roster::MemberPositionsImporter < ImportParser
   POSITION_ATTR_NAMES = [:county_name, :position_name, :position_start, :position_end, :second_lang, :third_lang, :is_primary]
 
   def positions
-    @_positions ||= @chapter.positions.select(&:vc_regex)
+    @_positions ||= @region.positions.select(&:vc_regex)
   end
 
   def counties
-    @_counties ||= @chapter.counties.select(&:vc_regex)
+    @_counties ||= @region.counties.select(&:vc_regex)
   end
 
 
@@ -41,9 +41,9 @@ class Roster::MemberPositionsImporter < ImportParser
 
       @num_people += 1
 
-      # Adding chapter: to the attrs merge should prevent the validates_presence_of: chapter from doing a db query
+      # Adding region: to the attrs merge should prevent the validates_presence_of: region from doing a db query
       @person.attributes = attrs
-      @person.chapter = @chapter
+      @person.region = @region
 
       filter @person
 
@@ -69,10 +69,10 @@ class Roster::MemberPositionsImporter < ImportParser
   def after_import
     import_memberships @counties_matcher, Roster::CountyMembership, :county_id
     import_memberships @positions_matcher, Roster::PositionMembership, :position_id
-    Roster::VcImportData.find_or_initialize_by(chapter_id: @chapter.id).update_attributes position_data: @position_names, chapter_id: @chapter.id
+    Roster::VcImportData.find_or_initialize_by(region_id: @region.id).update_attributes position_data: @position_names, region_id: @region.id
 
     Roster::Person.where(vc_id: @vc_ids_seen.to_a).update_all :vc_imported_at => Time.now
-    deactivated = Roster::Person.for_chapter(@chapter).where{vc_id.not_in(my{@vc_ids_seen.to_a})}.update_all(:vc_is_active => false) if @vc_ids_seen.present?
+    deactivated = Roster::Person.for_region(@region).where{vc_id.not_in(my{@vc_ids_seen.to_a})}.update_all(:vc_is_active => false) if @vc_ids_seen.present?
     logger.info "Processed #{@num_people} active users and #{@num_positions} filtered positions"
     logger.info "Deactivated #{deactivated} accounts not received in update"
     logger.info "Filter hits: #{@filter_hits.inspect}"
@@ -81,7 +81,7 @@ class Roster::MemberPositionsImporter < ImportParser
 
   def import_memberships matcher, klass, key
     # Filter out existing counties in the database before we import.
-    matcher.remove_duplicates klass.for_chapter(@chapter).pluck(:person_id, key)
+    matcher.remove_duplicates klass.for_region(@region).pluck(:person_id, key)
     klass.import [:person_id, key], matcher.matches.to_a
   end
 
@@ -147,8 +147,8 @@ class Roster::MemberPositionsImporter < ImportParser
     return @_filter_regex if defined?(@_filter_regex)
     if ENV['POSITIONS_FILTER']
       @_filter_regex = Regexp.new(ENV['POSITIONS_FILTER'])
-    elsif @chapter.vc_position_filter.present?
-      @_filter_regex = Regexp.new(@chapter.vc_position_filter)
+    elsif @region.vc_position_filter.present?
+      @_filter_regex = Regexp.new(@region.vc_position_filter)
     end
   end
 
@@ -175,12 +175,12 @@ class Roster::MemberPositionsImporter < ImportParser
   end
 
   def is_importable_status(status_name)
-    is_active_status(status_name) || (@chapter.roster_import_prospective_members && (status_name == 'Prospective Volunteer'))
+    is_active_status(status_name) || (@region.roster_import_prospective_members && (status_name == 'Prospective Volunteer'))
   end
 
   def preload_identities(identities)
     ids = identities.group_by{|i| i[:identity][:vc_id].to_i }
-    people = Roster::Person.for_chapter(@chapter).where(vc_id: ids.keys).to_a
+    people = Roster::Person.for_region(@region).where(vc_id: ids.keys).to_a
     people.each do |person|
       ids[person.vc_id].first[:object] = person
     end

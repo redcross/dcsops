@@ -4,7 +4,7 @@ class Roster::ContactDetailsMailer < ActionMailer::Base
 
   def contact_details person
     @person = person
-    @chapter = person.chapter
+    @region = person.region
 
     mail to: format_address(person), subject: "DCSOps Welcome and Contact Info Confirmation"
   end

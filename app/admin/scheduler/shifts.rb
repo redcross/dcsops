@@ -5,17 +5,17 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
 
   filter :shift_group
   filter :county
-  filter :chapter
+  filter :region
   filter :name
   filter :abbrev
   filter :dispatch_role
   filter :shift_ends
   
   scope :all do |shifts|
-    shifts.includes([:shift_groups, {:county => :chapter}, :positions]).order(:county_id, :ordinal)
+    shifts.includes([:shift_groups, {:county => :region}, :positions]).order(:county_id, :ordinal)
   end
   scope :active, default: true do |shifts|
-    shifts.where{(shift_ends == nil) | (shift_ends >= Date.current)}.includes([:shift_groups, {:county => :chapter}, :positions]).order(:county_id, :ordinal)
+    shifts.where{(shift_ends == nil) | (shift_ends >= Date.current)}.includes([:shift_groups, {:county => :region}, :positions]).order(:county_id, :ordinal)
   end
 
   index do
@@ -35,28 +35,28 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   form do |f|
     f.inputs 'Details'
     f.inputs 'Shift Groups' do
-      f.input :shift_groups, as: :check_boxes, collection: Scheduler::ShiftGroup.for_chapter(f.object.county.try(:chapter))
+      f.input :shift_groups, as: :check_boxes, collection: Scheduler::ShiftGroup.for_region(f.object.county.try(:region))
     end
     f.inputs 'Position and County' do
-      f.input :positions, as: :check_boxes, collection: f.object.county.try(:chapter).try(:positions)
+      f.input :positions, as: :check_boxes, collection: f.object.county.try(:region).try(:positions)
       f.actions
     end
   end
 
   batch_action :reschedule, if: proc{AdminAbility.new(current_user).can? :create, Scheduler::Shift} do |ids|
-    shifts = Scheduler::Shift.includes{chapter}.where{id.in ids}
+    shifts = Scheduler::Shift.includes{region}.where{id.in ids}
 
-    chapter_ids = shifts.map{|sh| sh.chapter.id}
+    region_ids = shifts.map{|sh| sh.region.id}
 
-    unless chapter_ids.uniq.size == 1
-      flash[:error] = "Shifts to reschedule must all be from one chapter."
+    unless region_ids.uniq.size == 1
+      flash[:error] = "Shifts to reschedule must all be from one region."
       redirect_to :back and next
     end
 
-    chapter_id = chapter_ids.first
+    region_id = region_ids.first
 
     params[:shifts] = shifts
-    params[:shift_groups] = Scheduler::ShiftGroup.for_chapter(chapter_id)
+    params[:shift_groups] = Scheduler::ShiftGroup.for_region(region_id)
 
     render action: :reschedule
   end

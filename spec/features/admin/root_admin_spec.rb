@@ -6,7 +6,7 @@ describe "Root Admin Page", :type => :feature do
     visit "/"
 
     page.should_not have_text("Admin")
-    grant_role! :chapter_config
+    grant_role! :region_config
 
     visit "/"
     click_on "Admin"

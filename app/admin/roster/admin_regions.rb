@@ -1,4 +1,4 @@
-ActiveAdmin.register Roster::Chapter, as: 'Region Admin' do
+ActiveAdmin.register Roster::Region, as: 'Region Admin' do
   menu parent: 'Roster', if: ->{authorized? :read, AdminAbility::RegionAdminProxy}, label: 'Region Admin'
 
   actions :index, :show, :edit, :update
@@ -7,15 +7,15 @@ ActiveAdmin.register Roster::Chapter, as: 'Region Admin' do
 
   controller do
     def resource
-      @chapter ||= begin
-        chapter = end_of_association_chain.find_by_slug params[:id]
-        authorize_resource! chapter
-        chapter
+      @region ||= begin
+        region = end_of_association_chain.find_by_slug params[:id]
+        authorize_resource! region
+        region
       end
     end
 
     def scoped_collection
-      Roster::Chapter.where{id == my{current_user}.chapter_id}
+      Roster::Region.where{id == my{current_user}.region_id}
     end
 
     def apply_authorization_scope scope
@@ -23,7 +23,7 @@ ActiveAdmin.register Roster::Chapter, as: 'Region Admin' do
     end
 
     def authorized? action, subject=nil
-      subject = AdminAbility::RegionAdminProxy.new(subject) if Roster::Chapter === subject || Roster::Chapter == subject
+      subject = AdminAbility::RegionAdminProxy.new(subject) if Roster::Region === subject || Roster::Region == subject
       super(action, subject)
     end
 

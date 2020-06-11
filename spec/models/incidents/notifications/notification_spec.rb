@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Incidents::Notifications::Notification, :type => :model do
-  let(:chapter) { FactoryGirl.build_stubbed :chapter }
+  let(:region) { FactoryGirl.build_stubbed :region }
   let(:event) { FactoryGirl.build_stubbed :event }
   let(:incident) { FactoryGirl.build_stubbed :incident }
   let(:person) { FactoryGirl.build_stubbed :person }
@@ -12,7 +12,7 @@ describe Incidents::Notifications::Notification, :type => :model do
 
   describe '#roles_for_event' do
     let(:trigger) { FactoryGirl.build_stubbed :trigger, role: role }
-    let(:role) { FactoryGirl.build_stubbed :notification_role, chapter: chapter }
+    let(:role) { FactoryGirl.build_stubbed :notification_role, region: region }
 
     it "Should return hash of information" do
       notification.stub triggers_for_event: [trigger]
@@ -30,7 +30,7 @@ describe Incidents::Notifications::Notification, :type => :model do
   end
 
   describe '#match_scope' do
-    let(:role) { FactoryGirl.build_stubbed :notification_role, chapter: chapter }
+    let(:role) { FactoryGirl.build_stubbed :notification_role, region: region }
     let(:scope) {mock_model Incidents::Notifications::RoleScope}
     it "is true when role has no scopes" do
       expect(notification.match_scope(role)).to be_truthy
@@ -101,9 +101,9 @@ describe Incidents::Notifications::Notification, :type => :model do
   describe '#create', type: :mailer do
     it "works completely" do
       person = FactoryGirl.create :person
-      role = FactoryGirl.create :notification_role, positions: [person.positions.first], chapter: person.chapter
-      event = FactoryGirl.create :event, chapter: person.chapter, event: 'new_incident'
-      incident = FactoryGirl.create :incident, chapter: person.chapter
+      role = FactoryGirl.create :notification_role, positions: [person.positions.first], region: person.region
+      event = FactoryGirl.create :event, region: person.region, event: 'new_incident'
+      incident = FactoryGirl.create :incident, region: person.region
       trigger = FactoryGirl.create :trigger, role: role, event: event, template: 'notification'
 
       Incidents::Notifications::Notification.create incident, event, {message: message}

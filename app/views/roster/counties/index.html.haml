@@ -5,7 +5,7 @@
   %thead
     %tr
       %th= model_class.human_attribute_name(:id)
-      %th= model_class.human_attribute_name(:chapter_id)
+      %th= model_class.human_attribute_name(:region_id)
       %th= model_class.human_attribute_name(:name)
       %th= model_class.human_attribute_name(:county_code)
       %th= model_class.human_attribute_name(:fips_code)
@@ -17,7 +17,7 @@
     - collection.each do |county|
       %tr
         %td= link_to county.id, roster_county_path(county)
-        %td= county.chapter_id
+        %td= county.region_id
         %td= county.name
         %td= county.county_code
         %td= county.fips_code

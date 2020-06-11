@@ -41,7 +41,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
   private
 
   def load_calendar(start_date, end_date)
-    @calendar = Scheduler::Calendar.new(current_chapter, start_date, end_date, person: person, filter: show_shifts, counties: show_counties, categories: show_categories)
+    @calendar = Scheduler::Calendar.new(current_region, start_date, end_date, person: person, filter: show_shifts, counties: show_counties, categories: show_categories)
   end    
 
   helper_method :editable?
@@ -82,7 +82,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
     elsif params[:person_id].blank?
       nil
     else
-      Roster::Person.for_chapter(current_chapter).includes(:counties).where(id: params[:person_id]).first!
+      Roster::Person.for_region(current_region).includes(:counties).where(id: params[:person_id]).first!
     end
 
     return @_person
@@ -102,7 +102,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
     @_show_categories ||= if params[:categories].present?
       Array(params[:categories]).select(&:present?).map(&:to_i)
     else
-      Scheduler::ShiftCategory.for_chapter(current_chapter).where{show == true}.ids
+      Scheduler::ShiftCategory.for_region(current_region).where{show == true}.ids
     end
   end
 

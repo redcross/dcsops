@@ -1,9 +1,9 @@
 class Roster::County < ActiveRecord::Base
-  belongs_to :chapter
+  belongs_to :region
   has_many :county_memberships
   has_many :people, through: :county_memberships, class_name: 'Roster::Person'
 
-  validates_presence_of :chapter
+  validates_presence_of :region
 
   def self.enabled
     where(enabled: true)
@@ -14,6 +14,6 @@ class Roster::County < ActiveRecord::Base
   end
 
   def display_name
-    "#{chapter.short_name} - #{name}"
+    "#{region.short_name} - #{name}"
   end
 end

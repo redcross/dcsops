@@ -7,7 +7,7 @@ class Incidents::ResponderRecruitmentsController < Incidents::EditPanelControlle
   def create_resource resource
     if super(resource)
       send_message resource
-      Incidents::UpdatePublisher.new(incident.chapter, incident).publish_recruitment
+      Incidents::UpdatePublisher.new(incident.region, incident).publish_recruitment
       true
     else
       false
@@ -20,9 +20,9 @@ class Incidents::ResponderRecruitmentsController < Incidents::EditPanelControlle
   helper_method :all_recipients
 
   def send_message resource
-    message = resource.build_outbound_message message: recruitment_message, chapter: incident.chapter
+    message = resource.build_outbound_message message: recruitment_message, region: incident.region
 
-    client = Incidents::SMSClient.new(incident.chapter)
+    client = Incidents::SMSClient.new(incident.region)
     client.send_message(message)
   end
 
@@ -43,7 +43,7 @@ class Incidents::ResponderRecruitmentsController < Incidents::EditPanelControlle
   helper_method :incident
 
   def after_create_url
-    incidents_chapter_incident_responders_path(parent, incident)
+    incidents_region_incident_responders_path(parent, incident)
   end
 
 end

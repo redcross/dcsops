@@ -1,19 +1,19 @@
 require 'spec_helper'
 
 describe Scheduler::SendRemindersJob do
-  let(:chapter) { mock_model Roster::Chapter, time_zone: Time.zone, id: SecureRandom.random_number }
-  let(:person) { mock_model Roster::Person, chapter: chapter }
-  let(:job) { Scheduler::SendRemindersJob.new(chapter.id).tap{|j| allow(j).to receive(:chapter).and_return(chapter) } }
+  let(:region) { mock_model Roster::Region, time_zone: Time.zone, id: SecureRandom.random_number }
+  let(:person) { mock_model Roster::Person, region: region }
+  let(:job) { Scheduler::SendRemindersJob.new(region.id).tap{|j| allow(j).to receive(:region).and_return(region) } }
 
   after :each do
     ActionMailer::Base.deliveries.clear
   end
 
-  it 'enqueues for active chapters' do
-    expect(Roster::Chapter).to receive(:all).and_return([chapter])
+  it 'enqueues for active regions' do
+    expect(Roster::Region).to receive(:all).and_return([region])
     job = double(:job)
     expect(job).to receive(:perform)
-    expect(Scheduler::SendRemindersJob).to receive(:new).with(chapter.id).and_return(job)
+    expect(Scheduler::SendRemindersJob).to receive(:new).with(region.id).and_return(job)
     Scheduler::SendRemindersJob.enqueue
   end
 
@@ -51,7 +51,7 @@ describe Scheduler::SendRemindersJob do
       it "should send a #{method} reminder" do
         expect(Scheduler::NotificationSetting).to receive("needs_daily_#{method}").and_return([@setting])
         expect(Scheduler::RemindersMailer).to receive("daily_#{method}_reminder".to_sym).and_return(double :deliver => true)
-        expect(@setting).to receive(:update_attribute).with("last_all_shifts_#{method}", chapter.time_zone.today)
+        expect(@setting).to receive(:update_attribute).with("last_all_shifts_#{method}", region.time_zone.today)
         job.send_daily method
       end
     end
@@ -72,7 +72,7 @@ describe Scheduler::SendRemindersJob do
 
     it "works all the way through for daily reminders" do
       person = FactoryGirl.create :person
-      chapter = person.chapter
+      region = person.region
       person.update_attributes work_phone_carrier: FactoryGirl.create(:cell_carrier)
       setting = Scheduler::NotificationSetting.create person: person, email_all_shifts_at: 0, sms_all_shifts_at: 0
 
@@ -81,8 +81,8 @@ describe Scheduler::SendRemindersJob do
       expect(ActionMailer::Base.deliveries.size).to eq(2)
 
       setting.reload
-      expect(setting.last_all_shifts_email).to eq(chapter.time_zone.today)
-      expect(setting.last_all_shifts_sms).to eq(chapter.time_zone.today)
+      expect(setting.last_all_shifts_email).to eq(region.time_zone.today)
+      expect(setting.last_all_shifts_sms).to eq(region.time_zone.today)
     end
   end
 end

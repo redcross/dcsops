@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Scheduler::ShiftAssignmentsController, :type => :controller do
   before(:each) do
     @person = FactoryGirl.create :person
-    @chapter = @person.chapter
-    @person2 = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties, positions: @person.positions
+    @region = @person.region
+    @person2 = FactoryGirl.create :person, region: @region, counties: @person.counties, positions: @person.positions
     @shift = FactoryGirl.create :shift, county: @person.counties.first, positions: @person.positions
     @shift_group = @shift.shift_groups.first
 
@@ -59,7 +59,7 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
 
       it 'should show all shifts I am a county admin for' do
         (0..2).map { |i| 
-          pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties
+          pers = FactoryGirl.create :person, region: @region, counties: @person.counties
           shift = FactoryGirl.create :shift, shift_groups: [@shift_group], county: pers.counties.first, positions: pers.positions
           FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+6+i), shift: shift, shift_group: @shift_group
         }
@@ -75,7 +75,7 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
       it "should merge other shifts into the same event" do
         county = @person.counties.first
         (1..3).map { |i| 
-          pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties
+          pers = FactoryGirl.create :person, region: @region, counties: @person.counties
           shift = FactoryGirl.create :shift, shift_groups: [@shift_group], county: pers.counties.first, positions: pers.positions
           FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+i), shift: shift, shift_group: @shift_group
         }

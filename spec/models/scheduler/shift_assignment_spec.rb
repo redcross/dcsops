@@ -2,17 +2,17 @@ require 'spec_helper'
 
 describe Scheduler::ShiftAssignment, :type => :model do
 
-  let(:chapter) { FactoryGirl.create :chapter }
-  let(:group) { FactoryGirl.create :shift_group, chapter: chapter, start_offset: 10.hours, end_offset: 22.hours }
-  let(:counties) { (1..2).map{|i| FactoryGirl.create :county, name: "County #{i}", chapter: chapter} }
-  let(:positions) { (1..2).map{|i| FactoryGirl.create :position, name: "Position #{i}", chapter: chapter} }
+  let(:region) { FactoryGirl.create :region }
+  let(:group) { FactoryGirl.create :shift_group, region: region, start_offset: 10.hours, end_offset: 22.hours }
+  let(:counties) { (1..2).map{|i| FactoryGirl.create :county, name: "County #{i}", region: region} }
+  let(:positions) { (1..2).map{|i| FactoryGirl.create :position, name: "Position #{i}", region: region} }
 
   let(:first_shift) { FactoryGirl.create :shift, shift_groups: [group], name: "Shift 1", positions: [positions.first], county: counties.first }
   let(:second_shift) { FactoryGirl.create :shift, shift_groups: [group], name: "Shift 2", positions: [positions.last], county: counties.last }
 
-  let(:person) { FactoryGirl.create :person, chapter: chapter, positions: [positions.first], counties: [counties.first] }
+  let(:person) { FactoryGirl.create :person, region: region, positions: [positions.first], counties: [counties.first] }
 
-  let(:zone) {chapter.time_zone}
+  let(:zone) {region.time_zone}
 
   it "should be createable and destroyable" do
     item = Scheduler::ShiftAssignment.create! person: person, shift: first_shift, date: Date.today, shift_group: group
@@ -55,7 +55,7 @@ describe Scheduler::ShiftAssignment, :type => :model do
     end
 
     it "should allow a person to take the same shift in different groups in the same day" do
-      second_group = FactoryGirl.create :shift_group, chapter: group.chapter
+      second_group = FactoryGirl.create :shift_group, region: group.region
       first_shift.shift_groups += [second_group]
       first_shift.save
 
@@ -81,7 +81,7 @@ describe Scheduler::ShiftAssignment, :type => :model do
   end
 
   it "should allow a person to have multiple shifts in a day" do
-    second_group = FactoryGirl.create :shift_group, name: "Group 2", chapter: group.chapter
+    second_group = FactoryGirl.create :shift_group, name: "Group 2", region: group.region
     second_shift = FactoryGirl.create :shift, county: person.counties.first, positions: [positions.first], shift_groups: [second_group]
 
     item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: Date.today, shift_group: group
@@ -92,7 +92,7 @@ describe Scheduler::ShiftAssignment, :type => :model do
   end
 
   it "should validate that the shift is not full with max_signups=1" do
-    person2 = FactoryGirl.create :person, chapter: chapter,  positions: [positions.first], counties: [counties.first]
+    person2 = FactoryGirl.create :person, region: region,  positions: [positions.first], counties: [counties.first]
 
     item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: Date.today, shift_group: group
     expect(item).to be_valid
@@ -102,8 +102,8 @@ describe Scheduler::ShiftAssignment, :type => :model do
   end
 
   it "should validate that the shift is not full with max_signups=2" do
-    person2 = FactoryGirl.create :person, chapter: chapter,  positions: [positions.first], counties: [counties.first]
-    person3 = FactoryGirl.create :person, chapter: chapter,  positions: [positions.first], counties: [counties.first]
+    person2 = FactoryGirl.create :person, region: region,  positions: [positions.first], counties: [counties.first]
+    person3 = FactoryGirl.create :person, region: region,  positions: [positions.first], counties: [counties.first]
 
     first_shift.tap{|s| s.max_signups = 2; s.save}
 
@@ -118,8 +118,8 @@ describe Scheduler::ShiftAssignment, :type => :model do
   end
 
   it "should validate that the shift is not full with max_signups=0" do
-    person2 = FactoryGirl.create :person, chapter: chapter,  positions: [positions.first], counties: [counties.first]
-    person3 = FactoryGirl.create :person, chapter: chapter,  positions: [positions.first], counties: [counties.first]
+    person2 = FactoryGirl.create :person, region: region,  positions: [positions.first], counties: [counties.first]
+    person3 = FactoryGirl.create :person, region: region,  positions: [positions.first], counties: [counties.first]
 
     first_shift.tap{|s| s.max_signups = 0; s.save}
 
@@ -185,17 +185,17 @@ describe Scheduler::ShiftAssignment, :type => :model do
       end
 
       it "should want to send an invite" do
-        expect(Scheduler::ShiftAssignment.needs_email_invite(chapter)).to match_array([@item])
+        expect(Scheduler::ShiftAssignment.needs_email_invite(region)).to match_array([@item])
       end
 
       it "should not want to send an invite if the invite has been sent" do
         @item.update_attribute :email_invite_sent, true
-        expect(Scheduler::ShiftAssignment.needs_email_invite(chapter)).to match_array([])
+        expect(Scheduler::ShiftAssignment.needs_email_invite(region)).to match_array([])
       end
 
       it "should not send the invite if the shift has already passed" do
         Delorean.time_travel_to "2 days from now"
-        expect(Scheduler::ShiftAssignment.needs_email_invite(chapter)).to match_array([])
+        expect(Scheduler::ShiftAssignment.needs_email_invite(region)).to match_array([])
       end
 
     end
@@ -207,23 +207,23 @@ describe Scheduler::ShiftAssignment, :type => :model do
       end
 
       it "should not want to send the reminder ahead of time" do
-        expect(Scheduler::ShiftAssignment.needs_email_reminder(chapter)).to match_array([])
+        expect(Scheduler::ShiftAssignment.needs_email_reminder(region)).to match_array([])
       end
 
       it "should want to send the reminder during the window" do
         Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 9.hours
-        expect(Scheduler::ShiftAssignment.needs_email_reminder(chapter)).to match_array([@item])
+        expect(Scheduler::ShiftAssignment.needs_email_reminder(region)).to match_array([@item])
       end
 
       it "should not want to send an invite if the invite has been sent" do
         Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 9.hours
         @item.update_attribute :email_reminder_sent, true
-        expect(Scheduler::ShiftAssignment.needs_email_reminder(chapter)).to match_array([])
+        expect(Scheduler::ShiftAssignment.needs_email_reminder(region)).to match_array([])
       end
 
       it "should not send the invite if the shift has already passed" do
         Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 23.hours
-        expect(Scheduler::ShiftAssignment.needs_email_reminder(chapter)).to match_array([])
+        expect(Scheduler::ShiftAssignment.needs_email_reminder(region)).to match_array([])
       end
 
     end
@@ -239,43 +239,43 @@ describe Scheduler::ShiftAssignment, :type => :model do
       end
 
       it "should not want to send the reminder ahead of time" do
-        expect(Scheduler::ShiftAssignment.needs_sms_reminder(chapter)).to match_array([])
+        expect(Scheduler::ShiftAssignment.needs_sms_reminder(region)).to match_array([])
       end
 
       it "should want to send the reminder during the window" do
         Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 9.hours
-        expect(Scheduler::ShiftAssignment.needs_sms_reminder(chapter)).to match_array([@item])
+        expect(Scheduler::ShiftAssignment.needs_sms_reminder(region)).to match_array([@item])
       end
 
       it "should not want to send an invite if the invite has been sent" do
         Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 9.hours
         @item.update_attribute :sms_reminder_sent, true
-        expect(Scheduler::ShiftAssignment.needs_sms_reminder(chapter)).to match_array([])
+        expect(Scheduler::ShiftAssignment.needs_sms_reminder(region)).to match_array([])
       end
 
       it "should not send the invite if the shift has already passed" do
         Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 23.hours
-        expect(Scheduler::ShiftAssignment.needs_sms_reminder(chapter)).to match_array([])
+        expect(Scheduler::ShiftAssignment.needs_sms_reminder(region)).to match_array([])
       end
 
       it "should not send the invite if we are outside the sms window" do
         @prefs.update_attribute :sms_only_after, 8.hours # send texts only after noon
 
         Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 7.hours
-        expect(Scheduler::ShiftAssignment.needs_sms_reminder(chapter)).to match_array([])
+        expect(Scheduler::ShiftAssignment.needs_sms_reminder(region)).to match_array([])
 
-        Delorean.time_travel_to chapter.time_zone.now.change hour: 9
-        expect(Scheduler::ShiftAssignment.needs_sms_reminder(chapter)).to match_array([@item])
+        Delorean.time_travel_to region.time_zone.now.change hour: 9
+        expect(Scheduler::ShiftAssignment.needs_sms_reminder(region)).to match_array([@item])
       end
 
       it "should send the invite once we are in the window" do
         @prefs.update_attribute :sms_only_after, 12.hours # send texts only after noon
 
         Delorean.time_travel_to zone.today.tomorrow.in_time_zone(zone).advance seconds: 9.hours
-        expect(Scheduler::ShiftAssignment.needs_sms_reminder(chapter)).to match_array([])
+        expect(Scheduler::ShiftAssignment.needs_sms_reminder(region)).to match_array([])
 
         Delorean.time_travel_to zone.now.change hour: 13
-        expect(Scheduler::ShiftAssignment.needs_sms_reminder(chapter)).to match_array([@item])
+        expect(Scheduler::ShiftAssignment.needs_sms_reminder(region)).to match_array([@item])
       end
 
     end

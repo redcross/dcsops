@@ -14,7 +14,7 @@ class Incidents::ResponderMessagesController < Incidents::EditPanelController
       # Let the EditablePanelResponder take care of the normal render/redirect
       respond_with resource, location: parent
     end
-    Incidents::UpdatePublisher.new(parent.chapter, parent).publish_incoming
+    Incidents::UpdatePublisher.new(parent.region, parent).publish_incoming
   end
 
   def valid_partial? partial
@@ -56,7 +56,7 @@ class Incidents::ResponderMessagesController < Incidents::EditPanelController
   helper_method :all_recipients
 
   def send_resource resource
-    client = Incidents::SMSClient.new(incident.chapter)
+    client = Incidents::SMSClient.new(incident.region)
     client.send_message(resource)
   end
 
@@ -68,7 +68,7 @@ class Incidents::ResponderMessagesController < Incidents::EditPanelController
     attrs = params.fetch(:incidents_responder_message, {}).permit(:person_id, :message)
     attrs[:person_id] ||= params[:recipient]
     attrs[:incident_id] = incident.id
-    attrs[:chapter_id] = incident.chapter_id
+    attrs[:region_id] = incident.region_id
     [attrs]
   end
 
@@ -78,7 +78,7 @@ class Incidents::ResponderMessagesController < Incidents::EditPanelController
   helper_method :incident
 
   def after_create_url
-    incidents_chapter_incident_responders_path(incident.chapter, incident)
+    incidents_region_incident_responders_path(incident.region, incident)
   end
 
   def acknowledge_resource_path

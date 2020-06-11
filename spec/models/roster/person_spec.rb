@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Roster::Person, :type => :model do
-  let(:chapter) {FactoryGirl.create :chapter}
-  let(:person) {FactoryGirl.create :person, positions: [position], chapter: chapter}
-  let(:position) {Roster::Position.create name: 'Test Position', chapter: chapter}
+  let(:region) {FactoryGirl.create :region}
+  let(:person) {FactoryGirl.create :person, positions: [position], region: region}
+  let(:position) {Roster::Position.create name: 'Test Position', region: region}
   let(:role) {Roster::Role.create name: 'Test Role', grant_name: grant_name}
   let!(:membership) { Roster::RoleMembership.create role: role, position: position}
   describe "#has_role" do
@@ -48,7 +48,7 @@ describe Roster::Person, :type => :model do
       membership.role_scopes.build scope: "424242"
       membership.save!
 
-      c = person.counties.create name: 'Test County', chapter: chapter
+      c = person.counties.create name: 'Test County', region: region
 
       expect(person.scope_for_role( grant_name)).to match_array(person.county_ids + [424242])
     end

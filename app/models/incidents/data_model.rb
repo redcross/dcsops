@@ -4,7 +4,7 @@ class Incidents::DataModel < ActiveRecord::Base
   has_paper_trail skip: [:cac_number], class_name: 'Version', meta: {
     root_type: ->obj{obj.incident_id && 'Incidents::Incident'}, 
     root_id: ->(obj){obj.incident_id}, 
-    chapter_id: ->(obj){obj.try(:chapter_id) || obj.incident.try(:chapter_id)},
+    region_id: ->(obj){obj.try(:region_id) || obj.incident.try(:region_id)},
   }
 
   # Some validations cause an infinite loop if the inverses aren't properly set.  Determine whether

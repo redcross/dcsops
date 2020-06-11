@@ -19,9 +19,9 @@
   %br
   = resource.end_offset
 %p
-  %strong= model_class.human_attribute_name(:chapter_id) + ':'
+  %strong= model_class.human_attribute_name(:region_id) + ':'
   %br
-  = resource.chapter_id
+  = resource.region_id
 
 .form-actions
   = link_to t('.back', :default => t("helpers.links.back")), collection_path, :class => 'btn'

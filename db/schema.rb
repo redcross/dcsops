@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160129023314) do
+ActiveRecord::Schema.define(version: 20200611212220) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -195,7 +195,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   end
 
   create_table "homepage_links", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.string   "name"
     t.text     "description"
     t.string   "icon"
@@ -211,7 +211,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  add_index "homepage_links", ["chapter_id"], name: "index_homepage_links_on_chapter_id", using: :btree
+  add_index "homepage_links", ["region_id"], name: "index_homepage_links_on_region_id", using: :btree
 
   create_table "incidents_attachments", force: true do |t|
     t.integer  "incident_id",       null: false
@@ -227,8 +227,8 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "incidents_attachments", ["incident_id"], name: "index_incidents_attachments_on_incident_id", using: :btree
 
   create_table "incidents_call_logs", force: true do |t|
-    t.integer  "chapter_id"
-    t.integer  "dispatching_chapter_id"
+    t.integer  "region_id"
+    t.integer  "dispatching_region_id"
     t.string   "call_type"
     t.string   "contact_name"
     t.string   "contact_number"
@@ -252,8 +252,8 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  add_index "incidents_call_logs", ["chapter_id"], name: "index_incidents_call_logs_on_chapter_id", using: :btree
-  add_index "incidents_call_logs", ["dispatching_chapter_id"], name: "index_incidents_call_logs_on_dispatching_chapter_id", using: :btree
+  add_index "incidents_call_logs", ["dispatching_region_id"], name: "index_incidents_call_logs_on_dispatching_region_id", using: :btree
+  add_index "incidents_call_logs", ["region_id"], name: "index_incidents_call_logs_on_region_id", using: :btree
 
   create_table "incidents_cas_cases", force: true do |t|
     t.integer  "cas_incident_id"
@@ -300,8 +300,8 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "last_import"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "chapter_id"
-    t.string   "chapter_code"
+    t.integer  "region_id"
+    t.string   "region_code"
     t.boolean  "ignore_incident",           default: false, null: false
   end
 
@@ -422,7 +422,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   create_table "incidents_dispatch_logs", force: true do |t|
     t.string   "incident_number"
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.integer  "incident_id"
     t.datetime "received_at"
     t.datetime "delivered_at"
@@ -443,8 +443,8 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.string   "message_number"
   end
 
-  add_index "incidents_dispatch_logs", ["chapter_id"], name: "index_incidents_dispatch_logs_on_chapter_id", using: :btree
   add_index "incidents_dispatch_logs", ["incident_id"], name: "index_incidents_dispatch_logs_on_incident_id", using: :btree
+  add_index "incidents_dispatch_logs", ["region_id"], name: "index_incidents_dispatch_logs_on_region_id", using: :btree
 
   create_table "incidents_event_logs", force: true do |t|
     t.integer  "incident_id"
@@ -455,15 +455,15 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "source_id"
-    t.integer  "chapter_id"
+    t.integer  "region_id"
   end
 
-  add_index "incidents_event_logs", ["chapter_id"], name: "index_incidents_event_logs_on_chapter_id", using: :btree
   add_index "incidents_event_logs", ["incident_id"], name: "index_incidents_event_logs_on_incident_id", using: :btree
   add_index "incidents_event_logs", ["person_id"], name: "index_incidents_event_logs_on_person_id", using: :btree
+  add_index "incidents_event_logs", ["region_id"], name: "index_incidents_event_logs_on_region_id", using: :btree
 
   create_table "incidents_incidents", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.string   "incident_number"
     t.string   "incident_type"
     t.string   "cas_event_number"
@@ -509,10 +509,10 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   end
 
   add_index "incidents_incidents", ["cas_event_number"], name: "index_incidents_incidents_on_cas_event_number", using: :btree
-  add_index "incidents_incidents", ["chapter_id", "id", "date"], name: "index_incidents_incidents_on_chapter_id_id_date", using: :btree
-  add_index "incidents_incidents", ["chapter_id", "incident_number"], name: "index_incidents_incidents_on_chapter_id_incident_number", unique: true, using: :btree
-  add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id", using: :btree
   add_index "incidents_incidents", ["incident_number"], name: "index_incidents_incidents_on_incident_number", using: :btree
+  add_index "incidents_incidents", ["region_id", "id", "date"], name: "index_incidents_incidents_on_region_id_id_date", using: :btree
+  add_index "incidents_incidents", ["region_id", "incident_number"], name: "index_incidents_incidents_on_region_id_incident_number", unique: true, using: :btree
+  add_index "incidents_incidents", ["region_id"], name: "index_incidents_incidents_on_region_id", using: :btree
 
   create_table "incidents_initial_incident_reports", force: true do |t|
     t.integer  "incident_id"
@@ -536,7 +536,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "incidents_initial_incident_reports", ["incident_id"], name: "index_incidents_initial_incident_reports_on_incident_id", using: :btree
 
   create_table "incidents_notifications_events", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.string   "name"
     t.string   "description"
     t.string   "event_type"
@@ -546,7 +546,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  add_index "incidents_notifications_events", ["chapter_id"], name: "index_incidents_notifications_events_on_chapter_id", using: :btree
+  add_index "incidents_notifications_events", ["region_id"], name: "index_incidents_notifications_events_on_region_id", using: :btree
 
   create_table "incidents_notifications_role_scopes", force: true do |t|
     t.integer  "role_id"
@@ -560,7 +560,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "incidents_notifications_role_scopes", ["role_id"], name: "index_incidents_notifications_role_scopes_on_role_id", using: :btree
 
   create_table "incidents_notifications_roles", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -658,7 +658,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "incidents_responder_assignments", ["person_id"], name: "index_incidents_responder_assignments_on_person_id", using: :btree
 
   create_table "incidents_responder_messages", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.integer  "person_id"
     t.integer  "incident_id"
     t.integer  "responder_assignment_id"
@@ -673,8 +673,8 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  add_index "incidents_responder_messages", ["chapter_id"], name: "index_incidents_responder_messages_on_chapter_id", using: :btree
   add_index "incidents_responder_messages", ["person_id"], name: "index_incidents_responder_messages_on_person_id", using: :btree
+  add_index "incidents_responder_messages", ["region_id"], name: "index_incidents_responder_messages_on_region_id", using: :btree
 
   create_table "incidents_responder_recruitments", force: true do |t|
     t.integer  "incident_id"
@@ -689,7 +689,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "incidents_responder_recruitments", ["incident_id", "person_id"], name: "index_responder_recruitments_incident_person", using: :btree
 
   create_table "incidents_scopes", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.string   "url_slug"
     t.string   "abbrev"
     t.string   "short_name"
@@ -701,15 +701,15 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "incidents_scopes", ["url_slug"], name: "index_incidents_scopes_on_url_slug", unique: true, using: :btree
 
-  create_table "incidents_scopes_roster_chapters", id: false, force: true do |t|
-    t.integer "scope_id",   null: false
-    t.integer "chapter_id", null: false
+  create_table "incidents_scopes_roster_regions", id: false, force: true do |t|
+    t.integer "scope_id",  null: false
+    t.integer "region_id", null: false
   end
 
-  add_index "incidents_scopes_roster_chapters", ["scope_id", "chapter_id"], name: "index_incidents_scopes_roster_chapters", unique: true, using: :btree
+  add_index "incidents_scopes_roster_regions", ["scope_id", "region_id"], name: "index_incidents_scopes_roster_regions", unique: true, using: :btree
 
   create_table "incidents_territories", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.string   "name"
     t.boolean  "enabled"
     t.boolean  "is_default"
@@ -724,7 +724,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.integer  "dispatch_config_id"
   end
 
-  add_index "incidents_territories", ["chapter_id"], name: "index_incidents_territories_on_chapter_id", using: :btree
+  add_index "incidents_territories", ["region_id"], name: "index_incidents_territories_on_region_id", using: :btree
 
   create_table "incidents_territories_roster_counties", id: false, force: true do |t|
     t.integer "territory_id"
@@ -761,11 +761,11 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "tenant_id"
-    t.string   "tenant_type",       limit: nil
+    t.string   "tenant_type"
   end
 
   create_table "logistics_vehicles", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.string   "name"
     t.string   "category"
     t.string   "address"
@@ -779,7 +779,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   end
 
   create_table "lookups", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.string   "scope"
     t.string   "name",       null: false
     t.string   "value",      null: false
@@ -788,10 +788,10 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  add_index "lookups", ["chapter_id"], name: "index_lookups_on_chapter_id", using: :btree
+  add_index "lookups", ["region_id"], name: "index_lookups_on_region_id", using: :btree
 
   create_table "motds", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.datetime "begins"
     t.datetime "ends"
     t.string   "cookie_code"
@@ -803,7 +803,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.string   "path_regex_raw"
   end
 
-  add_index "motds", ["chapter_id"], name: "index_motds_on_chapter_id", using: :btree
+  add_index "motds", ["region_id"], name: "index_motds_on_region_id", using: :btree
 
   create_table "named_queries", force: true do |t|
     t.string   "name"
@@ -828,10 +828,10 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.float    "lng"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "chapter_id"
+    t.integer  "region_id"
   end
 
-  add_index "partners_partners", ["chapter_id"], name: "index_partners_partners_on_chapter_id", using: :btree
+  add_index "partners_partners", ["region_id"], name: "index_partners_partners_on_region_id", using: :btree
 
   create_table "roster_cell_carriers", force: true do |t|
     t.string   "name"
@@ -841,26 +841,8 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.boolean  "pager"
   end
 
-  create_table "roster_chapters", force: true do |t|
-    t.string   "name"
-    t.string   "code"
-    t.string   "short_name"
-    t.string   "time_zone_raw"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "vc_username"
-    t.string   "vc_password"
-    t.string   "vc_position_filter"
-    t.hstore   "config"
-    t.integer  "vc_unit"
-    t.string   "url_slug"
-    t.integer  "incident_number_sequence_id"
-  end
-
-  add_index "roster_chapters", ["url_slug"], name: "index_roster_chapters_on_url_slug", unique: true, using: :btree
-
   create_table "roster_counties", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.string   "name"
     t.string   "abbrev"
     t.string   "county_code"
@@ -881,7 +863,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "roster_county_memberships", ["person_id"], name: "index_roster_county_memberships_on_person_id", using: :btree
 
   create_table "roster_people", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.integer  "primary_county_id"
     t.string   "first_name"
     t.string   "last_name"
@@ -932,7 +914,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.string   "rco_id"
   end
 
-  add_index "roster_people", ["chapter_id", "vc_is_active"], name: "index_roster_people_on_chapter_active", using: :btree
+  add_index "roster_people", ["region_id", "vc_is_active"], name: "index_roster_people_on_region_active", using: :btree
   add_index "roster_people", ["vc_id"], name: "idx_vc_id", using: :btree
 
   create_table "roster_position_memberships", force: true do |t|
@@ -944,7 +926,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "roster_position_memberships", ["person_id"], name: "index_roster_position_memberships_on_person_id", using: :btree
 
   create_table "roster_positions", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.string   "name"
     t.string   "vc_regex_raw"
     t.datetime "created_at"
@@ -960,6 +942,24 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   end
 
   add_index "roster_positions_scheduler_shifts", ["shift_id", "position_id"], name: "index_roster_positions_scheduler_shifts", unique: true, using: :btree
+
+  create_table "roster_regions", force: true do |t|
+    t.string   "name"
+    t.string   "code"
+    t.string   "short_name"
+    t.string   "time_zone_raw"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "vc_username"
+    t.string   "vc_password"
+    t.string   "vc_position_filter"
+    t.hstore   "config"
+    t.integer  "vc_unit"
+    t.string   "url_slug"
+    t.integer  "incident_number_sequence_id"
+  end
+
+  add_index "roster_regions", ["url_slug"], name: "index_roster_regions_on_url_slug", unique: true, using: :btree
 
   create_table "roster_role_memberships", force: true do |t|
     t.integer "role_id"
@@ -982,13 +982,13 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   end
 
   create_table "roster_vc_import_data", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.json     "position_data"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "roster_vc_import_data", ["chapter_id"], name: "index_roster_vc_import_data_on_chapter_id", using: :btree
+  add_index "roster_vc_import_data", ["region_id"], name: "index_roster_vc_import_data_on_region_id", using: :btree
 
   create_table "scheduler_dispatch_configs", force: true do |t|
     t.integer  "county_id"
@@ -1004,7 +1004,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.integer  "shift_second_id"
     t.integer  "shift_third_id"
     t.integer  "shift_fourth_id"
-    t.integer  "chapter_id"
+    t.integer  "region_id"
   end
 
   add_index "scheduler_dispatch_configs", ["backup_first_id"], name: "index_scheduler_dispatch_configs_on_backup_first_id", using: :btree
@@ -1083,7 +1083,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "scheduler_shift_assignments", ["shift_id", "date"], name: "index_scheduler_shift_assignments_on_shift_date", using: :btree
 
   create_table "scheduler_shift_categories", force: true do |t|
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.string   "name"
     t.boolean  "show",       default: false, null: false
     t.integer  "ordinal"
@@ -1091,14 +1091,14 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  add_index "scheduler_shift_categories", ["chapter_id"], name: "index_scheduler_shift_categories_on_chapter_id", using: :btree
+  add_index "scheduler_shift_categories", ["region_id"], name: "index_scheduler_shift_categories_on_region_id", using: :btree
 
   create_table "scheduler_shift_groups", force: true do |t|
     t.string   "name"
     t.string   "period"
     t.integer  "start_offset"
     t.integer  "end_offset"
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "active_sunday",    default: true, null: false
@@ -1110,7 +1110,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.boolean  "active_saturday",  default: true, null: false
   end
 
-  add_index "scheduler_shift_groups", ["chapter_id"], name: "index_scheduler_shift_groups_on_chapter_id", using: :btree
+  add_index "scheduler_shift_groups", ["region_id"], name: "index_scheduler_shift_groups_on_region_id", using: :btree
 
   create_table "scheduler_shift_groups_shifts", id: false, force: true do |t|
     t.integer "shift_id",       null: false
@@ -1154,10 +1154,10 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.text     "object_changes"
     t.string   "root_type"
     t.integer  "root_id"
-    t.integer  "chapter_id",     null: false
+    t.integer  "region_id",      null: false
   end
 
-  add_index "versions", ["chapter_id", "root_type", "root_id"], name: "index_versions_on_chapter_id_root_type_root_id", using: :btree
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
+  add_index "versions", ["region_id", "root_type", "root_id"], name: "index_versions_on_region_id_root_type_root_id", using: :btree
 
 end

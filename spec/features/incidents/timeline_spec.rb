@@ -4,15 +4,15 @@ describe "View Timeline", :type => :feature do
 
   it "Should be submittable" do
     grant_role! :incidents_admin
-    @chapter = @person.chapter
-    @chapter.incidents_use_global_log = true
-    @chapter.save!
-    FactoryGirl.create :incidents_scope, chapter: @person.chapter
+    @region = @person.region
+    @region.incidents_use_global_log = true
+    @region.save!
+    FactoryGirl.create :incidents_scope, region: @person.region
 
-    @incident = FactoryGirl.create :raw_incident, chapter: @person.chapter, area: @person.counties.first, date: Date.current
-    @log = FactoryGirl.create :event_log, chapter: @chapter, person: @person, incident: @incident
+    @incident = FactoryGirl.create :raw_incident, region: @person.region, area: @person.counties.first, date: Date.current
+    @log = FactoryGirl.create :event_log, region: @region, person: @person, incident: @incident
 
-    visit "/incidents/#{@chapter.url_slug}/incidents/#{@incident.incident_number}"
+    visit "/incidents/#{@region.url_slug}/incidents/#{@incident.incident_number}"
 
     click_link "Timeline"
     

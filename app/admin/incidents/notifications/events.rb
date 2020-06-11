@@ -6,11 +6,11 @@ ActiveAdmin.register Incidents::Notifications::Event, as: 'Event' do
 
   menu parent: 'Incidents'
 
-  filter :chapter
+  filter :region
 
   index do 
     id_column
-    column :chapter_id
+    column :region_id
     column :name
     column :event_type
     column :event
@@ -24,12 +24,12 @@ ActiveAdmin.register Incidents::Notifications::Event, as: 'Event' do
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:chapter_id, :name, :description, :event_type, :event, :ordinal)]
+      [params.fetch(resource_request_name, {}).permit(:region_id, :name, :description, :event_type, :event, :ordinal)]
     end
 
-    after_build :set_chapter
-    def set_chapter resource
-      resource.chapter ||= current_chapter
+    after_build :set_region
+    def set_region resource
+      resource.region ||= current_region
     end
   end
 end

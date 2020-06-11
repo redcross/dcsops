@@ -4,8 +4,8 @@ describe Scheduler::ShiftSwap, :type => :model do
 
   let(:delegate) { double :auth_delegate, can?: true }
   let(:shift) { FactoryGirl.create :shift_with_positions}
-  let(:person) { FactoryGirl.create :person, chapter: shift.county.chapter, positions: shift.positions, counties: [shift.county]}
-  let(:other_person) { FactoryGirl.create :person, chapter: shift.county.chapter, positions: shift.positions, counties: [shift.county]}
+  let(:person) { FactoryGirl.create :person, region: shift.county.region, positions: shift.positions, counties: [shift.county]}
+  let(:other_person) { FactoryGirl.create :person, region: shift.county.region, positions: shift.positions, counties: [shift.county]}
   let(:assignment) { FactoryGirl.create :shift_assignment, person: person, date: Date.current, shift: shift, shift_group: shift.shift_groups.first}
 
   let(:swap) { Scheduler::ShiftSwap.new(assignment, delegate) }
@@ -41,11 +41,11 @@ describe Scheduler::ShiftSwap, :type => :model do
 
     it "can confirm a swap" do
       expect {
-        config = Scheduler::DispatchConfig.new chapter: person.chapter, name: "Config"
+        config = Scheduler::DispatchConfig.new region: person.region, name: "Config"
         config.shift_first = shift
         config.save!
 
-        expect(Scheduler::SendDispatchRosterJob).to receive(:enqueue).with(person.chapter, false)
+        expect(Scheduler::SendDispatchRosterJob).to receive(:enqueue).with(person.region, false)
         success = swap.confirm_swap! other_person
         expect(success).to be_truthy
         expect(swap.new_assignment).not_to be_nil

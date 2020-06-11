@@ -15,7 +15,7 @@ class Scheduler::PeopleController < Scheduler::BaseController
   #  scope.in_county(val)
   #end
 
-  # , default: Proc.new {|controller| controller.current_chapter.positions.where{name.in(['DAT Team Lead', 'DAT Technician', 'DAT Trainee', 'DAT Dispatcher'])}.map(&:id)}
+  # , default: Proc.new {|controller| controller.current_region.positions.where{name.in(['DAT Team Lead', 'DAT Technician', 'DAT Trainee', 'DAT Dispatcher'])}.map(&:id)}
   has_scope :with_position, type: :array, default: []
   has_scope :last_shift do |controller, scope, val|
     scope.where(Scheduler::ShiftAssignment.where{(person_id == roster_people.id) & (date > (Date.current-val.to_i))}.exists.not)

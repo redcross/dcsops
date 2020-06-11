@@ -1,5 +1,5 @@
 class Admin::CountiesController < GridController
-  belongs_to :chapter, parent_class: Roster::Chapter, finder: :find_by_url_slug!
+  belongs_to :region, parent_class: Roster::Region, finder: :find_by_url_slug!
   defaults resource_class: Roster::County
   load_and_authorize_resource class: Roster::County
 

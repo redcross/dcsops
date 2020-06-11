@@ -23,7 +23,7 @@ class Scheduler::ShiftSwap
       notify_swap_confirmed
 
       # Give it a chance to update the dispatch roster if this shift is coming soon...
-      Scheduler::SendDispatchRosterJob.enqueue new_assignment.person.chapter, false if Scheduler::DispatchConfig.with_shift(new_assignment.shift).exists?
+      Scheduler::SendDispatchRosterJob.enqueue new_assignment.person.region, false if Scheduler::DispatchConfig.with_shift(new_assignment.shift).exists?
     end
 
     return success

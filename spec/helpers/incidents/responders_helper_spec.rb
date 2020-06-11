@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Incidents::RespondersHelper, :type => :helper do
 
-  let!(:incident) { double(:incident, id: 1234, responder_assignments: [], chapter: double(:chapter, to_param: "123", incidents_enable_messaging: true)) }
+  let!(:incident) { double(:incident, id: 1234, responder_assignments: [], region: double(:region, to_param: "123", incidents_enable_messaging: true)) }
   let!(:person) { FactoryGirl.build_stubbed :person, city: "MyCity" }
   let!(:assignment) { mock_model(Scheduler::ShiftAssignment, person: person, shift: double(:shift, name: 'Test Shift')) }
 
@@ -12,10 +12,10 @@ describe Incidents::RespondersHelper, :type => :helper do
     inc = self.incident
     helper.class_eval <<-RUBY, __FILE__, __LINE__+1
       def new_resource_path *args
-        new_incidents_chapter_incident_responder_path('chapter', 'incident', *args)
+        new_incidents_region_incident_responder_path('region', 'incident', *args)
       end
       def edit_resource_path *args
-        edit_incidents_chapter_incident_responder_path('chapter', 'incident', *args)
+        edit_incidents_region_incident_responder_path('region', 'incident', *args)
       end
     RUBY
 

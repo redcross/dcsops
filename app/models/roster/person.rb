@@ -4,7 +4,7 @@ class Roster::Person < ActiveRecord::Base
 
   PHONE_TYPES = [:cell_phone, :home_phone, :work_phone, :alternate_phone, :sms_phone]
 
-  belongs_to :chapter, class_name: 'Roster::Chapter'
+  belongs_to :region, class_name: 'Roster::Region'
   belongs_to :primary_county, class_name: 'Roster::County'
 
   has_many :county_memberships, class_name: 'Roster::CountyMembership'
@@ -24,7 +24,7 @@ class Roster::Person < ActiveRecord::Base
     where{lower(first_name.op('||', ' ').op('||', last_name)).like("%#{query.downcase}%")}
   }
 
-  scope :for_chapter, ->(chapter){where{chapter_id == chapter}}
+  scope :for_region, ->(region){where{region_id == region}}
 
   scope :has_role_for_scope, -> role_name, scope {
     joins{roles.role_scopes.outer}.where{(roles.grant_name == role_name) & ((roles.role_scopes.scope == nil) | (roles.role_scopes.scope == scope.to_s))}
@@ -59,10 +59,10 @@ class Roster::Person < ActiveRecord::Base
   has_one :notification_setting, class_name: 'Scheduler::NotificationSetting', foreign_key: 'id'
 
   validates *((1..4).map{|n| "phone_#{n}_preference".to_sym}), inclusion: {in: %w(home cell work alternate sms), allow_blank: true}
-  validates_presence_of :chapter
+  validates_presence_of :region
   validate :validate_disabled_phones
 
-  #validates_inclusion_of :primary_county_id, in: lambda{ |person| person.chapter.county_ids }, allow_nil: true, allow_blank: true
+  #validates_inclusion_of :primary_county_id, in: lambda{ |person| person.region.county_ids }, allow_nil: true, allow_blank: true
 
   default_scope {order(:last_name, :first_name)}
 

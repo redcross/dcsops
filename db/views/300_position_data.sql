@@ -1,7 +1,7 @@
 DROP VIEW IF EXISTS reporting.position_data;
 CREATE VIEW reporting.position_data AS
   SELECT 
-    p.chapter_id, p.id as person_id,
+    p.region_id, p.id as person_id,
     p.first_name, p.last_name,
     pos.name, pos.id as position_id
   FROM

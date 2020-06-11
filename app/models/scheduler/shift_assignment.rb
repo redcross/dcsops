@@ -101,8 +101,8 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     }
   end
 
-  scope :for_chapter, -> (chapter) {
-    joins{person}.where{person.chapter_id == chapter}
+  scope :for_region, -> (region) {
+    joins{person}.where{person.region_id == region}
   }
 
   scope :for_shifts, -> (shifts) {
@@ -121,33 +121,33 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     joins{person}.where{person.vc_is_active == true}
   }
   
-  def self.needs_email_invite chapter
+  def self.needs_email_invite region
     joins(:notification_setting).readonly(false)
-    .with_active_person.for_chapter(chapter)
+    .with_active_person.for_region(region)
     .where(:email_invite_sent => false, :scheduler_notification_settings => {send_email_invites: true})
-    .where('date > ?', chapter.time_zone.today)
+    .where('date > ?', region.time_zone.today)
   end
 
-  def self.needs_reminder chapter, type
+  def self.needs_reminder region, type
     where(:"#{type}_reminder_sent" => false)
     .joins{notification_setting}.where{notification_setting.__send__("#{type}_advance_hours") != nil}
-    .with_active_person.for_chapter(chapter).readonly(false).preload{[notification_setting,shift_group.chapter]}
+    .with_active_person.for_region(region).readonly(false).preload{[notification_setting,shift_group.region]}
     .select{|ass|
-      now = chapter.time_zone.now
+      now = region.time_zone.now
       start = ass.local_start_time
       etime = ass.local_end_time
       etime > now and (start - ass.notification_setting.send("#{type}_advance_hours")) < now
     }
   end
   
-  def self.needs_email_reminder chapter
-    needs_reminder(chapter, :email)
+  def self.needs_email_reminder region
+    needs_reminder(region, :email)
   end
 
-  def self.needs_sms_reminder chapter
-    now = chapter.time_zone.now
+  def self.needs_sms_reminder region
+    now = region.time_zone.now
 
-    needs_reminder(chapter, :sms)
+    needs_reminder(region, :sms)
     .select{|ass|
       ass.person.sms_addresses.present? # Can't send if we don't have any addresses
     }.select{|ass| ass.notification_setting.allow_sms_at? now }
@@ -176,8 +176,8 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     joins{shift_group}.where{(date > start_date) | ((date == start_date) & (shift_group.end_offset > time.in_time_zone.seconds_since_midnight))}
   }
 
-  scope :available_for_swap, -> (chapter) {
-    where{(available_for_swap==true)}.normalized_date_on_or_after(chapter.time_zone.today)
+  scope :available_for_swap, -> (region) {
+    where{(available_for_swap==true)}.normalized_date_on_or_after(region.time_zone.today)
   }
 
   scope :includes_person_carriers, -> {
@@ -212,7 +212,7 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   private
 
   def shift_time_calculator
-    @_calculator ||= Scheduler::ShiftTimeCalculator.new(shift_group.chapter.time_zone)
+    @_calculator ||= Scheduler::ShiftTimeCalculator.new(shift_group.region.time_zone)
   end
 
 end

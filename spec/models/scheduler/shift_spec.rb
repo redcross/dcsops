@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe Scheduler::Shift, :type => :model do
-  let(:chapter) {FactoryGirl.create :chapter}
-  let(:position) {FactoryGirl.create :position, chapter: chapter}
-  let(:county) {FactoryGirl.create :county, chapter: chapter}
-  let(:shift_group) {FactoryGirl.create :shift_group, chapter: chapter}
+  let(:region) {FactoryGirl.create :region}
+  let(:position) {FactoryGirl.create :position, region: region}
+  let(:county) {FactoryGirl.create :county, region: region}
+  let(:shift_group) {FactoryGirl.create :shift_group, region: region}
   let(:shift) {FactoryGirl.create :shift, shift_groups: [shift_group], positions: [position], county: county}
-  let(:date) {shift.county.chapter.time_zone.today}
-  let(:person) { FactoryGirl.create :person, chapter: chapter, counties: [shift.county], positions: shift.positions}
+  let(:date) {shift.county.region.time_zone.today}
+  let(:person) { FactoryGirl.create :person, region: region, counties: [shift.county], positions: shift.positions}
       
   describe "can_be_taken_by?" do
     it "should be true for a person with the appropriate counties and shifts" do
@@ -123,7 +123,7 @@ describe Scheduler::Shift, :type => :model do
 
   describe "allow_signup_in_past" do
     it "can sign up if date is in the past but shift hasn't ended" do
-      day = chapter.time_zone.today.day
+      day = region.time_zone.today.day
       shift_group.update_attributes period: 'monthly', start_offset: 0, end_offset: 33
       expect(shift.can_sign_up_on_day(date-1, shift_group)).to be_truthy
     end

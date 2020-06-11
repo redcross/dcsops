@@ -1,7 +1,7 @@
 DROP VIEW IF EXISTS reporting.schedule_data;
 CREATE VIEW reporting.schedule_data AS
   SELECT 
-    p.chapter_id, p.id as person_id,
+    p.region_id, p.id as person_id,
     p.first_name, p.last_name, p.email,
     shifts.name, sa.date, 
     (sa.date::timestamp + sg.start_offset * INTERVAL '1 second') as start_time,

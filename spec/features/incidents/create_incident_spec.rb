@@ -5,12 +5,12 @@ describe "Manually create incident", :type => :feature do
   before do
     grant_role! :submit_incident_report
     grant_role! :incidents_admin
-    FactoryGirl.create :incidents_scope, chapter: @person.chapter
-    FactoryGirl.create :territory, chapter: @person.chapter, name: 'SF Territory', counties: ['San Francisco, CA']
+    FactoryGirl.create :incidents_scope, region: @person.region
+    FactoryGirl.create :territory, region: @person.region, name: 'SF Territory', counties: ['San Francisco, CA']
   end
 
   it "Should be submittable to dat incident report" do
-    visit "/incidents/#{@person.chapter.url_slug}"
+    visit "/incidents/#{@person.region.url_slug}"
 
     @incident_number = FactoryGirl.build(:incident).incident_number
 
@@ -36,9 +36,9 @@ describe "Manually create incident", :type => :feature do
 
   it "should be submittable with incident number sequence" do
     seq = FactoryGirl.create :incident_number_sequence
-    @person.chapter.update incident_number_sequence: seq, incidents_report_editable: true
+    @person.region.update incident_number_sequence: seq, incidents_report_editable: true
 
-    visit "/incidents/#{@person.chapter.url_slug}/incidents/new"
+    visit "/incidents/#{@person.region.url_slug}/incidents/new"
 
     expect(page).to_not have_text('Incident number')
 

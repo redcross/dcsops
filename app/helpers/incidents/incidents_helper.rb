@@ -72,14 +72,14 @@ module Incidents::IncidentsHelper
   end
 
   def missing_timeline_entries
-    needed = resource.chapter.incidents_timeline_mandatory_array
+    needed = resource.region.incidents_timeline_mandatory_array
     have = resource.event_logs.map(&:event)
     needed - have
   end
 
   def cas_event_button resource, message='View cases in CAS', **opts
     if resource.cas_event_id
-      form_tag "https://#{resource.chapter.cas_host}/zf/clientsearch/find", method: :post do
+      form_tag "https://#{resource.region.cas_host}/zf/clientsearch/find", method: :post do
         hidden_field_tag(:order_by, 'create_stamp_desc') <<
         hidden_field_tag('client[module][cas_event]', resource.cas_event_id) <<
         submit_tag(message, {class: 'btn btn-default'}.merge(opts))

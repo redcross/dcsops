@@ -1,7 +1,7 @@
 class Incidents::TerritoryMatcher
   def initialize(incident, territories=nil)
     @incident = incident
-    @collection = territories || Incidents::Territory.for_chapter(@incident.chapter)
+    @collection = territories || Incidents::Territory.for_region(@incident.region)
   end
 
   attr_reader :incident, :collection

@@ -1,4 +1,4 @@
-class Roster::Chapter < ActiveRecord::Base
+class Roster::Region < ActiveRecord::Base
   include Core::SerializedColumns
   include Core::ArrayAccessor
   has_many :counties
@@ -35,7 +35,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :incidents_enable_dispatch_console, :boolean
   serialized_accessor :config, :incidents_dispatch_console_ignore_county, :boolean
   serialized_accessor :config, :idat_database, :string
-  serialized_accessor :config, :cas_chapter_codes, :string
+  serialized_accessor :config, :cas_region_codes, :string
   serialized_accessor :config, :incidents_timeline_collect, :string
   serialized_accessor :config, :incidents_timeline_collect_source, :string
   serialized_accessor :config, :incidents_timeline_mandatory, :string
@@ -58,7 +58,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :twilio_auth_token, :string
   serialized_accessor :config, :incidents_twilio_number, :string
   serialized_accessor :config, :incidents_enable_messaging, :boolean
-  serialized_accessor :config, :incidents_delegate_chapter, :integer
+  serialized_accessor :config, :incidents_delegate_region, :integer
 
   serialized_accessor :config, :incidents_notifications_reply_to, :string
   serialized_accessor :config, :incidents_notifications_custom_message, :string
@@ -75,7 +75,7 @@ class Roster::Chapter < ActiveRecord::Base
   serialized_accessor :config, :division_name, :string
   serialized_accessor :config, :iir_emails, :string
 
-  array_accessor :cas_chapter_codes
+  array_accessor :cas_region_codes
   array_accessor :incidents_timeline_collect, :incidents_timeline_mandatory, :incidents_timeline_collect_source
   array_accessor :incidents_resources_tracked
 end

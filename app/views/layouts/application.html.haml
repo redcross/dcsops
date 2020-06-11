@@ -38,7 +38,7 @@
           %ul.nav.navbar-nav
             -if current_user
               %li= link_to "DAT Scheduling", scheduler_root_path
-              %li= link_to 'Incidents', incidents_chapter_root_path(current_chapter)
+              %li= link_to 'Incidents', incidents_region_root_path(current_region)
               -if has_admin_dashboard_access
                 %li= link_to "Admin", scheduler_admin_people_path
           %ul.nav.navbar-nav.navbar-right

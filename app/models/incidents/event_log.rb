@@ -1,6 +1,6 @@
 class Incidents::EventLog < Incidents::DataModel
   belongs_to :person, class_name: 'Roster::Person'
-  belongs_to :chapter, class_name: 'Roster::Chapter'
+  belongs_to :region, class_name: 'Roster::Region'
 
   validates :event_time, presence: {allow_blank: false, allow_nil: false}
   validates :person, presence: {if: :body_required?}
@@ -53,12 +53,12 @@ class Incidents::EventLog < Incidents::DataModel
   belongs_to :source, class_name: 'Lookup'
   validates :source, presence: {if: :source_required?}
   assignable_values_for :source, allow_blank: true do
-    Lookup.for_chapter_and_scope(incident.try(:chapter_id), 'Incidents::EventLog#source')
+    Lookup.for_region_and_scope(incident.try(:region_id), 'Incidents::EventLog#source')
   end
 
   def source_required?
-    chapter = incident && incident.chapter
-    chapter && chapter.incidents_timeline_collect_source_array.include?(event)
+    region = incident && incident.region
+    region && region.incidents_timeline_collect_source_array.include?(event)
   end
 
   def body_required?

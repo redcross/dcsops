@@ -1,6 +1,6 @@
 class Admin::VcPositionsController < ApplicationController
   inherit_resources
-  belongs_to :chapter, parent_class: Roster::Chapter, finder: :find_by_url_slug!
+  belongs_to :region, parent_class: Roster::Region, finder: :find_by_url_slug!
   defaults resource_class: Roster::VcImportData, singleton: true
   load_and_authorize_resource class: Roster::VcImportData
   actions :show

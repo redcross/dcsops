@@ -3,15 +3,15 @@ class Scheduler::NotificationSetting < ActiveRecord::Base
 
   #serialize :shift_notification_phones
 
-  def self.needs_daily_email(chapter); needs_daily(chapter, :email); end
-  def self.needs_daily_sms(chapter);   needs_daily(chapter, :sms); end
-  def self.needs_daily_swap(chapter);  for_chapter(chapter).with_active_person.where{email_all_swaps_daily == true}; end
+  def self.needs_daily_email(region); needs_daily(region, :email); end
+  def self.needs_daily_sms(region);   needs_daily(region, :sms); end
+  def self.needs_daily_swap(region);  for_region(region).with_active_person.where{email_all_swaps_daily == true}; end
 
-  def self.needs_daily chapter, method
-    now = chapter.time_zone.now
+  def self.needs_daily region, method
+    now = region.time_zone.now
     midnight = now.at_beginning_of_day
     offset = now.seconds_since_midnight
-    for_chapter(chapter).with_active_person.where{(__send__(:"#{method}_all_shifts_at") != nil) & 
+    for_region(region).with_active_person.where{(__send__(:"#{method}_all_shifts_at") != nil) & 
                                                   (__send__(:"#{method}_all_shifts_at") <= offset) & 
                                                   ( (__send__(:"last_all_shifts_#{method}") == nil) | 
                                                     (__send__(:"last_all_shifts_#{method}") < midnight)
@@ -22,8 +22,8 @@ class Scheduler::NotificationSetting < ActiveRecord::Base
     joins{person}.where{person.vc_is_active == true}
   end
 
-  def self.for_chapter chapter
-    joins{person}.where{person.chapter_id == chapter.id}
+  def self.for_region region
+    joins{person}.where{person.region_id == region.id}
   end
 
   before_create :set_calendar_api_token
