@@ -1,13 +1,13 @@
 class AddShiftGroupToShiftAssignments < ActiveRecord::Migration
-  class ShiftGroup < ActiveRecord::Base
+  class ShiftGroup < ApplicationRecord
     self.table_name = :scheduler_shift_groups
   end
 
-  class ShiftAssignment < ActiveRecord::Base
+  class ShiftAssignment < ApplicationRecord
     self.table_name = :scheduler_shift_assignments
   end
 
-  class Shift < ActiveRecord::Base
+  class Shift < ApplicationRecord
     self.table_name = :scheduler_shifts
     belongs_to :shift_group
     has_and_belongs_to_many :shift_groups

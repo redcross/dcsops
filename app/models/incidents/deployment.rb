@@ -1,4 +1,4 @@
-class Incidents::Deployment < ActiveRecord::Base
+class Incidents::Deployment < ApplicationRecord
   belongs_to :person, class_name: 'Roster::Person'
   belongs_to :disaster, class_name: 'Incidents::Disaster'
 

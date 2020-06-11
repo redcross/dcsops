@@ -1,4 +1,4 @@
-class Scheduler::DispatchConfig < ActiveRecord::Base
+class Scheduler::DispatchConfig < ApplicationRecord
   self.table_name = :scheduler_dispatch_configs
 
   belongs_to :region, class_name: 'Roster::Region'

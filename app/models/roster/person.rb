@@ -1,4 +1,4 @@
-class Roster::Person < ActiveRecord::Base
+class Roster::Person < ApplicationRecord
   include AutoGeocode
   include Mappable
 

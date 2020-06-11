@@ -1,4 +1,4 @@
-class Incidents::ResponderMessage < ActiveRecord::Base
+class Incidents::ResponderMessage < ApplicationRecord
   belongs_to :region, class_name: 'Roster::Region'
   belongs_to :person, class_name: 'Roster::Person'
   belongs_to :incident, class_name: 'Incidents::Incident'

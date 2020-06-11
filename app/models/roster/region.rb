@@ -1,4 +1,4 @@
-class Roster::Region < ActiveRecord::Base
+class Roster::Region < ApplicationRecord
   include Core::SerializedColumns
   include Core::ArrayAccessor
   has_many :shift_territories

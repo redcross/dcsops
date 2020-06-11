@@ -1,4 +1,4 @@
-class HomepageLink < ActiveRecord::Base
+class HomepageLink < ApplicationRecord
   belongs_to :region, class_name: 'Roster::Region'
   has_many :roles, class_name: 'HomepageLink::Role'
   has_attached_file :file
@@ -11,7 +11,7 @@ class HomepageLink < ActiveRecord::Base
 
   scope :for_region, -> (region) { where{(region_id == nil) | (region_id == region)}}
 
-  class Role < ActiveRecord::Base
+  class Role < ApplicationRecord
     self.table_name = :homepage_link_roles
     belongs_to :homepage_link, class_name: 'HomepageLink'
   end

@@ -1,4 +1,4 @@
-class Roster::VcImportData < ActiveRecord::Base
+class Roster::VcImportData < ApplicationRecord
   belongs_to :region
 
   def positions_matching regex_str

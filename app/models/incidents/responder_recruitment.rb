@@ -1,4 +1,4 @@
-class Incidents::ResponderRecruitment < ActiveRecord::Base
+class Incidents::ResponderRecruitment < ApplicationRecord
   belongs_to :incident, class_name: 'Incidents::Incident'
   belongs_to :person, class_name: 'Roster::Person'
   belongs_to :outbound_message, class_name: 'Incidents::ResponderMessage'

@@ -1,4 +1,4 @@
-class Incidents::CaseAssistanceItem < ActiveRecord::Base
+class Incidents::CaseAssistanceItem < ApplicationRecord
   belongs_to :price_list_item, class_name: 'Incidents::PriceListItem'
   belongs_to :case, class_name: 'Incidents::Case'
 

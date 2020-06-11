@@ -1,8 +1,8 @@
 class MoveNarrativeToIncident < ActiveRecord::Migration
-  class Incident < ActiveRecord::Base
+  class Incident < ApplicationRecord
     self.table_name = 'incidents_incidents'
   end
-  class DatIncident < ActiveRecord::Base
+  class DatIncident < ApplicationRecord
     self.table_name = 'incidents_dat_incidents'
     belongs_to :incident
   end

@@ -1,4 +1,4 @@
-class Scheduler::ShiftTime < ActiveRecord::Base
+class Scheduler::ShiftTime < ApplicationRecord
   belongs_to :region, class_name: 'Roster::Region'
   has_and_belongs_to_many :shifts, -> {order(:ordinal)}, class_name: 'Scheduler::Shift'
 

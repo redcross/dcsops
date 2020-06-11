@@ -1,11 +1,10 @@
 module Incidents::Notifications
-  class Role < ActiveRecord::Base
+  class Role < ApplicationRecord
     belongs_to :region, class_name: 'Roster::Region'
     has_many :role_configurations
 
     has_many :positions, through: :role_configurations, class_name: 'Roster::Position'
     has_many :shift_territories, through: :role_configurations, class_name: 'Roster::ShiftTerritory'
-
     has_and_belongs_to_many :shifts, class_name: 'Scheduler::Shift'
     has_many :triggers, inverse_of: :role, dependent: :delete_all
     has_many :events, through: :triggers

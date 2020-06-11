@@ -1,28 +1,28 @@
 class RearrangeRoles < ActiveRecord::Migration
-  class Role < ActiveRecord::Base
+  class Role < ApplicationRecord
     self.table_name = :roster_roles
     has_and_belongs_to_many :positions
     has_many :role_memberships
     has_many :role_scopes
   end
-  class Position < ActiveRecord::Base
+  class Position < ApplicationRecord
     self.table_name = :roster_positions
     has_many :role_memberships
   end
-  class RoleMembership < ActiveRecord::Base
+  class RoleMembership < ApplicationRecord
     self.table_name = :roster_role_memberships
     has_many :role_scopes
     belongs_to :role
     belongs_to :position
   end
-  class RoleScope < ActiveRecord::Base
+  class RoleScope < ApplicationRecord
     self.table_name = :roster_role_scopes
   end
-  class HomepageLink < ActiveRecord::Base
+  class HomepageLink < ApplicationRecord
     has_many :homepage_link_roles
     has_and_belongs_to_many :roles
   end
-  class HomepageLinkRole < ActiveRecord::Base
+  class HomepageLinkRole < ApplicationRecord
     belongs_to :homepage_link
   end
 

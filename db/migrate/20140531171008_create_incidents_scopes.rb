@@ -1,8 +1,8 @@
 class CreateIncidentsScopes < ActiveRecord::Migration
-  class Chapter < ActiveRecord::Base
+  class Chapter < ApplicationRecord
     self.table_name = :roster_chapters
   end
-  class Scope < ActiveRecord::Base
+  class Scope < ApplicationRecord
     self.table_name = :incidents_scopes
   end
 

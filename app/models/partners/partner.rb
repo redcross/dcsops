@@ -1,4 +1,4 @@
-class Partners::Partner < ActiveRecord::Base
+class Partners::Partner < ApplicationRecord
   belongs_to :region, class_name: 'Roster::Region'
   include AutoGeocode
 

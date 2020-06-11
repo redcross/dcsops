@@ -1,5 +1,5 @@
 class AddCacEncryption < ActiveRecord::Migration
-  class Case < ActiveRecord::Base
+  class Case < ApplicationRecord
     self.table_name = :incidents_cases
 
     encrypt_with_public_key :encrypted_cac, public_key: ENV['CAC_PUBLIC_KEY'], private_key: ENV['CAC_PRIVATE_KEY'], symmetric: :never

@@ -1,9 +1,9 @@
 class AddStatusToIncident < ActiveRecord::Migration
-  class Incident < ActiveRecord::Base
+  class Incident < ApplicationRecord
     self.table_name = 'incidents_incidents'
     has_one :dat_incident
   end
-  class DatIncident < ActiveRecord::Base
+  class DatIncident < ApplicationRecord
     self.table_name = 'incidents_dat_incidents'
   end
 

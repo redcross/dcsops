@@ -1,4 +1,4 @@
-class Incidents::DataModel < ActiveRecord::Base
+class Incidents::DataModel < ApplicationRecord
   self.abstract_class = true
 
   has_paper_trail skip: [:cac_number], class_name: 'Version', meta: {

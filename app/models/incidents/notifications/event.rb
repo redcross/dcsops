@@ -1,5 +1,5 @@
 module Incidents::Notifications
-  class Event < ActiveRecord::Base
+  class Event < ApplicationRecord
     belongs_to :region, class_name: 'Roster::Region'
     has_many :triggers
     has_many :roles, through: :triggers

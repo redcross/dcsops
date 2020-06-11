@@ -1,4 +1,4 @@
-class Scheduler::Shift < ActiveRecord::Base
+class Scheduler::Shift < ApplicationRecord
   belongs_to :shift_territory, class_name: 'Roster::ShiftTerritory'
   has_one :region, class_name: 'Roster::Region', through: :shift_territory
   belongs_to :shift_category, class_name: 'Scheduler::ShiftCategory'

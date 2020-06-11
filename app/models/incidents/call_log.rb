@@ -1,4 +1,4 @@
-class Incidents::CallLog < ActiveRecord::Base
+class Incidents::CallLog < ApplicationRecord
   belongs_to :region, class_name: "Roster::Region"
   belongs_to :dispatching_region, class_name: "Roster::Region"
 

@@ -1,5 +1,5 @@
 module Incidents::Notifications
-  class RoleScope < ActiveRecord::Base
+  class RoleScope < ApplicationRecord
     belongs_to :role
     belongs_to :response_territory, class_name: 'Incidents::ResponseTerritory'
 

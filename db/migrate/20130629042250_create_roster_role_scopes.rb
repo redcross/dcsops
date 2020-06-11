@@ -1,10 +1,10 @@
 class CreateRosterRoleScopes < ActiveRecord::Migration
-  class Role < ActiveRecord::Base; 
+  class Role < ApplicationRecord; 
     serialize :role_scope
     has_many :role_scopes
     self.table_name = "roster_roles"
   end
-  class RoleScope < ActiveRecord::Base; 
+  class RoleScope < ApplicationRecord; 
     belongs_to :role
     self.table_name = "roster_role_scopes"
   end

@@ -1,5 +1,5 @@
 class AddConfigurationFieldsToShift < ActiveRecord::Migration
-  class Shift < ActiveRecord::Base
+  class Shift < ApplicationRecord
     self.table_name = :scheduler_shifts
   end
 

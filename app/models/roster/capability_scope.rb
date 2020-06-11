@@ -1,4 +1,4 @@
-class Roster::CapabilityScope < ActiveRecord::Base
+class Roster::CapabilityScope < ApplicationRecord
   belongs_to :capability_membership
 
   def scope

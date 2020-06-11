@@ -1,4 +1,4 @@
-class Incidents::ResponderAssignment < ActiveRecord::Base
+class Incidents::ResponderAssignment < ApplicationRecord
   ROLES_TO_LABELS = {'team_lead' => 'Team Lead', 'trainee_lead' => 'Team Lead Trainee',
                      'responder' => 'Responder', 'public_affairs' => 'Public Affairs', 'health_services' => 'Health Services',
                      'mental_health' => 'Mental Health', 'spiritual_care' => "Spiritual Care",

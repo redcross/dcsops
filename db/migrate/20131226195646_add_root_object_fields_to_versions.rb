@@ -1,5 +1,5 @@
 class AddRootObjectFieldsToVersions < ActiveRecord::Migration
-  class VersionMigrator < ActiveRecord::Base
+  class VersionMigrator < ApplicationRecord
     self.table_name = :versions
     serialize :object_changes
     serialize :object

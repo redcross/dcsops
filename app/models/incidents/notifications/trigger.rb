@@ -1,5 +1,5 @@
 module Incidents::Notifications
-  class Trigger < ActiveRecord::Base
+  class Trigger < ApplicationRecord
     belongs_to :role, inverse_of: :triggers
     belongs_to :event
 

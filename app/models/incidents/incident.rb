@@ -1,4 +1,4 @@
-class Incidents::Incident < ActiveRecord::Base
+class Incidents::Incident < ApplicationRecord
   include HasDelegatedValidators
   include Incidents::IncidentPartners
   include Mappable

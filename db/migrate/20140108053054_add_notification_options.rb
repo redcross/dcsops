@@ -1,5 +1,5 @@
 class AddNotificationOptions < ActiveRecord::Migration
-  class NotificationSubscription < ActiveRecord::Base
+  class NotificationSubscription < ApplicationRecord
     self.table_name = :incidents_notification_subscriptions
   end
 

@@ -1,4 +1,4 @@
-class NamedQuery < ActiveRecord::Base
+class NamedQuery < ApplicationRecord
   before_create :generate_token
 
   def generate_token

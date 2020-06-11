@@ -1,5 +1,5 @@
 class MoveIncidentResourcesUsedToHStore < ActiveRecord::Migration
-  class DATIncident < ActiveRecord::Base
+  class DATIncident < ApplicationRecord
     self.table_name = "incidents_dat_incidents"
   end
 

@@ -1,4 +1,4 @@
-class Roster::Membership < ActiveRecord::Base
+class Roster::Membership < ApplicationRecord
   self.abstract_class = true
 
   belongs_to :person

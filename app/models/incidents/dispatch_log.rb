@@ -1,4 +1,4 @@
-class Incidents::DispatchLog < ActiveRecord::Base
+class Incidents::DispatchLog < ApplicationRecord
   belongs_to :incident, class_name: 'Incidents::Incident'
   belongs_to :region, class_name: 'Roster::Region'
 

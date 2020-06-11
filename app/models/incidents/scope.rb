@@ -1,4 +1,4 @@
-class Incidents::Scope < ActiveRecord::Base
+class Incidents::Scope < ApplicationRecord
   include Core::SerializedColumns
   include Core::ArrayAccessor
   belongs_to :region, class_name: "Roster::Region"

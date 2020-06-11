@@ -1,4 +1,4 @@
-class Incidents::NumberSequence < ActiveRecord::Base
+class Incidents::NumberSequence < ApplicationRecord
   has_many :regions, class_name: 'Roster::Region', foreign_key: 'incident_number_sequence_id'
 
   def next_sequence!

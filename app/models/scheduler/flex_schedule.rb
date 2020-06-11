@@ -1,4 +1,4 @@
-class Scheduler::FlexSchedule < ActiveRecord::Base
+class Scheduler::FlexSchedule < ApplicationRecord
   belongs_to :person, foreign_key: 'id', class_name: 'Roster::Person'
 
   scope :for_shift_territory, lambda {|shift_territory_ids| 

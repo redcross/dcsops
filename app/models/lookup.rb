@@ -1,4 +1,4 @@
-class Lookup < ActiveRecord::Base
+class Lookup < ApplicationRecord
   belongs_to :region, class_name: 'Roster::Region'
 
   validates :region, :scope, :name, :value, presence: true

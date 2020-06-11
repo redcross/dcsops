@@ -1,4 +1,4 @@
-class Incidents::CasCase < ActiveRecord::Base
+class Incidents::CasCase < ApplicationRecord
   belongs_to :cas_incident, class_name: "Incidents::CasIncident", inverse_of: :cases
 
   include AutoGeocode

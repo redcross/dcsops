@@ -1,4 +1,4 @@
-class Incidents::DispatchLogItem < ActiveRecord::Base
+class Incidents::DispatchLogItem < ApplicationRecord
   belongs_to :dispatch_log
 
   def self.not_sms_internal

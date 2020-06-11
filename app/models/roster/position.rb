@@ -1,4 +1,4 @@
-class Roster::Position < ActiveRecord::Base
+class Roster::Position < ApplicationRecord
   belongs_to :region
   has_many :position_memberships
   has_many :people, through: :position_memberships, class_name: 'Roster::Person'
