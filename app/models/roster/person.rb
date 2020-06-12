@@ -26,9 +26,6 @@ class Roster::Person < ApplicationRecord
 
   scope :for_chapter, ->(chapter){where{chapter_id == chapter}}
 
-  scope :has_role_for_scope, -> role_name, scope {
-    joins{roles.role_scopes.outer}.where{(roles.grant_name == role_name) & ((roles.role_scopes.scope == nil) | (roles.role_scopes.scope == scope.to_s))}
-  }
 
   scope :include_carriers, -> {
     includes{[home_phone_carrier, cell_phone_carrier, work_phone_carrier, alternate_phone_carrier, sms_phone_carrier]}
