@@ -26,10 +26,6 @@ class Roster::Person < ApplicationRecord
 
   scope :for_region, ->(region){where{region_id == region}}
 
-  scope :has_capability_for_scope, -> capability_name, scope {
-    joins{capabilities.capability_scopes.outer}.where{(capabilities.grant_name == capability_name) & ((capabilities.capability_scopes.scope == nil) | (capabilities.capability_scopes.scope == scope.to_s))}
-  }
-
   scope :include_carriers, -> {
     includes{[home_phone_carrier, cell_phone_carrier, work_phone_carrier, alternate_phone_carrier, sms_phone_carrier]}
   }
