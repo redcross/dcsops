@@ -45,7 +45,7 @@ gem "authlogic"
 gem "omniauth_openid_connect"
 
 gem "ri_cal" # Ical Rendering
-gem "cancan", github: 'jlaxson/cancan'
+gem "cancancan", '~> 2'
 gem "ruby-openid", require: 'openid'
 gem "timeliness"
 gem "roadie-rails"
