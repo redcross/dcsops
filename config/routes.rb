@@ -1,4 +1,4 @@
-Scheduler::Application.routes.draw do
+Rails.application.routes.draw do
 
   break if ARGV.join.include? 'assets:' # this prevents triggering ActiveAdmin during precompile
 
