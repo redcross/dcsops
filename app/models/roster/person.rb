@@ -22,16 +22,13 @@ class Roster::Person < ApplicationRecord
 
   scope :name_contains, -> (query) { where("(LOWER(first_name) || ' ' || LOWER(last_name)) LIKE ?", "%#{query.downcase}%") }
 
-  scope :for_chapter, ->(chapter){where{chapter_id == chapter}}
-
+  scope :for_chapter, -> (chapter) { where(chapter: chapter) }
 
   scope :include_carriers, -> {
-    includes{[home_phone_carrier, cell_phone_carrier, work_phone_carrier, alternate_phone_carrier, sms_phone_carrier]}
+    includes(:home_phone_carrier, :cell_phone_carrier, :work_phone_carrier, :alternate_phone_carrier, :sms_phone_carrier)
   }
 
-  sifter :with_position do
-    (lat != nil) & (lng != nil) & (lat != 0) & (lng != 0)
-  end
+  scope :with_position, -> { where.not(lat: nil, lng: nil).where.not(lat: 0, lng: 0) }
 
   def self.for_vc_account(account)
     self.where(vc_id: account).first
@@ -75,7 +72,7 @@ class Roster::Person < ApplicationRecord
   end
 
   def roles_with_scopes
-    @roles_with_scopes ||= role_memberships.includes{[role, role_scopes]}.joins{role_scopes.outer}.references(:role)
+    @roles_with_scopes ||= role_memberships.includes(:role, :role_scopes).left_outer_joins(:role_scopes).references(:role)
   end
 
   def primary_county
