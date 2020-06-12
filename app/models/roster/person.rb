@@ -20,9 +20,7 @@ class Roster::Person < ApplicationRecord
   belongs_to :alternate_phone_carrier, class_name: 'Roster::CellCarrier'
   belongs_to :sms_phone_carrier, class_name: 'Roster::CellCarrier'
 
-  scope :name_contains, lambda {|query| 
-    where{lower(first_name.op('||', ' ').op('||', last_name)).like("%#{query.downcase}%")}
-  }
+  scope :name_contains, -> (query) { where("(LOWER(first_name) || ' ' || LOWER(last_name)) LIKE ?", "%#{query.downcase}%") }
 
   scope :for_region, ->(region){where{region_id == region}}
 
