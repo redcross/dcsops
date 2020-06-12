@@ -11,10 +11,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'therubyracer', platforms: :ruby # Default Rails 5.2 uses mini_racer, but we're already using therubyracer, so we'll stay with that for now.
 gem 'coffee-rails', '~> 4.2'
 gem 'jbuilder', '~> 2.5'
-
-# Included in default Gemfile for a new Rails 5.2 app, but I'm leaving disabled for now:
-# Reduces boot times through caching; required in config/boot.rb
-# gem 'bootsnap', '>= 1.1.0', require: false
+gem 'bootsnap', '>= 1.1.0', require: false
 
 # The following are gems required by the application itself:
 
@@ -86,10 +83,6 @@ gem 'pubnub'
 gem 'pdfkit'
 gem 'wkhtmltopdf-heroku', :group => [:staging, :production]
 gem 'wkhtmltopdf-binary', github: 'dwa012/wkhtmltopdf-binary', group: :development
-
-group :staging, :production do
-  gem 'rails_12factor'
-end
 
 
 group :test do
