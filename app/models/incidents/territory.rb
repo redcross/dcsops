@@ -6,7 +6,7 @@ class Incidents::Territory < ApplicationRecord
   validates :chapter, presence: true
 
   def self.for_chapter chapter
-    where{chapter_id == chapter}
+    where(chapter: chapter)
   end
 
   def self.default_for_chapter chapter

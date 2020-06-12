@@ -6,7 +6,7 @@ class Incidents::Ability
 
   def initialize(person)
     @person = person
-    @chapter_scope = [@person.chapter_id] + Roster::Chapter.with_incidents_delegate_chapter_value(@person.chapter_id).ids
+    @chapter_scope = [@person.chapter_id] + Roster::Chapter.with_incidents_delegate_chapter_value(@person.chapter_id).pluck(:id)
     is_admin = person.has_role 'incidents_admin'
 
     scopes
