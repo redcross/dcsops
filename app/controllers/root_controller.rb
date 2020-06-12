@@ -1,7 +1,7 @@
 class RootController < ApplicationController
   skip_before_action :require_valid_user!
   skip_before_action :require_active_user!, only: [:health, :inactive]
-  skip_before_action :user_time_zone, only: :health
+  skip_around_action :user_time_zone, only: :health
 
   newrelic_ignore only: :health
 
