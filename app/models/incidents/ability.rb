@@ -6,7 +6,7 @@ class Incidents::Ability
 
   def initialize(person)
     @person = person
-    @region_scope = [@person.region_id] + Roster::Region.with_incidents_delegate_region_value(@person.region_id).ids
+    @region_scope = [@person.region_id] + Roster::Region.with_incidents_delegate_region_value(@person.region_id).pluck(:id)
     is_admin = person.has_capability 'incidents_admin'
     region_admin = person.has_capability 'region_admin'
 
