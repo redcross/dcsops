@@ -127,9 +127,6 @@ class Roster::Person < ApplicationRecord
   end
 
   acts_as_authentic do |c|
-    c.validate_password_field false
-    c.validate_email_field false
-    c.validate_login_field false
     #c.login_field :email
   end
 
