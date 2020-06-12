@@ -25,3 +25,4 @@ config/database.yml
 coverage/
 sauce_connect.log*
 local/
+.byebug_history
