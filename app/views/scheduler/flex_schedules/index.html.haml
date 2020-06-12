@@ -34,7 +34,7 @@
         %tr
           %th Only Show People With Positions:
           %td
-            =f.collection_select :person_positions_id_in, current_region.positions.visible.order{name}, :id, :name, {include_blank: true}, {multiple: true, class: "form-control"}
+            =f.collection_select :person_positions_id_in, current_region.positions.visible.order(:name), :id, :name, {include_blank: true}, {multiple: true, class: "form-control"}
     =submit_tag 'Show', class: 'btn btn-primary'
 
 %table.table.table-condensed.flex-table

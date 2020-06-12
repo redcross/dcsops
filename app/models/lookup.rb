@@ -10,6 +10,6 @@ class Lookup < ApplicationRecord
   end
 
   def self.for_region_and_scope(region, scope_name)
-    where{(region_id == nil) | (region_id == region)}.where{scope == scope_name}.order{ordinal.asc}
+    where{(region_id == nil) | (region_id == region)}.where{scope == scope_name}.order(:ordinal)
   end
 end

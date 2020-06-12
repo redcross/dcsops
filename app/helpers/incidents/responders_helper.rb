@@ -107,7 +107,7 @@ module Incidents::RespondersHelper
   end
 
   def incoming_messages(incident)
-    @incoming ||= Incidents::ResponderMessage.unacknowledged_for_incident(incident).includes{person}.order{created_at.asc}
+    @incoming ||= Incidents::ResponderMessage.unacknowledged_for_incident(incident).includes{person}.order(:created_at)
   end
 
   def enable_messaging

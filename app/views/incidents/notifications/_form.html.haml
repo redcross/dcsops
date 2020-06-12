@@ -5,7 +5,7 @@
         %a.close(data-dismiss="modal") &times;
         %h4.modal-title Send Notification
       .modal-body.send-notifications
-        =f.input :event_id, as: :select, collection: Incidents::Notifications::Event.for_region(parent.region).for_type('escalation').order{ordinal}, label: 'Severity' 
+        =f.input :event_id, as: :select, collection: Incidents::Notifications::Event.for_region(parent.region).for_type('escalation').order(:ordinal), label: 'Severity' 
         =f.input :message, as: :text, input_html: {rows: 4}
         =link_to 'Show Recipients', '#', class: "show-recipients", data: {recipients_url: recipients_resource_path}
         .message-recipients

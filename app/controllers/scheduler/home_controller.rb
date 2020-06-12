@@ -23,7 +23,7 @@ class Scheduler::HomeController < Scheduler::BaseController
 
   expose(:upcoming_shifts) {
     [ Scheduler::ShiftAssignment.where(person_id: current_person).for_active_groups(Scheduler::ShiftTime.current_groups_for_region(current_person.region, current_time)).to_a,
-      Scheduler::ShiftAssignment.where(person_id: current_person).starts_after(current_time).includes([:shift_time, :shift]).order{[date, shift_time.start_offset]}.limit(3).to_a
+      Scheduler::ShiftAssignment.where(person_id: current_person).starts_after(current_time).includes([:shift_time, :shift]).order(:date, 'shift_time.start_offset').limit(3).to_a
     ].flatten.first(3)
   }
 
@@ -34,7 +34,7 @@ class Scheduler::HomeController < Scheduler::BaseController
 
   expose :available_swaps do
     Scheduler::ShiftAssignment.available_for_swap(current_region)
-      .order{[date, shift_time.start_offset]}
+      .order(:date, 'shift_time.start_offset')
       .select{|shift| shift.shift.can_be_taken_by? current_person}
   end
 

@@ -56,7 +56,7 @@ class Incidents::DispatchController < Incidents::BaseController
     # it into the query.
     @coll ||= super.
       where{(current_dispatch_contact_id != nil) & (status.not_in ['closed', 'invalid'])}.
-      order{created_at.desc}.
+      order(created_at: :desc).
       reject {|i| i.dispatched? }
   end
 

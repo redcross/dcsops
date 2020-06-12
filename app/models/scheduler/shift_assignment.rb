@@ -172,7 +172,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
   end
 
   def self.ordered_shifts region
-    joins{person}.where{person.region_id==my{region}}.readonly(false).joins{[shift, shift_time]}.order{[shift.ordinal, shift_time.start_offset, person_id]}.preload{[shift.shift_territory, person, shift, shift_time]}
+    joins{person}.where{person.region_id==my{region}}.readonly(false).joins{[shift, shift_time]}.order('shift.ordinal', 'shift_time.start_offset', 'person_id'}.preload{[shift.shift_territory, person, shift, shift_time]}
   end
 
   def self.todays_shifts_with_notes region

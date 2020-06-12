@@ -21,7 +21,7 @@ class Incidents::ReportMailer < ActionMailer::Base
 
     rel = Incidents::Incident.valid.for_region(scope.all_regions)
     
-    @incident_scope = date_scope(rel, date_range).order{date}.includes{responder_assignments.person}
+    @incident_scope = date_scope(rel, date_range).order(:date).includes{responder_assignments.person}
     @incidents = @incident_scope.map{|i| Incidents::IncidentPresenter.new(i) }
     @weekly_stats = date_scope(rel, date_range).incident_stats
     @yearly_stats = rel.where{date.in(fiscal.range)}.incident_stats
@@ -70,7 +70,7 @@ private
                           .preload{[disaster, person.shift_territories]}
                           .joins{disaster}
                           .where{ disaster.dr_number.not_in(ignore) }
-                          .order{ date_first_seen.desc }
+                          .order(date_first_seen: :desc)
                           .to_a
                           .uniq{|a| [a.person_id, a.disaster_id] }
                           .group_by{|a| a.disaster.title }

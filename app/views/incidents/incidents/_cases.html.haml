@@ -3,7 +3,7 @@
   -if can? :create, resource.cases.build
     =edit_panel_link_to t(".cases.add_case"), new_resource_case_path(resource), class: "btn btn-primary"
 
-- resource.cases.order{id}.each do |kase|
+- resource.cases.order(:id).each do |kase|
   .row
     .col-sm-8
       %table.table.table-bordered

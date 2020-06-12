@@ -10,7 +10,7 @@ class Incidents::ResponsesController < Incidents::BaseController
     authorize! :show, :responders
     apply_scopes(Incidents::ResponderAssignment).for_region(current_region)
                                                 .includes{[incident, person]}
-                                                .order{incident.date.desc}
+                                                .order('incident.date DESC')
                                                 .group_by(&:person)
   }
 

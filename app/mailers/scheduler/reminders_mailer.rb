@@ -115,11 +115,11 @@ class Scheduler::RemindersMailer < ActionMailer::Base
   expose(:related_shifts) {Scheduler::ShiftAssignment.for_day(item.date).for_shift_territories(item.shift.shift_territory).for_groups(item.shift_time_id).includes{shift}}
 
   def shift_lead
-    @shift_lead ||= related_shifts.order{shift.ordinal}.first
+    @shift_lead ||= related_shifts.order('shift.ordinal').first
   end
 
   def other_assignments
-    related_shifts.order{shift.ordinal}
+    related_shifts.order('shift.ordinal')
   end
 
   def assignments_for_date_shift_time(date, shift, group)

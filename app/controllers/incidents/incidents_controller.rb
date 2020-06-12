@@ -109,7 +109,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     expose(:needs_report_collection) { 
       @needs_report_collection_with_pagination ||= begin
-        collection = Incidents::Incident.for_region(delegated_region_ids).needs_incident_report.includes{shift_territory}.order{incident_number}
+        collection = Incidents::Incident.for_region(delegated_region_ids).needs_incident_report.includes{shift_territory}.order(:incident_number)
         collection.page(params[:page])
       end
     }
@@ -120,7 +120,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     helper_method :original_url
 
     expose(:resource_changes) {
-      changes = Version.order{created_at.desc}.for_region(@region).includes{[root, item]}
+      changes = Version.order(created_at :desc).for_region(@region).includes{[root, item]}
       if params[:id] # we have a single resource
         changes = changes.for_root(resource.__getobj__)
       else

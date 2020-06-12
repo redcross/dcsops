@@ -24,12 +24,12 @@ class Scheduler::ShiftTime < ApplicationRecord
 
   def next_group
     offset = self.start_offset
-    group = self.class.where{(start_offset > offset) & (region_id == my{self.region_id}) & (period == self.period)}.order{start_offset}.first
+    group = self.class.where{(start_offset > offset) & (region_id == my{self.chapter_id}) & (period == self.period)}.order(:start_offset).first
     if group
       group.start_date = self.start_date
       return group
     end
-    group = self.class.where{(region_id == my{self.region_id})}.order{start_offset}.first
+    group = self.class.where{(region_id == my{self.chapter_id})}.order(:start_offset).first
     if group
       group.start_date = self.next_period_date if self.start_date
       group
@@ -49,14 +49,14 @@ class Scheduler::ShiftTime < ApplicationRecord
   def self.first_group(region, current_time=Time.zone.now)
     self.current_groups_for_region(region, current_time, daily).first || begin
 
-      groups = daily.for_region(region).order{start_offset.asc}.to_a
+      groups = daily.for_region(region).order(:start_offset).to_a
 
       groups.detect{start_offset <= current_time.seconds_since_midnight} || groups.first
     end
   end
   # Returns a date, group pairing of the count upcoming groups
   def self.next_groups(region, current_time=Time.zone.now)
-    groups = for_region(region).order{start_offset}.to_a
+    groups = for_region(region).order(:start_offset).to_a
 
     current_time = current_time.in_time_zone(region.time_zone)
     since_midnight = current_time.seconds_since_midnight

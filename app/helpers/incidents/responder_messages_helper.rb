@@ -4,7 +4,7 @@ module Incidents::ResponderMessagesHelper
   end
 
   def timeline_entry_message
-    log = incident.event_logs.order{event_time.desc}.note.first
+    log = incident.event_logs.order(event_time: :desc).note.first
     if log
       "Incident Note: #{log.message}"
     end
