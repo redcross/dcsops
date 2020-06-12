@@ -62,8 +62,8 @@ gem 'dotiw'
 
 gem 'geokit'#, github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 
-gem 'formtastic', '~> 3.0'
-gem 'formtastic-bootstrap', '~> 3.0', github: 'ekubal/formtastic-bootstrap'
+gem 'formtastic'
+gem 'formtastic-bootstrap'
 gem 'cocoon'
 gem 'ransack'
 gem 'activeadmin'

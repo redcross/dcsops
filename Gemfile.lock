@@ -5,13 +5,6 @@ GIT
     wkhtmltopdf-binary (0.9.9)
 
 GIT
-  remote: https://github.com/ekubal/formtastic-bootstrap.git
-  revision: 221923a168dfdb9c9680c302b838977cc712c70b
-  specs:
-    formtastic-bootstrap (3.1.0)
-      formtastic (>= 3.0)
-
-GIT
   remote: https://github.com/jlaxson/cancan.git
   revision: 0ca3749869af1b5e154f81fca35d4199666ac2f8
   specs:
@@ -189,7 +182,7 @@ GEM
     climate_control (0.2.0)
     cocaine (0.5.8)
       climate_control (>= 0.0.3, < 1.0)
-    cocoon (1.2.11)
+    cocoon (1.2.14)
     coderay (1.1.2)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
@@ -275,6 +268,8 @@ GEM
       rake
     formtastic (3.1.5)
       actionpack (>= 3.2.13)
+    formtastic-bootstrap (3.1.1)
+      formtastic (>= 3.0)
     formtastic_i18n (0.6.0)
     geokit (1.11.0)
     globalid (0.4.2)
@@ -661,8 +656,8 @@ DEPENDENCIES
   dotiw
   factory_girl_rails
   faker
-  formtastic (~> 3.0)
-  formtastic-bootstrap (~> 3.0)!
+  formtastic
+  formtastic-bootstrap
   geokit
   haml-rails
   has_scope
