@@ -22,15 +22,13 @@ class Roster::Person < ApplicationRecord
 
   scope :name_contains, -> (query) { where("(LOWER(first_name) || ' ' || LOWER(last_name)) LIKE ?", "%#{query.downcase}%") }
 
-  scope :for_region, ->(region){where{region_id == region}}
+  scope :for_region, -> (region) { where(region: region)}
 
   scope :include_carriers, -> {
-    includes{[home_phone_carrier, cell_phone_carrier, work_phone_carrier, alternate_phone_carrier, sms_phone_carrier]}
+    includes(:home_phone_carrier, :cell_phone_carrier, :work_phone_carrier, :alternate_phone_carrier, :sms_phone_carrier)
   }
 
-  sifter :with_position do
-    (lat != nil) & (lng != nil) & (lat != 0) & (lng != 0)
-  end
+  scope :with_position, -> { where.not(lat: nil, lng: nil).where.not(lat: 0, lng: 0) }
 
   def self.for_vc_account(account)
     self.where(vc_id: account).first
@@ -74,7 +72,7 @@ class Roster::Person < ApplicationRecord
   end
 
   def capabilities_with_scopes
-    @capabilities_with_scopes ||= capability_memberships.includes{[capability, capability_scopes]}.joins{capability_scopes.outer}.references(:capability)
+    @capabilities_with_scopes ||= capability_memberships.includes(:capability, :capability_scopes).left_outer_joins(:capability_scopes).references(:capability)
   end
 
   def primary_shift_territory
