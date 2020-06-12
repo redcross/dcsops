@@ -103,11 +103,11 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
 
     expose(:needs_report_collection) { 
-      Incidents::Incident.for_chapter(delegated_chapter_ids).needs_incident_report.includes{area}.order{incident_number} 
+      Incidents::Incident.for_chapter(delegated_chapter_ids).needs_incident_report.includes{area}.order(:incident_number)
     }
 
     expose(:resource_changes) {
-      changes = Version.order{created_at.desc}.for_chapter(@chapter).includes{[root, item]}
+      changes = Version.order(created_at: :desc).for_chapter(@chapter).includes{[root, item]}
       if params[:id] # we have a single resource
         changes = changes.for_root(resource.__getobj__)
       else

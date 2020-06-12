@@ -32,7 +32,7 @@ class Admin::ShiftsController < GridController
   end
 
   def collection
-    @_coll ||= super.order{[county_id, ordinal]}
+    @_coll ||= super.order(:county_id, :ordinal)
   end
 
   def chapter

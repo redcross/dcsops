@@ -76,7 +76,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
   end
 
   scope :logins do |scope|
-    scope.uniq.order{last_login.desc}.where{last_login != nil}
+    scope.uniq.order(last_login: :desc).where{last_login != nil}
   end
 
   member_action :impersonate, method: [:post, :delete] do

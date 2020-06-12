@@ -25,7 +25,7 @@ ActiveAdmin.register Scheduler::DispatchConfig, as: 'Dispatch Configs' do
       f.input :county, collection: f.object.chapter.try(:counties), input_html: {disabled: !allow_edit_names?}
       f.input :is_active, input_html: {disabled: !allow_edit_names?}
       if f.object.chapter
-        shifts = Scheduler::Shift.for_chapter(f.object.chapter).joins{county}.order{[county.name, name]}.includes{[shift_groups, county]}
+        shifts = Scheduler::Shift.for_chapter(f.object.chapter).joins{county}.order('county.name', :name).includes{[shift_groups, county]}
         f.input :shift_first, collection: shifts
         f.input :shift_second, collection: shifts
         f.input :shift_third, collection: shifts

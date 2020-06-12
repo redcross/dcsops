@@ -11,7 +11,7 @@ class Incidents::CasIncident < ApplicationRecord
   end
 
   def self.to_link_for_chapter chapter
-    for_chapter(chapter).joins{incident.outer}.where{(ignore_incident==false) & (incident.id == nil)}.order{incident_date.desc}
+    for_chapter(chapter).joins{incident.outer}.where{(ignore_incident==false) & (incident.id == nil)}.order(incident_date: :desc)
   end
 
   def self.open_cases

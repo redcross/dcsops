@@ -13,7 +13,7 @@ class Incidents::ResponsesController < Incidents::BaseController
   expose(:responders) {
     apply_scopes(Incidents::ResponderAssignment).for_chapter(current_chapter)
                                                 .includes{[incident, person]}
-                                                .order{incident.date.desc}
+                                                .order('incident.date DESC')
                                                 .group_by(&:person)
   }
 

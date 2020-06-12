@@ -167,7 +167,7 @@ describe Incidents::DispatchImporter do
 
       expect(inc.log_items.size).to eq(13)
 
-      dial = inc.log_items.order{action_at.desc}.detect{|li| li.action_type == 'Dial'}
+      dial = inc.log_items.order(action_at: :desc).detect{|li| li.action_type == 'Dial'}
       expect(dial).not_to be_nil
       expect(dial.result).to eq("RELAYED")
       expect(dial.recipient).to eq("650-555-1212 DOE, JOHN - CELL")

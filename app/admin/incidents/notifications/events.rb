@@ -20,7 +20,7 @@ ActiveAdmin.register Incidents::Notifications::Event, as: 'Event' do
   controller do
 
     def collection
-      @col ||= super.order{ordinal}
+      @col ||= super.order(:ordinal)
     end
 
     def resource_params

@@ -13,7 +13,7 @@ class AddStatusToIncident < ActiveRecord::Migration
     add_column :incidents_incidents, :status, :string, limit: 16
 
     say_with_time "populate status" do
-      Incident.includes{dat_incident}.order{date}.find_each do |inc|
+      Incident.includes{dat_incident}.order(:date).find_each do |inc|
         status = if INVALID_TYPES.include? inc.incident_type
           "invalid"
         elsif inc.dat_incident or inc.ignore_incident_report
