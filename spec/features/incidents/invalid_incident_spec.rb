@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Invalid Incident Report", :type => :feature do
-  #self.use_transactional_fixtures = false
+  #self.use_transactional_tests = false
 
   it "Should be submittable" do
     grant_role! 'submit_incident_report'

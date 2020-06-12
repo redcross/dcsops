@@ -20,7 +20,7 @@ module FeatureSpec
       click_on "Logout"
     end
 
-    self.use_transactional_fixtures = false
+    self.use_transactional_tests = false
 
     before(:each) do |example|
       next if example.metadata[:logged_in] == false
