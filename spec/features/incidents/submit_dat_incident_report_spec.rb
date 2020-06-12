@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "DAT Incident Report", type: :feature, versions: true do
-  #self.use_transactional_fixtures = false
+  #self.use_transactional_tests = false
 
   it "Should be submittable" do
     grant_capability! 'submit_incident_report'
