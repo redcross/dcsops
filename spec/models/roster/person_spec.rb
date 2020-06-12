@@ -5,11 +5,11 @@ describe Roster::Person, :type => :model do
   let(:person) {FactoryGirl.create :person, positions: [position], chapter: chapter}
   let(:position) {Roster::Position.create name: 'Test Position', chapter: chapter}
   let(:role) {Roster::Role.create name: 'Test Role', grant_name: grant_name}
-  let!(:membership) { Roster::RoleMembership.create role: role, position: position}
-  describe "#has_role" do
-    let(:grant_name) { "test_grant" }
+  let(:membership) { Roster::RoleMembership.create role: role, position: position}
+  let(:grant_name) { "test_grant" }
 
-    before(:each) { role }
+  describe "#has_role" do
+    before(:each) { membership }
 
     it "should return true if it has a role without a scope" do
       expect(person.has_role( grant_name)).to be_truthy
@@ -26,9 +26,7 @@ describe Roster::Person, :type => :model do
   end
 
   describe "#scope_for_role" do
-    let(:grant_name) { "test_grant" }
-
-    before(:each) { role }
+    before(:each) { membership }
 
     it "should return empty if it doesn't have that role" do
 
@@ -51,6 +49,15 @@ describe Roster::Person, :type => :model do
       c = person.counties.create name: 'Test County', chapter: chapter
 
       expect(person.scope_for_role( grant_name)).to match_array(person.county_ids + [424242])
+    end
+  end
+
+  describe ".name_contains" do
+    let!(:alice) { FactoryGirl.create :person, first_name: "Alice", last_name: "Doe" }
+    let!(:bob)   { FactoryGirl.create :person, first_name: "Bob", last_name: "Smith" }
+
+    it "finds only partial matching person, case-insensitive" do
+      Roster::Person.name_contains("BOB sm").should eq [bob]
     end
   end
 end
