@@ -5,12 +5,6 @@ GIT
     wkhtmltopdf-binary (0.9.9)
 
 GIT
-  remote: https://github.com/jlaxson/cancan.git
-  revision: 0ca3749869af1b5e154f81fca35d4199666ac2f8
-  specs:
-    cancan (1.6.10)
-
-GIT
   remote: https://github.com/redcross/arcdata_core.git
   revision: f21d7a9770d43b31b67cf95e976375b23efcde25
   branch: upgrade/rails-6
@@ -152,6 +146,7 @@ GEM
       railties (>= 3.0)
     builder (3.2.4)
     byebug (10.0.0)
+    cancancan (2.3.0)
     capybara (3.32.2)
       addressable
       mini_mime (>= 0.1.3)
@@ -640,7 +635,7 @@ DEPENDENCIES
   bootstrap-kaminari-views
   bootstrap-x-editable-rails
   byebug
-  cancan!
+  cancancan (~> 2)
   capybara
   capybara-screenshot
   cocoon
