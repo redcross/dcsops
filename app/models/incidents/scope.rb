@@ -6,7 +6,7 @@ class Incidents::Scope < ApplicationRecord
   has_many :report_subscriptions, class_name: 'Incidents::ReportSubscription'
 
   def self.for_region region
-    where{region_id == region}.first!
+    where(region: region).first!
   end
 
   def self.including_region region_ids

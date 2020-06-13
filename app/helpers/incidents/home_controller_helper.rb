@@ -5,7 +5,7 @@ module Incidents::HomeControllerHelper
   end
 
   def stats(date_range)
-    stats = scope.incidents.where{date.in(date_range)}.valid
+    stats = scope.incidents.where(date: date_range).valid
     stats = stats.with_status 'closed' if current_region.incidents_report_editable
     stats.incident_stats
   end
@@ -32,7 +32,7 @@ module Incidents::HomeControllerHelper
   end
 
   def map_json_for(incidents)
-    incidents.joins{region}.pluck(:incident_number, :lat, :lng, :num_adults, :num_children, :status, "roster_regions.url_slug").map do |inc|
+    incidents.joins(:region).pluck(:incident_number, :lat, :lng, :num_adults, :num_children, :status, "roster_regions.url_slug").map do |inc|
       {id: inc[0], lat: inc[1], lng: inc[2], clients: [inc[3], inc[4]].compact.sum, status: inc[5], url: incidents_region_incident_path(inc[6], inc[0])}
     end
   end

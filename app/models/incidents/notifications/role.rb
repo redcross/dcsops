@@ -18,7 +18,7 @@ module Incidents::Notifications
 
 
     def self.for_region(region)
-      where{region_id == region}
+      where(region: region)
     end
 
     validate :validates_relations_in_same_region

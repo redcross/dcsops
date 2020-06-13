@@ -7,7 +7,7 @@ class Incidents::CasIncident < ApplicationRecord
   #validates :incident_id, :cas_incident_number, :dr_number, uniqueness: {allow_blank: true, allow_nil: true}
 
   def self.for_region region
-    where{region_id == region}
+    where(region: region)
   end
 
   def self.to_link_for_region region

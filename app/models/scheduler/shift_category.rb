@@ -3,16 +3,16 @@ class Scheduler::ShiftCategory < ApplicationRecord
   has_many :shifts, class_name: 'Scheduler::Shift'
 
   def self.for_region region
-    where{region_id == region}
+    where(region: region)
   end
 
   def self.enabled
-    where{enabled == true}
+    where(enabled: true)
   end
 
   def display_name
     "#{region_id} - #{name}"
   end
 
-  default_scope { order{ordinal} }
+  default_scope { order(:ordinal) }
 end

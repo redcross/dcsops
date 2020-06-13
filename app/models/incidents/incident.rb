@@ -17,7 +17,7 @@ class Incidents::Incident < ApplicationRecord
   has_many :responder_messages, class_name: 'Incidents::ResponderMessage'
   has_many :responder_recruitments, class_name: 'Incidents::ResponderRecruitment'
   
-  has_many :event_logs, ->{ order{event_time.desc} }, class_name: 'Incidents::EventLog', inverse_of: :incident
+  has_many :event_logs, -> { order(event_time: :desc) }, class_name: 'Incidents::EventLog', inverse_of: :incident
   has_many :attachments, class_name: 'Incidents::Attachment', inverse_of: :incident
   has_many :cases, class_name: 'Incidents::Case', inverse_of: :incident
   has_one :initial_incident_report, class_name: 'Incidents::InitialIncidentReport', inverse_of: :incident
@@ -38,14 +38,10 @@ class Incidents::Incident < ApplicationRecord
   validates :region, :date, :response_territory, presence: true
   validates :incident_number, presence: true, format: /\A\w*\d{2}-\d{3,}\z/, uniqueness: { scope: :region_id }
 
-  scope :for_region, -> region { where{region_id.in region}}
-  scope :in_shift_territory, -> shift_territory {where{shift_territory_id == shift_territory}}
-  scope :valid, lambda {
-    where{status != 'invalid'}
-  }
-  scope :with_status, -> filter_status {
-    where{status == filter_status}
-  }
+  scope :for_region, -> (region) { where(region: region) }
+  scope :in_shift_territory, -> area {where{shift_territory_id == shift_territory}}
+  scope :valid, -> { where.not(status: 'invalid') }
+  scope :with_status, -> (filter_status) { where(status: filter_status) }
   scope :needs_incident_report, lambda {
     with_status 'open'
   }
@@ -64,14 +60,14 @@ class Incidents::Incident < ApplicationRecord
   end
 
   def self.incident_stats
-    valid.order(nil).select{[
-      count(id).as(:incident_count),
-      sum(num_cases).as(:case_count),
-      sum(num_families).as(:family_count),
-      sum(num_adults + num_children).as(:client_count),
-      sum(num_adults).as(:num_adults),
-      sum(num_children).as(:num_children)
-    ]}.take
+    OpenStruct.new({
+      incident_count: valid.count,
+      case_count:     valid.sum(:num_cases),
+      family_count:   valid.sum(:num_families),
+      client_count:   valid.sum(:num_adults) + valid.sum(:num_children),
+      num_adults:     valid.sum(:num_adults),
+      num_children:   valid.sum(:num_children)
+    })
   end
 
   def self.count_resources resources

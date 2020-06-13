@@ -34,7 +34,7 @@ class RootController < ApplicationController
   private
 
   expose(:homepage_links) {
-    links = HomepageLink.for_region(current_chapter).order(:group_ordinal, :ordinal).includes{roles}.to_a
+    links = HomepageLink.for_region(current_region).order(:group_ordinal, :ordinal).includes(:roles).to_a
     scopes = current_user.scope_for_capability 'homepage_link'
     links.select{|l| l.role_ids.blank? || (l.roles.map(&:role_scope) & scopes).present? }.group_by(&:group)
   }

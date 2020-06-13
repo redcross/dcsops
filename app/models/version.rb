@@ -11,6 +11,6 @@ class Version < PaperTrail::Version
   }
 
   scope :for_region, -> region {
-    where{region_id == region}
+    where(region: region)
   }
 end

@@ -39,7 +39,7 @@ class Scheduler::ShiftTime < ApplicationRecord
   end
 
   def self.for_region(region)
-    where{region_id == region}
+    where(region: region)
   end
 
   def self.daily

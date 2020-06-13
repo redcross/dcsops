@@ -100,7 +100,7 @@ class Incidents::Ability
     can :dispatch_console, Incidents::Scope, {id: scopes}
 
 
-    dispatch_regions = Incidents::Scope.where{id.in scopes}.includes{regions}.flat_map{|s| s.all_regions}.map(&:id)
+    dispatch_regions = Incidents::Scope.where(id: scopes).includes(:regions).flat_map{|s| s.all_regions}.map(&:id)
     can [:create, :show], Incidents::CallLog, {region_id: dispatch_regions + [nil]}
     can [:create, :index, :show, :complete, :next_contact], Incidents::Incident, {region_id: dispatch_regions}
   end

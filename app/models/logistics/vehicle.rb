@@ -7,5 +7,5 @@ class Logistics::Vehicle < ApplicationRecord
     %w(erv suv shelter_trailer misc pov)
   end
 
-  scope :for_region, ->(region){where{region_id == region}}
+  scope :for_region, ->(region) { where(region: region) }
 end
