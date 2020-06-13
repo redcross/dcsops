@@ -95,7 +95,7 @@ class Roster::SessionsController < ApplicationController
 
   helper_method :resource
   def resource
-    @resource ||= (current_user_session || Roster::Session.new(params[:roster_session]))
+    @resource ||= (current_user_session || Roster::Session.new(params[:roster_session]&.permit(:username, :password).to_h))
   end
 
 end
