@@ -35,7 +35,5 @@ module Incidents::HomeControllerHelper
     incidents.joins{region}.pluck(:incident_number, :lat, :lng, :num_adults, :num_children, :status, "roster_regions.url_slug").map do |inc|
       {id: inc[0], lat: inc[1], lng: inc[2], clients: [inc[3], inc[4]].compact.sum, status: inc[5], url: incidents_region_incident_path(inc[6], inc[0])}
     end
-  rescue ActiveRecord::ThrowResult
-    []
   end
 end
