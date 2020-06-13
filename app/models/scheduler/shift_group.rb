@@ -39,7 +39,7 @@ class Scheduler::ShiftGroup < ApplicationRecord
   end
 
   def self.for_chapter(chapter)
-    where{chapter_id == chapter}
+    where(chapter: chapter)
   end
 
   def self.daily

@@ -23,7 +23,7 @@ class Scheduler::DispatchConfig < ApplicationRecord
   end
 
   def self.for_chapter chapter
-    where{chapter_id == chapter}
+    where(chapter: chapter)
   end
 
   def self.includes_everything

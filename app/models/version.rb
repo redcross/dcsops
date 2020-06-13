@@ -11,6 +11,6 @@ class Version < PaperTrail::Version
   }
 
   scope :for_chapter, -> chapter {
-    where{chapter_id == chapter}
+    where(chapter: chapter)
   }
 end

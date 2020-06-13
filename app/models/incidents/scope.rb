@@ -6,7 +6,7 @@ class Incidents::Scope < ApplicationRecord
   has_many :report_subscriptions, class_name: 'Incidents::ReportSubscription'
 
   def self.for_chapter chapter
-    where{chapter_id == chapter}.first!
+    where(chapter: chapter).first!
   end
 
   def self.including_chapter chapter_ids

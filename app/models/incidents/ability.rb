@@ -96,7 +96,7 @@ class Incidents::Ability
     can :dispatch_console, Incidents::Scope, {id: scopes}
 
 
-    dispatch_chapters = Incidents::Scope.where{id.in scopes}.includes{chapters}.flat_map{|s| s.all_chapters}.map(&:id)
+    dispatch_chapters = Incidents::Scope.where(id: scopes).includes(:chapters).flat_map{|s| s.all_chapters}.map(&:id)
     can [:create, :show], Incidents::CallLog, {chapter_id: dispatch_chapters + [nil]}
     can [:create, :index, :show, :complete, :next_contact], Incidents::Incident, {chapter_id: dispatch_chapters}
   end

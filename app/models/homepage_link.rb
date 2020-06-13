@@ -9,7 +9,7 @@ class HomepageLink < ApplicationRecord
     file.file? && file.expiring_url || url
   end
 
-  scope :for_chapter, -> (chapter) { where{(chapter_id == nil) | (chapter_id == chapter)}}
+  scope :for_chapter, -> (chapter) { where(chapter_id: nil).or(where(chapter: chapter)) }
 
   class Role < ApplicationRecord
     self.table_name = :homepage_link_roles

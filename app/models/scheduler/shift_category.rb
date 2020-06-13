@@ -3,12 +3,12 @@ class Scheduler::ShiftCategory < ApplicationRecord
   has_many :shifts, class_name: 'Scheduler::Shift'
 
   def self.for_chapter chapter
-    where{chapter_id == chapter}
+    where(chapter: chapter)
   end
 
   def display_name
     "#{chapter_id} - #{name}"
   end
 
-  default_scope { order{ordinal} }
+  default_scope { order(:ordinal) }
 end

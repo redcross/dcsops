@@ -7,5 +7,5 @@ class Logistics::Vehicle < ApplicationRecord
     %w(erv suv shelter_trailer misc pov)
   end
 
-  scope :for_chapter, ->(chapter){where{chapter_id == chapter}}
+  scope :for_chapter, ->(chapter) { where(chapter: chapter) }
 end

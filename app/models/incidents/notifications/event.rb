@@ -11,7 +11,7 @@ module Incidents::Notifications
     end
 
     def self.for_chapter chapter
-      where{chapter_id == chapter}
+      where(chapter: chapter)
     end
 
     def self.for_type type

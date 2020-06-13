@@ -27,7 +27,7 @@ class Incidents::HomeController < Incidents::BaseController
 
   helper_method :recent_incidents
   expose(:recent_incidents) {
-    scope.incidents.valid.includes{[dat_incident, event_logs]}.order(:date, :id).reverse_order.limit(15).where{date >= 14.days.ago}
+    scope.incidents.valid.includes(:dat_incident, :event_logs).order(:date, :id).reverse_order.limit(15).where(date: 14.days.ago..DateTime::Infinity.new)
   }
 
   def incident_path(inc)
