@@ -86,7 +86,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
 
   def prepare_reminders(setting)
     @setting = setting
-    @groups = Scheduler::ShiftGroup.next_groups(setting.person.region)
+    @groups = Scheduler::ShiftTime.next_groups(setting.person.region)
 
     counties = setting.person.primary_county
 
@@ -112,7 +112,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     @assignment
   end
 
-  expose(:related_shifts) {Scheduler::ShiftAssignment.for_day(item.date).for_counties(item.shift.county).for_groups(item.shift_group_id).includes{shift}}
+  expose(:related_shifts) {Scheduler::ShiftAssignment.for_day(item.date).for_counties(item.shift.county).for_groups(item.shift_time_id).includes{shift}}
 
   def shift_lead
     @shift_lead ||= related_shifts.order{shift.ordinal}.first
@@ -122,7 +122,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     related_shifts.order{shift.ordinal}
   end
 
-  def assignments_for_date_shift_group(date, shift, group)
+  def assignments_for_date_shift_time(date, shift, group)
     Scheduler::ShiftAssignment.for_shifts(shift).for_day(date).for_groups(group)
   end
 
@@ -132,5 +132,5 @@ class Scheduler::RemindersMailer < ActionMailer::Base
   end
 
 
-  helper_method :item, :shift_lead, :other_assignments, :assignments_for_date_shift_group, :format_person
+  helper_method :item, :shift_lead, :other_assignments, :assignments_for_date_shift_time, :format_person
 end

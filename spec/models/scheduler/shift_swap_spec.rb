@@ -6,7 +6,7 @@ describe Scheduler::ShiftSwap, :type => :model do
   let(:shift) { FactoryGirl.create :shift_with_positions}
   let(:person) { FactoryGirl.create :person, region: shift.county.region, positions: shift.positions, counties: [shift.county]}
   let(:other_person) { FactoryGirl.create :person, region: shift.county.region, positions: shift.positions, counties: [shift.county]}
-  let(:assignment) { FactoryGirl.create :shift_assignment, person: person, date: Date.current, shift: shift, shift_group: shift.shift_groups.first}
+  let(:assignment) { FactoryGirl.create :shift_assignment, person: person, date: Date.current, shift: shift, shift_time: shift.shift_times.first}
 
   let(:swap) { Scheduler::ShiftSwap.new(assignment, delegate) }
 

@@ -1,4 +1,4 @@
-ActiveAdmin.register Scheduler::ShiftGroup, as: 'Shift Group' do
+ActiveAdmin.register Scheduler::ShiftTime, as: 'Shift Time' do
   menu parent: 'Scheduling'
 
   actions :all, except: [:destroy]

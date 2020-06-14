@@ -6,9 +6,9 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
     @region = @person.region
     @person2 = FactoryGirl.create :person, region: @region, counties: @person.counties, positions: @person.positions
     @shift = FactoryGirl.create :shift, county: @person.counties.first, positions: @person.positions
-    @shift_group = @shift.shift_groups.first
+    @shift_time = @shift.shift_times.first
 
-    @assignments = (1..5).map{|i| Scheduler::ShiftAssignment.create! person:@person, date:Date.today+i, shift:@shift, shift_group:@shift_group}
+    @assignments = (1..5).map{|i| Scheduler::ShiftAssignment.create! person:@person, date:Date.today+i, shift:@shift, shift_time:@shift_time}
 
     @settings = Scheduler::NotificationSetting.create id: @person.id
   end
@@ -60,8 +60,8 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
       it 'should show all shifts I am a county admin for' do
         (0..2).map { |i| 
           pers = FactoryGirl.create :person, region: @region, counties: @person.counties
-          shift = FactoryGirl.create :shift, shift_groups: [@shift_group], county: pers.counties.first, positions: pers.positions
-          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+6+i), shift: shift, shift_group: @shift_group
+          shift = FactoryGirl.create :shift, shift_times: [@shift_time], county: pers.counties.first, positions: pers.positions
+          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+6+i), shift: shift, shift_time: @shift_time
         }
 
         grant_role! 'county_dat_admin', @person.county_ids, @person
@@ -76,8 +76,8 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
         county = @person.counties.first
         (1..3).map { |i| 
           pers = FactoryGirl.create :person, region: @region, counties: @person.counties
-          shift = FactoryGirl.create :shift, shift_groups: [@shift_group], county: pers.counties.first, positions: pers.positions
-          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+i), shift: shift, shift_group: @shift_group
+          shift = FactoryGirl.create :shift, shift_times: [@shift_time], county: pers.counties.first, positions: pers.positions
+          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+i), shift: shift, shift_time: @shift_time
         }
 
         grant_role! 'county_dat_admin', @person.county_ids, @person

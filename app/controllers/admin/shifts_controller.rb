@@ -12,11 +12,11 @@ class Admin::ShiftsController < GridController
   column :ignore_county, as: :boolean
   column :exclusive, label: ''
   #column :positions, as: :check_boxes, collection: ->{region.positions}
-  column :shift_groups, as: :check_boxes, collection: ->{shift_groups}, member_label: :name, input_html: {class: ""}
+  column :shift_times, as: :check_boxes, collection: ->{shift_times}, member_label: :name, input_html: {class: ""}
   column :shift_category, collection: ->{shift_categories}, member_label: :name
 
   def build_resource_params
-    [params.fetch(:scheduler_shift, {}).permit(:name, :abbrev, :county_id, :ordinal, :max_signups, :min_desired_signups, :ignore_county, :exclusive, :shift_category_id, :position_ids => [], shift_group_ids: [])]
+    [params.fetch(:scheduler_shift, {}).permit(:name, :abbrev, :county_id, :ordinal, :max_signups, :min_desired_signups, :ignore_county, :exclusive, :shift_category_id, :position_ids => [], shift_time_ids: [])]
   end
 
   def current_ability
@@ -24,7 +24,7 @@ class Admin::ShiftsController < GridController
   end
 
   def end_of_association_chain
-    Scheduler::Shift.for_region(parent).order([:ordinal]).includes{[shift_groups, county, positions, shift_category]}
+    Scheduler::Shift.for_region(parent).order([:ordinal]).includes{[shift_times, county, positions, shift_category]}
   end
 
   def resource
@@ -40,11 +40,11 @@ class Admin::ShiftsController < GridController
   end
   helper_method :region
 
-  def shift_groups
-    @groups ||= Scheduler::ShiftGroup.for_region(region)
+  def shift_times
+    @groups ||= Scheduler::ShiftTime.for_region(region)
   end
   def shift_categories
     @categories ||= Scheduler::ShiftCategory.for_region(region)
   end
-  helper_method :shift_groups, :shift_categories
+  helper_method :shift_times, :shift_categories
 end

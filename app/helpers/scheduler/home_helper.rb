@@ -14,7 +14,7 @@ module Scheduler::HomeHelper
 
   def current_shifts_tree(counties, groups=nil)
     counties = counties.to_a
-    groups ||= Scheduler::ShiftGroup.current_groups_for_region(current_person.region, current_region.time_zone.now, Scheduler::ShiftGroup.includes{shifts})
+    groups ||= Scheduler::ShiftTime.current_groups_for_region(current_person.region, current_region.time_zone.now, Scheduler::ShiftTime.includes{shifts})
     groups_by_id = groups.group_by(&:id)
     groups_by_shift = groups.reduce({}){|hash, group| group.shift_ids.each{|id| hash[id] = group}; hash }
 

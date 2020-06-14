@@ -6,7 +6,7 @@
   .row
     .col-sm-3
       %h5 Select Shifts
-      .btn-group-vertical.btn-block#select-shift-group
+      .btn-group-vertical.btn-block#select-shift-time
         %button.btn.btn-default.btn-block{:"data-shifts" => "mine", class: show_shifts==:mine && "active"} My Positions
         %button.btn.btn-default.btn-block{:"data-shifts" => "county", class: show_shifts==:county && "active"} County Shifts
         %button.btn.btn-default.btn-block{:"data-shifts" => "all", class: show_shifts==:all && "active"} All Shifts

@@ -26,8 +26,8 @@ describe "Root Scheduler Page", :type => :feature do
 
   it "Views the default page with shifts" do
     shift = FactoryGirl.create :shift, county: @person.counties.first, positions: @person.positions
-    shift_group = shift.shift_groups.first
-    (1..5).map{|i| Scheduler::ShiftAssignment.create! person:@person, date:Date.today+i, shift:shift, shift_group:shift_group}
+    shift_time = shift.shift_times.first
+    (1..5).map{|i| Scheduler::ShiftAssignment.create! person:@person, date:Date.today+i, shift:shift, shift_time:shift_time}
 
     visit "/scheduler/"
 
@@ -36,8 +36,8 @@ describe "Root Scheduler Page", :type => :feature do
 
   it "Views the default page with completed shifts" do
     shift = FactoryGirl.create :shift, county: @person.counties.first, positions: @person.positions
-    shift_group = shift.shift_groups.first
-    (1..5).map{|i| Scheduler::ShiftAssignment.create! person:@person, date:Date.today-i, shift:shift, shift_group:shift_group}
+    shift_time = shift.shift_times.first
+    (1..5).map{|i| Scheduler::ShiftAssignment.create! person:@person, date:Date.today-i, shift:shift, shift_time:shift_time}
 
     visit "/scheduler/"
 

@@ -5,6 +5,6 @@ FactoryGirl.define do
     date {Date.tomorrow}
     association :person
     shift { |f| f.association :shift, county: f.person.counties.first, positions: f.person.positions}
-    shift_group { |f| f.shift.shift_groups.first }
+    shift_time { |f| f.shift.shift_times.first }
   end
 end

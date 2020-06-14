@@ -3,7 +3,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
 
   actions :all, except: [:destroy]
 
-  filter :shift_group
+  filter :shift_time
   filter :county
   filter :region
   filter :name
@@ -12,14 +12,14 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   filter :shift_ends
   
   scope :all do |shifts|
-    shifts.includes([:shift_groups, {:county => :region}, :positions]).order(:county_id, :ordinal)
+    shifts.includes([:shift_times, {:county => :region}, :positions]).order(:county_id, :ordinal)
   end
   scope :active, default: true do |shifts|
-    shifts.where{(shift_ends == nil) | (shift_ends >= Date.current)}.includes([:shift_groups, {:county => :region}, :positions]).order(:county_id, :ordinal)
+    shifts.where{(shift_ends == nil) | (shift_ends >= Date.current)}.includes([:shift_times, {:county => :region}, :positions]).order(:county_id, :ordinal)
   end
 
   index do
-    #column :shift_group, sortable: "scheduler_shift_groups.start_offset"
+    #column :shift_time, sortable: "scheduler_shift_times.start_offset"
     selectable_column
     column :county
     column :name
@@ -34,8 +34,8 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
 
   form do |f|
     f.inputs 'Details'
-    f.inputs 'Shift Groups' do
-      f.input :shift_groups, as: :check_boxes, collection: Scheduler::ShiftGroup.for_region(f.object.county.try(:region))
+    f.inputs 'Shift Times' do
+      f.input :shift_times, as: :check_boxes, collection: Scheduler::ShiftTime.for_region(f.object.county.try(:region))
     end
     f.inputs 'Position and County' do
       f.input :positions, as: :check_boxes, collection: f.object.county.try(:region).try(:positions)
@@ -56,7 +56,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
     region_id = region_ids.first
 
     params[:shifts] = shifts
-    params[:shift_groups] = Scheduler::ShiftGroup.for_region(region_id)
+    params[:shift_times] = Scheduler::ShiftTime.for_region(region_id)
 
     render action: :reschedule
   end
@@ -68,7 +68,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
 
     switch_date = Date.parse reschedule[:effective_date]
 
-    shift_groups = reschedule[:shift_group_ids].map{|sgi| Scheduler::ShiftGroup.find sgi }
+    shift_times = reschedule[:shift_time_ids].map{|sgi| Scheduler::ShiftTime.find sgi }
     new_shifts = []
     Scheduler::Shift.transaction do
       shifts.each do |sh|
@@ -76,7 +76,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
 
         sh.shift_ends = switch_date
         ns.shift_begins = switch_date
-        ns.shift_groups = shift_groups
+        ns.shift_times = shift_times
         ns.position_ids = sh.position_ids
 
         sh.save!
@@ -94,7 +94,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
 
   controller do
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :shift_category_id, :max_signups, :county_id, :ordinal, :spreadsheet_ordinal, :dispatch_role, :shift_begins, :shift_ends, :signups_frozen_before, :min_desired_signups, :max_advance_signup, :min_advance_signup, :ignore_county, :vc_hours_type, :show_in_dispatch_console, :exclusive, :position_ids => [], :shift_group_ids => [])]
+      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :shift_category_id, :max_signups, :county_id, :ordinal, :spreadsheet_ordinal, :dispatch_role, :shift_begins, :shift_ends, :signups_frozen_before, :min_desired_signups, :max_advance_signup, :min_advance_signup, :ignore_county, :vc_hours_type, :show_in_dispatch_console, :exclusive, :position_ids => [], :shift_time_ids => [])]
     end
   end
 end

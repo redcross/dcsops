@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200614173433) do
+ActiveRecord::Schema.define(version: 20200614221105) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1072,13 +1072,13 @@ ActiveRecord::Schema.define(version: 20200614173433) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "synced",              default: false
-    t.integer  "shift_group_id",                      null: false
+    t.integer  "shift_time_id",                       null: false
     t.integer  "shift_id",                            null: false
     t.boolean  "vc_hours_uploaded",   default: false
     t.text     "note"
   end
 
-  add_index "scheduler_shift_assignments", ["date", "person_id", "shift_id", "shift_group_id"], name: "index_scheduler_shift_assignment_fields", unique: true, using: :btree
+  add_index "scheduler_shift_assignments", ["date", "person_id", "shift_id", "shift_time_id"], name: "index_scheduler_shift_assignment_fields", unique: true, using: :btree
   add_index "scheduler_shift_assignments", ["person_id"], name: "index_scheduler_shift_assignments_on_person_id", using: :btree
   add_index "scheduler_shift_assignments", ["shift_id", "date"], name: "index_scheduler_shift_assignments_on_shift_date", using: :btree
 
@@ -1093,7 +1093,7 @@ ActiveRecord::Schema.define(version: 20200614173433) do
 
   add_index "scheduler_shift_categories", ["region_id"], name: "index_scheduler_shift_categories_on_region_id", using: :btree
 
-  create_table "scheduler_shift_groups", force: true do |t|
+  create_table "scheduler_shift_times", force: true do |t|
     t.string   "name"
     t.string   "period"
     t.integer  "start_offset"
@@ -1110,14 +1110,14 @@ ActiveRecord::Schema.define(version: 20200614173433) do
     t.boolean  "active_saturday",  default: true, null: false
   end
 
-  add_index "scheduler_shift_groups", ["region_id"], name: "index_scheduler_shift_groups_on_region_id", using: :btree
+  add_index "scheduler_shift_times", ["region_id"], name: "index_scheduler_shift_times_on_region_id", using: :btree
 
-  create_table "scheduler_shift_groups_shifts", id: false, force: true do |t|
-    t.integer "shift_id",       null: false
-    t.integer "shift_group_id", null: false
+  create_table "scheduler_shift_times_shifts", id: false, force: true do |t|
+    t.integer "shift_id",      null: false
+    t.integer "shift_time_id", null: false
   end
 
-  add_index "scheduler_shift_groups_shifts", ["shift_id", "shift_group_id"], name: "idx_scheduler_shift_groups_shifts_unique", unique: true, using: :btree
+  add_index "scheduler_shift_times_shifts", ["shift_id", "shift_time_id"], name: "idx_scheduler_shift_times_shifts_unique", unique: true, using: :btree
 
   create_table "scheduler_shifts", force: true do |t|
     t.string   "name"

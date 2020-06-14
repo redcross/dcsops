@@ -32,7 +32,7 @@ class Scheduler::DispatchConfig < ActiveRecord::Base
     includes do
       backups.map{|b| __send__(b).region }
     end.includes do
-      shifts.flat_map{|sh| [__send__(sh).county,__send__(sh).shift_groups] }
+      shifts.flat_map{|sh| [__send__(sh).county,__send__(sh).shift_times] }
     end.includes{region}
   end
 

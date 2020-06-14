@@ -1,4 +1,4 @@
-- groups = Scheduler::ShiftGroup.current_groups_for_region(current_person.region)
+- groups = Scheduler::ShiftTime.current_groups_for_region(current_person.region)
 - groups.select{|g| g.period == 'daily' }.each do |grp| 
   %h2
     On Call Schedule - 

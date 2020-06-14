@@ -10,7 +10,7 @@ CREATE VIEW reporting.schedule_data AS
     (sg.end_offset - sg.start_offset) * INTERVAL '1 second' as duration
   FROM
     scheduler_shift_assignments sa
-    INNER JOIN scheduler_shift_groups sg ON (sa.shift_group_id=sg.id)
+    INNER JOIN scheduler_shift_times sg ON (sa.shift_time_id=sg.id)
     INNER JOIN scheduler_shifts shifts ON (sa.shift_id=shifts.id)
     INNER JOIN roster_people p ON (sa.person_id=p.id)
 ;

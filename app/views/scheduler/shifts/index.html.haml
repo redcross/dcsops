@@ -22,7 +22,7 @@
       - shifts.each_with_index do |shift, shift_idx|
         = fields_for "shifts[#{shift.id}]", shift do |f|
           %tr
-            %th=safe_join shift.shift_groups.map(&:name), tag(:br)
+            %th=safe_join shift.shift_times.map(&:name), tag(:br)
             %th=shift.name
             %td=shift.abbrev
             - dates_for_count.each_with_index do |date, idx|

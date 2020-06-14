@@ -1,2 +1,0 @@
-module Scheduler::ShiftGroupsHelper
-end

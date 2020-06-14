@@ -65,7 +65,7 @@ class Scheduler::ShiftSwap
     assignment.transaction do
       @new_assignment = Scheduler::ShiftAssignment.new date: assignment.date, 
                                                       shift: assignment.shift,
-                                                shift_group: assignment.shift_group, 
+                                                 shift_time: assignment.shift_time, 
                                                      person: destination, 
                                            swapping_from_id: assignment.id
       if valid? && new_assignment.save

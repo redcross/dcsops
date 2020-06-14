@@ -22,7 +22,7 @@ class AdminAbility
 
       can :manage, Scheduler::DispatchConfig
       can :manage, Scheduler::Shift
-      can :manage, Scheduler::ShiftGroup
+      can :manage, Scheduler::ShiftTime
       can :manage, Scheduler::ShiftCategory
 
       can :manage, Incidents::ReportSubscription

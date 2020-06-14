@@ -25,7 +25,7 @@ ActiveAdmin.register Scheduler::DispatchConfig, as: 'Dispatch Configs' do
       f.input :county, collection: f.object.region.try(:counties), input_html: {disabled: !allow_edit_names?}
       f.input :is_active, input_html: {disabled: !allow_edit_names?}
       if f.object.region
-        shifts = Scheduler::Shift.for_region(f.object.region).joins{county}.order{[county.name, name]}.includes{[shift_groups, county]}
+        shifts = Scheduler::Shift.for_region(f.object.region).joins{county}.order{[county.name, name]}.includes{[shift_times, county]}
         f.input :shift_first, collection: shifts
         f.input :shift_second, collection: shifts
         f.input :shift_third, collection: shifts

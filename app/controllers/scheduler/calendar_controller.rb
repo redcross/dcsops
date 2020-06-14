@@ -119,7 +119,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def spreadsheet_groups
-    @_spreadsheet_groups ||= Scheduler::ShiftGroup.where(period: 'daily').reduce({}) do |hash, group|
+    @_spreadsheet_groups ||= Scheduler::ShiftTime.where(period: 'daily').reduce({}) do |hash, group|
       hash[group] = group.shifts.where(county_id: spreadsheet_county).where('spreadsheet_ordinal is not null').order(:spreadsheet_ordinal)
       hash
     end

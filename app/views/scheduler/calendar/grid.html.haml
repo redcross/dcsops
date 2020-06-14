@@ -3,7 +3,7 @@
 =render partial: 'view_header'
 
 - all_shifts = {}
--# shifts = @all_assignments.reduce({}) { |hash, shift| hash[shift.person] ||= {}; hash[shift.person][shift.date] ||= {}; hash[shift.person][shift.date][shift.shift.shift_group] = shift; all_shifts[shift.shift.abbrev] = shift.shift.name; hash}
+-# shifts = @all_assignments.reduce({}) { |hash, shift| hash[shift.person] ||= {}; hash[shift.person][shift.date] ||= {}; hash[shift.person][shift.date][shift.shift.shift_time] = shift; all_shifts[shift.shift.abbrev] = shift.shift.name; hash}
 - flex_schedules = Scheduler::FlexSchedule.where{id.in(my{calendar.people_with_shifts})}.group_by(&:id)
 -unless spreadsheet_county
   No county to display.

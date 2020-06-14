@@ -1,7 +1,7 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :shift_group, :class => 'Scheduler::ShiftGroup' do
+  factory :shift_time, :class => 'Scheduler::ShiftTime' do
     name 'Group'
     period "daily"
     start_offset 0

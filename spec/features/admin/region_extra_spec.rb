@@ -53,7 +53,7 @@ describe "Region Extra Configuration Pages", :type => :feature do
 
   it "Update the region shifts" do
     #FactoryGirl.create :shift_category, region: @person.region
-    group = FactoryGirl.create :shift_group, region: @person.region, start_offset: 10.hours, end_offset: 22.hours
+    group = FactoryGirl.create :shift_time, region: @person.region, start_offset: 10.hours, end_offset: 22.hours
     categories = (1..2).map{|i| FactoryGirl.create :shift_category, name: "Category #{i}", region: @person.region}
 
     visit "/admin/regions/#{@person.region.url_slug}/shifts"

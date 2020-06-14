@@ -24,8 +24,8 @@ describe "Incident Responders Console", :type => :feature do
 
     @committed_responder = @responders.second
     @committed_responder.update_attributes work_phone_carrier: FactoryGirl.create( :cell_carrier)
-    group = FactoryGirl.create :shift_group, region: @region
-    shift = FactoryGirl.create :shift, shift_groups: [group], county: county, positions: @committed_responder.positions
+    group = FactoryGirl.create :shift_time, region: @region
+    shift = FactoryGirl.create :shift, shift_times: [group], county: county, positions: @committed_responder.positions
     assignment = FactoryGirl.create :shift_assignment, person: @committed_responder, shift: shift, date: @region.time_zone.today
 
     @incident = FactoryGirl.create :raw_incident, region: @person.region, area: county, date: Date.current

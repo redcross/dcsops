@@ -18,7 +18,7 @@
           = ass.shift.name
           on
           = ass.date.to_s :dow_long
-          = ass.shift_group.name
+          = ass.shift_time.name
           %br
         %small=link_to "All Upcoming Shifts", scheduler_shift_assignments_path(my_shifts: true)
       - else
@@ -95,7 +95,7 @@
         %i.fa.fa-group
         Current On-Call Team:
         %small=link_to 'See All', scheduler_on_call_path
-      - groups = Scheduler::ShiftGroup.current_groups_for_region(current_region)
+      - groups = Scheduler::ShiftTime.current_groups_for_region(current_region)
       - groups.select{|g| g.period == 'daily' }.each do |grp| 
         %strong=grp.start_date.to_s(:dow_long) + " - " + grp.name
         %br
@@ -121,7 +121,7 @@
           %tr
             %td=shift.date.to_s :dow_short
             %td
-              =shift.shift_group.name
+              =shift.shift_time.name
               =shift.shift.name
             %td=shift.shift.county.abbrev
             %td=shift.person.full_name

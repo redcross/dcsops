@@ -56,11 +56,11 @@ describe Scheduler::RemindersMailer, :type => :mailer do
     before(:each) do
       @region = FactoryGirl.create :region
       @admin = FactoryGirl.create :person, region: @region
-      @group = FactoryGirl.create(:shift_group, region: @region, period: 'daily', start_offset: 0.hours, end_offset: 24.hours)
-      @shift = FactoryGirl.create :shift, shift_groups: [@group], county: @admin.counties.first, positions: @admin.positions
+      @group = FactoryGirl.create(:shift_time, region: @region, period: 'daily', start_offset: 0.hours, end_offset: 24.hours)
+      @shift = FactoryGirl.create :shift, shift_times: [@group], county: @admin.counties.first, positions: @admin.positions
 
       @person = FactoryGirl.create :person, region: @region, positions: @shift.positions, counties: [@shift.county]
-      @ass = FactoryGirl.create :shift_assignment, shift: @shift, date: Date.current, person: @person, shift_group: @group
+      @ass = FactoryGirl.create :shift_assignment, shift: @shift, date: Date.current, person: @person, shift_time: @group
     
       @setting = Scheduler::NotificationSetting.create id: @admin.id
     end

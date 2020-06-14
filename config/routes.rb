@@ -17,7 +17,7 @@ Scheduler::Application.routes.draw do
     resources :shifts, only: [:index] do
       match '', via: [:put], action: :update_shifts, on: :collection
     end
-    resources :shift_groups
+    resources :shift_times
 
     get 'calendar/:year/:month(/:display)',  year: /\d{4}/,
                                   month: /(january|february|march|april|may|june|july|august|september|october|november|december)/,

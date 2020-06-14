@@ -31,7 +31,7 @@ class Scheduler::SubmitHoursJob
     if @assignment_ids
       Scheduler::ShiftAssignment.where{id.in my{@assignment_ids}}
     else
-      Scheduler::ShiftAssignment.joins{shift}.includes{[person, shift_group, shift]}.for_region(region).readonly(false).where{(shift.vc_hours_type != nil) & (vc_hours_uploaded != true) & (date < my{region.time_zone.today})}
+      Scheduler::ShiftAssignment.joins{shift}.includes{[person, shift_time, shift]}.for_region(region).readonly(false).where{(shift.vc_hours_type != nil) & (vc_hours_uploaded != true) & (date < my{region.time_zone.today})}
     end
   end
 
@@ -43,8 +43,8 @@ class Scheduler::SubmitHoursJob
     to_upload = assignments_to_upload.group_by(&:person)
     to_upload.each do |person, assignments|
       assignments.group_by{|a| a.shift.vc_hours_type}.each do |type, assignments|
-        time = assignments.map{|a| hours = (a.shift_group.end_offset - a.shift_group.start_offset) / 1.hour; (hours*4).round / 4}.sum
-        desc = assignments.map{|a| "#{a.shift_group.name} #{a.shift.name} on #{a.date.to_s :mdy}"}.join("\n")
+        time = assignments.map{|a| hours = (a.shift_time.end_offset - a.shift_time.start_offset) / 1.hour; (hours*4).round / 4}.sum
+        desc = assignments.map{|a| "#{a.shift_time.name} #{a.shift.name} on #{a.date.to_s :mdy}"}.join("\n")
         client.hours.submit_hours person.vc_id, desc, time, hours_type: type
         count
       end

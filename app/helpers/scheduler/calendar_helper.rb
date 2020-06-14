@@ -45,19 +45,19 @@ module Scheduler::CalendarHelper
   # date: Date for this shift instance
   # assignments: Any shift assignments for the given shift on the given date (may include my_shift if appropriate)
   # period: day/week/month, so the javascript knows what to reload if the shift is edited
-  def render_shift_assignment_info(editable, person, shift, shift_group, my_shifts, date, assignments, period)
+  def render_shift_assignment_info(editable, person, shift, shift_time, my_shifts, date, assignments, period)
     can_take = person && can_be_taken_by?(shift, person)
-    can_sign_up = shift.can_sign_up_on_day(date, shift_group, assignments.count, today)
-    can_remove = shift.can_remove_on_day(date, shift_group, today)
-    this_assignment = my_shifts && my_shifts.detect{|sa| sa.shift == shift && sa.shift_group == shift_group}
+    can_sign_up = shift.can_sign_up_on_day(date, shift_time, assignments.count, today)
+    can_remove = shift.can_remove_on_day(date, shift_time, today)
+    this_assignment = my_shifts && my_shifts.detect{|sa| sa.shift == shift && sa.shift_time == shift_time}
     is_signed_up = this_assignment.present?
 
-    cbid = "#{date.to_s}-#{shift.id}-#{shift_group.id}"
+    cbid = "#{date.to_s}-#{shift.id}-#{shift_time.id}"
 
     my_shifts_exclusive = my_shifts.present? && my_shifts.any?{|sa| sa.shift.exclusive }
     can_take_exclusive = editable && (this_assignment.present? || !shift.exclusive || !my_shifts_exclusive)
 
-    #pp shift_group, my_shifts
+    #pp shift_time, my_shifts
     #puts "Editable: #{editable}; Can take #{can_take}; can_sign_up: #{can_sign_up}, can_remove: #{can_remove}, is_signed_up: #{is_signed_up}, my_shifts_exclusive: #{my_shifts_exclusive}, can_take_exclusive: #{can_take_exclusive}"
 
     s = ActiveSupport::SafeBuffer.new
@@ -76,7 +76,7 @@ module Scheduler::CalendarHelper
                           data: {
                             :assignment => this_assignment.try(:id), 
                             :period => period,
-                            params: create_params(person, shift, shift_group, date)
+                            params: create_params(person, shift, shift_time, date)
                           }) << " "
 
     end
@@ -85,8 +85,8 @@ module Scheduler::CalendarHelper
     s
   end
 
-  def create_params person, shift, shift_group, date
-    JSON.generate({person_id: person.id, shift_id: shift.id, shift_group_id: shift_group.id, date: date})
+  def create_params person, shift, shift_time, date
+    JSON.generate({person_id: person.id, shift_id: shift.id, shift_time_id: shift_time.id, date: date})
   end
 
   def render_assignments_label(assignments, cbid)

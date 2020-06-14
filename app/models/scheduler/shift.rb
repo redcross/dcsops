@@ -4,7 +4,7 @@ class Scheduler::Shift < ActiveRecord::Base
   belongs_to :shift_category, class_name: 'Scheduler::ShiftCategory'
 
   has_and_belongs_to_many :positions, class_name: 'Roster::Position'
-  has_and_belongs_to_many :shift_groups, class_name: 'Scheduler::ShiftGroup'
+  has_and_belongs_to_many :shift_times, class_name: 'Scheduler::ShiftTime'
   has_many :shift_assignments
 
   validates :county, :shift_category, presence: true
@@ -16,14 +16,14 @@ class Scheduler::Shift < ActiveRecord::Base
     %w(oncall worked)
   end
 
-  def check_shift_group group
-    #unless shift_group_ids.include? group.id
-    #  raise "That shift group does not belong to this shift"
+  def check_shift_time group
+    #unless shift_time_ids.include? group.id
+    #  raise "That shift time does not belong to this shift"
     #end
   end
 
-  def normalize_date date, shift_group
-    shift_group.normalize_date date
+  def normalize_date date, shift_time
+    shift_time.normalize_date date
   end
 
   def unfrozen_on(date)
@@ -31,12 +31,12 @@ class Scheduler::Shift < ActiveRecord::Base
       (signups_available_before.nil? || (date <= signups_available_before))
   end
 
-  def can_sign_up_on_day(date, shift_group, num_assignments_on_day=nil, today=nil)
-    check_shift_group shift_group
-    today ||= shift_group.region.time_zone.today
+  def can_sign_up_on_day(date, shift_time, num_assignments_on_day=nil, today=nil)
+    check_shift_time shift_time
+    today ||= shift_time.region.time_zone.today
 
-    return false if date < today and !allow_signup_in_past?(date, shift_group)
-    return false unless active_on_day? date, shift_group
+    return false if date < today and !allow_signup_in_past?(date, shift_time)
+    return false unless active_on_day? date, shift_time
     return false unless unfrozen_on(date)
     num_days = (date - today).to_i
     return false if max_advance_signup and num_days > max_advance_signup
@@ -50,25 +50,25 @@ class Scheduler::Shift < ActiveRecord::Base
     return assignments < max_signups
   end
 
-  def allow_signup_in_past?(date, shift_group)
-    check_shift_group shift_group
-    tz = shift_group.region.time_zone
-    key = (shift_group.period == 'monthly' ? :days : :seconds)
-    Scheduler::ShiftTimeCalculator.new(tz).local_offset(date, key => shift_group.end_offset) >= tz.now
-    #pp(Scheduler::ShiftAssignment.new(date: date, shift: self, shift_group: shift_group).local_end_time) >= tz.now
+  def allow_signup_in_past?(date, shift_time)
+    check_shift_time shift_time
+    tz = shift_time.region.time_zone
+    key = (shift_time.period == 'monthly' ? :days : :seconds)
+    Scheduler::ShiftTimeCalculator.new(tz).local_offset(date, key => shift_time.end_offset) >= tz.now
+    #pp(Scheduler::ShiftAssignment.new(date: date, shift: self, shift_time: shift_time).local_end_time) >= tz.now
   end
 
-  def can_remove_on_day(date, shift_group, today=nil)
-    check_shift_group shift_group
-    today ||= shift_group.region.time_zone.today
-    today = normalize_date today, shift_group
+  def can_remove_on_day(date, shift_time, today=nil)
+    check_shift_time shift_time
+    today ||= shift_time.region.time_zone.today
+    today = normalize_date today, shift_time
     advance = date - today
     (date >= today) and unfrozen_on(date) and (advance >= min_advance_signup)
   end
 
-  def active_on_day?(date, shift_group)
-    check_shift_group shift_group
-    return shift_group.active_on?(date) && (shift_begins.nil? || shift_begins <= date) && (shift_ends.nil? || shift_ends > date)
+  def active_on_day?(date, shift_time)
+    check_shift_time shift_time
+    return shift_time.active_on?(date) && (shift_begins.nil? || shift_begins <= date) && (shift_ends.nil? || shift_ends > date)
   end
 
   scope :for_region, -> region {
@@ -85,7 +85,7 @@ class Scheduler::Shift < ActiveRecord::Base
     where{((ignore_county == true) | county_id.in(person.county_ids))}.joins{positions}.where{positions.id.in(person.position_ids)}.uniq
   }
   scope :for_groups, -> groups {
-    joins{shift_groups}.where{shift_groups.id.in groups}
+    joins{shift_times}.where{shift_times.id.in groups}
   }
 
   def can_be_taken_by?(person)
@@ -109,26 +109,26 @@ class Scheduler::Shift < ActiveRecord::Base
       hash
     end
 
-    groups_by_id = shifts.flat_map(&:shift_groups).reduce({}){|hash, group| hash[group.id] = group; hash }
+    groups_by_id = shifts.flat_map(&:shift_times).reduce({}){|hash, group| hash[group.id] = group; hash }
 
     arr = Core::NestedHash.hash_hash_hash
     shifts.each do |shift|
-      shift.shift_groups.each do |group|
+      shift.shift_times.each do |group|
         arr[shift][group] = empties[group.period].dup
       end
     end
 
     arr = Scheduler::ShiftAssignment.where{shift_id.in(shifts.to_a) & date.in(month..(month.at_end_of_month))}
-                              .select{[count(id).as(:count), shift_id, shift_group_id, date]}.group{[shift_id, shift_group_id, date]}.reduce(arr) do |hash, ass|
+                              .select{[count(id).as(:count), shift_id, shift_time_id, date]}.group{[shift_id, shift_time_id, date]}.reduce(arr) do |hash, ass|
       shift = shifts_by_id[ass.shift_id]
-      group = groups_by_id[ass.shift_group_id]
+      group = groups_by_id[ass.shift_time_id]
       if shift.nil? || group.nil?
         logger.warn "Got unknown shift back from query #{ass.shift_id} #{shifts_by_id.inspect}"
         next hash
       end
 
       if hash[shift][group][ass.date].nil?
-        logger.warn "Got unknown date back from query #{ass.date} #{shift.shift_group_ids.inspect} #{hash.inspect}"
+        logger.warn "Got unknown date back from query #{ass.date} #{shift.shift_time_ids.inspect} #{hash.inspect}"
         next hash
       end
 
@@ -138,7 +138,7 @@ class Scheduler::Shift < ActiveRecord::Base
 
     # make sure we put in shifts that don't show up at all
     shifts.each do |shift|
-      shift.shift_groups.each do |group|
+      shift.shift_times.each do |group|
         arr[shift][group] ||= days.dup
       end
     end
@@ -176,6 +176,6 @@ class Scheduler::Shift < ActiveRecord::Base
   end
 
   def display_name
-    "#{shift_groups.first.try :region_id} - #{county.try(:abbrev)} #{name} - #{shift_groups.map(&:name).join ', '}"
+    "#{shift_times.first.try :region_id} - #{county.try(:abbrev)} #{name} - #{shift_times.map(&:name).join ', '}"
   end
 end

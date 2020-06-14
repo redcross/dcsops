@@ -58,10 +58,10 @@ arcba.positions.create! name: 'Region Vehicle', vc_regex_raw: '^Region Vehicle'
 arcba.positions.create! name: 'CAC Activator', vc_regex_raw: '^CAC Activator'
 arcba.positions.create! name: 'DSHR', vc_regex_raw: 'DSHR'
 
-day = Scheduler::ShiftGroup.create! region: arcba, name: 'Day', start_offset: 25200, end_offset: 68400, period: 'daily'
-night = Scheduler::ShiftGroup.create! region: arcba, name: 'Night', start_offset: 68400, end_offset: 111600, period: 'daily'
-week = Scheduler::ShiftGroup.create! region: arcba, name: 'Weekly', start_offset: 0, end_offset: 7.days, period: 'weekly'
-month = Scheduler::ShiftGroup.create! region: arcba, name: 'Monthly', start_offset: 0, end_offset: 31, period: 'monthly'
+day = Scheduler::ShiftTime.create! region: arcba, name: 'Day', start_offset: 25200, end_offset: 68400, period: 'daily'
+night = Scheduler::ShiftTime.create! region: arcba, name: 'Night', start_offset: 68400, end_offset: 111600, period: 'daily'
+week = Scheduler::ShiftTime.create! region: arcba, name: 'Weekly', start_offset: 0, end_offset: 7.days, period: 'weekly'
+month = Scheduler::ShiftTime.create! region: arcba, name: 'Monthly', start_offset: 0, end_offset: 31, period: 'monthly'
 
 shift_category = Scheduler::ShiftCategory.create!
 
@@ -75,7 +75,7 @@ shift_category = Scheduler::ShiftCategory.create!
     end
 
     [team_lead_shift, backup_lead_shift, dispatch_shift].compact.each do |created_shift|
-      created_shift.shift_groups << group
+      created_shift.shift_times << group
     end
 
     Scheduler::DispatchConfig.create!(
@@ -89,11 +89,11 @@ shift_category = Scheduler::ShiftCategory.create!
 end
 
 Scheduler::Shift.create!(county: sf, shift_category: shift_category, name: 'Mental Health', abbrev: 'DMH', positions: [tl], ordinal: 5, min_desired_signups: 0, max_signups: 1).tap do |shift|
-  shift.shift_groups << week
+  shift.shift_times << week
 end
 
 Scheduler::Shift.create!(county: sf, shift_category: shift_category, name: 'Health Services', abbrev: 'DHS', positions: [tl], ordinal: 6, min_desired_signups: 0, max_signups: 1).tap do |shift|
-  shift.shift_groups << month
+  shift.shift_times << month
 end
 
 # For some reason, when seeding immediately after database creation (in the same
@@ -126,7 +126,7 @@ puts 'Seeding finished. Created test user with:'
 puts "Username: #{test_username}"
 puts "Password: #{test_password}"
 
-#Scheduler::Shift.create! county: sf, name: 'Team Lead', abbrev: 'TL', positions: [tl], shift_group: night, ordinal: 1, max_signups: 1
+#Scheduler::Shift.create! county: sf, name: 'Team Lead', abbrev: 'TL', positions: [tl], shift_time: night, ordinal: 1, max_signups: 1
 
 
 #load "lib/vc_importer.rb"; 

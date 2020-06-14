@@ -21,7 +21,7 @@
       %tr
         %td
           =ass.date.to_s :dow_short
-          =ass.shift_group.name
+          =ass.shift_time.name
         %td=ass.shift.name
         %td=ass.person.full_name
         %td=editable_string ass, :note, url: resource_path(ass), editable: can?(:update, ass), emptytext: '&nbsp;' * 20

@@ -39,13 +39,13 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
     backups = config.backup_list.map(&:id)
     dispatch_shifts = config.shift_list
     return unless dispatch_shifts.present?
-    dispatch_group_ids = dispatch_shifts.first.shift_group_ids
+    dispatch_group_ids = dispatch_shifts.first.shift_time_ids
 
     @latest_time = nil
-    all_groups = Scheduler::ShiftGroup.for_region(region).order(:start_offset).to_a
+    all_groups = Scheduler::ShiftTime.for_region(region).order(:start_offset).to_a
     daily_groups = all_groups.select{ |grp| grp.period == 'daily' && dispatch_group_ids.include?(grp.id) }
     
-    all_assignments = Scheduler::ShiftAssignment.where{shift_id.in(dispatch_shifts)}.normalized_date_on_or_after(start_date).where{date <= end_date}.group_by{|sa| [sa.date, sa.shift_id, sa.shift_group_id]}
+    all_assignments = Scheduler::ShiftAssignment.where{shift_id.in(dispatch_shifts)}.normalized_date_on_or_after(start_date).where{date <= end_date}.group_by{|sa| [sa.date, sa.shift_id, sa.shift_time_id]}
 
     (start_date..end_date).each do |date|
       daily_groups.each do |daily_group|
@@ -53,7 +53,7 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
         end_time = local_offset(region, date, daily_group.end_offset)
         check_timing_overlap start_time, end_time
         
-        current_groups = Scheduler::ShiftGroup.current_groups_in_array(all_groups, start_time)
+        current_groups = Scheduler::ShiftTime.current_groups_in_array(all_groups, start_time)
         assignments = dispatch_shifts.flat_map{|sh| current_groups.flat_map{|grp| all_assignments[[grp.start_date, sh.id, grp.id]] }.compact }
 
         @people.concat assignments.map(&:person)

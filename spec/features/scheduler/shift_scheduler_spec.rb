@@ -23,20 +23,20 @@ describe "Shift Scheduler Spec", :type => :feature do
     # creates these.
     @other_person = FactoryGirl.create(:person, rco_id: rand(100000), region: @person.region)
 
-    group = FactoryGirl.create :shift_group, region: @person.region, start_offset: 10.hours, end_offset: 22.hours
+    group = FactoryGirl.create :shift_time, region: @person.region, start_offset: 10.hours, end_offset: 22.hours
     @counties = (1..2).map{|i| FactoryGirl.create :county, name: "County #{i}", region: @person.region}
     @positions = (1..2).map{|i| FactoryGirl.create :position, name: "Position #{i}", region: @person.region}
     @categories = (1..2).map{|i| FactoryGirl.create :shift_category, name: "Category #{i}", region: @person.region}
 
     FactoryGirl.create :shift,
-      shift_groups: [group],
+      shift_times: [group],
       name: "Shift 1",
       positions: [@positions.find{|p| p.name == "Position 1"}],
       shift_category: @categories.find{|c| c.name == "Category 1"},
       county: @counties.find{|c| c.name == "County 1"}
 
     FactoryGirl.create :shift,
-      shift_groups: [group],
+      shift_times: [group],
       name: "Shift 2",
       positions: [@positions.find{|p| p.name == "Position 2"}],
       shift_category: @categories.find{|c| c.name == "Category 2"},

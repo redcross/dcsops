@@ -38,7 +38,7 @@ class Scheduler::ShiftsController < Scheduler::BaseController
   end
 
   def collection
-    @collection ||= super.includes{[county, shift_groups]}
+    @collection ||= super.includes{[county, shift_times]}
   end
 
   def dates_for_count
@@ -47,7 +47,7 @@ class Scheduler::ShiftsController < Scheduler::BaseController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params()
-      [params.require(:scheduler_shift).permit(:name, :abbrev, :shift_group_id, :max_signups, :county_id, :ordinal)]
+      [params.require(:scheduler_shift).permit(:name, :abbrev, :shift_time_id, :max_signups, :county_id, :ordinal)]
     end
 
     def shift_params(hash=params)

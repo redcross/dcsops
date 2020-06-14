@@ -2,7 +2,7 @@ helper = self
 grouped_collection.each do |item|
   cal.event do
     description helper.shift_title(item)
-    if item.shift_group.period == 'daily'
+    if item.shift_time.period == 'daily'
       dtstart (item.local_start_time)
       dtend (item.local_end_time)
     else

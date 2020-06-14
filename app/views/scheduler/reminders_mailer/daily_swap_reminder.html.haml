@@ -8,7 +8,7 @@
     #{county.name}:
     %br
   - shifts.each do |shift|
-    #{shift.date.to_s :dow_short} - #{shift.shift_group.name} #{shift.shift.name} for #{shift.person.full_name}
+    #{shift.date.to_s :dow_short} - #{shift.shift_time.name} #{shift.shift.name} for #{shift.person.full_name}
     %br
 %p
   \--
