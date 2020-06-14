@@ -6,7 +6,7 @@ describe "Manually create incident", :type => :feature do
     grant_role! :submit_incident_report
     grant_role! :incidents_admin
     FactoryGirl.create :incidents_scope, region: @person.region
-    FactoryGirl.create :territory, region: @person.region, name: 'SF Territory', counties: ['San Francisco, CA']
+    FactoryGirl.create :response_territory, region: @person.region, name: 'SF Response Territory', counties: ['San Francisco, CA']
   end
 
   it "Should be submittable to dat incident report" do
@@ -26,8 +26,8 @@ describe "Manually create incident", :type => :feature do
     fill_in 'Search for address', with: '1663 market st sf'
     click_on 'Look Up Address'
 
-    # Wait for AJAX to load the territory
-    expect(page).to have_select('Territory*', selected: 'SF Territory')
+    # Wait for AJAX to load the response territory
+    expect(page).to have_select('Response territory*', selected: 'SF Response Territory')
 
     click_on 'Create Incident'
 
@@ -49,12 +49,12 @@ describe "Manually create incident", :type => :feature do
     fill_in 'Search for address', with: '1663 market st sf'
     click_on 'Look Up Address'
 
-    # Wait for AJAX to load the territory
-    expect(page).to have_select('Territory*', selected: 'SF Territory')
+    # Wait for AJAX to load the response territory
+    expect(page).to have_select('Response territory*', selected: 'SF Response Territory')
 
     click_on 'Create Incident'
 
-    expect(page).to have_text('Territory: SF Territory')
+    expect(page).to have_text('Response Territory: SF Response Territory')
 
   end
 

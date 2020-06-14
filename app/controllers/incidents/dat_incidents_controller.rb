@@ -87,7 +87,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   def update_resource(obj, attrs)
     super(obj, attrs).tap {|success|
       if success && (resource.incident.previous_changes.keys & [:address, :city, :state, :zip, :county, :lat, :lng]).present?
-        Incidents::TerritoryMatcher.new(obj.incident).perform
+        Incidents::ResponseTerritoryMatcher.new(obj.incident).perform
         obj.incident.save
       end
     }
@@ -171,7 +171,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
 
       base = params.require(:incidents_dat_incident).fetch(:incident_attributes, {})
       @_incident_params ||= base.permit([
-        :incident_type, :territory_id, :narrative, :status, :cas_event_number,
+        :incident_type, :response_territory_id, :narrative, :status, :cas_event_number,
         :address, :city, :state, :zip, :lat, :lng, :county, :neighborhood, :address_directly_entered,
         :num_adults, :num_children, :num_families,
         {:team_lead_attributes => [:id, :person_id, :role, :response]},

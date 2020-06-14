@@ -18,7 +18,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
 
     backup_person = FactoryGirl.create :person, region: @region
     dc = FactoryGirl.create :scheduler_dispatch_config, region: @region, backup_first: backup_person
-    @terr = FactoryGirl.create :territory, region: @region, dispatch_config: dc, counties: ["San Francisco, CA"]
+    @terr = FactoryGirl.create :response_territory, region: @region, dispatch_config: dc, counties: ["San Francisco, CA"]
 
   end
 
@@ -41,7 +41,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
       page.should have_text @region.name
     end
 
-    within ".dispatch-territory-name" do
+    within ".dispatch-response-territory-name" do
       page.should have_text @terr.name
     end
 
@@ -57,7 +57,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     expect(log.region_id).to eq @region.id
   end
 
-  it "handles an incident in territory" do
+  it "handles an incident in response territory" do
     visit intake_url
     choose 'Yes'
     page.should have_text "What is the address of the incident?"
@@ -104,7 +104,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
   end
 
 
-  it "handles an incident in an unknown territory" do
+  it "handles an incident in an unknown response territory" do
     visit intake_url
     choose 'Yes'
     page.should have_text "What is the address of the incident?"
@@ -115,8 +115,8 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     page.should_not have_text "Create Incident"
   end
 
-  it "handles an incident in an unauthorized territory" do
-    @other_terr = FactoryGirl.create :territory, counties: ["Alameda, CA"]
+  it "handles an incident in an unauthorized response territory" do
+    @other_terr = FactoryGirl.create :response_territory, counties: ["Alameda, CA"]
 
     visit intake_url
     choose 'Yes'

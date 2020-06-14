@@ -9,7 +9,7 @@ class Incidents::Incident < ActiveRecord::Base
 
   belongs_to :region, class_name: 'Roster::Region'
   belongs_to :area, class_name: 'Roster::County'
-  belongs_to :territory, class_name: 'Incidents::Territory'
+  belongs_to :response_territory, class_name: 'Incidents::ResponseTerritory'
 
   belongs_to :cas_incident, class_name: 'Incidents::CasIncident', primary_key: 'cas_incident_number', foreign_key: 'cas_event_number'
   has_one :dat_incident, class_name: 'Incidents::DatIncident', inverse_of: :incident
@@ -35,7 +35,7 @@ class Incidents::Incident < ActiveRecord::Base
   accepts_nested_attributes_for :event_logs
 
   # We always want these to be present
-  validates :region, :date, :territory, presence: true
+  validates :region, :date, :response_territory, presence: true
   validates :incident_number, presence: true, format: /\A\w*\d{2}-\d{3,}\z/, uniqueness: { scope: :region_id }
 
   scope :for_region, -> region { where{region_id.in region}}

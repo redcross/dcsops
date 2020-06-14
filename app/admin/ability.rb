@@ -63,7 +63,7 @@ class AdminAbility
       can [:read, :update], Scheduler::DispatchConfig, region_id: region
       can :read, Incidents::DispatchLog, region_id: region
 
-      can :manage, Incidents::Territory, region_id: region
+      can :manage, Incidents::ResponseTerritory, region_id: region
 
       can :manage, RegionAdminProxy do |region|
         region.region_id.nil? || region.region_id == region

@@ -35,7 +35,7 @@
             %tr
               %th Name
               %th Shift Position
-            - (sched = scheduler_service.scheduled_responders(time: f.object.created_at, areas: f.object.territory.calendar_counties)).each do |shift|
+            - (sched = scheduler_service.scheduled_responders(time: f.object.created_at, areas: f.object.response_territory.calendar_counties)).each do |shift|
               %tr
                 %td=shift.person.full_name
                 %td=shift.shift.name
@@ -43,7 +43,7 @@
                   %button.btn.btn-primary.add-responder{data: {person_text: shift.person.full_name, person_id: shift.person_id, was_flex: false}} Add Responder
                 %td(colspan=2)
             - sched_people = sched.map(&:person_id)
-            - scheduler_service.flex_responders(time: f.object.created_at, areas: f.object.territory.calendar_counties, exclude: sched_people).each do |flex|
+            - scheduler_service.flex_responders(time: f.object.created_at, areas: f.object.response_territory.calendar_counties, exclude: sched_people).each do |flex|
               %tr
                 %td=flex.person.full_name
                 %td Flex

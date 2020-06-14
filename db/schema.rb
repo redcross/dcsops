@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200611212220) do
+ActiveRecord::Schema.define(version: 20200614173433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -246,7 +246,7 @@ ActiveRecord::Schema.define(version: 20200611212220) do
     t.text     "referral_reason"
     t.datetime "call_start"
     t.integer  "incident_id"
-    t.integer  "territory_id"
+    t.integer  "response_territory_id"
     t.integer  "creator_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -503,7 +503,7 @@ ActiveRecord::Schema.define(version: 20200611212220) do
     t.string   "recruitment_message"
     t.integer  "cas_event_id"
     t.boolean  "address_directly_entered",    default: false, null: false
-    t.integer  "territory_id"
+    t.integer  "response_territory_id"
     t.integer  "current_dispatch_contact_id"
     t.datetime "dispatch_contact_due_at"
   end
@@ -554,7 +554,7 @@ ActiveRecord::Schema.define(version: 20200611212220) do
     t.string   "value"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "territory_id"
+    t.integer  "response_territory_id"
   end
 
   add_index "incidents_notifications_role_scopes", ["role_id"], name: "index_incidents_notifications_role_scopes_on_role_id", using: :btree
@@ -688,6 +688,31 @@ ActiveRecord::Schema.define(version: 20200611212220) do
 
   add_index "incidents_responder_recruitments", ["incident_id", "person_id"], name: "index_responder_recruitments_incident_person", using: :btree
 
+  create_table "incidents_response_territories", force: true do |t|
+    t.integer  "region_id"
+    t.string   "name"
+    t.boolean  "enabled"
+    t.boolean  "is_default"
+    t.string   "counties",             array: true
+    t.string   "cities",               array: true
+    t.string   "zip_codes",            array: true
+    t.string   "dispatch_number"
+    t.string   "non_disaster_number"
+    t.text     "special_instructions"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "dispatch_config_id"
+  end
+
+  add_index "incidents_response_territories", ["region_id"], name: "index_incidents_response_territories_on_region_id", using: :btree
+
+  create_table "incidents_response_territories_roster_counties", id: false, force: true do |t|
+    t.integer "response_territory_id"
+    t.integer "county_id"
+  end
+
+  add_index "incidents_response_territories_roster_counties", ["response_territory_id", "county_id"], name: "incidents_response_territories_roster_counties_index", using: :btree
+
   create_table "incidents_scopes", force: true do |t|
     t.integer  "region_id"
     t.string   "url_slug"
@@ -707,31 +732,6 @@ ActiveRecord::Schema.define(version: 20200611212220) do
   end
 
   add_index "incidents_scopes_roster_regions", ["scope_id", "region_id"], name: "index_incidents_scopes_roster_regions", unique: true, using: :btree
-
-  create_table "incidents_territories", force: true do |t|
-    t.integer  "region_id"
-    t.string   "name"
-    t.boolean  "enabled"
-    t.boolean  "is_default"
-    t.string   "counties",             array: true
-    t.string   "cities",               array: true
-    t.string   "zip_codes",            array: true
-    t.string   "dispatch_number"
-    t.string   "non_disaster_number"
-    t.text     "special_instructions"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "dispatch_config_id"
-  end
-
-  add_index "incidents_territories", ["region_id"], name: "index_incidents_territories_on_region_id", using: :btree
-
-  create_table "incidents_territories_roster_counties", id: false, force: true do |t|
-    t.integer "territory_id"
-    t.integer "county_id"
-  end
-
-  add_index "incidents_territories_roster_counties", ["territory_id", "county_id"], name: "incidents_territories_roster_counties_index", using: :btree
 
   create_table "incidents_vehicle_uses", force: true do |t|
     t.integer  "vehicle_id"

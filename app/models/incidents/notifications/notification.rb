@@ -42,7 +42,7 @@ module Incidents::Notifications
           case scope.level
           when 'region' then true
           when 'county' then scope.value.downcase == incident_county
-          when 'territory' then scope.territory_id == @incident.territory_id
+          when 'response_territory' then scope.response_territory_id == @incident.response_territory_id
           else false
           end
         }

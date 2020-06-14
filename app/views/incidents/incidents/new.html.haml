@@ -6,7 +6,7 @@
     =semantic_form_for resource, url: resource_path(resource.to_param || ""), builder: FormtasticBootstrap::FormBuilder, html: {class: "form-horizontal"} do |f|
       =f.semantic_errors *f.object.errors.keys
       =render partial: 'incidents/dat_incidents/location_fields', locals: {f: f}
-      .territory-info=render 'territory', f: f
+      .response-territory-info=render 'response_territory', f: f
       =f.inputs "Data" do
         - unless has_incident_number_sequence?
           =f.input :incident_number        
@@ -18,6 +18,6 @@
 - content_for :footer_js do
   :javascript
     $(function() {
-      window.territoryController = new IncidentTerritoryController(#{new_resource_path(partial: 'territory').to_json});
-      window.incidentLocationController.locationCallback = function() { territoryController.updateTerritory(false); }
+      window.responseTerritoryController = new IncidentResponseTerritoryController(#{new_resource_path(partial: 'response_territory').to_json});
+      window.incidentLocationController.locationCallback = function() { responseTerritoryController.updateResponseTerritory(false); }
     });

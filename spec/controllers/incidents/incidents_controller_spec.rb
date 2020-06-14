@@ -129,9 +129,9 @@ describe Incidents::IncidentsController, :type => :controller do
     let(:area) {
       @person.region.counties.first
     }
-    let(:territory) { FactoryGirl.create :territory, region: @person.region }
+    let(:response_territory) { FactoryGirl.create :response_territory, region: @person.region }
     let(:params) {
-      {incident_number: '14-123', date: Date.current.to_s, territory_id: territory.id}
+      {incident_number: '14-123', date: Date.current.to_s, response_territory_id: response_territory.id}
     }
     before(:each) { allow(Incidents::Notifications::Notification).to receive :create_for_event }
 
@@ -174,7 +174,7 @@ describe Incidents::IncidentsController, :type => :controller do
       end
 
       it "should not change incident sequence if the create is rejected" do
-        params.delete :territory_id
+        params.delete :response_territory_id
 
         expect {
           expect {

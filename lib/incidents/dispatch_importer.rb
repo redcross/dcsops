@@ -126,7 +126,7 @@ class Incidents::DispatchImporter
   rescue Geokit::Geocoders::TooManyQueriesError
     # Not the end of the world
   ensure
-    Incidents::TerritoryMatcher.new(incident, Incidents::Territory.for_region(@region)).perform(true)
+    Incidents::ResponseTerritoryMatcher.new(incident, Incidents::ResponseTerritory.for_region(@region)).perform(true)
   end
 
   def update_log_object(attrs, log_items)

@@ -204,22 +204,22 @@ class window.IncidentsTrackerController
           $("#narrative-modal .modal-body").html(data)
           setTimeout ( () -> $("#narrative-modal .modal-body").scrollTop(0) ), 100
 
-class window.IncidentTerritoryController
+class window.IncidentResponseTerritoryController
   constructor: (@url) ->
-    $(document).on 'change', "select[id$='territory_id']", () =>
-      @updateTerritory(true)
+    $(document).on 'change', "select[id$='response_territory_id']", () =>
+      @updateResponseTerritory(true)
 
-  updateTerritory: (preserveTerritory) ->
+  updateResponseTerritory: (preserveResponseTerritory) ->
 
     query = $('form').serialize()
-    if !preserveTerritory
-      query = query + "&incidents_incident[territory_id]="
+    if !preserveResponseTerritory
+      query = query + "&incidents_incident[response_territory_id]="
 
     $.ajax
       url: @url
       data: query
       success: (data, status, xhr) =>
-        $('.territory-info').html(data)
+        $('.response-territory-info').html(data)
 
 
 

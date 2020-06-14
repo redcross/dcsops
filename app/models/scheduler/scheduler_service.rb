@@ -38,8 +38,8 @@ class Scheduler::SchedulerService
     people = schedules.where{id.not_in(exclude)}.preload{[person.positions, person.cell_phone_carrier, person.work_phone_carrier, person.home_phone_carrier, person.alternate_phone_carrier, person.sms_phone_carrier]}.limit(limit).to_a.uniq{|s| s.id }
   end
 
-  def dispatch_assignments(time: region.time_zone.now, territory: )
-    config = territory.dispatch_config
+  def dispatch_assignments(time: region.time_zone.now, response_territory: )
+    config = response_territory.dispatch_config
     if config
       groups = Scheduler::ShiftGroup.current_groups_for_region(region, time)
       shifts = config.shift_list

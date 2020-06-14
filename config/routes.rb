@@ -139,7 +139,7 @@ Scheduler::Application.routes.draw do
     end
 
     namespace :api do
-      resources :territories, only: :index
+      resources :response_territories, only: :index
       resources :incidents, only: :index
       post :twilio_incoming, controller: :responder_messages_twilio, action: :incoming
     end

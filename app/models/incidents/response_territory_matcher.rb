@@ -1,25 +1,25 @@
-class Incidents::TerritoryMatcher
-  def initialize(incident, territories=nil)
+class Incidents::ResponseTerritoryMatcher
+  def initialize(incident, response_territories=nil)
     @incident = incident
-    @collection = territories || Incidents::Territory.for_region(@incident.region)
+    @collection = response_territories || Incidents::ResponseTerritory.for_region(@incident.region)
   end
 
   attr_reader :incident, :collection
 
   def perform(use_default=false)
-    terr = match_territory
-    terr ||= default_territory if use_default
+    terr = match_response_territory
+    terr ||= default_response_territory if use_default
     if terr
-      incident.territory = terr
+      incident.response_territory = terr
     end
     terr.present?
   end
 
-  def match_territory
+  def match_response_territory
     match_field(:zip_codes, incident.zip) || match_field(:cities, "#{incident.city}, #{incident.state}") || match_field(:counties, "#{incident.county}, #{incident.state}")
   end
 
-  def default_territory
+  def default_response_territory
     collection.detect{|terr| terr.is_default }
   end
 

@@ -89,7 +89,7 @@ Potentially
 
 Creating shifts in the admin console
  * shifts are made up of
-   * geography (territory in the new world)
+   * geography (response territory in the new world)
    * position
    * time (shift group)
  * see All shifts

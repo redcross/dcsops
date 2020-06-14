@@ -1,4 +1,4 @@
-ActiveAdmin.register Incidents::Territory, as: 'Territory' do
+ActiveAdmin.register Incidents::ResponseTerritory, as: 'Response Territory' do
   menu parent: 'Incidents'
 
   actions :all, except: :destroy

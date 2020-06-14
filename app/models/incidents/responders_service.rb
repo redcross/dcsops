@@ -39,15 +39,15 @@ class Incidents::RespondersService
   private
 
   def dispatch_responders
-    @dispatch ||= (incident.territory && service.dispatch_assignments(territory: territory))
+    @dispatch ||= (incident.response_territory && service.dispatch_assignments(response_territory: response_territory))
   end
 
-  def territory
-    incident.territory
+  def response_territory
+    incident.response_territory
   end
 
   def areas
-    territory.calendar_counties
+    response_territory.calendar_counties
   end
 
   def set_defaults

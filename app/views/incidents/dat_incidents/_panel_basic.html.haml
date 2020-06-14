@@ -3,7 +3,7 @@
   =f.semantic_fields_for :incident do |f|
     =f.semantic_errors
     =f.input :cas_event_number, as: :string
-    =f.input :territory, collection: Incidents::Territory.for_region(f.object.region)
+    =f.input :response_territory, collection: Incidents::ResponseTerritory.for_region(f.object.region)
     =f.input :date, as: (readonly ? :string : :bootstrap_date), input_html: {readonly: readonly}
     =f.input :incident_type, as: :assignable_select, include_blank: false, required: true, humanized: :humanized_valid_incident_types
   =f.input :incident_call_type, as: :assignable_select, include_blank: false, required: true

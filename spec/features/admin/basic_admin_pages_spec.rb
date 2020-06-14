@@ -84,11 +84,11 @@ describe "Basic Admin Pages", :type => :feature do
     expect(page).to have_current_path("/scheduler_admin/scopes")
   end
 
-  it "Visits the Territories page" do
+  it "Visits the Response Territories page" do
     visit "/scheduler_admin/people"
     find("#incidents").hover
-    click_on "Territories"
-    expect(page).to have_current_path("/scheduler_admin/territories")
+    click_on "Response Territories"
+    expect(page).to have_current_path("/scheduler_admin/response_territories")
   end
 
   it "Visits the Vehicles page" do

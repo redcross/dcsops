@@ -29,7 +29,7 @@ class Incidents::DispatchIntakeController < Incidents::BaseController
 
   def resource_params
     [params.fetch(:incidents_call_log, {}).permit(:call_type, :call_start, :contact_name, :contact_number, :address_entry,
-      :address, :city, :state, :zip, :county, :lat, :lng, :region_id, :territory_id,
+      :address, :city, :state, :zip, :county, :lat, :lng, :region_id, :response_territory_id,
       :incident_type, :services_requested, :num_displaced, :referral_reason).merge(dispatching_region_id: current_region.id, creator_id: current_user.id)]
   end
 

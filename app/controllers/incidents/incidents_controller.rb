@@ -93,7 +93,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     helper_method :tab_authorized?
     def tab_authorized?(name)
       case name
-      when 'summary','territory' then true
+      when 'summary','response_territory' then true
       when 'details', 'timeline', 'responders', 'attachments' then can? :read_details, resource
       when 'cases' then resource.region.incidents_collect_case_details && can?(:read_case_details, resource)
       when 'changes' then can? :read_changes, resource
@@ -124,10 +124,10 @@ class Incidents::IncidentsController < Incidents::BaseController
     def build_resource
       @resource ||= super.tap{|i| 
         i.date ||= Date.current
-        unless i.territory
-          Incidents::TerritoryMatcher.new(i, Incidents::Territory.all).perform
+        unless i.response_territory
+          Incidents::ResponseTerritoryMatcher.new(i, Incidents::ResponseTerritory.all).perform
         end
-        i.region = i.territory.try :region if i.territory
+        i.region = i.response_territory.try :region if i.response_territory
       }
     end
 
@@ -146,7 +146,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      keys = [:territory_id, :date, :incident_type, :status, :narrative, :address, :city, :state, :zip, :neighborhood, :county, :lat, :lng, :address_directly_entered, :recruitment_message]
+      keys = [:response_territory_id, :date, :incident_type, :status, :narrative, :address, :city, :state, :zip, :neighborhood, :county, :lat, :lng, :address_directly_entered, :recruitment_message]
 
       keys << :incident_number if params[:action] == 'create' && !has_incident_number_sequence?
 

@@ -12,12 +12,12 @@ describe Incidents::DispatchImporter do
   end
 
   let(:geocode_result) {double(:geocode_result, success?: true, lat: 0, lng: 0, city: Faker::Address.city, state: Faker::Address.state, district: Faker::Address.city, zip: Faker::Address.zip_code)}
-  let(:territory) { FactoryGirl.create :territory, region: region }
+  let(:response_territory) { FactoryGirl.create :response_territory, region: region }
 
   before do
     allow(Incidents::DispatchImporter.geocoder).to receive(:geocode).and_return(geocode_result)
     allow(Incidents::Notifications::Notification).to receive :create_for_event
-    allow_any_instance_of(Incidents::TerritoryMatcher).to receive(:match_territory).and_return(territory)
+    allow_any_instance_of(Incidents::ResponseTerritoryMatcher).to receive(:match_response_territory).and_return(response_territory)
   end
 
   describe "1.txt" do

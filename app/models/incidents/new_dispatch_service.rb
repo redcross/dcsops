@@ -19,7 +19,7 @@ class Incidents::NewDispatchService
   def create_incident
     @incident = Incidents::Incident.create! do |i|
       i.status = 'open'
-      [:region_id, :territory_id, :incident_type, :address, :city, :county, :state, :zip, :lat, :lng].each do |attr|
+      [:region_id, :response_territory_id, :incident_type, :address, :city, :county, :state, :zip, :lat, :lng].each do |attr|
         i[attr] = call_log[attr]
       end
       i.date = i.region.time_zone.today

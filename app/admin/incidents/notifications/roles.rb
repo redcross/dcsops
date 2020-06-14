@@ -16,7 +16,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
       safe_join(r.positions.map(&:name) + r.shifts.map(&:name), tag(:br))
     }
     column(:counties) { |r|
-      safe_join(r.role_scopes.includes{territory}.map{|rs| rs.territory ? "Territory: #{rs.territory.name}" : "County: #{rs.value}" }, tag(:br))
+      safe_join(r.role_scopes.includes{response_territory}.map{|rs| rs.response_territory ? "Response Territory: #{rs.response_territory.name}" : "County: #{rs.value}" }, tag(:br))
     }
     actions
   end
@@ -32,7 +32,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
       f.has_many :role_scopes, allow_destroy: true do |sf|
         sf.input :level, as: :assignable_select_admin
         sf.input :value
-        sf.input :territory, collection: Incidents::Territory.for_region(f.object.region)
+        sf.input :response_territory, collection: Incidents::ResponseTerritory.for_region(f.object.region)
       end
     end
     f.inputs do
@@ -103,7 +103,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :region_id, position_ids: [], shift_ids: [], triggers_attributes: [:id, :event_id, :template, :use_sms, :_destroy], role_scopes_attributes: [:id, :_destroy, :level, :value, :territory_id])]
+      [params.fetch(resource_request_name, {}).permit(:name, :region_id, position_ids: [], shift_ids: [], triggers_attributes: [:id, :event_id, :template, :use_sms, :_destroy], role_scopes_attributes: [:id, :_destroy, :level, :value, :response_territory_id])]
     end
 
     after_build :set_region
