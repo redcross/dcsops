@@ -20,7 +20,7 @@ class Incidents::UpdateDrivingDistanceJob
   end
 
   def collection
-    @collection ||= Incidents::ResponderAssignment.includes{[person, incident]}.where{(driving_distance == nil) & (updated_at > 3.days.ago)}
+    @collection ||= Incidents::ResponderAssignment.includes(:person, :incident).where{(driving_distance == nil) & (updated_at > 3.days.ago)}
   end
 
   class ForIncident

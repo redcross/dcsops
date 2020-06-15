@@ -35,8 +35,8 @@ class Incidents::ResponderAssignment < ApplicationRecord
 
   scope :on_scene, -> { where{ role.in( ON_SCENE_ROLES ) } }
   scope :was_available, -> { where{ role.in( my{ROLES}) }}
-  scope :with_person_in_counties, ->(counties){ joins{person.county_memberships}.where{person.county_memberships.county_id.in(my{Array(counties)}) } }
-  scope :for_chapter, -> chapter { joins{incident}.where{incident.chapter_id==chapter} }
+  scope :with_person_in_counties, ->(counties){ joins(person: :county_memberships).where{person.county_memberships.county_id.in(my{Array(counties)}) } }
+  scope :for_chapter, -> chapter { joins(:incident).where{incident.chapter_id==chapter} }
   def self.open
     was_available
   end

@@ -26,7 +26,7 @@ class Incidents::ReportSubscription < ApplicationRecord
   end
 
   #def self.for_chapter chapter
-  #  joins{person}.where{person.chapter_id == chapter}
+  #  joins(:person).where{person.chapter_id == chapter}
   #end
 #
   #def self.for_county county
@@ -53,7 +53,7 @@ class Incidents::ReportSubscription < ApplicationRecord
   end
 
   def self.with_active_person
-    joins{person}.where{person.vc_is_active == true}
+    joins(:person).where{person.vc_is_active == true}
   end
 
   def time_zone

@@ -61,11 +61,11 @@ class Incidents::ResponderMessageService
   end
 
   def open_assignment_for_person(person)
-    Incidents::ResponderAssignment.joins{incident}.readonly(false).where{incident.status == 'open'}.was_available.for_person(person).order(created_at: :desc).first
+    Incidents::ResponderAssignment.joins(:incident).readonly(false).where{incident.status == 'open'}.was_available.for_person(person).order(created_at: :desc).first
   end
 
   def open_recruitment_for_person(person)
-    Incidents::ResponderRecruitment.joins{incident}.readonly(false).where{incident.status == 'open'}.for_person(person).order(created_at: :desc).first
+    Incidents::ResponderRecruitment.joins(:incident).readonly(false).where{incident.status == 'open'}.for_person(person).order(created_at: :desc).first
   end
 
   def handle_command input, matchers

@@ -71,7 +71,7 @@ class Scheduler::Calendar
   def load_all_shifts
     shifts = all_groups.values.flatten
     @all_assignments = Scheduler::ShiftAssignment.references(:shift)#.includes_person_carriers
-        .includes{[person, shift.county, shift.positions, shift_group]} # person.counties, 
+        .includes(:person, :shift_group, shift: [:county, :positions]) # person.counties,
         .for_shifts(shifts).where{date.in(my{date_range})}
     
     @all_shifts = Core::NestedHash.hash_hash_hash_array
@@ -86,7 +86,7 @@ class Scheduler::Calendar
       group_ids = all_groups.keys
       pid = person.id
 
-      Scheduler::ShiftAssignment.references(:shift).includes{[shift.shift_groups, shift_group]}
+      Scheduler::ShiftAssignment.references(:shift).includes(:shift_group, shift: :shift_groups)
           .where{(shift_group_id.in(group_ids)) & (person_id == pid) & date.in(my{date_range})}
           .each do |assignment|
         @my_shifts[assignment.shift_group_id][assignment.date] << assignment
@@ -97,7 +97,7 @@ class Scheduler::Calendar
   def groups_by_period(period)
     # The references(:shifts) forces all of the preloads to be generated as one massive join.  Maybe
     # not so good for the database, but rails seems to be pathalogically slow on this eager load.
-    @_unfiltered_groups ||= Scheduler::ShiftGroup.references(:shifts).includes{[shifts.positions, shifts.county, shifts.shift_groups]}.where(chapter_id: chapter).order(:start_offset).to_a
+    @_unfiltered_groups ||= Scheduler::ShiftGroup.references(:shifts).includes(shifts: [:positions, :county, :shift_groups]).where(chapter_id: chapter).order(:start_offset).to_a
 
     @_unfiltered_groups.select{|sh| sh.period == period}
   end

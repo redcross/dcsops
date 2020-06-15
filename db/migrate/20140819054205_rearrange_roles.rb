@@ -39,7 +39,7 @@ class RearrangeRoles < ActiveRecord::Migration
     add_column :roster_role_scopes, :role_membership_id, :integer
 
     say_with_time 'Updating HomepageLinks' do
-      HomepageLink.includes{roles}.each do |hl|
+      HomepageLink.includes(:roles).each do |hl|
         hl.roles.each do |r|
           hl.homepage_link_roles.create! role_scope: r.name
         end

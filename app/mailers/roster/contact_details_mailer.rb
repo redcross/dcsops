@@ -20,7 +20,7 @@ class Roster::ContactDetailsMailer < ActionMailer::Base
   end
 
   def events
-    Incidents::Notifications::Trigger.joins{role.positions}.where{role.positions.id.in my{@person.position_ids}}.includes{[role, event]}.map{|t| "#{t.event.name} (#{t.humanized_template})"}.uniq.sort
+    Incidents::Notifications::Trigger.joins(role: :positions).where{role.positions.id.in my{@person.position_ids}}.includes(:role, :event).map{|t| "#{t.event.name} (#{t.humanized_template})"}.uniq.sort
   end
 
   def vc_profile_url

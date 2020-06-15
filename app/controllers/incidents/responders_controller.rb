@@ -116,7 +116,7 @@ class Incidents::RespondersController < Incidents::BaseController
   end
 
   def collection
-    @collection ||= super.includes{person}
+    @collection ||= super.includes(:person)
   end
 
   def recruitments

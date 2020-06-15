@@ -40,7 +40,7 @@ ActiveAdmin.register Incidents::Territory, as: 'Territory' do
 
   controller do
     def collection
-      @coll ||= super.includes{chapter}
+      @coll ||= super.includes(:chapter)
     end
 
     def available_counties

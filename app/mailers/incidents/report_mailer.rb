@@ -21,7 +21,7 @@ class Incidents::ReportMailer < ActionMailer::Base
 
     rel = Incidents::Incident.valid.for_chapter(scope.all_chapters)
     
-    @incident_scope = date_scope(rel, date_range).order(:date).includes{responder_assignments.person}
+    @incident_scope = date_scope(rel, date_range).order(:date).includes(responder_assignments: :person)
     @incidents = @incident_scope.map{|i| Incidents::IncidentPresenter.new(i) }
     @weekly_stats = date_scope(rel, date_range).incident_stats
     @yearly_stats = rel.where{date.in(fiscal.range)}.incident_stats
@@ -68,7 +68,7 @@ private
     chapters = scope.all_chapters
     Incidents::Deployment.for_chapter(chapters).seen_since(@date_range.first)
                           .preload{[disaster, person.counties]}
-                          .joins{disaster}
+                          .joins(:disaster)
                           .where{ disaster.dr_number.not_in(ignore) }
                           .order(date_first_seen: :desc)
                           .to_a

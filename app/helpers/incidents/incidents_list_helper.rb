@@ -12,7 +12,7 @@ module Incidents::IncidentsListHelper
   end
 
   def assistance_totals(collection)
-    collection.joins{cases}.select{
+    collection.joins(:cases).select{
       [count(cases.id).as(:num_cases),
         sum(cases.total_amount).as(:total_assistance)
       ]

@@ -8,7 +8,7 @@ class Api::PeopleController < Api::BaseController
   load_and_authorize_resource class: resource_class, except: :me
 
   has_scope :deployed_to do |controller, scope, val|
-    exists = Incidents::Deployment.joins{disaster}.where{(disaster.dr_number == val) & (person_id == roster_people.id)}.exists
+    exists = Incidents::Deployment.joins(:disaster).where{(disaster.dr_number == val) & (person_id == roster_people.id)}.exists
     scope.where(exists)
   end
   has_scope :name_contains

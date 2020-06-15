@@ -129,7 +129,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   end
 
   #def end_of_association_chain
-  #  Incidents::Incident.includes{[dat_incident.completed_by, dat_incident.vehicles, responder_assignments.person]}
+  #  Incidents::Incident.includes(dat_incident: [:completed_by, :vehicles], responder_assignments: :person)
   #                     .for_chapter(current_chapter)
   #                     .where{(incident_number == my{params[:incident_id]})}
   #                     .first!

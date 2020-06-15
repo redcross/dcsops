@@ -18,11 +18,11 @@ class Scheduler::ShiftNotesController < Scheduler::BaseController
   end
 
   def end_of_association_chain
-    Scheduler::ShiftAssignment.joins{person}.where{person.chapter_id==my{current_chapter}}.readonly(false)
+    Scheduler::ShiftAssignment.joins(:person).where{person.chapter_id==my{current_chapter}}.readonly(false)
   end
 
   def collection
-    @collection ||= apply_scopes(end_of_association_chain).joins{[shift, shift_group]}.order('shift.ordinal', 'shift_group.start_offset', 'person_id').preload{[shift.county, person, shift, shift_group]}
+    @collection ||= apply_scopes(end_of_association_chain).joins(:shift, :shift_group).order('shift.ordinal', 'shift_group.start_offset', 'person_id').preload{[shift.county, person, shift, shift_group]}
   end
 
   def build_resource_params

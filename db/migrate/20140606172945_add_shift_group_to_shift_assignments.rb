@@ -33,7 +33,7 @@ class AddShiftGroupToShiftAssignments < ActiveRecord::Migration
     shifts_to_delete = []
 
     say_with_time "Group Shifts" do
-      shifts = Shift.includes{shift_group}.to_a
+      shifts = Shift.includes(:shift_group).to_a
       shifts_by_name = shifts.group_by{|sh| [sh.shift_group.chapter_id, sh.name, sh.county_id]}
       shifts_by_name.each_value do |list|
         keep_shift_id = list.map(&:id).min

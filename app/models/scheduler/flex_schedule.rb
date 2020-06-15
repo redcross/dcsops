@@ -2,7 +2,7 @@ class Scheduler::FlexSchedule < ApplicationRecord
   belongs_to :person, foreign_key: 'id', class_name: 'Roster::Person'
 
   scope :for_county, lambda {|county_ids| 
-    joins{person.county_memberships}.where{person.county_memberships.county_id.in my{county_ids}}
+    joins(person: :county_memberships).where{person.county_memberships.county_id.in my{county_ids}}
   }
 
   scope :with_availability, lambda {
@@ -16,7 +16,7 @@ class Scheduler::FlexSchedule < ApplicationRecord
   }
 
   def self.by_distance_from inc
-    joins{person}.order{_(person.lat.op(:-, inc.lat)).op('^', 2).op(:+, _(person.lng.op(:-, inc.lng)).op('^', 2))}
+    joins(:person).order{_(person.lat.op(:-, inc.lat)).op('^', 2).op(:+, _(person.lng.op(:-, inc.lng)).op('^', 2))}
   end
 
   def available(day, shift)

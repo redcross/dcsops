@@ -102,7 +102,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
   end
 
   scope :for_chapter, -> (chapter) {
-    joins{person}.where{person.chapter_id == chapter}
+    joins(:person).where{person.chapter_id == chapter}
   }
 
   scope :for_shifts, -> (shifts) {
@@ -110,7 +110,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
   }
 
   scope :for_counties, -> (counties) {
-    joins{shift}.where{shift.county_id.in(counties)}
+    joins(:shift).where{shift.county_id.in(counties)}
   }
 
   scope :for_groups, -> (groups) {
@@ -118,7 +118,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
   }
 
   scope :with_active_person, -> {
-    joins{person}.where{person.vc_is_active == true}
+    joins(:person).where{person.vc_is_active == true}
   }
   
   def self.needs_email_invite chapter
@@ -130,7 +130,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
 
   def self.needs_reminder chapter, type
     where(:"#{type}_reminder_sent" => false)
-    .joins{notification_setting}.where{notification_setting.__send__("#{type}_advance_hours") != nil}
+    .joins(:notification_setting).where{notification_setting.__send__("#{type}_advance_hours") != nil}
     .with_active_person.for_chapter(chapter).readonly(false).preload{[notification_setting,shift_group.chapter]}
     .select{|ass|
       now = chapter.time_zone.now
@@ -164,16 +164,16 @@ class Scheduler::ShiftAssignment < ApplicationRecord
   end
 
   def self.normalized_date_between date_first, date_last
-    joins{shift_group}.where("date BETWEEN #{normalized_date_sql date_first} AND #{normalized_date_sql date_last}")
+    joins(:shift_group).where("date BETWEEN #{normalized_date_sql date_first} AND #{normalized_date_sql date_last}")
   end
 
   def self.normalized_date_on_or_after time
-    joins{shift_group}.where("scheduler_shift_assignments.date >= #{normalized_date_sql time}")
+    joins(:shift_group).where("scheduler_shift_assignments.date >= #{normalized_date_sql time}")
   end
 
   scope :starts_after, ->(time){
     start_date = time.to_date
-    joins{shift_group}.where{(date > start_date) | ((date == start_date) & (shift_group.end_offset > time.in_time_zone.seconds_since_midnight))}
+    joins(:shift_group).where{(date > start_date) | ((date == start_date) & (shift_group.end_offset > time.in_time_zone.seconds_since_midnight))}
   }
 
   scope :available_for_swap, -> (chapter) {
@@ -181,7 +181,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
   }
 
   scope :includes_person_carriers, -> {
-    includes{[person.home_phone_carrier, person.cell_phone_carrier, person.work_phone_carrier, person.alternate_phone_carrier, person.sms_phone_carrier]}
+    includes(person: [:home_phone_carrier, :cell_phone_carrier, :work_phone_carrier, :alternate_phone_carrier, :sms_phone_carrier])
   }
 
 

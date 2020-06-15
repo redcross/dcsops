@@ -104,7 +104,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
 
     counties = setting.person.primary_county
 
-    @swap_groups = Scheduler::ShiftAssignment.includes{shift.county}.for_counties(counties)
+    @swap_groups = Scheduler::ShiftAssignment.includes(shift: :county).for_counties(counties)
                   .available_for_swap(setting.person.chapter).group_by{|ass| ass.shift.county }
   end
 
@@ -112,7 +112,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     @assignment
   end
 
-  expose(:related_shifts) {Scheduler::ShiftAssignment.for_day(item.date).for_counties(item.shift.county).for_groups(item.shift_group_id).includes{shift}}
+  expose(:related_shifts) {Scheduler::ShiftAssignment.for_day(item.date).for_counties(item.shift.county).for_groups(item.shift_group_id).includes(:shift)}
 
   def shift_lead
     @shift_lead ||= related_shifts.order('shift.ordinal').first

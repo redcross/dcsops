@@ -1,4 +1,4 @@
-collection.includes{[dat_incident, all_responder_assignments, team_lead.person]}.find_each(batch_size: 100) do |resource|
+collection.includes(:dat_incident, :all_responder_assignments, team_lead: :person).find_each(batch_size: 100) do |resource|
   xml.Placemark id: resource.id do
     xml.name resource.incident_number + " " + (resource.humanized_incident_type || "")
     xml.styleUrl "##{resource.incident_type}"

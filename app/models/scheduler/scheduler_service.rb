@@ -7,7 +7,7 @@ class Scheduler::SchedulerService
 
   def scheduled_responders(time: chapter.time_zone.now, limit: nil, areas: nil, exclude: [], shifts: nil, dispatch_console: false)
     groups = Scheduler::ShiftGroup.current_groups_for_chapter(chapter, time)
-    assignments = Scheduler::ShiftAssignment.joins{[shift]}.preload{[shift, person]}.for_active_groups(groups)
+    assignments = Scheduler::ShiftAssignment.joins(:shift).preload{[shift, person]}.for_active_groups(groups)
                   .where{person_id.not_in(exclude)}.limit(limit)
     if areas.present?
       assignments = assignments.where{shift.county_id.in areas}
@@ -27,7 +27,7 @@ class Scheduler::SchedulerService
     offset = time.seconds_since_midnight
     period = (offset >= chapter.scheduler_flex_day_start && offset < chapter.scheduler_flex_night_start) ? 'day' : 'night'
 
-    schedules = Scheduler::FlexSchedule.available_at(dow, period).joins{person}.where{person.chapter_id == my{chapter}}.preload{person}
+    schedules = Scheduler::FlexSchedule.available_at(dow, period).joins(:person).where{person.chapter_id == my{chapter}}.preload{person}
     if areas.present?
       schedules = schedules.for_county(areas)
     end
@@ -43,7 +43,7 @@ class Scheduler::SchedulerService
     if config
       groups = Scheduler::ShiftGroup.current_groups_for_chapter(chapter, time)
       shifts = config.shift_list
-      assignments = Scheduler::ShiftAssignment.for_active_groups(groups).for_shifts(shifts).includes{shift}.sort_by{|sa| shifts.index(sa.shift) }
+      assignments = Scheduler::ShiftAssignment.for_active_groups(groups).for_shifts(shifts).includes(:shift).sort_by{|sa| shifts.index(sa.shift) }
       backup = config.backup_list
       {present: true, assignments: assignments, backup: backup}
     else

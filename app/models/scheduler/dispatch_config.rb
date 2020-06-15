@@ -33,7 +33,7 @@ class Scheduler::DispatchConfig < ApplicationRecord
       backups.map{|b| __send__(b).chapter }
     end.includes do
       shifts.flat_map{|sh| [__send__(sh).county,__send__(sh).shift_groups] }
-    end.includes{chapter}
+    end.includes(:chapter)
   end
 
   def self.with_shift shift

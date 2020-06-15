@@ -4,7 +4,7 @@ class Roster::Membership < ApplicationRecord
   belongs_to :person
 
   def self.for_chapter chapter 
-    joins{person}.where{(person.chapter_id == chapter)}
+    joins(:person).where{(person.chapter_id == chapter)}
   end
 
   def self.not_persistent

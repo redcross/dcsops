@@ -42,7 +42,7 @@ class Roster::Person < ApplicationRecord
     where{(home_phone == number) | (cell_phone == number) | (work_phone == number) | (alternate_phone == number) | (sms_phone == number)}
   end
 
-  scope :has_position, lambda { joins{positions} }
+  scope :has_position, lambda { joins(:positions) }
   scope :in_county, lambda {|county| joins(:counties).where(:counties => {id: county})}
   scope :with_position, lambda {|positions| joins(:positions).where(:positions => {id: positions})}
   scope :by_name, lambda { order(:last_name, :first_name)}

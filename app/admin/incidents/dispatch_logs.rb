@@ -31,7 +31,7 @@ ActiveAdmin.register Incidents::DispatchLog, as: 'Dispatch Log' do
 
   controller do
     def collection
-      @col ||= super.includes{log_items}
+      @col ||= super.includes(:log_items)
     end
   end
 end
