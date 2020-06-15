@@ -62,7 +62,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   end
 
   batch_action :reschedule, if: proc{AdminAbility.new(current_user).can? :create, Scheduler::Shift} do |ids|
-    shifts = Scheduler::Shift.includes{region}.where{id.in ids}
+    shifts = Scheduler::Shift.includes(:region).where{id.in ids}
 
     region_ids = shifts.map{|sh| sh.region.id}
 

@@ -12,7 +12,7 @@ class Scheduler::HomeController < Scheduler::BaseController
   private
   helper_method :shifts_available_for_month
   def shifts_available_for_month(month)
-    @shifts ||= Scheduler::Shift.for_region(current_region).includes{shift_times}.can_be_taken_by(current_person)
+    @shifts ||= Scheduler::Shift.for_region(current_region).includes(:shift_times).can_be_taken_by(current_person)
 
     Scheduler::Shift.count_shifts_available_for_month(@shifts, month)
   end
@@ -40,7 +40,7 @@ class Scheduler::HomeController < Scheduler::BaseController
 
   helper_method :responses
   def responses
-    @_responses ||= Incidents::ResponderAssignment.where(person_id: current_person).joins{incident}.where{incident.status == 'closed'}.includes{incident}.order('incidents_incidents.date desc').first(5)
+    @_responses ||= Incidents::ResponderAssignment.where(person_id: current_person).joins(:incident).where{incident.status == 'closed'}.includes(:incident).order('incidents_incidents.date desc').first(5)
   end
 
   helper_method :days_of_week, :shift_times, :current_person

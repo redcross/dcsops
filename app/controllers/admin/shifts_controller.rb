@@ -24,7 +24,7 @@ class Admin::ShiftsController < GridController
   end
 
   def end_of_association_chain
-    Scheduler::Shift.for_region(parent).order([:ordinal]).includes{[shift_times, shift_territory, positions, shift_category]}
+    Scheduler::Shift.for_region(parent).order([:ordinal]).includes(:shift_times, :shift_territory, :positions, :shift_category)
   end
 
   def resource

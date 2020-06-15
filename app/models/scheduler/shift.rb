@@ -72,7 +72,7 @@ class Scheduler::Shift < ApplicationRecord
   end
 
   scope :for_region, -> region {
-    joins{shift_territory}.where{shift_territory.region_id == region}
+    joins(:shift_territory).where{shift_territory.region_id == region}
   }
   scope :active_on_day, -> date {
     #Todo: check day of week here
@@ -82,10 +82,10 @@ class Scheduler::Shift < ApplicationRecord
     where{shift_territory_id.in(shift_territories)}
   }
   scope :can_be_taken_by, -> person {
-    where{((ignore_shift_territory == true) | shift_territory_id.in(person.shift_territory_ids))}.joins{positions}.where{positions.id.in(person.position_ids)}.uniq
+    where{((ignore_shift_territory == true) | shift_territory_id.in(person.shift_territory_ids))}.joins(:positions).where{positions.id.in(person.position_ids)}.uniq
   }
   scope :for_groups, -> groups {
-    joins{shift_times}.where{shift_times.id.in groups}
+    joins(:shift_times).where{shift_times.id.in groups}
   }
 
   def can_be_taken_by?(person)

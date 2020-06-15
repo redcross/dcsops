@@ -18,7 +18,7 @@ ActiveAdmin.register Incidents::ResponderMessage, as: 'Responder Message' do
 
   controller do
     def collection
-      @collection ||= super.includes{[person, incident]}
+      @collection ||= super.includes(:person, :incident)
     end
   end
 

@@ -15,7 +15,7 @@ class Scheduler::SendDispatchRosterJob
     Scheduler::ShiftAssignment.transaction do
       if force or shifts_needing_update?
         run!
-        Scheduler::ShiftAssignment.for_region(region).joins{shift}.update_all synced: true
+        Scheduler::ShiftAssignment.for_region(region).joins(:shift).update_all synced: true
       end
     end
   end

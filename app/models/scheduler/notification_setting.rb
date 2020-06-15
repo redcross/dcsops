@@ -19,11 +19,11 @@ class Scheduler::NotificationSetting < ApplicationRecord
   end
 
   def self.with_active_person
-    joins{person}.where{person.vc_is_active == true}
+    joins(:person).where{person.vc_is_active == true}
   end
 
   def self.for_region region
-    joins{person}.where{person.region_id == region.id}
+    joins(:person).where{person.region_id == region.id}
   end
 
   before_create :set_calendar_api_token
@@ -32,11 +32,11 @@ class Scheduler::NotificationSetting < ApplicationRecord
   end
 
   def self.people_to_notify_swap(shift_assignment)
-    Roster::Person.joins{notification_setting}.where(notification_setting: {email_swap_requested: true}).in_shift_territory(shift_assignment.shift.shift_territory).with_position(shift_assignment.shift.positions.to_a).to_a
+    Roster::Person.joins(:notification_setting).where(notification_setting: {email_swap_requested: true}).in_shift_territory(shift_assignment.shift.shift_territory).with_position(shift_assignment.shift.positions.to_a).to_a
   end
 
   def self.admins_to_notify_swap(shift_assignment, ignore=[])
-    Roster::Person.joins{notification_setting}.in_shift_territory(shift_assignment.shift.shift_territory).where{(notification_setting.email_all_swaps == true) & (id.not_in ignore)}.to_a
+    Roster::Person.joins(:notification_setting).in_shift_territory(shift_assignment.shift.shift_territory).where{(notification_setting.email_all_swaps == true) & (id.not_in ignore)}.to_a
   end
 
   def allow_sms_at? time

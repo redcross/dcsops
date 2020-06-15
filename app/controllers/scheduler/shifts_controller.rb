@@ -38,7 +38,7 @@ class Scheduler::ShiftsController < Scheduler::BaseController
   end
 
   def collection
-    @collection ||= super.includes{[shift_territory, shift_times]}
+    @collection ||= super.includes(:shift_territory, :shift_times)
   end
 
   def dates_for_count

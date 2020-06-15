@@ -104,7 +104,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
 
     shift_territories = setting.person.primary_shift_territory
 
-    @swap_groups = Scheduler::ShiftAssignment.includes{shift.shift_territory}.for_shift_territories(shift_territories)
+    @swap_groups = Scheduler::ShiftAssignment.includes(shift: :shift_territory).for_shift_territories(shift_territories)
                   .available_for_swap(setting.person.region).group_by{|ass| ass.shift.shift_territory }
   end
 
@@ -112,7 +112,7 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     @assignment
   end
 
-  expose(:related_shifts) {Scheduler::ShiftAssignment.for_day(item.date).for_shift_territories(item.shift.shift_territory).for_groups(item.shift_time_id).includes{shift}}
+  expose(:related_shifts) {Scheduler::ShiftAssignment.for_day(item.date).for_shift_territories(item.shift.shift_territory).for_groups(item.shift_time_id).includes(:shift)}
 
   def shift_lead
     @shift_lead ||= related_shifts.order('shift.ordinal').first

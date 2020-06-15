@@ -20,7 +20,7 @@ ActiveAdmin.register Incidents::Deployment, as: 'Deployment' do
 
   controller do
     def collection
-      @collection ||= super.includes{[person, disaster]}
+      @collection ||= super.includes(:person, :disaster)
     end
   end
 

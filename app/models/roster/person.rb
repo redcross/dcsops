@@ -42,7 +42,7 @@ class Roster::Person < ApplicationRecord
     where{(home_phone == number) | (cell_phone == number) | (work_phone == number) | (alternate_phone == number) | (sms_phone == number)}
   end
 
-  scope :has_position, lambda { joins{positions} }
+  scope :has_position, lambda { joins(:positions) }
   scope :in_shift_territory, lambda {|shift_territory| joins(:shift_territories).where(:shift_territories => {id: shift_territory})}
   scope :with_position, lambda {|positions| joins(:positions).where(:positions => {id: positions})}
   scope :by_name, lambda { order(:last_name, :first_name)}

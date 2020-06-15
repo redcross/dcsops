@@ -51,7 +51,7 @@ class Incidents::WeeklyReportJob
     Incidents::ReportSubscription.for_type('report')
                                  .for_scope(scope)
                                  .to_send_on(current_send_date)
-                                 .includes{person.region}
+                                 .includes(person: :region)
                                  .with_active_person
                                  .readonly(false)
   end

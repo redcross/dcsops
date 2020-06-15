@@ -64,9 +64,9 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   end
 
   def collection
-    @shift_assignments ||= apply_scopes(super).order(:date).joins{person.outer}
+    @shift_assignments ||= apply_scopes(super).order(:date).left_outer_joins(:person)
                   .where{(person.region_id == my{current_region}) & (date <= my{current_region.time_zone.today + 30})}
-                  .includes{[person, shift_time.region, shift.shift_territory, person.shift_territories, person.region]}.uniq
+                  .includes(:person, shift_time: :region, shift: :shift_territory, person: [:shift_territories, :region]).uniq
   end
 
   helper_method :grouped_collection
@@ -82,7 +82,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
     return @other_shifts if @other_shifts
 
     groups = collection.map{|ass| {start_date: ass.date, id: ass.shift_time_id} }.uniq
-    @other_shifts = Scheduler::ShiftAssignment.for_active_groups_raw(groups).includes{[person, shift.shift_territory]}.includes_person_carriers.group_by{|s| [s.date, s.shift_id, s.shift_time_id]}
+    @other_shifts = Scheduler::ShiftAssignment.for_active_groups_raw(groups).includes(:person, shift: :shift_territory).includes_person_carriers.group_by{|s| [s.date, s.shift_id, s.shift_time_id]}
   end
 
   def assignments_for(shift, item)
@@ -93,7 +93,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   def associated_shifts(item)
     @shifts_by_shift_time ||= begin
       groups = collection.map{|s| s.shift_time}.uniq
-      shifts = Scheduler::Shift.for_groups(groups).order(:ordinal).active_on_day(item.date).includes{shift_times}
+      shifts = Scheduler::Shift.for_groups(groups).order(:ordinal).active_on_day(item.date).includes(:shift_times)
       shifts.reduce(Core::NestedHash.hash_array) { |arr, shift| shift.shift_time_ids.each { |gid| arr[gid] << shift }; arr }
     end
 

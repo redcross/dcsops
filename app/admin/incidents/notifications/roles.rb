@@ -16,7 +16,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
       safe_join(r.positions.map(&:name) + r.shifts.map(&:name), tag(:br))
     }
     column(:shift_territories) { |r|
-      safe_join(r.role_scopes.includes{response_territory}.map{|rs| rs.response_territory ? "Response Territory: #{rs.response_territory.name}" : "Shift Territory: #{rs.value}" }, tag(:br))
+      safe_join(r.role_scopes.includes(:response_territory).map{|rs| rs.response_territory ? "Response Territory: #{rs.response_territory.name}" : "Shift Territory: #{rs.value}" }, tag(:br))
     }
     actions
   end
@@ -70,7 +70,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
       end
       column do
         panel "Triggers" do
-          table_for role.triggers.joins{event}.order('event.ordinal') do
+          table_for role.triggers.joins(:event).order('event.ordinal') do
             column :event
             column(:template) { |t| t.humanized_template }
             column :use_sms
@@ -106,7 +106,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
   controller do
 
     def collection
-      @col ||= super.includes{[positions,shifts.shift_times, shifts.shift_territory]}
+      @col ||= super.includes(:positions, shifts: [:shift_times, :shift_territory])
     end
 
     def resource_params

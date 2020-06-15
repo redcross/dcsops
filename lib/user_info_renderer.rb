@@ -41,7 +41,7 @@ class UserInfoRenderer
 
   def deployments
     if scopes.include? 'deployments'
-      { deployments: Incidents::Deployment.for_person(person).includes{disaster}.map{|d| render_deployment d} }
+      { deployments: Incidents::Deployment.for_person(person).includes(:disaster).map{|d| render_deployment d} }
     end
   end
 

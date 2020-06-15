@@ -9,7 +9,7 @@ ActiveAdmin.register Incidents::ReportSubscription, as: 'Report Subscriptions' d
     #include ActionController::Live
 
     def collection
-      @_collection ||= super.includes{person}
+      @_collection ||= super.includes(:person)
     end
 
     def resource_params

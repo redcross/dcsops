@@ -14,7 +14,7 @@ class MoveIncidentCountyToArea < ActiveRecord::Migration
     remove_column :incidents_incidents, :county_id
 
     say_with_time "Populate county" do
-      Incident.includes{area}.find_each do |inc|
+      Incident.includes(:area).find_each do |inc|
         inc.update_attribute :county, inc.area.try(:name)
       end
     end

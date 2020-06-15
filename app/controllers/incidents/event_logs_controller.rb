@@ -38,7 +38,7 @@ class Incidents::EventLogsController < Incidents::EditPanelController
 
   def collection
     @collection ||= begin
-      coll = super.includes{[incident, person, incident.region]}.order(event_time :desc)
+      coll = super.includes(:incident, :person, incident: :region).order(event_time: :desc)
       coll = coll.page(params[:page]) if paginate?
       coll
     end

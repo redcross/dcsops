@@ -25,7 +25,7 @@ module Incidents::Notifications
     #alias_method :perform, :send
 
     def triggers_for_event event
-      event.triggers.includes{role.role_scopes}
+      event.triggers.includes(role: :role_scopes)
     end
 
     def roles_for_event event
