@@ -43,7 +43,7 @@ class Incidents::CasImporter
             id = sheet[row,1]
             puts id
             incident = incidents[id].try(:first) || Incidents::CasIncident.new(cas_incident_number: id)
-            cols = [:dr_number, nil, :cas_name, :incident_date, nil, nil, nil, :county_name,
+            cols = [:dr_number, nil, :cas_name, :incident_date, nil, nil, nil, :county,
                     :cases_with_assistance, :cases_service_only, :cases_opened, :num_clients, :cases_closed, :cases_open, :region_code]
 
             cols.each_with_index do |col_name, idx|

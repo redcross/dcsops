@@ -4,7 +4,7 @@
 %table.table.table-striped
   %thead
     %tr
-      %th= model_class.human_attribute_name(:county)
+      %th= model_class.human_attribute_name(:shift_territory)
       %th= model_class.human_attribute_name(:backup_first)
       %th= model_class.human_attribute_name(:backup_second)
       %th= model_class.human_attribute_name(:backup_third)
@@ -14,7 +14,7 @@
   %tbody
     - collection.each do |dispatch_config|
       %tr
-        %td= link_to dispatch_config.county.name, edit_resource_path(dispatch_config)
+        %td= link_to dispatch_config.shift_territory.name, edit_resource_path(dispatch_config)
         %td= dispatch_config.backup_first.try(:full_name)
         %td= dispatch_config.backup_second.try(:full_name)
         %td= dispatch_config.backup_third.try(:full_name)

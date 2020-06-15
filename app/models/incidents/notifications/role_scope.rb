@@ -6,7 +6,7 @@ module Incidents::Notifications
     validates_presence_of :response_territory, if: ->(obj){obj.level == 'response_territory'}
 
     assignable_values_for :level do
-      %w(region response_territory county)
+      %w(region response_territory shift_territory)
     end
 
     before_validation :clean_values

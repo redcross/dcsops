@@ -5,7 +5,7 @@ describe "Shift Scheduler Spec", :type => :feature do
     grant_role! "region_dat_admin"
 
     group = FactoryGirl.create :shift_time, region: @person.region, start_offset: 10.hours, end_offset: 22.hours
-    county = FactoryGirl.create :county, name: "County", region: @person.region
+    shift_territory = FactoryGirl.create :shift_territory, name: "Shift Territory", region: @person.region
     position = FactoryGirl.create :position, name: "Position", region: @person.region
     category = FactoryGirl.create :shift_category, name: "Category", region: @person.region
 
@@ -14,7 +14,7 @@ describe "Shift Scheduler Spec", :type => :feature do
       name: "Shift",
       positions: [position],
       shift_category: category,
-      county: county
+      shift_territory: shift_territory
   end
 
   it "Visits this months schedule" do

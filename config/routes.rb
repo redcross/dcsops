@@ -162,7 +162,7 @@ Scheduler::Application.routes.draw do
   namespace :admin do
     resources :regions do
       resources :positions
-      resources :counties
+      resources :shift_territories
       resources :shifts
       resource :vc_positions, only: :show
     end

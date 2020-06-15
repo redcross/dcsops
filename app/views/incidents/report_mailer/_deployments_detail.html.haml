@@ -11,7 +11,7 @@
           - pair.each do |dep|
             %td
               =dep.person.full_name
-              (#{dep.person.primary_county.try(:abbrev)})
+              (#{dep.person.primary_shift_territory.try(:abbrev)})
             /%td=dep.dr_name
             %td=dep.gap
       %tr

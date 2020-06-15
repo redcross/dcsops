@@ -103,7 +103,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
 
     expose(:needs_report_collection) { 
-      Incidents::Incident.for_region(delegated_region_ids).needs_incident_report.includes{area}.order{incident_number} 
+      Incidents::Incident.for_region(delegated_region_ids).needs_incident_report.includes{shift_territory}.order{incident_number} 
     }
 
     expose(:resource_changes) {
@@ -160,10 +160,10 @@ class Incidents::IncidentsController < Incidents::BaseController
       @delgated_regions ||= [@region.id] + Roster::Region.with_incidents_delegate_region_value(@region.id).ids
     end
 
-    def counties_for_create
-      Roster::County.where{region_id.in my{delegated_region_ids}}
+    def shift_territories_for_create
+      Roster::ShiftTerritory.where{region_id.in my{delegated_region_ids}}
     end
-    helper_method :counties_for_create
+    helper_method :shift_territories_for_create
 
     def publisher
       @publisher ||= Incidents::UpdatePublisher.new(resource.region, resource)

@@ -43,14 +43,14 @@ describe Roster::Person, :type => :model do
       expect(person.scope_for_role( grant_name)).to match_array(['test', 1])
     end
 
-    it "should return county ids for scope if the scope is county_ids" do
-      membership.role_scopes.build scope: "county_ids"
+    it "should return shift_territory ids for scope if the scope is shift_territory_ids" do
+      membership.role_scopes.build scope: "shift_territory_ids"
       membership.role_scopes.build scope: "424242"
       membership.save!
 
-      c = person.counties.create name: 'Test County', region: region
+      c = person.shift_territories.create name: 'Test Shift Territory', region: region
 
-      expect(person.scope_for_role( grant_name)).to match_array(person.county_ids + [424242])
+      expect(person.scope_for_role( grant_name)).to match_array(person.shift_territory_ids + [424242])
     end
   end
 end

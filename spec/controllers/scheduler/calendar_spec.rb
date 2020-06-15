@@ -17,9 +17,9 @@ describe Scheduler::CalendarController, :type => :controller do
       @wg = FactoryGirl.create :shift_time, region: @ch, period: 'weekly', start_offset: 0, end_offset: 7.days
       @mg = FactoryGirl.create :shift_time, region: @ch, period: 'monthly', start_offset: 0, end_offset: 31
 
-      @ds = FactoryGirl.create :shift, shift_times: [@dg], county: @person.counties.first, positions: @person.positions, spreadsheet_ordinal: 1
-      @ws = FactoryGirl.create :shift, shift_times: [@wg], county: @person.counties.first, positions: @person.positions
-      @ms = FactoryGirl.create :shift, shift_times: [@mg], county: @person.counties.first, positions: @person.positions
+      @ds = FactoryGirl.create :shift, shift_times: [@dg], shift_territory: @person.shift_territories.first, positions: @person.positions, spreadsheet_ordinal: 1
+      @ws = FactoryGirl.create :shift, shift_times: [@wg], shift_territory: @person.shift_territories.first, positions: @person.positions
+      @ms = FactoryGirl.create :shift, shift_times: [@mg], shift_territory: @person.shift_territories.first, positions: @person.positions
 
       FactoryGirl.create :shift_assignment, shift: @ds, shift_time: @dg, person: @person, date: date
       FactoryGirl.create :shift_assignment, shift: @ws, shift_time: @wg, person: @person, date: weekly_date
@@ -61,10 +61,10 @@ describe Scheduler::CalendarController, :type => :controller do
       "default" => {},
       "showing my shifts" => {show_shifts: :mine},
       "showing my with blank person" => {show_shifts: :mine, person_id: ""},
-      "showing county shifts" => {show_shifts: :county},
-      "showing county with no person" => {show_shifts: :county, person_id: ""},
-      "showing county shifts with blank counties" => {show_shifts: :county, :counties => []},
-      "showing county shifts with lots of counties" => {show_shifts: :county, :counties => Roster::County.all.map(&:id)},
+      "showing shift territory shifts" => {show_shifts: :shift_territory},
+      "showing shift territory with no person" => {show_shifts: :shift_territory, person_id: ""},
+      "showing shift territory shifts with blank shift_territories" => {show_shifts: :shift_territory, :shift_territories => []},
+      "showing shift territory shifts with lots of shift_territories" => {show_shifts: :shift_territory, :shift_territories => Roster::ShiftTerritory.all.map(&:id)},
       "showing all shifts" => {show_shifts: :all},
       "showing all shifts with no person" => {show_shifts: :all, person_id: ""},
     }
@@ -95,9 +95,9 @@ describe Scheduler::CalendarController, :type => :controller do
       end
     end
 
-    context "user without counties" do
+    context "user without shift territories" do
       before(:each) do
-        @person.counties = [];
+        @person.shift_territories = [];
         @person.save
       end
 
@@ -122,14 +122,14 @@ describe Scheduler::CalendarController, :type => :controller do
       end
     end
 
-    context "specifying empty counties" do
+    context "specifying empty shift territories" do
       it "should render the whole calendar" do
-        get :show, month: 'august', year: '2013', counties: [], show_shifts: 'county'
+        get :show, month: 'august', year: '2013', shift_territories: [], show_shifts: 'shift_territory'
         expect(response).to be_success
       end
 
       it "should render the spreadsheet" do
-        get :show, month: 'august', year: '2013', display: 'spreadsheet', counties: [], show_shifts: 'county'
+        get :show, month: 'august', year: '2013', display: 'spreadsheet', shift_territories: [], show_shifts: 'shift_territory'
         expect(response).to be_success
       end
     end
@@ -174,7 +174,7 @@ describe Scheduler::CalendarController, :type => :controller do
       before :each do
         @ch = @person.region
         @group = FactoryGirl.create :shift_time, region: @ch, period: values[:shift_period], start_offset: values[:shift_start_offset], end_offset: values[:shift_end_offset]
-        @shift = FactoryGirl.create :shift, shift_times: [@group], county: @person.counties.first, positions: @person.positions
+        @shift = FactoryGirl.create :shift, shift_times: [@group], shift_territory: @person.shift_territories.first, positions: @person.positions
         @assignment = FactoryGirl.create :shift_assignment, shift: @shift, shift_time: @group, person: @person, date: values[:date]
       end
 
@@ -279,7 +279,7 @@ describe Scheduler::CalendarController, :type => :controller do
 
       it "should not render an empty group's name" do
         @empty_group = FactoryGirl.create :shift_time, name: "EmptyGroup", region: @ch, period: values[:shift_period], start_offset: values[:shift_start_offset], end_offset: values[:shift_end_offset]
-        @old_shift = FactoryGirl.create :shift, shift_times: [@empty_group], county: @person.counties.first, positions: @person.positions, shift_ends: values[:date]-5
+        @old_shift = FactoryGirl.create :shift, shift_times: [@empty_group], shift_territory: @person.shift_territories.first, positions: @person.positions, shift_ends: values[:date]-5
         xhr :get, :day, date: values[:date].to_s, period: partial_name
         expect(response.body).not_to match(@empty_group.name)
       end

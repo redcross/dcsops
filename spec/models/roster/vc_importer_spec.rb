@@ -16,7 +16,7 @@ if ENV['TEST_IMPORT']
     before :each do
       @region = FactoryGirl.create :region
 
-      @sf = FactoryGirl.create :county, name: 'SF', vc_regex_raw: 'San Francisco', region: @region
+      @sf = FactoryGirl.create :shift_territory, name: 'SF', vc_regex_raw: 'San Francisco', region: @region
 
       @dat = FactoryGirl.create :position, name: 'DAT', vc_regex_raw: 'DAT', region: @region
     end
@@ -33,7 +33,7 @@ if ENV['TEST_IMPORT']
       p = Roster::Person.where(vc_id: 48514).first
       expect(p).not_to be_nil
 
-      expect(p.counties).to include(@sf)
+      expect(p.shift_territories).to include(@sf)
       expect(p.positions).to include(@dat)
     end
     

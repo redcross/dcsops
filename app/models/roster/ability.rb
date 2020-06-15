@@ -17,9 +17,9 @@ class Roster::Ability
       can [:read, :update], Roster::Person, region_id: person.region_id
     end
 
-    admin_county_ids = person.scope_for_role('county_dat_admin')
-    if admin_county_ids.present? # is dat county admin
-      can [:read, :update], Roster::Person, county_memberships: {county_id: admin_county_ids}
+    admin_shift_territory_ids = person.scope_for_role('shift_territory_dat_admin')
+    if admin_shift_territory_ids.present? # is dat shift_territory admin
+      can [:read, :update], Roster::Person, shift_territory_memberships: {shift_territory_id: admin_shift_territory_ids}
     end
 
   end

@@ -3,19 +3,19 @@ require 'spec_helper'
 describe Scheduler::Shift, :type => :model do
   let(:region) {FactoryGirl.create :region}
   let(:position) {FactoryGirl.create :position, region: region}
-  let(:county) {FactoryGirl.create :county, region: region}
+  let(:shift_territory) {FactoryGirl.create :shift_territory, region: region}
   let(:shift_time) {FactoryGirl.create :shift_time, region: region}
-  let(:shift) {FactoryGirl.create :shift, shift_times: [shift_time], positions: [position], county: county}
-  let(:date) {shift.county.region.time_zone.today}
-  let(:person) { FactoryGirl.create :person, region: region, counties: [shift.county], positions: shift.positions}
+  let(:shift) {FactoryGirl.create :shift, shift_times: [shift_time], positions: [position], shift_territory: shift_territory}
+  let(:date) {shift.shift_territory.region.time_zone.today}
+  let(:person) { FactoryGirl.create :person, region: region, shift_territories: [shift.shift_territory], positions: shift.positions}
       
   describe "can_be_taken_by?" do
-    it "should be true for a person with the appropriate counties and shifts" do
+    it "should be true for a person with the appropriate shift_territories and shifts" do
       expect(shift.can_be_taken_by?(person)).to be_truthy
     end
 
-    it "should be false for a person without the county" do
-      person.counties = []; person.save
+    it "should be false for a person without the shift territory" do
+      person.shift_territories = []; person.save
       expect(shift.can_be_taken_by?(person)).to be_falsey
     end
 
@@ -24,9 +24,9 @@ describe Scheduler::Shift, :type => :model do
       expect(shift.can_be_taken_by?(person)).to be_falsey
     end
 
-    it "should be true when ignore_county is set" do
-      person.counties = []; person.save
-      shift.update_attribute :ignore_county, true
+    it "should be true when ignore_shift_territory is set" do
+      person.shift_territories = []; person.save
+      shift.update_attribute :ignore_shift_territory, true
       expect(shift.can_be_taken_by?(person)).to be_truthy
     end
   end

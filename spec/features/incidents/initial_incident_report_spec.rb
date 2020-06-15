@@ -8,7 +8,7 @@ describe "Initial Incident Report", :type => :feature do
     @region.save!
     FactoryGirl.create :incidents_scope, region: @person.region
 
-    @incident = FactoryGirl.create :raw_incident, region: @person.region, area: @person.counties.first, date: Date.current, narrative: 'Blah'
+    @incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: @person.shift_territories.first, date: Date.current, narrative: 'Blah'
   end
 
   it "Should be editable" do

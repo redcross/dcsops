@@ -10,7 +10,7 @@ FactoryGirl.define do
     incident_type "MyString"
     address "MyString"
     cross_street ""
-    county_name "MyString"
+    county "MyString"
     displaced "MyString"
     services_requested "MyString"
     agency "MyString"

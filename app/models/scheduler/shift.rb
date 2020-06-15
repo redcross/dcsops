@@ -1,13 +1,13 @@
 class Scheduler::Shift < ActiveRecord::Base
-  belongs_to :county, class_name: 'Roster::County'
-  has_one :region, class_name: 'Roster::Region', through: :county
+  belongs_to :shift_territory, class_name: 'Roster::ShiftTerritory'
+  has_one :region, class_name: 'Roster::Region', through: :shift_territory
   belongs_to :shift_category, class_name: 'Scheduler::ShiftCategory'
 
   has_and_belongs_to_many :positions, class_name: 'Roster::Position'
   has_and_belongs_to_many :shift_times, class_name: 'Scheduler::ShiftTime'
   has_many :shift_assignments
 
-  validates :county, :shift_category, presence: true
+  validates :shift_territory, :shift_category, presence: true
   validates :max_signups, numericality: true, presence: true
   validates :min_desired_signups, numericality: true, presence: true
   validates_presence_of :name, :abbrev, :ordinal
@@ -72,24 +72,24 @@ class Scheduler::Shift < ActiveRecord::Base
   end
 
   scope :for_region, -> region {
-    joins{county}.where{county.region_id == region}
+    joins{shift_territory}.where{shift_territory.region_id == region}
   }
   scope :active_on_day, -> date {
     #Todo: check day of week here
     where{((shift_begins == nil) | (shift_begins <= date) & ((shift_ends == nil) | (shift_ends > date)))}
   }
-  scope :for_counties, -> counties {
-    where{county_id.in(counties)}
+  scope :for_shift_territories, -> shift_territories {
+    where{shift_territory_id.in(shift_territories)}
   }
   scope :can_be_taken_by, -> person {
-    where{((ignore_county == true) | county_id.in(person.county_ids))}.joins{positions}.where{positions.id.in(person.position_ids)}.uniq
+    where{((ignore_shift_territory == true) | shift_territory_id.in(person.shift_territory_ids))}.joins{positions}.where{positions.id.in(person.position_ids)}.uniq
   }
   scope :for_groups, -> groups {
     joins{shift_times}.where{shift_times.id.in groups}
   }
 
   def can_be_taken_by?(person)
-    if ignore_county or person.counties.to_a.include?(county)
+    if ignore_shift_territory or person.shift_territories.to_a.include?(shift_territory)
       (positions & person.positions).present?
     else
       false
@@ -176,6 +176,6 @@ class Scheduler::Shift < ActiveRecord::Base
   end
 
   def display_name
-    "#{shift_times.first.try :region_id} - #{county.try(:abbrev)} #{name} - #{shift_times.map(&:name).join ', '}"
+    "#{shift_times.first.try :region_id} - #{shift_territory.try(:abbrev)} #{name} - #{shift_times.map(&:name).join ', '}"
   end
 end

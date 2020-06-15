@@ -1,7 +1,7 @@
 class Incidents::ResponseTerritory < ActiveRecord::Base
   belongs_to :region, class_name: 'Roster::Region'
   belongs_to :dispatch_config, class_name: 'Scheduler::DispatchConfig'
-  has_and_belongs_to_many :calendar_counties, class_name: 'Roster::County'
+  has_and_belongs_to_many :shift_territories, class_name: 'Roster::ShiftTerritory'
 
   validates :region, presence: true
 

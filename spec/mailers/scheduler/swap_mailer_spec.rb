@@ -3,7 +3,7 @@ require "spec_helper"
 describe Scheduler::SwapMailer, :type => :mailer do
   let(:from_address) {["scheduling@dcsops.org"]}
   let(:assignment) {FactoryGirl.create :shift_assignment}
-  let(:new_person) {FactoryGirl.create :person, region: assignment.person.region, counties: assignment.person.counties, positions: assignment.person.positions}
+  let(:new_person) {FactoryGirl.create :person, region: assignment.person.region, shift_territories: assignment.person.shift_territories, positions: assignment.person.positions}
 
   describe "swap_available" do
 

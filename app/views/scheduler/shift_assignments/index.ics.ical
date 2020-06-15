@@ -9,7 +9,7 @@ grouped_collection.each do |item|
       dtstart (item.local_start_time.to_date)
       dtend (item.local_end_time.to_date)
     end
-    location item.shift.county.name
+    location item.shift.shift_territory.name
     summary helper.shift_summary(item)
     alarm do
       description "DAT Time!"

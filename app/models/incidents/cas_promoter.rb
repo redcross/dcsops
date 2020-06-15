@@ -32,8 +32,8 @@ class Incidents::CasPromoter
       inc.num_cases = cas_incident.cases.count
 
       inc.cas_event_number = cas_incident.cas_incident_number
-      inc.area = region.counties.find_by(name: (cas_incident.county_name || 'Region')) || region.counties.find_by(name: 'Region')
-      return unless inc.area
+      inc.shift_territory = region.shift_territories.find_by(name: (cas_incident.county || 'Region')) || region.shift_territories.find_by(name: 'Region')
+      return unless inc.shift_territory
 
       geocode_incident inc
 
@@ -51,8 +51,8 @@ class Incidents::CasPromoter
       inc.state = kase.state
 
       Geokit::Geocoders::GoogleGeocoder.geocode( [inc.address, inc.city, inc.state].join(", "))
-    elsif cas_incident.county_name
-      Geokit::Geocoders::GoogleGeocoder.geocode "#{cas_incident.county_name}, CA, USA"
+    elsif cas_incident.county
+      Geokit::Geocoders::GoogleGeocoder.geocode "#{cas_incident.county}, CA, USA"
     end
 
     if geocode

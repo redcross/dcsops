@@ -11,7 +11,7 @@ ActiveAdmin.register Incidents::ReportSubscription, as: 'Report Subscriptions' d
     end
 
     def resource_params
-      request.get? ? [] : [params.require(:notification).permit(:person_id, :county_id, :report_type, :frequency)]
+      request.get? ? [] : [params.require(:notification).permit(:person_id, :shift_territory_id, :report_type, :frequency)]
     end
   end
 
@@ -55,7 +55,7 @@ ActiveAdmin.register Incidents::ReportSubscription, as: 'Report Subscriptions' d
     column :person
     column :report_type
     column :frequency
-    column :county
+    column :shift_territory
     column :persistent
     column :last_sent
     actions
@@ -64,7 +64,7 @@ ActiveAdmin.register Incidents::ReportSubscription, as: 'Report Subscriptions' d
   form do |f|
     f.inputs do
       f.input :person
-      f.input :county
+      f.input :shift_territory
       f.input :report_type, as: :assignable_select
       f.input :frequency, as: :assignable_select
       f.input :persistent

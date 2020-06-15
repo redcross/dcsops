@@ -16,8 +16,8 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
       end
     when 'all'
       controller.authorize! :read_all_shifts, Scheduler::ShiftAssignment
-      county_ids = controller.current_user.county_ids
-      county_ids.present? ? scope.for_counties(county_ids) : scope
+      shift_territory_ids = controller.current_user.shift_territory_ids
+      shift_territory_ids.present? ? scope.for_shift_territories(shift_territory_ids) : scope
     end
   end
 
@@ -30,8 +30,8 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
     end
   end
 
-  has_scope :for_county do |controller, scope, arg|
-    scope.for_counties(Array(arg))
+  has_scope :for_shift_territory do |controller, scope, arg|
+    scope.for_shift_territories(Array(arg))
   end
 
   def current_user
@@ -66,7 +66,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   def collection
     @shift_assignments ||= apply_scopes(super).order(:date).joins{person.outer}
                   .where{(person.region_id == my{current_region}) & (date <= my{current_region.time_zone.today + 30})}
-                  .includes{[person, shift_time.region, shift.county, person.counties, person.region]}.uniq
+                  .includes{[person, shift_time.region, shift.shift_territory, person.shift_territories, person.region]}.uniq
   end
 
   helper_method :grouped_collection
@@ -74,7 +74,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
   # only useful when querying all, as we'll get multiple assignments per shift and should only have
   # one event on the calendar.  The associated shifts query will get all the rest [again... should look into that].
   def grouped_collection
-    @grouped_collection ||= collection.sort_by{|s| s.shift.ordinal}.uniq{|s| [s.date, s.shift_time_id, s.shift.county_id]}
+    @grouped_collection ||= collection.sort_by{|s| s.shift.ordinal}.uniq{|s| [s.date, s.shift_time_id, s.shift.shift_territory_id]}
   end
 
   # This builds a query with pairs of shift time/date
@@ -82,7 +82,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
     return @other_shifts if @other_shifts
 
     groups = collection.map{|ass| {start_date: ass.date, id: ass.shift_time_id} }.uniq
-    @other_shifts = Scheduler::ShiftAssignment.for_active_groups_raw(groups).includes{[person, shift.county]}.includes_person_carriers.group_by{|s| [s.date, s.shift_id, s.shift_time_id]}
+    @other_shifts = Scheduler::ShiftAssignment.for_active_groups_raw(groups).includes{[person, shift.shift_territory]}.includes_person_carriers.group_by{|s| [s.date, s.shift_id, s.shift_time_id]}
   end
 
   def assignments_for(shift, item)
@@ -97,7 +97,7 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
       shifts.reduce(Core::NestedHash.hash_array) { |arr, shift| shift.shift_time_ids.each { |gid| arr[gid] << shift }; arr }
     end
 
-    @shifts_by_shift_time[item.shift_time_id].select{|s| s.county_id == item.shift.county_id}.map{|s| [s, assignments_for(s, item)]}
+    @shifts_by_shift_time[item.shift_time_id].select{|s| s.shift_territory_id == item.shift.shift_territory_id}.map{|s| [s, assignments_for(s, item)]}
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

@@ -8,7 +8,7 @@ describe "Invalid Incident Report", :type => :feature do
 
     @region = @person.region
     FactoryGirl.create :incidents_scope, region: @person.region
-    @incident = FactoryGirl.create :raw_incident, region: @person.region, area: @person.counties.first
+    @incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: @person.shift_territories.first
 
     visit "/incidents/#{@region.url_slug}"
 

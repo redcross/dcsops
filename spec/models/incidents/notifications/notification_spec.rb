@@ -48,7 +48,7 @@ describe Incidents::Notifications::Notification, :type => :model do
     end
     it "is false when role scope is county and doesn't match" do
       scope.stub level: 'county'
-      scope.stub value: "Other County, #{incident.state}"
+      scope.stub value: "Other Shift Territory, #{incident.state}"
       role.stub role_scopes: [scope]
       expect(notification.match_scope(role)).to be_falsey
     end

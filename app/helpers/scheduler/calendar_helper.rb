@@ -62,8 +62,8 @@ module Scheduler::CalendarHelper
 
     s = ActiveSupport::SafeBuffer.new
 
-    if show_county_name?
-      s << shift.county.abbrev << " "
+    if show_shift_territory?
+      s << shift.shift_territory.abbrev << " "
     end
 
     s << shift.name << ": "
@@ -123,13 +123,13 @@ module Scheduler::CalendarHelper
     {
       person_id: person.try(:id),
       show_shifts: show_shifts,
-      counties: show_counties,
+      shift_territories: show_shift_territories,
       categories: show_categories
     }
   end
 
-  def show_county_name?
-    calendar.all_groups.flat_map{|_, shifts| shifts.map(&:county_id)}.uniq.count > 1
+  def show_shift_territory?
+    calendar.all_groups.flat_map{|_, shifts| shifts.map(&:shift_territory_id)}.uniq.count > 1
   end
 
   # Possibly unused

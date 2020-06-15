@@ -50,7 +50,7 @@ class Incidents::CasLinkController < Incidents::BaseController
     @incident ||= Incidents::Incident.find params[:incident_id]
   end
 
-  expose(:county_names) { region.counties.map(&:name) }
+  expose(:counties) { region.shift_territories.map(&:name) }
 
   def link_date_window(date)
     (date - 7)..(date + 7)
@@ -62,8 +62,8 @@ class Incidents::CasLinkController < Incidents::BaseController
                                .without_cas
                                .with_date_in(link_date_window(cas.incident_date))
                                .valid.order{date.desc}
-    if cas.county_name
-      scope = scope.with_county_name(cas.county_name)
+    if cas.county
+      scope = scope.with_county(cas.county)
     end
     scope.to_a
   end

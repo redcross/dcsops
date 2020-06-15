@@ -2,14 +2,14 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
   class PersonAllowedToTakeShift < ActiveModel::Validator
     def validate(record)
       return false unless record.person and record.shift
-      if record.person.counties.include?(record.shift.county) or record.shift.ignore_county
+      if record.person.shift_territories.include?(record.shift.shift_territory) or record.shift.ignore_shift_territory
         allowed_positions = record.person.positions & record.shift.positions
 
         if allowed_positions.blank?
           record.errors[:shift] = "You are not allowed to take this shift. (Position)"
         end
       else
-        record.errors[:shift] = "You are not allowed to take this shift. (County)"
+        record.errors[:shift] = "You are not allowed to take this shift. (Shift Territory)"
       end
     end
   end
@@ -109,8 +109,8 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     where{shift_id.in(shifts)}
   }
 
-  scope :for_counties, -> (counties) {
-    joins{shift}.where{shift.county_id.in(counties)}
+  scope :for_shift_territories, -> (shift_territories) {
+    joins{shift}.where{shift.shift_territory_id.in(shift_territories)}
   }
 
   scope :for_groups, -> (groups) {

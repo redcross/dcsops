@@ -40,12 +40,12 @@ class window.CalendarController
       chosen = $(evt.target).data('shifts')
       @params['show_shifts'] = chosen
       $('#select-shift-time > button[data-shifts='+chosen+']').addClass('active')
-      $('#choose-counties').toggle(chosen == 'county')
+      $('#choose-shift_territories').toggle(chosen == 'shift_territory')
       this.reload()
 
-    $('#choose-county').change (evt) =>
+    $('#choose-shift_territory').change (evt) =>
       val = $(evt.target).val()
-      @params['counties'] = if this.isArray(val) then val else [val]
+      @params['shift_territories'] = if this.isArray(val) then val else [val]
       this.reload()
 
     $(document).on 'change', '.choose-category', (evt) =>

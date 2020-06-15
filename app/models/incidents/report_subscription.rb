@@ -1,6 +1,6 @@
 class Incidents::ReportSubscription < ActiveRecord::Base
   belongs_to :person, class_name: 'Roster::Person'
-  belongs_to :county, class_name: 'Roster::County'
+  belongs_to :shift_territory, class_name: 'Roster::ShiftTerritory'
   belongs_to :scope, class_name: 'Incidents::Scope'
 
   validates :report_type, uniqueness: {scope: [:person_id, :scope_id]}
@@ -29,8 +29,8 @@ class Incidents::ReportSubscription < ActiveRecord::Base
   #  joins{person}.where{person.region_id == region}
   #end
 #
-  #def self.for_county county
-  #  where{(county_id == nil) | (county_id == county)}
+  #def self.for_shift_territory shift_territory
+  #  where{(shift_territory_id == nil) | (shift_territory_id == shift_territory)}
   #end
 
   def self.for_type type

@@ -124,10 +124,10 @@ class Incidents::RespondersController < Incidents::BaseController
   end
   helper_method :recruitments
 
-  expose(:ignore_area) { parent.region.incidents_dispatch_console_ignore_county || (params[:ignore_area] == '1') }
+  expose(:ignore_shift_territory) { parent.region.incidents_dispatch_console_ignore_shift_territory || (params[:ignore_shift_territory] == '1') }
   expose(:dispatched) { parent.event_logs.for_type("dispatch_relayed").exists? }
   expose(:service) { 
-    Incidents::RespondersService.new(parent, collection, ignore_area_scheduled: ignore_area, ignore_area_flex: ignore_area, ignore_dispatch: dispatched )
+    Incidents::RespondersService.new(parent, collection, ignore_shift_territory_scheduled: ignore_shift_territory, ignore_shift_territory_flex: ignore_shift_territory, ignore_dispatch: dispatched )
   }
 
   def scope

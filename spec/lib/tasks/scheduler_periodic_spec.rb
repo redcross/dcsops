@@ -7,13 +7,13 @@ describe "" do
   before(:each) do
     @region = FactoryGirl.create :region
     @person = FactoryGirl.create :person, region: @region
-    @shift = FactoryGirl.create :shift, positions: @person.positions, county: @person.counties.first
+    @shift = FactoryGirl.create :shift, positions: @person.positions, shift_territory: @person.shift_territories.first
     @setting = Scheduler::NotificationSetting.create id: @person.id
   end
 
   describe "scheduler_periodic:send_daily_shift_swap" do
     before(:each) do
-      @person2 = FactoryGirl.create :person, region: @region, positions: @person.positions, counties: @person.counties
+      @person2 = FactoryGirl.create :person, region: @region, positions: @person.positions, shift_territories: @person.shift_territories
       FactoryGirl.create :shift_assignment, shift: @shift, date: @region.time_zone.today, person: @person2, available_for_swap: true
       @setting.update_attribute :email_all_swaps_daily, true
     end

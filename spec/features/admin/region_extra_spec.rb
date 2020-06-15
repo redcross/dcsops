@@ -8,23 +8,23 @@ describe "Region Extra Configuration Pages", :type => :feature do
     grant_role! :region_config
   end
 
-  it "Update the region counties" do
-    visit "/admin/regions/#{@person.region.url_slug}/counties"
+  it "Update the region shift territories" do
+    visit "/admin/regions/#{@person.region.url_slug}/shift_territories"
 
     click_on "Add Row"
 
-    county_id = @person.region.counties.first.id
+    shift_territory_id = @person.region.shift_territories.first.id
 
-    within("#resource-#{county_id}") do
-      fill_in "roster_county[abbrev]", with: "County"
-      fill_in "roster_county[vc_regex_raw]", with: "count.*"
+    within("#resource-#{shift_territory_id}") do
+      fill_in "roster_shift_territory[abbrev]", with: "Shift Territory"
+      fill_in "roster_shift_territory[vc_regex_raw]", with: "count.*"
       click_on "Save"
     end
 
     within("#resource-") do
-      fill_in "roster_county[name]", with: "Test County"
-      fill_in "roster_county[abbrev]", with: "TC"
-      fill_in "roster_county[vc_regex_raw]", with: "test.*"
+      fill_in "roster_shift_territory[name]", with: "Test Shift Territory"
+      fill_in "roster_shift_territory[abbrev]", with: "TC"
+      fill_in "roster_shift_territory[vc_regex_raw]", with: "test.*"
       click_on "Save"
     end
     page.should have_text "2"
@@ -64,7 +64,7 @@ describe "Region Extra Configuration Pages", :type => :feature do
       fill_in "scheduler_shift[name]", with: "Test Shift"
       fill_in "scheduler_shift[abbrev]", with: "Abbrev"
       fill_in "scheduler_shift[ordinal]", with: "1"
-      all("#scheduler_shift_county_input select option")[1].select_option
+      all("#scheduler_shift_shift_territory_input select option")[1].select_option
       fill_in "scheduler_shift[max_signups]", with: "2"
       fill_in "scheduler_shift[min_desired_signups]", with: "1"
       all("#scheduler_shift_shift_category_input select option")[1].select_option

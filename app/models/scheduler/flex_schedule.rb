@@ -1,8 +1,8 @@
 class Scheduler::FlexSchedule < ActiveRecord::Base
   belongs_to :person, foreign_key: 'id', class_name: 'Roster::Person'
 
-  scope :for_county, lambda {|county_ids| 
-    joins{person.county_memberships}.where{person.county_memberships.county_id.in my{county_ids}}
+  scope :for_shift_territory, lambda {|shift_territory_ids| 
+    joins{person.shift_territory_memberships}.where{person.shift_territory_memberships.shift_territory_id.in my{shift_territory_ids}}
   }
 
   scope :with_availability, lambda {

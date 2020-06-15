@@ -1,4 +1,4 @@
-ActiveAdmin.register Roster::County, as: 'County' do
+ActiveAdmin.register Roster::ShiftTerritory, as: 'Shift Territory' do
 
   menu parent: 'Roster'
 
@@ -27,7 +27,7 @@ ActiveAdmin.register Roster::County, as: 'County' do
 
   controller do
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :enabled, :county_code, :fips_code, :gis_name, :vc_regex_raw, :region_id)]
+      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :enabled, :shift_territory_code, :fips_code, :gis_name, :vc_regex_raw, :region_id)]
     end
   end
 

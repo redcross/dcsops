@@ -13,7 +13,7 @@ describe "Invalid Incident Report", :type => :feature do
 
   it "Should be submittable" do
 
-    @incident = FactoryGirl.create :raw_incident, region: @person.region, area: @person.counties.first, date: Date.current
+    @incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: @person.shift_territories.first, date: Date.current
 
     visit "/incidents/#{@region.url_slug}/incidents/#{@incident.incident_number}"
 

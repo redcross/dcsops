@@ -35,8 +35,8 @@ class Incidents::IncidentPresenter < SimpleDelegator
     event && Incidents::EventLog::EVENTS_TO_DESCRIPTIONS[event]
   end
 
-  def area_name
-    area.try :name
+  def shift_territory_name
+    shift_territory.try :name
   end
 
   def services_description

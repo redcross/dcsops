@@ -9,7 +9,7 @@ describe "View Timeline", :type => :feature do
     @region.save!
     FactoryGirl.create :incidents_scope, region: @person.region
 
-    @incident = FactoryGirl.create :raw_incident, region: @person.region, area: @person.counties.first, date: Date.current
+    @incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: @person.shift_territories.first, date: Date.current
     @log = FactoryGirl.create :event_log, region: @region, person: @person, incident: @incident
 
     visit "/incidents/#{@region.url_slug}/incidents/#{@incident.incident_number}"

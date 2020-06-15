@@ -8,7 +8,7 @@ class Incidents::Incident < ActiveRecord::Base
   before_validation :set_incident_number, on: :create
 
   belongs_to :region, class_name: 'Roster::Region'
-  belongs_to :area, class_name: 'Roster::County'
+  belongs_to :shift_territory, class_name: 'Roster::ShiftTerritory'
   belongs_to :response_territory, class_name: 'Incidents::ResponseTerritory'
 
   belongs_to :cas_incident, class_name: 'Incidents::CasIncident', primary_key: 'cas_incident_number', foreign_key: 'cas_event_number'
@@ -39,7 +39,7 @@ class Incidents::Incident < ActiveRecord::Base
   validates :incident_number, presence: true, format: /\A\w*\d{2}-\d{3,}\z/, uniqueness: { scope: :region_id }
 
   scope :for_region, -> region { where{region_id.in region}}
-  scope :in_area, -> area {where{area_id == area}}
+  scope :in_shift_territory, -> shift_territory {where{shift_territory_id == shift_territory}}
   scope :valid, lambda {
     where{status != 'invalid'}
   }
@@ -55,8 +55,8 @@ class Incidents::Incident < ActiveRecord::Base
   scope :with_date_in, -> date_range {
     where{date.in(date_range)}
   }
-  scope :with_county_name, -> name {
-    where{county == name}
+  scope :with_county, -> county_in {
+    where{county == county_in}
   }
 
   def self.with_location

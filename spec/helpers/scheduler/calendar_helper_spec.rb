@@ -10,7 +10,7 @@ describe Scheduler::CalendarHelper, :type => :helper do
     let(:assignment) { double(:shift_assignment, id: SecureRandom.random_number(100000), shift: shift, person: person, shift_time: shift_time) }
 
     before(:each) { 
-      allow(helper).to receive(:show_county_name?).and_return(false)
+      allow(helper).to receive(:show_shift_territory?).and_return(false)
       allow(helper).to receive(:current_region).and_return(region)
     }
 

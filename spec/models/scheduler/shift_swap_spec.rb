@@ -4,8 +4,8 @@ describe Scheduler::ShiftSwap, :type => :model do
 
   let(:delegate) { double :auth_delegate, can?: true }
   let(:shift) { FactoryGirl.create :shift_with_positions}
-  let(:person) { FactoryGirl.create :person, region: shift.county.region, positions: shift.positions, counties: [shift.county]}
-  let(:other_person) { FactoryGirl.create :person, region: shift.county.region, positions: shift.positions, counties: [shift.county]}
+  let(:person) { FactoryGirl.create :person, region: shift.shift_territory.region, positions: shift.positions, shift_territories: [shift.shift_territory]}
+  let(:other_person) { FactoryGirl.create :person, region: shift.shift_territory.region, positions: shift.positions, shift_territories: [shift.shift_territory]}
   let(:assignment) { FactoryGirl.create :shift_assignment, person: person, date: Date.current, shift: shift, shift_time: shift.shift_times.first}
 
   let(:swap) { Scheduler::ShiftSwap.new(assignment, delegate) }

@@ -15,8 +15,8 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
     column(:members) { |r|
       safe_join(r.positions.map(&:name) + r.shifts.map(&:name), tag(:br))
     }
-    column(:counties) { |r|
-      safe_join(r.role_scopes.includes{response_territory}.map{|rs| rs.response_territory ? "Response Territory: #{rs.response_territory.name}" : "County: #{rs.value}" }, tag(:br))
+    column(:shift_territories) { |r|
+      safe_join(r.role_scopes.includes{response_territory}.map{|rs| rs.response_territory ? "Response Territory: #{rs.response_territory.name}" : "Shift Territory: #{rs.value}" }, tag(:br))
     }
     actions
   end
@@ -56,7 +56,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
           end
           table_for role.shifts do
             column("Shift") { |s| s.name }
-            column("County") { |s| s.county.name }
+            column("Shift Territory") { |s| s.shift_territory.name }
             column("Shift Time") { |shift| safe_join(shift.shift_times.map(&:name), tag(:br)) }
           end
         end
@@ -99,7 +99,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
   controller do
 
     def collection
-      @col ||= super.includes{[positions,shifts.shift_times, shifts.county]}
+      @col ||= super.includes{[positions,shifts.shift_times, shifts.shift_territory]}
     end
 
     def resource_params

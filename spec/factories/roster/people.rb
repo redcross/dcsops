@@ -7,10 +7,10 @@ FactoryGirl.define do
     first_name {Faker::Name.first_name}
     last_name {Faker::Name.last_name}
     email {Faker::Internet.email}
-    counties { |f| [f.association(:county, region: f.region)] }
+    shift_territories { |f| [f.association(:shift_territory, region: f.region)] }
     positions { |f| [f.association(:position, region: f.region)] }
 
-    primary_county { |f| f.counties.first }
+    primary_shift_territory { |f| f.shift_territories.first }
 
     work_phone {Faker::PhoneNumber.phone_number}
     

@@ -3,7 +3,7 @@ json.url url_for(resource)
 json.phones resource.phone_order
 json.region resource.region, :name, :short_name, :id
 json.positions resource.positions, :name, :abbrev, :id
-json.counties resource.counties, :name, :abbrev, :id
+json.shift_territories resource.shift_territories, :name, :abbrev, :id
 json.roles resource.role_memberships do |membership|
   json.extract! membership, :name
   json.extract! membership.role, :grant_name

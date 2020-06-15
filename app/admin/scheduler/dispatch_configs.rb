@@ -22,10 +22,10 @@ ActiveAdmin.register Scheduler::DispatchConfig, as: 'Dispatch Configs' do
     f.inputs do
       f.input :region, input_html: {disabled: !allow_edit_names?}
       f.input :name, input_html: {disabled: !allow_edit_names?}
-      f.input :county, collection: f.object.region.try(:counties), input_html: {disabled: !allow_edit_names?}
+      f.input :shift_territory, collection: f.object.region.try(:shift_territories), input_html: {disabled: !allow_edit_names?}
       f.input :is_active, input_html: {disabled: !allow_edit_names?}
       if f.object.region
-        shifts = Scheduler::Shift.for_region(f.object.region).joins{county}.order{[county.name, name]}.includes{[shift_times, county]}
+        shifts = Scheduler::Shift.for_region(f.object.region).joins{shift_territory}.order{[shift_territory.name, name]}.includes{[shift_times, shift_territory]}
         f.input :shift_first, collection: shifts
         f.input :shift_second, collection: shifts
         f.input :shift_third, collection: shifts
@@ -56,7 +56,7 @@ ActiveAdmin.register Scheduler::DispatchConfig, as: 'Dispatch Configs' do
 
     def resource_params
       permitted_keys = [:backup_first_id, :backup_second_id, :backup_third_id, :backup_fourth_id, :shift_first_id, :shift_second_id, :shift_third_id, :shift_fourth_id]
-      permitted_keys += [:name, :region_id, :county_id, :is_active] if allow_edit_names?
+      permitted_keys += [:name, :region_id, :shift_territory_id, :is_active] if allow_edit_names?
       [params.fetch(resource_request_name, {}).permit(*permitted_keys)]
     end
   end

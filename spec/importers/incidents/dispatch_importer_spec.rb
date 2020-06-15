@@ -21,7 +21,7 @@ describe Incidents::DispatchImporter do
   end
 
   describe "1.txt" do
-    let!(:county) {FactoryGirl.create :county, region: region, name: 'Contra Costa'}
+    let!(:shift_territory) {FactoryGirl.create :shift_territory, region: region, name: 'Contra Costa'}
     it "should parse the incident" do
       import
 
@@ -31,7 +31,7 @@ describe Incidents::DispatchImporter do
       expect(inc.incident_number).to eq("14-044")
       expect(inc.incident_type).to eq("Flooding")
       expect(inc.address).to eq('311 Dogwood Lane, BRENTWOOD')
-      expect(inc.county_name).to eq('Contra Costa')
+      expect(inc.county).to eq('Contra Costa')
       expect(inc.displaced).to eq("374")
       expect(inc.services_requested).to eq("We need food and possibly an evacuation center. Sentence on line two.")
       expect(inc.agency).to eq("The Brentwood Police Dept")
@@ -72,7 +72,7 @@ describe Incidents::DispatchImporter do
 
       expect(inc.incident_number).to eq('14-044')
       expect(inc.date).to eq(Date.civil(2013, 6, 13))
-      expect(inc.area).to eq(county)
+      expect(inc.shift_territory).to eq(shift_territory)
       expect(inc.region).to eq(region)
       expect(inc.status).to eq('open')
       expect(inc.state).to eq('CA')
@@ -135,7 +135,7 @@ describe Incidents::DispatchImporter do
   end
 
   describe "2.txt" do
-    let!(:county) {FactoryGirl.create :county, region: region, name: 'San Francisco'}
+    let!(:shift_territory) {FactoryGirl.create :shift_territory, region: region, name: 'San Francisco'}
     it "should parse the incident" do
       import
 
@@ -145,7 +145,7 @@ describe Incidents::DispatchImporter do
       expect(inc.incident_number).to eq("14-043")
       expect(inc.incident_type).to eq("Apartment Fire")
       expect(inc.address).to eq('211 Main St, SAN FRANCISCO')
-      expect(inc.county_name).to eq('San Francisco')
+      expect(inc.county).to eq('San Francisco')
       expect(inc.displaced).to eq("36")
       expect(inc.services_requested).to eq("Canteine for the fire dept and the 36 people that live he also housing for the tenants.")
       expect(inc.agency).to eq("San Francisco Fire Dept")
@@ -183,7 +183,7 @@ describe Incidents::DispatchImporter do
 
       expect(inc.incident_number).to eq('14-043')
       expect(inc.date).to eq(Date.civil(2013, 6, 13))
-      expect(inc.area).to eq(county)
+      expect(inc.shift_territory).to eq(shift_territory)
       expect(inc.region).to eq(region)
     end
 
@@ -206,13 +206,13 @@ describe Incidents::DispatchImporter do
   end
 
   describe "4.txt" do
-    let!(:county) {FactoryGirl.create :county, region: region, name: 'San Francisco'}
+    let!(:shift_territory) {FactoryGirl.create :shift_territory, region: region, name: 'San Francisco'}
     let(:incident_details) {
       {incident_number: '14-004',
             incident_type: 'Structure Fire',
             address: '123 Main St Street, SAN FRANCISCO',
             cross_street: 'Mission & Howard',
-            county_name: 'San Francisco',
+            county: 'San Francisco',
             displaced: "4",
             services_requested: 'Everything - shelter, food and clothing (red cross case , reference number for fire dept is )',
             agency: 'The American Red Cross',
@@ -224,7 +224,7 @@ describe Incidents::DispatchImporter do
     }
     let(:num_event_logs) {10}
     let(:incident_attributes) {
-      {incident_number: '14-004', date: region.time_zone.today, area: county, region: region}
+      {incident_number: '14-004', date: region.time_zone.today, shift_territory: shift_territory, region: region}
     }
     it "should parse the incident" do
       import
@@ -260,7 +260,7 @@ describe Incidents::DispatchImporter do
   end
 
   describe "5.txt" do
-    let!(:county) {FactoryGirl.create :county, region: region, name: 'San Francisco'}
+    let!(:shift_territory) {FactoryGirl.create :shift_territory, region: region, name: 'San Francisco'}
     let(:incident_details) {
       {incident_number: '15-047',
             incident_type: '',
@@ -282,7 +282,7 @@ describe Incidents::DispatchImporter do
   end
 
   describe "6.txt" do
-    let!(:county) {FactoryGirl.create :county, region: region, name: 'San Francisco'}
+    let!(:shift_territory) {FactoryGirl.create :shift_territory, region: region, name: 'San Francisco'}
     let(:incident_details) {
       {incident_number: nil,
             incident_type: 'Structure Fire',

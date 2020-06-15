@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200614221105) do
+ActiveRecord::Schema.define(version: 20200616143151) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -286,7 +286,7 @@ ActiveRecord::Schema.define(version: 20200614221105) do
     t.string   "cas_name"
     t.integer  "dr_level"
     t.boolean  "is_dr"
-    t.string   "county_name"
+    t.string   "county"
     t.integer  "cases_opened"
     t.integer  "cases_open"
     t.integer  "cases_closed"
@@ -430,7 +430,7 @@ ActiveRecord::Schema.define(version: 20200614221105) do
     t.string   "incident_type"
     t.string   "address"
     t.string   "cross_street"
-    t.string   "county_name"
+    t.string   "county"
     t.string   "displaced"
     t.string   "services_requested"
     t.string   "agency"
@@ -494,7 +494,7 @@ ActiveRecord::Schema.define(version: 20200614221105) do
     t.boolean  "hotel_partner_used",          default: false
     t.boolean  "shelter_partner_used",        default: false
     t.boolean  "feeding_partner_used",        default: false
-    t.integer  "area_id"
+    t.integer  "shift_territory_id"
     t.string   "county"
     t.string   "status",                                      null: false
     t.date     "response_date"
@@ -626,9 +626,9 @@ ActiveRecord::Schema.define(version: 20200614221105) do
 
   create_table "incidents_report_subscriptions", force: true do |t|
     t.integer  "person_id"
-    t.integer  "county_id"
+    t.integer  "shift_territory_id"
     t.string   "report_type"
-    t.boolean  "persistent",  default: false
+    t.boolean  "persistent",         default: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.hstore   "options"
@@ -637,8 +637,8 @@ ActiveRecord::Schema.define(version: 20200614221105) do
     t.integer  "scope_id"
   end
 
-  add_index "incidents_report_subscriptions", ["county_id"], name: "index_incidents_report_subscriptions_on_county_id", using: :btree
   add_index "incidents_report_subscriptions", ["person_id"], name: "index_incidents_report_subscriptions_on_person_id", using: :btree
+  add_index "incidents_report_subscriptions", ["shift_territory_id"], name: "index_incidents_report_subscriptions_on_shift_territory_id", using: :btree
 
   create_table "incidents_responder_assignments", force: true do |t|
     t.integer  "person_id"
@@ -706,12 +706,12 @@ ActiveRecord::Schema.define(version: 20200614221105) do
 
   add_index "incidents_response_territories", ["region_id"], name: "index_incidents_response_territories_on_region_id", using: :btree
 
-  create_table "incidents_response_territories_roster_counties", id: false, force: true do |t|
+  create_table "incidents_response_territories_roster_shift_territories", id: false, force: true do |t|
     t.integer "response_territory_id"
-    t.integer "county_id"
+    t.integer "shift_territory_id"
   end
 
-  add_index "incidents_response_territories_roster_counties", ["response_territory_id", "county_id"], name: "incidents_response_territories_roster_counties_index", using: :btree
+  add_index "incidents_response_territories_roster_shift_territories", ["response_territory_id", "shift_territory_id"], name: "incidents_response_territories_roster_shift_territories_index", using: :btree
 
   create_table "incidents_scopes", force: true do |t|
     t.integer  "region_id"
@@ -841,30 +841,9 @@ ActiveRecord::Schema.define(version: 20200614221105) do
     t.boolean  "pager"
   end
 
-  create_table "roster_counties", force: true do |t|
-    t.integer  "region_id"
-    t.string   "name"
-    t.string   "abbrev"
-    t.string   "county_code"
-    t.string   "fips_code"
-    t.string   "gis_name"
-    t.string   "vc_regex_raw"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "enabled",      default: true
-  end
-
-  create_table "roster_county_memberships", force: true do |t|
-    t.integer "county_id"
-    t.integer "person_id"
-    t.boolean "persistent"
-  end
-
-  add_index "roster_county_memberships", ["person_id"], name: "index_roster_county_memberships_on_person_id", using: :btree
-
   create_table "roster_people", force: true do |t|
     t.integer  "region_id"
-    t.integer  "primary_county_id"
+    t.integer  "primary_shift_territory_id"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "email"
@@ -981,6 +960,27 @@ ActiveRecord::Schema.define(version: 20200614221105) do
     t.datetime "updated_at"
   end
 
+  create_table "roster_shift_territories", force: true do |t|
+    t.integer  "region_id"
+    t.string   "name"
+    t.string   "abbrev"
+    t.string   "county_code"
+    t.string   "fips_code"
+    t.string   "gis_name"
+    t.string   "vc_regex_raw"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "enabled",      default: true
+  end
+
+  create_table "roster_shift_territory_memberships", force: true do |t|
+    t.integer "shift_territory_id"
+    t.integer "person_id"
+    t.boolean "persistent"
+  end
+
+  add_index "roster_shift_territory_memberships", ["person_id"], name: "index_roster_shift_territory_memberships_on_person_id", using: :btree
+
   create_table "roster_vc_import_data", force: true do |t|
     t.integer  "region_id"
     t.json     "position_data"
@@ -991,7 +991,7 @@ ActiveRecord::Schema.define(version: 20200614221105) do
   add_index "roster_vc_import_data", ["region_id"], name: "index_roster_vc_import_data_on_region_id", using: :btree
 
   create_table "scheduler_dispatch_configs", force: true do |t|
-    t.integer  "county_id"
+    t.integer  "shift_territory_id"
     t.integer  "backup_first_id"
     t.integer  "backup_second_id"
     t.integer  "backup_third_id"
@@ -999,7 +999,7 @@ ActiveRecord::Schema.define(version: 20200614221105) do
     t.boolean  "is_active"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",             null: false
+    t.string   "name",               null: false
     t.integer  "shift_first_id"
     t.integer  "shift_second_id"
     t.integer  "shift_third_id"
@@ -1011,7 +1011,7 @@ ActiveRecord::Schema.define(version: 20200614221105) do
   add_index "scheduler_dispatch_configs", ["backup_fourth_id"], name: "index_scheduler_dispatch_configs_on_backup_fourth_id", using: :btree
   add_index "scheduler_dispatch_configs", ["backup_second_id"], name: "index_scheduler_dispatch_configs_on_backup_second_id", using: :btree
   add_index "scheduler_dispatch_configs", ["backup_third_id"], name: "index_scheduler_dispatch_configs_on_backup_third_id", using: :btree
-  add_index "scheduler_dispatch_configs", ["county_id"], name: "index_scheduler_dispatch_configs_on_county_id", using: :btree
+  add_index "scheduler_dispatch_configs", ["shift_territory_id"], name: "index_scheduler_dispatch_configs_on_shift_territory_id", using: :btree
 
   create_table "scheduler_dispatch_configs_admin_notifications", id: false, force: true do |t|
     t.integer "scheduler_dispatch_config_id"
@@ -1123,7 +1123,7 @@ ActiveRecord::Schema.define(version: 20200614221105) do
     t.string   "name"
     t.string   "abbrev"
     t.integer  "max_signups"
-    t.integer  "county_id"
+    t.integer  "shift_territory_id"
     t.integer  "ordinal"
     t.integer  "spreadsheet_ordinal"
     t.date     "shift_begins"
@@ -1134,7 +1134,7 @@ ActiveRecord::Schema.define(version: 20200614221105) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "min_desired_signups"
-    t.boolean  "ignore_county",            default: false
+    t.boolean  "ignore_shift_territory",   default: false
     t.integer  "min_advance_signup",       default: 0,     null: false
     t.integer  "shift_category_id"
     t.boolean  "exclusive",                default: true,  null: false
@@ -1142,7 +1142,7 @@ ActiveRecord::Schema.define(version: 20200614221105) do
     t.boolean  "show_in_dispatch_console", default: true,  null: false
   end
 
-  add_index "scheduler_shifts", ["county_id"], name: "index_scheduler_shifts_on_county_id", using: :btree
+  add_index "scheduler_shifts", ["shift_territory_id"], name: "index_scheduler_shifts_on_shift_territory_id", using: :btree
 
   create_table "versions", force: true do |t|
     t.string   "item_type",      null: false

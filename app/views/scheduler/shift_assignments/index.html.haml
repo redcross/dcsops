@@ -4,7 +4,7 @@
   %tr
     %th Person
     %th Shift
-    %th County
+    %th Shift Territory
     %th Date
     %th Actions
 
@@ -14,7 +14,7 @@
       %td
         = scheduler_shift_assignment.shift_time.name
         = scheduler_shift_assignment.shift.name
-      %td= scheduler_shift_assignment.shift.county.name
+      %td= scheduler_shift_assignment.shift.shift_territory.name
       %td= scheduler_shift_assignment.date.to_s :dow_short
       -if can? :swap, scheduler_shift_assignment
         %td= link_to "Swap", new_scheduler_shift_assignment_shift_swap_path(scheduler_shift_assignment), class: "btn btn-small"

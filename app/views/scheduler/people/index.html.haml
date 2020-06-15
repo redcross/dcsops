@@ -5,8 +5,8 @@
   =hidden_field_tag 'page', ''
   %table.table.table-condensed.noprint
     %tr
-      %th County
-      %td=select_tag "county", options_from_collection_for_select(current_region.counties.enabled, :id, :name, current_scopes[:county]), multiple: false, id: 'choose-county', prompt: "All", class: "form-control"
+      %th Shift Territory
+      %td=select_tag "shift_territory", options_from_collection_for_select(current_region.shift_territories.enabled, :id, :name, current_scopes[:shift_territory]), multiple: false, id: 'choose-shift_territory', prompt: "All", class: "form-control"
     %tr
       %th Position
       %td

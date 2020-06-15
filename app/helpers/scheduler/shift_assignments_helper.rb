@@ -1,7 +1,7 @@
 module Scheduler::ShiftAssignmentsHelper
   def shift_title(item)
     if current_scopes[:show_shifts]=='all'
-      item.shift.county.name
+      item.shift.shift_territory.name
     else
       item.shift.name
     end

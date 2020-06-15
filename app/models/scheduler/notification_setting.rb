@@ -32,11 +32,11 @@ class Scheduler::NotificationSetting < ActiveRecord::Base
   end
 
   def self.people_to_notify_swap(shift_assignment)
-    Roster::Person.joins{notification_setting}.where(notification_setting: {email_swap_requested: true}).in_county(shift_assignment.shift.county).with_position(shift_assignment.shift.positions.to_a).to_a
+    Roster::Person.joins{notification_setting}.where(notification_setting: {email_swap_requested: true}).in_shift_territory(shift_assignment.shift.shift_territory).with_position(shift_assignment.shift.positions.to_a).to_a
   end
 
   def self.admins_to_notify_swap(shift_assignment, ignore=[])
-    Roster::Person.joins{notification_setting}.in_county(shift_assignment.shift.county).where{(notification_setting.email_all_swaps == true) & (id.not_in ignore)}.to_a
+    Roster::Person.joins{notification_setting}.in_shift_territory(shift_assignment.shift.shift_territory).where{(notification_setting.email_all_swaps == true) & (id.not_in ignore)}.to_a
   end
 
   def allow_sms_at? time

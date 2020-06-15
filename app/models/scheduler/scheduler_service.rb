@@ -5,12 +5,12 @@ class Scheduler::SchedulerService
     @region = region
   end
 
-  def scheduled_responders(time: region.time_zone.now, limit: nil, areas: nil, exclude: [], shifts: nil, dispatch_console: false)
+  def scheduled_responders(time: region.time_zone.now, limit: nil, shift_territories: nil, exclude: [], shifts: nil, dispatch_console: false)
     groups = Scheduler::ShiftTime.current_groups_for_region(region, time)
     assignments = Scheduler::ShiftAssignment.joins{[shift]}.preload{[shift, person]}.for_active_groups(groups)
                   .where{person_id.not_in(exclude)}.limit(limit)
-    if areas.present?
-      assignments = assignments.where{shift.county_id.in areas}
+    if shift_territories.present?
+      assignments = assignments.where{shift.shift_territory_id.in shift_territories}
     end
     if shifts
       assignments = assignments.where{shift_id.in(shifts)}
@@ -22,14 +22,14 @@ class Scheduler::SchedulerService
     assignments
   end
 
-  def flex_responders(time: region.time_zone.now, limit: nil, areas: nil, exclude: [], origin: nil)
+  def flex_responders(time: region.time_zone.now, limit: nil, shift_territories: nil, exclude: [], origin: nil)
     dow = time.strftime("%A").downcase
     offset = time.seconds_since_midnight
     period = (offset >= region.scheduler_flex_day_start && offset < region.scheduler_flex_night_start) ? 'day' : 'night'
 
     schedules = Scheduler::FlexSchedule.available_at(dow, period).joins{person}.where{person.region_id == my{region}}.preload{person}
-    if areas.present?
-      schedules = schedules.for_county(areas)
+    if shift_territories.present?
+      schedules = schedules.for_shift_territory(shift_territories)
     end
     if origin
       schedules = schedules.by_distance_from origin

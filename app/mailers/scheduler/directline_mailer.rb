@@ -27,15 +27,15 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
 
   def schedule_csv(start_date, end_date)
     shift_data = CSV.generate(row_sep: "\r\n") do |csv|
-      csv << ["County", "Start", "End", "On Call Person IDs"] + (1..20).map{|x| "On Call #{x}"}
+      csv << ["Shift Territory", "Start", "End", "On Call Person IDs"] + (1..20).map{|x| "On Call #{x}"}
       Scheduler::DispatchConfig.active.for_region(@region).includes_everything.each do |config|
         @people.concat config.backup_list
-        generate_shifts_for_county(csv, @region, config, start_date, end_date)
+        generate_shifts_for_shift_territory(csv, @region, config, start_date, end_date)
       end
     end
   end
 
-  def generate_shifts_for_county(csv, region, config, start_date, end_date)
+  def generate_shifts_for_shift_territory(csv, region, config, start_date, end_date)
     backups = config.backup_list.map(&:id)
     dispatch_shifts = config.shift_list
     return unless dispatch_shifts.present?

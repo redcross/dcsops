@@ -1,7 +1,7 @@
 class Incidents::RespondersService
   attr_reader :incident, :collection, :service
-  attr_accessor :ignore_area_scheduled
-  attr_accessor :ignore_area_flex, :limit_flex
+  attr_accessor :ignore_shift_territory_scheduled
+  attr_accessor :ignore_shift_territory_flex, :limit_flex
   attr_accessor :ignore_dispatch
 
   def initialize(incident, collection, options={})
@@ -29,11 +29,11 @@ class Incidents::RespondersService
   end
 
   def scheduled_responders
-    @scheduled ||= service.scheduled_responders(areas: scheduled_areas, exclude: exclude_scheduled, dispatch_console: true).preload{person.positions}
+    @scheduled ||= service.scheduled_responders(shift_territories: scheduled_shift_territories, exclude: exclude_scheduled, dispatch_console: true).preload{person.positions}
   end
 
   def flex_responders
-    @flex ||= service.flex_responders(areas: flex_areas, exclude: exclude_flex, limit: self.limit_flex, origin: incident)
+    @flex ||= service.flex_responders(shift_territories: flex_shift_territories, exclude: exclude_flex, limit: self.limit_flex, origin: incident)
   end
 
   private
@@ -46,12 +46,12 @@ class Incidents::RespondersService
     incident.response_territory
   end
 
-  def areas
-    response_territory.calendar_counties
+  def shift_territories
+    response_territory.shift_territories
   end
 
   def set_defaults
-    self.ignore_area_flex = incident.region.incidents_dispatch_console_ignore_county
+    self.ignore_shift_territory_flex = incident.region.incidents_dispatch_console_ignore_shift_territory
     self.limit_flex = 15
   end
 
@@ -63,16 +63,16 @@ class Incidents::RespondersService
     collection_people + (ignore_dispatch ? [] : dispatch_shifts.map(&:person_id))
   end
 
-  def scheduled_areas
-    ignore_area_scheduled ? nil : areas
+  def scheduled_shift_territories
+    ignore_shift_territory_scheduled ? nil : shift_territories
   end
 
-  def flex_areas
-    ignore_area_flex ? nil : areas
+  def flex_shift_territories
+    ignore_shift_territory_flex ? nil : shift_territories
   end
 
   def exclude_flex
-    service.scheduled_responders(areas: flex_areas).map(&:person_id) + exclude_scheduled
+    service.scheduled_responders(shift_territories: flex_shift_territories).map(&:person_id) + exclude_scheduled
   end
 
 end

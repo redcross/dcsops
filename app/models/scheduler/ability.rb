@@ -9,20 +9,20 @@ class Scheduler::Ability
 
     personal
 
-    county_ids = person.scope_for_role('county_roster')
-    county_roster(county_ids) if county_ids.present?
+    shift_territory_ids = person.scope_for_role('shift_territory_roster')
+    shift_territory_roster(shift_territory_ids) if shift_territory_ids.present?
 
-    admin_county_ids = person.scope_for_role('county_scheduler')
+    admin_shift_territory_ids = person.scope_for_role('shift_territory_scheduler')
     if person.has_role 'region_scheduler'
-        admin_county_ids.concat person.region.county_ids
+        admin_shift_territory_ids.concat person.region.shift_territory_ids
     end
-    admin_county_ids.uniq!
-    scheduler admin_county_ids if admin_county_ids.present?
+    admin_shift_territory_ids.uniq!
+    scheduler admin_shift_territory_ids if admin_shift_territory_ids.present?
 
     region_dat_admin person.region_id if person.has_role 'region_dat_admin'
 
-    dat_admin_counties = person.scope_for_role('county_dat_admin')
-    county_dat_admin dat_admin_counties if dat_admin_counties.present? # is dat county admin
+    dat_admin_shift_territories = person.scope_for_role('shift_territory_dat_admin')
+    shift_territory_dat_admin dat_admin_shift_territories if dat_admin_shift_territories.present? # is dat shift_territory admin
 
     read_only if ENV['READ_ONLY']
   end
@@ -37,13 +37,13 @@ class Scheduler::Ability
   end
 
   def scheduler ids
-    can :read, Roster::Person, county_memberships: {county_id: ids}
-    can :manage, Scheduler::ShiftAssignment, {person: {county_memberships: {county_id: ids}}}
+    can :read, Roster::Person, shift_territory_memberships: {shift_territory_id: ids}
+    can :manage, Scheduler::ShiftAssignment, {person: {shift_territory_memberships: {shift_territory_id: ids}}}
   end
 
-  def county_roster ids
-    can :index, [Scheduler::FlexSchedule], {person: {county_memberships: {county_id: ids}}}
-    can :index, Roster::Person, {county_memberships: {county_id: ids}}
+  def shift_territory_roster ids
+    can :index, [Scheduler::FlexSchedule], {person: {shift_territory_memberships: {shift_territory_id: ids}}}
+    can :index, Roster::Person, {shift_territory_memberships: {shift_territory_id: ids}}
   end
 
   def region_dat_admin id
@@ -51,18 +51,18 @@ class Scheduler::Ability
     can :manage, Scheduler::ShiftAssignment, {person: {region_id: id}}
     can :manage, Scheduler::DispatchConfig, id: id
     can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], person: {region_id: id}
-    can [:read, :update, :update_shifts], Scheduler::Shift, county: {region_id: id}
+    can [:read, :update, :update_shifts], Scheduler::Shift, shift_territory: {region_id: id}
 
     can :receive_admin_notifications, Scheduler::NotificationSetting, id: person.id
     can :read, :on_call
   end
 
-  def county_dat_admin ids
-    can :read, Roster::Person, county_memberships: {county_id: ids}
-    can :manage, Scheduler::ShiftAssignment, {person: {county_memberships: {county_id: ids}}}
+  def shift_territory_dat_admin ids
+    can :read, Roster::Person, shift_territory_memberships: {shift_territory_id: ids}
+    can :manage, Scheduler::ShiftAssignment, {person: {shift_territory_memberships: {shift_territory_id: ids}}}
     can :manage, Scheduler::DispatchConfig, id: ids
-    can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], person: {county_memberships: {county_id: ids}}
-    can [:read, :update, :update_shifts], Scheduler::Shift, county_id: ids
+    can [:read, :update], [Scheduler::NotificationSetting, Scheduler::FlexSchedule], person: {shift_territory_memberships: {shift_territory_id: ids}}
+    can [:read, :update, :update_shifts], Scheduler::Shift, shift_territory_id: ids
 
     can :receive_admin_notifications, Scheduler::NotificationSetting, id: person.id
     can :read, :on_call

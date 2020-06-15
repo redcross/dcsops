@@ -2,9 +2,9 @@
   -past = month.last_month; future = month.next_month
   =link_to '<', scheduler_calendar_path(past.year, past.strftime("%B").downcase, ajax_params), class: 'noprint'
   =month.strftime "%B %Y"
-  -if show_shifts == :county
+  -if show_shifts == :shift_territory
     ==-
-    = (id = show_counties.first) ? Roster::County.find(id).name : ""
+    = (id = show_shift_territories.first) ? Roster::ShiftTerritory.find(id).name : ""
   -elsif show_shifts == :mine and person
     ==-
     = person.first_name

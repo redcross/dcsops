@@ -14,7 +14,7 @@ class AdminAbility
 
     if is_config # is site manager
       can [:read, :update], Roster::Region
-      can :manage, Roster::County
+      can :manage, Roster::ShiftTerritory
       can :manage, Roster::Position
       can :manage, Roster::CellCarrier
       can :manage, Roster::Person
@@ -49,7 +49,7 @@ class AdminAbility
     is_admin = person.has_role 'region_admin'
     if is_admin
       region = person.region_id
-      can :read, [Roster::Person, Roster::County, Roster::Position], region_id: region
+      can :read, [Roster::Person, Roster::ShiftTerritory, Roster::Position], region_id: region
       can :impersonate, Roster::Person, region_id: region
       can :manage, Logistics::Vehicle, region_id: region
       can :manage, HomepageLink, region_id: region

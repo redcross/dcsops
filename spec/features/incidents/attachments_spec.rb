@@ -5,7 +5,7 @@ describe "Incident Attachments", :type => :feature do
   it "Should be addable" do
     grant_role! 'submit_incident_report'
 
-    incident = FactoryGirl.create :raw_incident, region: @person.region, area: @person.counties.first, date: Date.current
+    incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: @person.shift_territories.first, date: Date.current
     FactoryGirl.create :incidents_scope, region: @person.region
 
     visit "/incidents/#{@person.region.url_slug}/incidents/#{incident.incident_number}"

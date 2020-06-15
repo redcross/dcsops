@@ -88,13 +88,13 @@ class Scheduler::RemindersMailer < ActionMailer::Base
     @setting = setting
     @groups = Scheduler::ShiftTime.next_groups(setting.person.region)
 
-    counties = setting.person.primary_county
+    shift_territories = setting.person.primary_shift_territory
 
     @groups.sort_by!{|g| [g.start_date, g.start_offset]}
 
     @groups = @groups.uniq.reduce({}) do |hash, group|
       hash.tap{|h|
-        h[group] = group.shifts.where(county_id: counties).order(:ordinal).active_on_day(setting.person.region.time_zone.today).to_a
+        h[group] = group.shifts.where(shift_territory_id: shift_territories).order(:ordinal).active_on_day(setting.person.region.time_zone.today).to_a
       }
     end
   end
@@ -102,17 +102,17 @@ class Scheduler::RemindersMailer < ActionMailer::Base
   def prepare_swap_groups(setting)
     @setting = setting
 
-    counties = setting.person.primary_county
+    shift_territories = setting.person.primary_shift_territory
 
-    @swap_groups = Scheduler::ShiftAssignment.includes{shift.county}.for_counties(counties)
-                  .available_for_swap(setting.person.region).group_by{|ass| ass.shift.county }
+    @swap_groups = Scheduler::ShiftAssignment.includes{shift.shift_territory}.for_shift_territories(shift_territories)
+                  .available_for_swap(setting.person.region).group_by{|ass| ass.shift.shift_territory }
   end
 
   def item
     @assignment
   end
 
-  expose(:related_shifts) {Scheduler::ShiftAssignment.for_day(item.date).for_counties(item.shift.county).for_groups(item.shift_time_id).includes{shift}}
+  expose(:related_shifts) {Scheduler::ShiftAssignment.for_day(item.date).for_shift_territories(item.shift.shift_territory).for_groups(item.shift_time_id).includes{shift}}
 
   def shift_lead
     @shift_lead ||= related_shifts.order{shift.ordinal}.first

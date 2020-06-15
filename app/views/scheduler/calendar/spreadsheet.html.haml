@@ -3,14 +3,14 @@
 .calendar-spreadsheet
   =render partial: 'view_header'
 
-  - unless spreadsheet_county
-    No county to display
+  - unless spreadsheet_shift_territory
+    No shift territory to display
   - else 
     - spreadsheet_groups.each do |(group, shifts)|
       - next if shifts.blank?
       .page
         %h3
-          = spreadsheet_county.name
+          = spreadsheet_shift_territory.name
           DAT Schedule - 
           = @month.strftime "%B %Y"
           = group.name

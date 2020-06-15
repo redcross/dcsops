@@ -8,8 +8,8 @@ cal.event do
     dtstart (assignment.local_start_time.to_date)
     dtend (assignment.local_end_time.to_date)
   end
-  location assignment.shift.county.name
-  summary("#{assignment.shift.name}\n\n" + assignment.shift_time.shifts.where(county_id: assignment.shift.county).map{|shift|
+  location assignment.shift.shift_territory.name
+  summary("#{assignment.shift.name}\n\n" + assignment.shift_time.shifts.where(shift_territory_id: assignment.shift.shift_territory).map{|shift|
     assignments = shift.shift_assignments.for_day(assignment.date)
     shift.abbrev + " - " + if assignments.blank?
       "OPEN"

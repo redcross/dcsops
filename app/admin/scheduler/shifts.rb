@@ -4,7 +4,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   actions :all, except: [:destroy]
 
   filter :shift_time
-  filter :county
+  filter :shift_territory
   filter :region
   filter :name
   filter :abbrev
@@ -12,16 +12,16 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   filter :shift_ends
   
   scope :all do |shifts|
-    shifts.includes([:shift_times, {:county => :region}, :positions]).order(:county_id, :ordinal)
+    shifts.includes([:shift_times, {:shift_territory => :region}, :positions]).order(:shift_territory_id, :ordinal)
   end
   scope :active, default: true do |shifts|
-    shifts.where{(shift_ends == nil) | (shift_ends >= Date.current)}.includes([:shift_times, {:county => :region}, :positions]).order(:county_id, :ordinal)
+    shifts.where{(shift_ends == nil) | (shift_ends >= Date.current)}.includes([:shift_times, {:shift_territory => :region}, :positions]).order(:shift_territory_id, :ordinal)
   end
 
   index do
     #column :shift_time, sortable: "scheduler_shift_times.start_offset"
     selectable_column
-    column :county
+    column :shift_territory
     column :name
     column :abbrev
     column 'Spreadsheet', :spreadsheet_ordinal
@@ -35,10 +35,10 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   form do |f|
     f.inputs 'Details'
     f.inputs 'Shift Times' do
-      f.input :shift_times, as: :check_boxes, collection: Scheduler::ShiftTime.for_region(f.object.county.try(:region))
+      f.input :shift_times, as: :check_boxes, collection: Scheduler::ShiftTime.for_region(f.object.shift_territory.try(:region))
     end
-    f.inputs 'Position and County' do
-      f.input :positions, as: :check_boxes, collection: f.object.county.try(:region).try(:positions)
+    f.inputs 'Position and Shift Territory' do
+      f.input :positions, as: :check_boxes, collection: f.object.shift_territory.try(:region).try(:positions)
       f.actions
     end
   end
@@ -94,7 +94,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
 
   controller do
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :shift_category_id, :max_signups, :county_id, :ordinal, :spreadsheet_ordinal, :dispatch_role, :shift_begins, :shift_ends, :signups_frozen_before, :min_desired_signups, :max_advance_signup, :min_advance_signup, :ignore_county, :vc_hours_type, :show_in_dispatch_console, :exclusive, :position_ids => [], :shift_time_ids => [])]
+      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :shift_category_id, :max_signups, :shift_territory_id, :ordinal, :spreadsheet_ordinal, :dispatch_role, :shift_begins, :shift_ends, :signups_frozen_before, :min_desired_signups, :max_advance_signup, :min_advance_signup, :ignore_shift_territory, :vc_hours_type, :show_in_dispatch_console, :exclusive, :position_ids => [], :shift_time_ids => [])]
     end
   end
 end

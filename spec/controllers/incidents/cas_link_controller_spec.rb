@@ -6,7 +6,7 @@ describe Incidents::CasLinkController, :type => :controller do
   render_views
 
   it "displays the list" do
-    cas = FactoryGirl.create :cas_incident, region: @person.region, county_name: @person.counties.first.name
+    cas = FactoryGirl.create :cas_incident, region: @person.region, county: @person.shift_territories.first.name
     cas2 = FactoryGirl.create :cas_incident, region: @person.region
     inc = FactoryGirl.create :incident, region: @person.region
     inc2 = FactoryGirl.create :incident, region: @person.region
@@ -56,7 +56,7 @@ describe Incidents::CasLinkController, :type => :controller do
 
   it "can promote to an incident" do
     cas = FactoryGirl.create :cas_incident, region: @person.region
-    FactoryGirl.create :county, name: cas.county_name, region: @person.region
+    FactoryGirl.create :shift_territory, name: cas.county, region: @person.region
 
     expect(Geokit::Geocoders::GoogleGeocoder).to receive(:geocode).and_return(
       double lat: Faker::Address.latitude, lng: Faker::Address.longitude, success?: true, 

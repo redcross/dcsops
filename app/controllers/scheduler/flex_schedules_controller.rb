@@ -7,7 +7,7 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
 
   actions :index, :show, :update
 
-  has_scope :for_county, as: :county, default: Proc.new {|controller| controller.current_user.primary_county_id}
+  has_scope :for_shift_territory, as: :shift_territory, default: Proc.new {|controller| controller.current_user.primary_shift_territory_id}
   has_scope :available, type: :array do |controller, scope, val|
     if val
       val.each do |period|
@@ -31,6 +31,6 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
     end
 
     def collection
-      @collection ||= apply_scopes(super).uniq.preload{[person.positions, person.counties, person.home_phone_carrier, person.work_phone_carrier, person.alternate_phone_carrier, person.cell_phone_carrier, person.sms_phone_carrier]}
+      @collection ||= apply_scopes(super).uniq.preload{[person.positions, person.shift_territories, person.home_phone_carrier, person.work_phone_carrier, person.alternate_phone_carrier, person.cell_phone_carrier, person.sms_phone_carrier]}
     end
 end

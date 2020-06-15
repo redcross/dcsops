@@ -4,13 +4,13 @@ describe Scheduler::ShiftAssignment, :type => :model do
 
   let(:region) { FactoryGirl.create :region }
   let(:group) { FactoryGirl.create :shift_time, region: region, start_offset: 10.hours, end_offset: 22.hours }
-  let(:counties) { (1..2).map{|i| FactoryGirl.create :county, name: "County #{i}", region: region} }
+  let(:shift_territories) { (1..2).map{|i| FactoryGirl.create :shift_territory, name: "Shift Territory #{i}", region: region} }
   let(:positions) { (1..2).map{|i| FactoryGirl.create :position, name: "Position #{i}", region: region} }
 
-  let(:first_shift) { FactoryGirl.create :shift, shift_times: [group], name: "Shift 1", positions: [positions.first], county: counties.first }
-  let(:second_shift) { FactoryGirl.create :shift, shift_times: [group], name: "Shift 2", positions: [positions.last], county: counties.last }
+  let(:first_shift) { FactoryGirl.create :shift, shift_times: [group], name: "Shift 1", positions: [positions.first], shift_territory: shift_territories.first }
+  let(:second_shift) { FactoryGirl.create :shift, shift_times: [group], name: "Shift 2", positions: [positions.last], shift_territory: shift_territories.last }
 
-  let(:person) { FactoryGirl.create :person, region: region, positions: [positions.first], counties: [counties.first] }
+  let(:person) { FactoryGirl.create :person, region: region, positions: [positions.first], shift_territories: [shift_territories.first] }
 
   let(:zone) {region.time_zone}
 
@@ -33,17 +33,17 @@ describe Scheduler::ShiftAssignment, :type => :model do
     expect(item.errors[:shift].to_s).to include "not allowed to take this shift"
   end
 
-  it "should allow a person from a different county if ignore_county=true" do
-    first_shift.update_attribute :county, counties.second
+  it "should allow a person from a different shift territory if ignore_shift_territory=true" do
+    first_shift.update_attribute :shift_territory, shift_territories.second
 
-    first_shift.update_attribute :ignore_county, true
+    first_shift.update_attribute :ignore_shift_territory, true
     item = Scheduler::ShiftAssignment.new person: person, shift: first_shift, date: Date.today, shift_time: group
     expect(item).to be_valid
   end
 
   context "checking multiple shifts in the same group" do
     before :each do
-      person.positions = positions; person.counties = counties; person.save
+      person.positions = positions; person.shift_territories = shift_territories; person.save
     end
 
     it "should prevent a person from taking multiple shifts in the same group in the same day" do
@@ -82,7 +82,7 @@ describe Scheduler::ShiftAssignment, :type => :model do
 
   it "should allow a person to have multiple shifts in a day" do
     second_group = FactoryGirl.create :shift_time, name: "Group 2", region: group.region
-    second_shift = FactoryGirl.create :shift, county: person.counties.first, positions: [positions.first], shift_times: [second_group]
+    second_shift = FactoryGirl.create :shift, shift_territory: person.shift_territories.first, positions: [positions.first], shift_times: [second_group]
 
     item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: Date.today, shift_time: group
     expect(item).to be_valid
@@ -92,7 +92,7 @@ describe Scheduler::ShiftAssignment, :type => :model do
   end
 
   it "should validate that the shift is not full with max_signups=1" do
-    person2 = FactoryGirl.create :person, region: region,  positions: [positions.first], counties: [counties.first]
+    person2 = FactoryGirl.create :person, region: region,  positions: [positions.first], shift_territories: [shift_territories.first]
 
     item = Scheduler::ShiftAssignment.create person: person, shift: first_shift, date: Date.today, shift_time: group
     expect(item).to be_valid
@@ -102,8 +102,8 @@ describe Scheduler::ShiftAssignment, :type => :model do
   end
 
   it "should validate that the shift is not full with max_signups=2" do
-    person2 = FactoryGirl.create :person, region: region,  positions: [positions.first], counties: [counties.first]
-    person3 = FactoryGirl.create :person, region: region,  positions: [positions.first], counties: [counties.first]
+    person2 = FactoryGirl.create :person, region: region,  positions: [positions.first], shift_territories: [shift_territories.first]
+    person3 = FactoryGirl.create :person, region: region,  positions: [positions.first], shift_territories: [shift_territories.first]
 
     first_shift.tap{|s| s.max_signups = 2; s.save}
 
@@ -118,8 +118,8 @@ describe Scheduler::ShiftAssignment, :type => :model do
   end
 
   it "should validate that the shift is not full with max_signups=0" do
-    person2 = FactoryGirl.create :person, region: region,  positions: [positions.first], counties: [counties.first]
-    person3 = FactoryGirl.create :person, region: region,  positions: [positions.first], counties: [counties.first]
+    person2 = FactoryGirl.create :person, region: region,  positions: [positions.first], shift_territories: [shift_territories.first]
+    person3 = FactoryGirl.create :person, region: region,  positions: [positions.first], shift_territories: [shift_territories.first]
 
     first_shift.tap{|s| s.max_signups = 0; s.save}
 

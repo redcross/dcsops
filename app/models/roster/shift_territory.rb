@@ -1,7 +1,7 @@
-class Roster::County < ActiveRecord::Base
+class Roster::ShiftTerritory < ActiveRecord::Base
   belongs_to :region
-  has_many :county_memberships
-  has_many :people, through: :county_memberships, class_name: 'Roster::Person'
+  has_many :shift_territory_memberships
+  has_many :people, through: :shift_territory_memberships, class_name: 'Roster::Person'
 
   validates_presence_of :region
 

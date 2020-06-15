@@ -23,7 +23,7 @@ class Incidents::DispatchImporter
       /^\s*Incident: (.*)$/ => :incident_type,
       /^\s*Address: (.*)$/ => :address,
       /^\s*X-Street: (.*)$/ => :cross_street,
-      /^\s*County: (.*)$/ => ->(matches){ {county_name: matches[1].try(:titleize)} },
+      /^\s*County: (.*)$/ => ->(matches){ {county: matches[1].try(:titleize)} },
       /^\s*State: (.*)$/ => :state,
       /^\s*# Displaced: (\d*)$/ => :displaced,
       /^\s*Services Requested: (.*)\n\s+: (.*)\n\s+: (.*)$/ => ->(matches){ {services_requested: matches[1..3].compact.map(&:strip).join(" ")} },
@@ -77,15 +77,15 @@ class Incidents::DispatchImporter
       
       created = false
     else
-      area = @region.counties.find_by(name: log_object.county_name)
-      area ||= @region.counties.find_by name: 'Region'
-      area ||= @region.counties.first
+      shift_territory = @region.shift_territories.find_by(name: log_object.county)
+      shift_territory ||= @region.shift_territories.find_by name: 'Region'
+      shift_territory ||= @region.shift_territories.first
       log_object.build_incident incident_number: log_object.incident_number, 
                                          region: @region,
                                             date: incident_date_for(log_object),
-                                          county: log_object.county_name,
+                                          county: log_object.county,
                                            state: log_object.state,
-                                            area: area,
+                                 shift_territory: shift_territory,
                                           status: 'open'
       
       created = true

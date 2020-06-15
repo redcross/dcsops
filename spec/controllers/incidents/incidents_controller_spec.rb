@@ -126,8 +126,8 @@ describe Incidents::IncidentsController, :type => :controller do
 
   describe "#create" do
     before(:each) { grant_role! 'create_incident' }
-    let(:area) {
-      @person.region.counties.first
+    let(:shift_territory) {
+      @person.region.shift_territories.first
     }
     let(:response_territory) { FactoryGirl.create :response_territory, region: @person.region }
     let(:params) {

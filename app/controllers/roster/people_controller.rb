@@ -8,7 +8,7 @@ class Roster::PeopleController < Roster::BaseController
 
   has_scope :for_region
   has_scope :name_contains
-  has_scope :in_county
+  has_scope :in_shift_territory
   has_scope :with_position, type: :array
   has_scope :has_position, type: :boolean
   has_scope :active, type: :boolean, default: true do |controller, scope|

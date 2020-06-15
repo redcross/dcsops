@@ -9,15 +9,15 @@ describe "DAT Incident Report", type: :feature, versions: true do
     @region = @person.region
     FactoryGirl.create :incidents_scope, region: @person.region
 
-    @team_lead = FactoryGirl.create :person, region: @person.region, counties: @person.counties
-    @responder = FactoryGirl.create :person, region: @person.region, counties: @person.counties
-    @flex_responder = FactoryGirl.create :person, region: @person.region, counties: @person.counties
+    @team_lead = FactoryGirl.create :person, region: @person.region, shift_territories: @person.shift_territories
+    @responder = FactoryGirl.create :person, region: @person.region, shift_territories: @person.shift_territories
+    @flex_responder = FactoryGirl.create :person, region: @person.region, shift_territories: @person.shift_territories
 
     @vehicle = FactoryGirl.create :vehicle, region: @region
 
     FactoryGirl.create :flex_schedule, person: @flex_responder
 
-    @incident = FactoryGirl.create :raw_incident, region: @person.region, area: @person.counties.first
+    @incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: @person.shift_territories.first
 
     navigate_to_incident
     #visit "/incidents/incidents/#{@incident.incident_number}/dat/new"

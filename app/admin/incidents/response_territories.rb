@@ -5,7 +5,7 @@ ActiveAdmin.register Incidents::ResponseTerritory, as: 'Response Territory' do
 
   filter :region
 
-  permit_params :region_id, :name, :enabled, :is_default, :dispatch_number, :non_disaster_number, :special_instructions, :dispatch_config_id, :calendar_county_ids => [], :counties => [], cities: [], zip_codes: []
+  permit_params :region_id, :name, :enabled, :is_default, :dispatch_number, :non_disaster_number, :special_instructions, :dispatch_config_id, :shift_territory_ids => [], :counties => [], cities: [], zip_codes: []
 
   index do
     id_column
@@ -32,8 +32,8 @@ ActiveAdmin.register Incidents::ResponseTerritory, as: 'Response Territory' do
       f.input :zip_codes, as: :string_array
       f.input :special_instructions
     end
-    f.inputs 'Counties' do
-      f.input :calendar_counties, as: :check_boxes, collection: available_counties
+    f.inputs 'Shift Territories' do
+      f.input :shift_territories, as: :check_boxes, collection: available_shift_territories
     end
     f.actions
   end
@@ -43,13 +43,13 @@ ActiveAdmin.register Incidents::ResponseTerritory, as: 'Response Territory' do
       @coll ||= super.includes{region}
     end
 
-    def available_counties
+    def available_shift_territories
       if resource.region
-        resource.region.counties
+        resource.region.shift_territories
       else
-        Roster::County.all
+        Roster::ShiftTerritory.all
       end
     end
-    helper_method :available_counties
+    helper_method :available_shift_territories
   end
 end

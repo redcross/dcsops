@@ -2,8 +2,8 @@
 - shifts_available = Scheduler::Shift.shifts_available_by_day(all_shifts, month)
 - shifts_available.each do |shift, group_dates|
   %h4
-    -if show_county_name?
-      =shift.county.name
+    -if show_shift_territory?
+      =shift.shift_territory.name
       ==-
     =shift.name
   - group_dates.each do |group, dates|

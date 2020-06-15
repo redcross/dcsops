@@ -16,7 +16,7 @@ class Roster::ContactDetailsMailer < ActionMailer::Base
   end
 
   def shifts
-    Scheduler::Shift.can_be_taken_by(@person).to_a.map{|sh| "#{sh.county.name} - #{sh.name}"}.uniq.sort
+    Scheduler::Shift.can_be_taken_by(@person).to_a.map{|sh| "#{sh.shift_territory.name} - #{sh.name}"}.uniq.sort
   end
 
   def events

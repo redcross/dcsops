@@ -12,10 +12,10 @@ describe "Incident Responders Console", :type => :feature do
     @region.incidents_enable_dispatch_console = true
     @region.save!
     FactoryGirl.create :incidents_scope, region: @person.region
-    county = @person.counties.first
+    shift_territory = @person.shift_territories.first
 
     @responders = (1..3).map{|x|
-        FactoryGirl.create :person, region: @region, last_name: "Responder#{x}", counties: @person.counties, positions: @person.positions
+        FactoryGirl.create :person, region: @region, last_name: "Responder#{x}", shift_territories: @person.shift_territories, positions: @person.positions
     }
 
     @flex_responder = @responders.first
@@ -25,10 +25,10 @@ describe "Incident Responders Console", :type => :feature do
     @committed_responder = @responders.second
     @committed_responder.update_attributes work_phone_carrier: FactoryGirl.create( :cell_carrier)
     group = FactoryGirl.create :shift_time, region: @region
-    shift = FactoryGirl.create :shift, shift_times: [group], county: county, positions: @committed_responder.positions
+    shift = FactoryGirl.create :shift, shift_times: [group], shift_territory: shift_territory, positions: @committed_responder.positions
     assignment = FactoryGirl.create :shift_assignment, person: @committed_responder, shift: shift, date: @region.time_zone.today
 
-    @incident = FactoryGirl.create :raw_incident, region: @person.region, area: county, date: Date.current
+    @incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: shift_territory, date: Date.current
     @log = FactoryGirl.create :event_log, region: @region, person: @person, incident: @incident
 
     @outbound_messages = outbound_messages = []

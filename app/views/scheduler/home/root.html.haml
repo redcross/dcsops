@@ -69,7 +69,7 @@
         .links
           %small=link_to "Sign Up", calendar_month(month, show_shifts: :mine)
           |
-          %small=link_to "County Schedule", calendar_month(month, show_shifts: :county)
+          %small=link_to "Shift Territory Schedule", calendar_month(month, show_shifts: :shift_territory)
           |
           %small=link_to "Spreadsheet", calendar_month(month, display: :spreadsheet)
         - month = month.next_month
@@ -100,7 +100,7 @@
         %strong=grp.start_date.to_s(:dow_long) + " - " + grp.name
         %br
       %br
-      = render partial: 'current_shifts', locals: {counties: current_person.counties, groups: groups}
+      = render partial: 'current_shifts', locals: {shift_territories: current_person.shift_territories, groups: groups}
 
 .row
   .col-sm-6
@@ -114,7 +114,7 @@
         %tr
           %th Date
           %th Shift
-          %th County
+          %th Shift Territory
           %th From
           %th 
         - available_swaps.each do |shift|
@@ -123,7 +123,7 @@
             %td
               =shift.shift_time.name
               =shift.shift.name
-            %td=shift.shift.county.abbrev
+            %td=shift.shift.shift_territory.abbrev
             %td=shift.person.full_name
             %td
               =link_to "Claim", scheduler_shift_assignment_shift_swap_path(shift), class: "btn btn-small"

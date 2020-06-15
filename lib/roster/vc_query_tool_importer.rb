@@ -126,7 +126,7 @@ class Roster::VcQueryToolImporter
 
       if queries.include?(:positions) || queries.include?(:qualifications)
         Roster::PositionMembership.destroy_all_for_region(region)
-        Roster::CountyMembership.destroy_all_for_region(region)
+        Roster::ShiftTerritoryMembership.destroy_all_for_region(region)
       end
 
       logger.info "Deleted existing memberships"

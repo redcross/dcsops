@@ -1,7 +1,7 @@
 h3 "Reschedule Shifts"
 form_for "reschedule", method: :post, url: url_for(action: :perform_reschedule) do |f|
   table_for params[:shifts] do
-    column :county
+    column :shift_territory
     column :name
     column :shift_times do |sh|
       text_node safe_join(sh.shift_times.map(&:name), tag(:br))

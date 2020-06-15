@@ -3,15 +3,15 @@ class Scheduler::Calendar
   # assignment) needed to render a calendar for a given date range
   include ::NewRelic::Agent::MethodTracer
 
-  attr_reader :region, :start_date, :end_date, :person, :filter, :counties, :categories
+  attr_reader :region, :start_date, :end_date, :person, :filter, :shift_territories, :categories
 
-  def initialize(region, start_date, end_date, person: nil, filter: :mine, counties: nil, categories: nil)
+  def initialize(region, start_date, end_date, person: nil, filter: :mine, shift_territories: nil, categories: nil)
     @region = region
     @start_date = start_date
     @end_date = end_date
     @person = person
     @filter = filter
-    @counties = counties
+    @shift_territories = shift_territories
     @categories = categories
 
     load_shifts
@@ -71,7 +71,7 @@ class Scheduler::Calendar
   def load_all_shifts
     shifts = all_groups.values.flatten
     @all_assignments = Scheduler::ShiftAssignment.references(:shift)#.includes_person_carriers
-        .includes{[person, shift.county, shift.positions, shift_time]} # person.counties, 
+        .includes{[person, shift.shift_territory, shift.positions, shift_time]} # person.shift_territories, 
         .for_shifts(shifts).where{date.in(my{date_range})}
     
     @all_shifts = Core::NestedHash.hash_hash_hash_array
@@ -97,7 +97,7 @@ class Scheduler::Calendar
   def groups_by_period(period)
     # The references(:shifts) forces all of the preloads to be generated as one massive join.  Maybe
     # not so good for the database, but rails seems to be pathalogically slow on this eager load.
-    @_unfiltered_groups ||= Scheduler::ShiftTime.references(:shifts).includes{[shifts.positions, shifts.county, shifts.shift_times]}.where(region_id: region).order(:start_offset).to_a
+    @_unfiltered_groups ||= Scheduler::ShiftTime.references(:shifts).includes{[shifts.positions, shifts.shift_territory, shifts.shift_times]}.where(region_id: region).order(:start_offset).to_a
 
     @_unfiltered_groups.select{|sh| sh.period == period}
   end
@@ -106,8 +106,8 @@ class Scheduler::Calendar
     groups.inject({}){|hash, group|
       shifts = case filter
       when :all then group.shifts
-      when :county then group.shifts.select{|s| 
-        (counties.nil? || counties.include?(s.county_id)) && 
+      when :shift_territory then group.shifts.select{|s| 
+        (shift_territories.nil? || shift_territories.include?(s.shift_territory_id)) && 
         (categories.nil? || categories.include?(s.shift_category_id))
       }
       when :mine then group.shifts.select{|s| person and s.can_be_taken_by? person}

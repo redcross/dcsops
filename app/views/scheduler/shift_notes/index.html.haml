@@ -14,9 +14,9 @@
     %th Shift
     %th Person
     %th Notes
-  - collection.group_by{|ass| ass.shift.county}.each do |county, assignments|
+  - collection.group_by{|ass| ass.shift.shift_territory}.each do |shift_territory, assignments|
     %tr
-      %th(colspan=4)=county.name
+      %th(colspan=4)=shift_territory.name
     - assignments.each do |ass|
       %tr
         %td

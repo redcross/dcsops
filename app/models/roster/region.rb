@@ -1,7 +1,7 @@
 class Roster::Region < ActiveRecord::Base
   include Core::SerializedColumns
   include Core::ArrayAccessor
-  has_many :counties
+  has_many :shift_territories
   has_many :positions
   has_many :people
   has_many :roles
@@ -33,7 +33,7 @@ class Roster::Region < ActiveRecord::Base
   serialized_accessor :config, :incidents_report_editable, :boolean
   serialized_accessor :config, :incidents_collect_case_details, :boolean
   serialized_accessor :config, :incidents_enable_dispatch_console, :boolean
-  serialized_accessor :config, :incidents_dispatch_console_ignore_county, :boolean
+  serialized_accessor :config, :incidents_dispatch_console_ignore_shift_territory, :boolean
   serialized_accessor :config, :idat_database, :string
   serialized_accessor :config, :cas_region_codes, :string
   serialized_accessor :config, :incidents_timeline_collect, :string
@@ -52,7 +52,7 @@ class Roster::Region < ActiveRecord::Base
   serialized_accessor :config, :cas_username, :string
   serialized_accessor :config, :cas_password, :string
 
-  serialized_accessor :config, :kiosk_show_counties, :string
+  serialized_accessor :config, :kiosk_show_shift_territories, :string
 
   serialized_accessor :config, :twilio_account_sid, :string
   serialized_accessor :config, :twilio_auth_token, :string

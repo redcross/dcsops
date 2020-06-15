@@ -4,23 +4,23 @@ describe Scheduler::DirectlineMailer, :type => :mailer do
 
   before(:each) do
     @region = FactoryGirl.create(:region)
-    @county1 = FactoryGirl.create :county, region: @region
-    @county2 = FactoryGirl.create :county, region: @region
+    @shift_territory1 = FactoryGirl.create :shift_territory, region: @region
+    @shift_territory2 = FactoryGirl.create :shift_territory, region: @region
     @position = FactoryGirl.create :position, region: @region
-    @people1 = (0..5).map{|i| FactoryGirl.create :person, region: @region, counties:[@county1], positions: [@position]}
-    #@people2 = (0..5).map{|i| FactoryGirl.create :person, counties:[@county2], positions: [@position]}
+    @people1 = (0..5).map{|i| FactoryGirl.create :person, region: @region, shift_territories:[@shift_territory1], positions: [@position]}
+    #@people2 = (0..5).map{|i| FactoryGirl.create :person, shift_territories:[@shift_territory2], positions: [@position]}
 
     @day = FactoryGirl.create :shift_time, region: @region, start_offset: 7.hours, end_offset: 19.hours
     @night = FactoryGirl.create :shift_time, region: @region, start_offset: 19.hours, end_offset: 31.hours
 
-    @leadshift = FactoryGirl.create :shift, shift_times: [@day, @night], positions: [@position], county: @county1
-    @othershift = FactoryGirl.create :shift, shift_times: [@day, @night], positions: [@position], county: @county1
+    @leadshift = FactoryGirl.create :shift, shift_times: [@day, @night], positions: [@position], shift_territory: @shift_territory1
+    @othershift = FactoryGirl.create :shift, shift_times: [@day, @night], positions: [@position], shift_territory: @shift_territory1
 
     @leadass = FactoryGirl.create :shift_assignment, person: @people1.first, date: today, shift: @leadshift, shift_time: @day
     FactoryGirl.create :shift_assignment, person: @people1[1], date: today, shift: @othershift, shift_time: @day
     FactoryGirl.create :shift_assignment, person: @people1[2], date: today, shift: @leadshift, shift_time: @night
 
-    @config = Scheduler::DispatchConfig.new region: @region, name: @county1.name
+    @config = Scheduler::DispatchConfig.new region: @region, name: @shift_territory1.name
     @config.is_active = true
     @config.shift_first = @leadshift
     @config.backup_first = @people1.last
@@ -69,7 +69,7 @@ describe Scheduler::DirectlineMailer, :type => :mailer do
 
     it "Should include a weekly backup shift" do
       @week = FactoryGirl.create :shift_time, region: @region, start_offset: 7.hours, end_offset: ((24 * 7) + 7).hours, period: 'weekly'
-      @weekshift = FactoryGirl.create :shift, shift_times: [@week], positions: [@position], county: @county1
+      @weekshift = FactoryGirl.create :shift, shift_times: [@week], positions: [@position], shift_territory: @shift_territory1
       @config.update_attributes! shift_second_id: @weekshift.id
       @weekperson = @people1[3]
       @weekass = FactoryGirl.create :shift_assignment, person: @weekperson, date: today.at_beginning_of_week, shift: @weekshift, shift_time: @week

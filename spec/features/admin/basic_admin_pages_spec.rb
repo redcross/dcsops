@@ -149,11 +149,11 @@ describe "Basic Admin Pages", :type => :feature do
     expect(page).to have_current_path("/scheduler_admin/regions")
   end
 
-  it "Visits the Counties page" do
+  it "Visits the Shift Territories page" do
     visit "/scheduler_admin/people"
     find("#roster").hover
-    click_on "Counties"
-    expect(page).to have_current_path("/scheduler_admin/counties")
+    click_on "Shift Territories"
+    expect(page).to have_current_path("/scheduler_admin/shift_territories")
   end
 
   it "Visits the People page" do

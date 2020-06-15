@@ -4,7 +4,7 @@ describe Scheduler::SendDispatchRosterJob do
   let(:region) { person.region }
   let(:shift) { FactoryGirl.create :shift_with_positions }
   let!(:config) { Scheduler::DispatchConfig.create! name: 'Config', region: region, shift_first: shift, is_active: true }
-  let(:person) { FactoryGirl.create :person, region: shift.county.region, positions: shift.positions, counties: [shift.county]}
+  let(:person) { FactoryGirl.create :person, region: shift.shift_territory.region, positions: shift.positions, shift_territories: [shift.shift_territory]}
   let(:assignment) { FactoryGirl.create :shift_assignment, date: Date.today, person: person, shift: shift }
 
   subject { Scheduler::SendDispatchRosterJob.new region }
