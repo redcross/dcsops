@@ -37,7 +37,7 @@ class Incidents::NotificationsController < Incidents::EditPanelController
   end
 
   # Need this to change the resource class name after the first load_and_authorize_resource call
-  class NotificationsResource < CanCan::InheritedResource
+  class NotificationsResource < CanCan::InheritedResources
     def resource_class; Incidents::NotificationsController.resource_class; end
   end
   def self.cancan_resource_class

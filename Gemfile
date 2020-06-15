@@ -45,7 +45,8 @@ gem "authlogic"
 gem "omniauth_openid_connect"
 
 gem "ri_cal" # Ical Rendering
-gem "cancancan", '~> 2'
+gem "cancancan"
+gem "cancan-inherited_resources" # cancancan v2 and later don't have built-in support for use with inherited_resources
 gem "ruby-openid", require: 'openid'
 gem "timeliness"
 gem "roadie-rails"
