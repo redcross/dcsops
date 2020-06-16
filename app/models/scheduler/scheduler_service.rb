@@ -7,7 +7,7 @@ class Scheduler::SchedulerService
 
   def scheduled_responders(time: chapter.time_zone.now, limit: nil, areas: nil, exclude: [], shifts: nil, dispatch_console: false)
     groups = Scheduler::ShiftGroup.current_groups_for_chapter(chapter, time)
-    assignments = Scheduler::ShiftAssignment.joins(:shift).preload{[shift, person]}.for_active_groups(groups)
+    assignments = Scheduler::ShiftAssignment.joins(:shift).preload(:shift, :person).for_active_groups(groups)
                   .where.not(person_id: exclude).limit(limit)
     if areas.present?
       assignments = assignments.where(shift: { county_id: areas })
@@ -27,7 +27,7 @@ class Scheduler::SchedulerService
     offset = time.seconds_since_midnight
     period = (offset >= chapter.scheduler_flex_day_start && offset < chapter.scheduler_flex_night_start) ? 'day' : 'night'
 
-    schedules = Scheduler::FlexSchedule.available_at(dow, period).joins(:person).where(person: { chapter_id: chapter }).preload{person}
+    schedules = Scheduler::FlexSchedule.available_at(dow, period).joins(:person).where(person: { chapter_id: chapter }).preload(:person)
     if areas.present?
       schedules = schedules.for_county(areas)
     end
@@ -35,7 +35,7 @@ class Scheduler::SchedulerService
       schedules = schedules.by_distance_from origin
     end
 
-    people = schedules.where.not(id: exclude).preload{[person.positions, person.cell_phone_carrier, person.work_phone_carrier, person.home_phone_carrier, person.alternate_phone_carrier, person.sms_phone_carrier]}.limit(limit).to_a.uniq{|s| s.id }
+    people = schedules.where.not(id: exclude).preload(person: [:positions, :cell_phone_carrier, :work_phone_carrier, :home_phone_carrier, :alternate_phone_carrier, :sms_phone_carrier]).limit(limit).to_a.uniq{|s| s.id }
   end
 
   def dispatch_assignments(time: chapter.time_zone.now, territory: )

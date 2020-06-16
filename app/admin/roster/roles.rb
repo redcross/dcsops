@@ -7,7 +7,7 @@ ActiveAdmin.register Roster::Role, as: 'Role' do
     end
 
     def collection
-      @coll ||= apply_scopes(super).preload{[role_memberships.position, role_memberships.role_scopes]}
+      @coll ||= apply_scopes(super).preload(role_memberships: [:position, :role_scopes])
     end
   end
 

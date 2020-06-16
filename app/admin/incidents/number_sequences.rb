@@ -17,7 +17,7 @@ ActiveAdmin.register Incidents::NumberSequence, as: 'Number Sequence' do
 
   controller do
     def collection
-      @col ||= super.preload{chapters}
+      @col ||= super.preload(:chapters)
     end
   end
 end

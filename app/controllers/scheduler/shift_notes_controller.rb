@@ -22,7 +22,7 @@ class Scheduler::ShiftNotesController < Scheduler::BaseController
   end
 
   def collection
-    @collection ||= apply_scopes(end_of_association_chain).joins(:shift, :shift_group).order('shift.ordinal', 'shift_group.start_offset', 'person_id').preload{[shift.county, person, shift, shift_group]}
+    @collection ||= apply_scopes(end_of_association_chain).joins(:shift, :shift_group).order('shift.ordinal', 'shift_group.start_offset', 'person_id').preload(:person, :shift, :shift_group, shift: :county)
   end
 
   def build_resource_params

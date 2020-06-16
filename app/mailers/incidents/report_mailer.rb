@@ -67,7 +67,7 @@ private
     ignore = scope.report_dro_ignore_array
     chapters = scope.all_chapters
     Incidents::Deployment.for_chapter(chapters).seen_since(@date_range.first)
-                          .preload{[disaster, person.counties]}
+                          .preload(:disaster, person: :counties)
                           .joins(:disaster)
                           .where.not(disaster: { dr_number: ignore })
                           .order(date_first_seen: :desc)
