@@ -13,7 +13,7 @@ describe Incidents::CasLinkController, :type => :controller do
 
     inc.link_to_cas_incident(cas2)
 
-    get :index, chapter_id: inc.chapter.to_param
+    get :index, params: { chapter_id: inc.chapter.to_param }
 
     expect(response).to be_success
     expect(controller.send(:collection)).to match_array([cas])
@@ -23,7 +23,7 @@ describe Incidents::CasLinkController, :type => :controller do
     cas = FactoryGirl.create :cas_incident, chapter: @person.chapter
     inc = FactoryGirl.create :incident, chapter: @person.chapter
 
-    post :link, id: cas.to_param, incident_id: inc.id, chapter_id: inc.chapter.to_param
+    post :link, params: { id: cas.to_param, incident_id: inc.id, chapter_id: inc.chapter.to_param }
     expect(response).to be_redirect
     expect(flash[:info]).not_to be_empty
 
@@ -37,7 +37,7 @@ describe Incidents::CasLinkController, :type => :controller do
 
     inc.link_to_cas_incident(cas2)
     expect {
-      post :link, id: cas2.to_param, incident_id: inc2.id, chapter_id: inc.chapter.to_param
+      post :link, params: { id: cas2.to_param, incident_id: inc2.id, chapter_id: inc.chapter.to_param }
       expect(response).to be_redirect
       expect(flash[:error]).not_to be_empty
     }.to_not change{inc.reload.cas_event_number}
@@ -47,7 +47,7 @@ describe Incidents::CasLinkController, :type => :controller do
     cas = FactoryGirl.create :cas_incident, chapter: @person.chapter
 
     expect {
-      post :ignore, id: cas.to_param, chapter_id: @person.chapter.to_param
+      post :ignore, params: { id: cas.to_param, chapter_id: @person.chapter.to_param }
     }.to change{cas.reload.ignore_incident}.to(true)
 
     expect(response).to be_redirect
@@ -63,7 +63,7 @@ describe Incidents::CasLinkController, :type => :controller do
              city: Faker::Address.city, district: Faker::Address.city, zip: Faker::Address.zip_code, state: Faker::Address.state)
 
     expect {
-      post :promote, id: cas.to_param, commit: 'Promote to Incident', chapter_id: cas.chapter.to_param
+      post :promote, params: { id: cas.to_param, commit: 'Promote to Incident', chapter_id: cas.chapter.to_param }
       expect(response).to be_redirect
       expect(flash[:info]).not_to be_empty
 
