@@ -71,12 +71,20 @@ class Incidents::Incident < ApplicationRecord
   end
 
   def self.count_resources resources
-    rec = joins(:dat_incident).unscope(:order).select do
-      resources.map do |res|
-        sum(coalesce(cast(dat_incident.resources.op('->>', res).as(integer)), 0)).as(res)
+    return unless resources.present?
+
+    resource_counts = {}
+
+    resources.each do |resource|
+      resource_counts[resource] = begin
+        query_result = joins(:dat_incident)
+          .unscope(:order)
+          .select('SUM(COALESCE(CAST(dat_incident.resources -> ? AS integer), 0)) AS resource', resource)
+        query_result && query_result.attributes['resource']
       end
-    end.take
-    rec && rec.attributes.slice(*resources) || {}
+    end
+
+    resource_counts
   end
 
   assignable_values_for :incident_type, allow_blank: true do
