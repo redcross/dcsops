@@ -35,11 +35,15 @@ class Roster::Person < ApplicationRecord
   end
 
   def self.is_active
-    where{vc_is_active == true}
+    where(vc_is_active: true)
   end
 
   def self.with_phone_number(number)
-    where{(home_phone == number) | (cell_phone == number) | (work_phone == number) | (alternate_phone == number) | (sms_phone == number)}
+    where(home_phone: number)
+      .or(where(cell_phone: number))
+      .or(where(work_phone: number))
+      .or(where(alternate_phone: number))
+      .or(where(sms_phone: number))
   end
 
   scope :has_position, lambda { joins(:positions) }

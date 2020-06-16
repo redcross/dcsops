@@ -5,25 +5,25 @@ class Scheduler::NotificationSetting < ApplicationRecord
 
   def self.needs_daily_email(chapter); needs_daily(chapter, :email); end
   def self.needs_daily_sms(chapter);   needs_daily(chapter, :sms); end
-  def self.needs_daily_swap(chapter);  for_chapter(chapter).with_active_person.where{email_all_swaps_daily == true}; end
+  def self.needs_daily_swap(chapter);  for_chapter(chapter).with_active_person.where(email_all_swaps_daily: true); end
 
   def self.needs_daily chapter, method
     now = chapter.time_zone.now
     midnight = now.at_beginning_of_day
     offset = now.seconds_since_midnight
-    for_chapter(chapter).with_active_person.where{(__send__(:"#{method}_all_shifts_at") != nil) & 
-                                                  (__send__(:"#{method}_all_shifts_at") <= offset) & 
-                                                  ( (__send__(:"last_all_shifts_#{method}") == nil) | 
-                                                    (__send__(:"last_all_shifts_#{method}") < midnight)
-                                                  )}.readonly(false)
+    for_chapter(chapter).with_active_person
+      .where("#{__send__(:"#{method}_all_shifts_at")} IS NOT NULL")
+      .where("#{__send__(:"#{method}_all_shifts_at")} <= ?", offset)
+      .where("#{__send__(:"last_all_shifts_#{method}")} IS NULL OR #{__send__(:"last_all_shifts_#{method}")} < ?", midnight)
+      .readonly(false)
   end
 
   def self.with_active_person
-    joins(:person).where{person.vc_is_active == true}
+    joins(:person).where(person: { vc_is_active: true })
   end
 
   def self.for_chapter chapter
-    joins(:person).where{person.chapter_id == chapter.id}
+    joins(:person).where(person: { chapter_id: chapter.id })
   end
 
   before_create :set_calendar_api_token
@@ -36,7 +36,9 @@ class Scheduler::NotificationSetting < ApplicationRecord
   end
 
   def self.admins_to_notify_swap(shift_assignment, ignore=[])
-    Roster::Person.joins(:notification_setting).in_county(shift_assignment.shift.county).where{(notification_setting.email_all_swaps == true) & (id.not_in ignore)}.to_a
+    Roster::Person.joins(:notification_setting).in_county(shift_assignment.shift.county)
+      .where(notification_setting: { email_all_swaps: true })
+      .where.not(id: ignore).to_a
   end
 
   def allow_sms_at? time

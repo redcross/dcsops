@@ -15,11 +15,11 @@ module Incidents::Notifications
     end
 
     def self.for_type type
-      where{event_type == type}
+      where(event_type: type)
     end
 
     def self.for_event_name name
-      where{event == name}
+      where(event: name)
     end
   end
 end

@@ -24,12 +24,14 @@ class Scheduler::ShiftGroup < ApplicationRecord
 
   def next_group
     offset = self.start_offset
-    group = self.class.where{(start_offset > offset) & (chapter_id == my{self.chapter_id}) & (period == self.period)}.order(:start_offset).first
+    group = self.class.where('start_offset > ?', offset)
+      .where(chapter_id: self.chapter_id, period: self.period)
+      .order(:start_offset).first
     if group
       group.start_date = self.start_date
       return group
     end
-    group = self.class.where{(chapter_id == my{self.chapter_id})}.order(:start_offset).first
+    group = self.class.where(chapter_id: self.chapter_id).order(:start_offset).first
     if group
       group.start_date = self.next_period_date if self.start_date
       group
@@ -43,7 +45,7 @@ class Scheduler::ShiftGroup < ApplicationRecord
   end
 
   def self.daily
-    where{period == 'daily'}
+    where(period: 'daily')
   end
 
   def self.first_group(chapter, current_time=Time.zone.now)

@@ -7,7 +7,7 @@ class Scheduler::ShiftNotesController < Scheduler::BaseController
 
   has_scope :date, default: ->controller{Date.current.to_s} do |controller, scope, val|
     d = Date.parse val
-    scope.where{date == d}
+    scope.where(date: d)
   end
 
   protected
@@ -18,7 +18,7 @@ class Scheduler::ShiftNotesController < Scheduler::BaseController
   end
 
   def end_of_association_chain
-    Scheduler::ShiftAssignment.joins(:person).where{person.chapter_id==my{current_chapter}}.readonly(false)
+    Scheduler::ShiftAssignment.joins(:person).where(person: { chapter_id: current_chapter }).readonly(false)
   end
 
   def collection

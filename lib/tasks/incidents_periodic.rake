@@ -22,7 +22,7 @@ namespace :incidents_periodic do
 
   task :get_deployments => [:environment, :get_disasters] do
     Raven.capture do
-      Roster::Chapter.where{vc_username != nil}.each do |chapter|
+      Roster::Chapter.where.not(vc_username: nil).each do |chapter|
         next unless chapter.vc_username.present?
         begin
           Incidents::DeploymentImporter.get_deployments chapter
@@ -35,7 +35,7 @@ namespace :incidents_periodic do
 
   task :get_disasters => :environment do
     Raven.capture do
-      Roster::Chapter.where{vc_username != nil}.each do |chapter|
+      Roster::Chapter.where.not(vc_username: nil).each do |chapter|
         next unless chapter.vc_username.present?
         begin
           Incidents::DisastersImporter.get_disasters chapter

@@ -117,7 +117,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     }
     expose(:resource_change_people) {
       ids = resource_changes.map(&:whodunnit).select(&:present?).uniq
-      people = Hash[Roster::Person.where{id.in(ids)}.map{|p| [p.id, p]}]
+      people = Hash[Roster::Person.where(id: ids).map{|p| [p.id, p]}]
     }
     expose(:show_version_root) { params[:action] == 'activity' }
 
@@ -161,7 +161,7 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
 
     def counties_for_create
-      Roster::County.where{chapter_id.in my{delegated_chapter_ids}}
+      Roster::County.where(chapter_id: delegated_chapter_ids)
     end
     helper_method :counties_for_create
 

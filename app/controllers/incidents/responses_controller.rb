@@ -7,7 +7,7 @@ class Incidents::ResponsesController < Incidents::BaseController
   has_scope :with_person_in_counties, as: :county_id, default: ->controller{controller.current_user.primary_county_id}
   has_scope :response_in_last, default: 180 do |controller, scope, val|
     date = Date.current - val.to_i
-    scope.left_outer_joins(:incident).where{incident.date >= date}
+    scope.left_outer_joins(:incident).where(incident: { date: date..DateTime::Infinity.new })
   end
 
   expose(:responders) {

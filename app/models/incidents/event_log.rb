@@ -8,11 +8,11 @@ class Incidents::EventLog < Incidents::DataModel
   validates :event, uniqueness: {scope: :incident_id, if: ->(log){log.incident_id && !%w(note dispatch_note).include?(log.event)}}
 
   def self.note
-    where{event == 'note'}
+    where(event: 'note')
   end
 
   def self.for_type type
-    where{event == type}
+    where(event: type)
   end
 
   INCIDENT_EVENT_TYPES = {

@@ -72,20 +72,23 @@ class Scheduler::Shift < ApplicationRecord
   end
 
   scope :for_chapter, -> chapter {
-    joins(:county).where{county.chapter_id == chapter}
+    joins(:county).where(county: { chapter_id: chapter })
   }
   scope :active_on_day, -> date {
     #Todo: check day of week here
-    where{((shift_begins == nil) | (shift_begins <= date) & ((shift_ends == nil) | (shift_ends > date)))}
+    where('shift_begins IS NULL OR shift_begins <= ? AND (shift_ends IS NULL OR shift_ends > ?)', date, date)
   }
   scope :for_counties, -> counties {
-    where{county_id.in(counties)}
+    where(county_id: counties)
   }
   scope :can_be_taken_by, -> person {
-    where{((ignore_county == true) | county_id.in(person.county_ids))}.joins(:positions).where{positions.id.in(person.position_ids)}.uniq
+    where(ignore_county: true).or(where(county_id: person.county_ids))
+      .joins(:positions)
+      .where(positions: { id: person.position_ids })
+      .uniq
   }
   scope :for_groups, -> groups {
-    joins(:shift_groups).where{shift_groups.id.in groups}
+    joins(:shift_groups).where(shift_groups: { id: groups })
   }
 
   def can_be_taken_by?(person)
@@ -118,7 +121,7 @@ class Scheduler::Shift < ApplicationRecord
       end
     end
 
-    arr = Scheduler::ShiftAssignment.where{shift_id.in(shifts.to_a) & date.in(month..(month.at_end_of_month))}
+    arr = Scheduler::ShiftAssignment.where(shift_id: shifts.to_a, date: month..(month.at_end_of_month))
                               .select{[count(id).as(:count), shift_id, shift_group_id, date]}.group{[shift_id, shift_group_id, date]}.reduce(arr) do |hash, ass|
       shift = shifts_by_id[ass.shift_id]
       group = groups_by_id[ass.shift_group_id]

@@ -2,10 +2,17 @@ class Scheduler::FlexSchedule < ApplicationRecord
   belongs_to :person, foreign_key: 'id', class_name: 'Roster::Person'
 
   scope :for_county, lambda {|county_ids| 
-    joins(person: :county_memberships).where{person.county_memberships.county_id.in my{county_ids}}
+    joins(person: :county_memberships).where(person: { county_memberships: { county_id: county_ids } })
   }
 
   scope :with_availability, lambda {
+    # NOTE: Squeel migration note:
+    # The original syntax here reduces to calling `where{}` with just a boolean,
+    # which as far as I can tell is not valid Squeel syntax.
+    # I'm leaving the original Squeel syntax in place so that it blows up if
+    # anyone tries to use it, and hopefully they'll be in a better position to
+    # figure out the original intent.
+    raise("Incomplete Squeel migration")
     where{
       Scheduler::FlexSchedule.available_columns.map{|c|__send__(c) == true}.reduce(&:|)
     }

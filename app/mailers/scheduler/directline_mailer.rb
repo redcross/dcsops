@@ -45,7 +45,9 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
     all_groups = Scheduler::ShiftGroup.for_chapter(chapter).order(:start_offset).to_a
     daily_groups = all_groups.select{ |grp| grp.period == 'daily' && dispatch_group_ids.include?(grp.id) }
     
-    all_assignments = Scheduler::ShiftAssignment.where{shift_id.in(dispatch_shifts)}.normalized_date_on_or_after(start_date).where{date <= end_date}.group_by{|sa| [sa.date, sa.shift_id, sa.shift_group_id]}
+    all_assignments = Scheduler::ShiftAssignment.where(shift_id: dispatch_shifts)
+      .normalized_date_on_or_after(start_date)
+      .where('date <= ?', end_date).group_by{|sa| [sa.date, sa.shift_id, sa.shift_group_id]}
 
     (start_date..end_date).each do |date|
       daily_groups.each do |daily_group|

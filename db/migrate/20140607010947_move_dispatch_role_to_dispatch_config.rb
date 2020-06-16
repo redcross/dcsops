@@ -17,8 +17,8 @@ class MoveDispatchRoleToDispatchConfig < ActiveRecord::Migration
     add_column :scheduler_dispatch_configs, :chapter_id, :integer
 
     say_with_time "Moving dispatch order" do
-      Shift.where{dispatch_role != nil}.find_each do |shift|
-        config = DispatchConfig.where{county_id == shift.county_id}.first!
+      Shift.where.not(dispatch_role: nil).find_each do |shift|
+        config = DispatchConfig.where(county_id: shift.county_id).first!
         config.chapter_id = shift.county.chapter_id
         case shift.dispatch_role
         when 1 then config.shift_first_id = shift.id

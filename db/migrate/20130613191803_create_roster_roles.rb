@@ -27,7 +27,7 @@ class CreateRosterRoles < ActiveRecord::Migration
     end
 
     say_with_time 'Migrating roles to Role model...' do
-      Position.where{grants_role != nil}.each do |pos|
+      Position.where.not(grants_role: nil).each do |pos|
         role = Role.where(grant_name: pos.grants_role, role_scope: pos.role_scope, chapter_id: pos.chapter_id).first_or_initialize
         role.name ||= "#{pos.name} Role"
         role.save!

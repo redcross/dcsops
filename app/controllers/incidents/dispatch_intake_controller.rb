@@ -16,7 +16,7 @@ class Incidents::DispatchIntakeController < Incidents::BaseController
   protected
 
   def collection
-    super.where{status == 'open'}
+    super.where(status: 'open')
   end
 
   def create_resource obj

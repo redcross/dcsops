@@ -8,7 +8,7 @@ ActiveAdmin.register Delayed::Job, as: 'Job' do
   end
 
   scope :failing do |scope|
-    scope.where{last_error != nil}
+    scope.where.not(last_error: nil)
   end
 
   index do

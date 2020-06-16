@@ -1,7 +1,7 @@
 class MoveReportSubscriptionsToIncidentScope < ActiveRecord::Migration
   def change
     say_with_time 'Moving report config' do
-      Roster::Chapter.where{id != 0}.each do |chapter|
+      Roster::Chapter.where.not(id: 0).each do |chapter|
         scope = Incidents::Scope.for_chapter chapter
         scope.report_frequencies = chapter.config.delete 'incidents_enabled_report_frequencies'
         scope.report_send_at = chapter.config.delete 'incidents_report_send_at'

@@ -10,7 +10,7 @@ class Incidents::Scope < ApplicationRecord
   end
 
   def self.including_chapter chapter_ids
-    joins(:chapters).where{chapters.id.in chapter_ids}
+    joins(:chapters).where(chapters: { id: chapter_ids })
   end
 
   def incidents

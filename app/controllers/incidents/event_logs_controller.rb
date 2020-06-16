@@ -11,8 +11,8 @@ class Incidents::EventLogsController < Incidents::EditPanelController
 
   has_scope :event_scope do |controller, scope, val|
     case val
-    when 'global' then scope.where{incident_id == nil}
-    when 'incident' then scope.where{incident_id != nil}
+    when 'global' then scope.where(incident_id: nil)
+    when 'incident' then scope.where.not(incident_id: nil)
     else scope
     end
   end

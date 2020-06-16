@@ -131,7 +131,7 @@ class Incidents::DatIncidentsController < Incidents::BaseController
   #def end_of_association_chain
   #  Incidents::Incident.includes(dat_incident: [:completed_by, :vehicles], responder_assignments: :person)
   #                     .for_chapter(current_chapter)
-  #                     .where{(incident_number == my{params[:incident_id]})}
+  #                     .where(incident_number: params[:incident_id])
   #                     .first!
   #end
 

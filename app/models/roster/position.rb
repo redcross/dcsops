@@ -7,7 +7,7 @@ class Roster::Position < ApplicationRecord
 
   validates_presence_of :chapter, :name
 
-  scope :visible, ->{where{hidden != true}}
+  scope :visible, ->{where.not(hidden: true)}
 
   accepts_nested_attributes_for :role_memberships, allow_destroy: true
 

@@ -10,6 +10,6 @@ class Lookup < ApplicationRecord
   end
 
   def self.for_chapter_and_scope(chapter, scope_name)
-    where{(chapter_id == nil) | (chapter_id == chapter)}.where{scope == scope_name}.order(:ordinal)
+    where(chapter_id: nil).or(where(chapter_id: chapter)).where(scope: scope_name).order(:ordinal)
   end
 end

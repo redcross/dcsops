@@ -96,29 +96,35 @@ class Scheduler::ShiftAssignment < ApplicationRecord
   }
 
   def self.for_active_groups_raw tuples
+    # NOTE: Squeel migration note:
+    # I'm not sure who provides the `row` method; it doesn't seem to exist in Squeel.
+    # I'm going to raise an exception here any future callers will know they
+    # need to deal with it, and hopefully they'll be in a better position to
+    # figure out the original intent.
+    raise("Incomplete Squeel migration")
     where{
       row(date, shift_group_id).in(tuples.map{|hash| row(hash[:start_date], hash[:id]) })
     }
   end
 
   scope :for_chapter, -> (chapter) {
-    joins(:person).where{person.chapter_id == chapter}
+    joins(:person).where(person: { chapter_id: chapter })
   }
 
   scope :for_shifts, -> (shifts) {
-    where{shift_id.in(shifts)}
+    where(shift_id: shifts)
   }
 
   scope :for_counties, -> (counties) {
-    joins(:shift).where{shift.county_id.in(counties)}
+    joins(:shift).where(shift: { county_id: counties })
   }
 
   scope :for_groups, -> (groups) {
-    where{shift_group_id.in(groups)}
+    where(shift_group_id: groups)
   }
 
   scope :with_active_person, -> {
-    joins(:person).where{person.vc_is_active == true}
+    joins(:person).where(person: { vc_is_active: true })
   }
   
   def self.needs_email_invite chapter
@@ -130,7 +136,8 @@ class Scheduler::ShiftAssignment < ApplicationRecord
 
   def self.needs_reminder chapter, type
     where(:"#{type}_reminder_sent" => false)
-    .joins(:notification_setting).where{notification_setting.__send__("#{type}_advance_hours") != nil}
+    .joins(:notification_setting)
+    .where.not(notification_setting.__send__("#{type}_advance_hours") => nil)
     .with_active_person.for_chapter(chapter).readonly(false).preload{[notification_setting,shift_group.chapter]}
     .select{|ass|
       now = chapter.time_zone.now
@@ -173,11 +180,11 @@ class Scheduler::ShiftAssignment < ApplicationRecord
 
   scope :starts_after, ->(time){
     start_date = time.to_date
-    joins(:shift_group).where{(date > start_date) | ((date == start_date) & (shift_group.end_offset > time.in_time_zone.seconds_since_midnight))}
+    joins(:shift_group).where('date > ?', start_date).or(where(date: start_date).where('shift_group.end_offset > ?', time.in_time_zone.seconds_since_midnight))
   }
 
   scope :available_for_swap, -> (chapter) {
-    where{(available_for_swap==true)}.normalized_date_on_or_after(chapter.time_zone.today)
+    where(available_for_swap: true).normalized_date_on_or_after(chapter.time_zone.today)
   }
 
   scope :includes_person_carriers, -> {

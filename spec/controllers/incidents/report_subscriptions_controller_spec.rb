@@ -55,7 +55,7 @@ describe Incidents::ReportSubscriptionsController, :type => :controller do
   end
 
   def get_sub
-    Incidents::ReportSubscription.where{person_id == my{@person}}.first!
+    Incidents::ReportSubscription.where(person_id: @person).first!
   end
 
 end

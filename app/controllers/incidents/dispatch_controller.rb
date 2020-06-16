@@ -51,7 +51,7 @@ class Incidents::DispatchController < Incidents::BaseController
   end
 
   def collection
-    @coll ||= super.where{current_dispatch_contact_id != nil}.order(created_at: :desc)
+    @coll ||= super.where.not(current_dispatch_contact_id: nil).order(created_at: :desc)
   end
 
   def publisher

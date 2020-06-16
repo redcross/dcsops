@@ -16,7 +16,7 @@ class Scheduler::DispatchConfig < ApplicationRecord
 
   validates_presence_of :name, :chapter
 
-  scope :active, ->{ where{is_active == true} }
+  scope :active, ->{ where(is_active: true) }
 
   def self.for_county(county)
     self.where(county_id: county).first_or_create
