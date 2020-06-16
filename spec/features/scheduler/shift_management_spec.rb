@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Shift Scheduler Spec", :type => :feature do
   before :each do
-    grant_role! "region_dat_admin"
+    grant_capability! "region_dat_admin"
 
     group = FactoryGirl.create :shift_time, region: @person.region, start_offset: 10.hours, end_offset: 22.hours
     shift_territory = FactoryGirl.create :shift_territory, name: "Shift Territory", region: @person.region

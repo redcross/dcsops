@@ -18,11 +18,11 @@ describe Incidents::DatIncidentsController, :type => :controller do
   describe "#new" do
 
     before(:each) do
-      grant_role! :submit_incident_report
+      grant_capability! :submit_incident_report
     end
 
     it "should redirect if there is a valid dat incident already" do
-      grant_role! :incidents_admin
+      grant_capability! :incidents_admin
       incident = FactoryGirl.create :incident, region: @person.region
       dat = FactoryGirl.create :dat_incident, incident: incident
 
@@ -41,7 +41,7 @@ describe Incidents::DatIncidentsController, :type => :controller do
 
   describe "#edit" do
     before(:each) do
-      grant_role! :incidents_admin
+      grant_capability! :incidents_admin
     end
     before(:each) do
       @incident = FactoryGirl.create :incident, region: @person.region
@@ -59,7 +59,7 @@ describe Incidents::DatIncidentsController, :type => :controller do
 
   context "with an existing incident" do  
     before(:each) do
-      grant_role! :submit_incident_report
+      grant_capability! :submit_incident_report
     end
 
     before(:each) do
@@ -103,7 +103,7 @@ describe Incidents::DatIncidentsController, :type => :controller do
   context "updating an existing report" do
     before(:each) do
       @incident = FactoryGirl.create :closed_incident, region: @person.region
-      grant_role! :submit_incident_report
+      grant_capability! :submit_incident_report
     end
 
     it "should notify the report was filed" do

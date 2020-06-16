@@ -4,7 +4,7 @@ describe "DAT Incident Report", type: :feature, versions: true do
   #self.use_transactional_fixtures = false
 
   it "Should be submittable" do
-    grant_role! 'submit_incident_report'
+    grant_capability! 'submit_incident_report'
 
     @region = @person.region
     FactoryGirl.create :incidents_scope, region: @person.region

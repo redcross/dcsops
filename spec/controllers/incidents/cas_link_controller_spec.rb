@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Incidents::CasLinkController, :type => :controller do
   include LoggedIn
-  before(:each) { grant_role! 'cas_admin' }
+  before(:each) { grant_capability! 'cas_admin' }
   render_views
 
   it "displays the list" do

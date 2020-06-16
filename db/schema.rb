@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200616143151) do
+ActiveRecord::Schema.define(version: 20200616202024) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -833,6 +833,26 @@ ActiveRecord::Schema.define(version: 20200616143151) do
 
   add_index "partners_partners", ["region_id"], name: "index_partners_partners_on_region_id", using: :btree
 
+  create_table "roster_capabilities", force: true do |t|
+    t.string   "name"
+    t.string   "grant_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "roster_capability_memberships", force: true do |t|
+    t.integer "capability_id"
+    t.integer "position_id"
+    t.string  "description"
+  end
+
+  create_table "roster_capability_scopes", force: true do |t|
+    t.string   "scope"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "capability_membership_id"
+  end
+
   create_table "roster_cell_carriers", force: true do |t|
     t.string   "name"
     t.string   "sms_gateway"
@@ -939,26 +959,6 @@ ActiveRecord::Schema.define(version: 20200616143151) do
   end
 
   add_index "roster_regions", ["url_slug"], name: "index_roster_regions_on_url_slug", unique: true, using: :btree
-
-  create_table "roster_role_memberships", force: true do |t|
-    t.integer "role_id"
-    t.integer "position_id"
-    t.string  "description"
-  end
-
-  create_table "roster_role_scopes", force: true do |t|
-    t.string   "scope"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "role_membership_id"
-  end
-
-  create_table "roster_roles", force: true do |t|
-    t.string   "name"
-    t.string   "grant_name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "roster_shift_territories", force: true do |t|
     t.integer  "region_id"

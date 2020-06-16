@@ -2,20 +2,20 @@ require 'spec_helper'
 
 describe Incidents::Ability, :type => :model do
 
-  let(:roles) {[]}
+  let(:capabilities) {[]}
   let(:region) {FactoryGirl.create :region}
   let(:person) {
     double(:person, region: region, id: 10, region_id: region.id).tap{|p|
-      allow(p).to receive(:has_role) do |role|
-        roles.include? role
+      allow(p).to receive(:has_capability) do |capability|
+        capabilities.include? capability
       end
     }
   }
 
   subject { Incidents::Ability.new(person) }
 
-  def grant_role(role)
-    roles << role
+  def grant_capability(capability)
+    capabilities << capability
   end
 
   def can! *args
@@ -32,7 +32,7 @@ describe Incidents::Ability, :type => :model do
     it {cannot! :mark_invalid, Incidents::Incident}
 
     context "As incident report submitter" do
-      before(:each) {grant_role 'submit_incident_report'}
+      before(:each) {grant_capability 'submit_incident_report'}
 
       it {can! :create, Incidents::DatIncident}
       it {can! :needs_report, Incidents::Incident}

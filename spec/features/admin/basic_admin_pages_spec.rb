@@ -4,7 +4,7 @@ require 'spec_helper'
 # "can I get to the page" tests
 describe "Basic Admin Pages", :type => :feature do
   before(:each) do
-    grant_role! :region_config
+    grant_capability! :region_config
   end
 
   it "Visits the Call Logs page" do
@@ -180,8 +180,8 @@ describe "Basic Admin Pages", :type => :feature do
   it "Visits the Roles page" do
     visit "/scheduler_admin/people"
     find("#roster").hover
-    click_on "Roles"
-    expect(page).to have_current_path("/scheduler_admin/roles")
+    click_on "Capabilities"
+    expect(page).to have_current_path("/scheduler_admin/capabilities")
   end
 
   it "Visits the Dispatch Configs page" do

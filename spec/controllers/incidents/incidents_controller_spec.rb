@@ -5,7 +5,7 @@ describe Incidents::IncidentsController, :type => :controller do
 
   describe "#needs_report" do
     it "displays the list" do
-      grant_role! 'submit_incident_report'
+      grant_capability! 'submit_incident_report'
       inc = FactoryGirl.create :incident, region: @person.region
       inc2 = FactoryGirl.create :dat_incident
       expect(Incidents::Incident.count).to eq(2)
@@ -18,7 +18,7 @@ describe Incidents::IncidentsController, :type => :controller do
   end
 
   describe "#show" do
-    before(:each) { grant_role! 'incidents_admin' }
+    before(:each) { grant_capability! 'incidents_admin' }
     let(:inc) {FactoryGirl.create :incident, region: @person.region}
     it "should succeed with no cas or dat" do
       inc = FactoryGirl.create :incident, region: @person.region
@@ -53,7 +53,7 @@ describe Incidents::IncidentsController, :type => :controller do
   end
 
   describe '#mark_invalid' do
-    before(:each) { grant_role! 'submit_incident_report' }
+    before(:each) { grant_capability! 'submit_incident_report' }
     let!(:inc) {FactoryGirl.create :raw_incident, region: @person.region}
     before(:each) { allow(Incidents::Notifications::Notification).to receive :create_for_event }
 
@@ -93,7 +93,7 @@ describe Incidents::IncidentsController, :type => :controller do
   end
 
   describe "#close" do
-    before(:each) { grant_role! 'submit_incident_report' }
+    before(:each) { grant_capability! 'submit_incident_report' }
     let(:raw_incident) {FactoryGirl.create :raw_incident, region: @person.region}
     let(:complete_incident) {FactoryGirl.create :closed_incident, region: @person.region, status: 'open'}
 
@@ -113,7 +113,7 @@ describe Incidents::IncidentsController, :type => :controller do
   end
 
   describe "#reopen" do
-    before(:each) { grant_role! 'create_incident' }
+    before(:each) { grant_capability! 'create_incident' }
     let(:complete_incident) {FactoryGirl.create :closed_incident, region: @person.region}
 
     it "should succeed" do
@@ -125,7 +125,7 @@ describe Incidents::IncidentsController, :type => :controller do
   end
 
   describe "#create" do
-    before(:each) { grant_role! 'create_incident' }
+    before(:each) { grant_capability! 'create_incident' }
     let(:shift_territory) {
       @person.region.shift_territories.first
     }
@@ -189,7 +189,7 @@ describe Incidents::IncidentsController, :type => :controller do
   end
 
   describe '#activity' do
-    before(:each) { grant_role! 'cas_details'; PaperTrail.whodunnit = @person.id }
+    before(:each) { grant_capability! 'cas_details'; PaperTrail.whodunnit = @person.id }
 
     it "should succeed" do
       get :activity, region_id: @person.region.to_param
@@ -200,7 +200,7 @@ describe Incidents::IncidentsController, :type => :controller do
 
   describe '#resource_changes', versioning: true do
     before(:each) { PaperTrail.whodunnit = @person.id }
-    before(:each) { grant_role! 'cas_details'; PaperTrail.whodunnit = @person.id }
+    before(:each) { grant_capability! 'cas_details'; PaperTrail.whodunnit = @person.id }
 
     it "should provide list of changes to incidents" do
       i = FactoryGirl.create :incident, region: @person.region

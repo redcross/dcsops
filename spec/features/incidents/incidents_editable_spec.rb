@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Invalid Incident Report", :type => :feature do
   self.use_transactional_fixtures = false
   before do
-    grant_role! 'submit_incident_report'
+    grant_capability! 'submit_incident_report'
 
     @region = @person.region
     @region.incidents_report_editable = true

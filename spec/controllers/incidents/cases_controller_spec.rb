@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Incidents::CasesController, :type => :controller do
   include LoggedIn
   render_views
-  before(:each) { @person.region.incidents_collect_case_details = true; @person.region.save!; grant_role! :submit_incident_report }
+  before(:each) { @person.region.incidents_collect_case_details = true; @person.region.save!; grant_capability! :submit_incident_report }
 
   let!(:incident) { FactoryGirl.create :incident, region: @person.region }
 

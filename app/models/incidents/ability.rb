@@ -7,19 +7,19 @@ class Incidents::Ability
   def initialize(person)
     @person = person
     @region_scope = [@person.region_id] + Roster::Region.with_incidents_delegate_region_value(@person.region_id).ids
-    is_admin = person.has_role 'incidents_admin'
+    is_admin = person.has_capability 'incidents_admin'
 
     scopes
     personal
     
-    dispatch_console        if is_admin or person.has_role 'dispatch_console'
-    create_incident         if             person.has_role 'create_incident'
-    submit_incident_report  if is_admin or person.has_role 'submit_incident_report'
-    cas_admin               if is_admin or person.has_role 'cas_admin'
-    incident_details        if is_admin or person.has_role 'incident_details'
-    cas_details             if is_admin or person.has_role 'cas_details'
-    see_responses           if is_admin or person.has_role 'see_responses'
-    approve_iir             if is_admin or person.has_role 'approve_iir'
+    dispatch_console        if is_admin or person.has_capability 'dispatch_console'
+    create_incident         if             person.has_capability 'create_incident'
+    submit_incident_report  if is_admin or person.has_capability 'submit_incident_report'
+    cas_admin               if is_admin or person.has_capability 'cas_admin'
+    incident_details        if is_admin or person.has_capability 'incident_details'
+    cas_details             if is_admin or person.has_capability 'cas_details'
+    see_responses           if is_admin or person.has_capability 'see_responses'
+    approve_iir             if is_admin or person.has_capability 'approve_iir'
     incidents_admin         if is_admin
 
     read_only if ENV['READ_ONLY']
@@ -92,7 +92,7 @@ class Incidents::Ability
   end
 
   def dispatch_console
-    scopes = person.scope_for_role('dispatch_console').map(&:to_i)
+    scopes = person.scope_for_capability('dispatch_console').map(&:to_i)
     can :dispatch_console, Incidents::Scope, {id: scopes}
 
 

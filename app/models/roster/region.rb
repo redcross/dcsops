@@ -4,7 +4,7 @@ class Roster::Region < ActiveRecord::Base
   has_many :shift_territories
   has_many :positions
   has_many :people
-  has_many :roles
+  has_many :capabilities
 
   has_one :vc_import_data
 

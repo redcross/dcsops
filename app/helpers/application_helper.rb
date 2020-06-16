@@ -1,6 +1,6 @@
 module ApplicationHelper
   def has_admin_dashboard_access
-    @_admin_access = current_user && (current_user.has_role('region_config') || current_user.has_role('region_admin'))
+    @_admin_access = current_user && (current_user.has_capability('region_config') || current_user.has_capability('region_admin'))
   end
 
   def current_messages

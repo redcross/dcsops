@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Notifications Settings Page", :type => :feature do
   it "Views the default page as admin" do
-    grant_role! 'region_dat_admin'
+    grant_capability! 'region_dat_admin'
 
     visit "/scheduler/"
     click_on "Update reminder preferences"

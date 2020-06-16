@@ -14,7 +14,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
 
     @scope = FactoryGirl.create :incidents_scope, enable_dispatch_console: true, region: @region
 
-    grant_role!(:dispatch_console, [@scope.id])
+    grant_capability!(:dispatch_console, [@scope.id])
 
     backup_person = FactoryGirl.create :person, region: @region
     dc = FactoryGirl.create :scheduler_dispatch_config, region: @region, backup_first: backup_person

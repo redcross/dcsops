@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Incident Response Territories Admin Page", :type => :feature do
   before(:each) do
-    grant_role! :region_config
+    grant_capability! :region_config
   end
 
   it "Creates a new Response Territory" do

@@ -12,7 +12,7 @@ class Roster::Person < ActiveRecord::Base
 
   has_many :position_memberships, class_name: 'Roster::PositionMembership'
   has_many :positions, class_name: 'Roster::Position', through: :position_memberships
-  has_many :role_memberships, class_name: 'Roster::RoleMembership', through: :positions
+  has_many :capability_memberships, class_name: 'Roster::CapabilityMembership', through: :positions
 
   belongs_to :home_phone_carrier, class_name: 'Roster::CellCarrier'
   belongs_to :cell_phone_carrier, class_name: 'Roster::CellCarrier'
@@ -26,8 +26,8 @@ class Roster::Person < ActiveRecord::Base
 
   scope :for_region, ->(region){where{region_id == region}}
 
-  scope :has_role_for_scope, -> role_name, scope {
-    joins{roles.role_scopes.outer}.where{(roles.grant_name == role_name) & ((roles.role_scopes.scope == nil) | (roles.role_scopes.scope == scope.to_s))}
+  scope :has_capability_for_scope, -> capability_name, scope {
+    joins{capabilities.capability_scopes.outer}.where{(capabilities.grant_name == capability_name) & ((capabilities.capability_scopes.scope == nil) | (capabilities.capability_scopes.scope == scope.to_s))}
   }
 
   scope :include_carriers, -> {
@@ -68,19 +68,19 @@ class Roster::Person < ActiveRecord::Base
 
   accepts_nested_attributes_for :shift_territory_memberships, :position_memberships, allow_destroy: true
 
-  def has_role(grant_name)
-    roles_with_scopes.select{|mem| mem.role.grant_name == grant_name}.present?
+  def has_capability(grant_name)
+    capabilities_with_scopes.select{|mem| mem.capability.grant_name == grant_name}.present?
   end
 
-  def scope_for_role(grant_name)
-    roles_with_scopes.select{|mem| mem.role.grant_name == grant_name}
-                     .flat_map{|mem| mem.role_scopes.map(&:scope) }
+  def scope_for_capability(grant_name)
+    capabilities_with_scopes.select{|mem| mem.capability.grant_name == grant_name}
+                     .flat_map{|mem| mem.capability_scopes.map(&:scope) }
                      .flat_map{ |scope| scope == 'shift_territory_ids' ? shift_territory_ids : scope}
                      .compact.uniq
   end
 
-  def roles_with_scopes
-    @roles_with_scopes ||= role_memberships.includes{[role, role_scopes]}.joins{role_scopes.outer}.references(:role)
+  def capabilities_with_scopes
+    @capabilities_with_scopes ||= capability_memberships.includes{[capability, capability_scopes]}.joins{capability_scopes.outer}.references(:capability)
   end
 
   def primary_shift_territory
@@ -191,6 +191,6 @@ class Roster::Person < ActiveRecord::Base
   end
 
   def is_active?
-    vc_is_active or has_role 'always_active'
+    vc_is_active or has_capability 'always_active'
   end
 end

@@ -93,12 +93,12 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
   # of @logged_in_person and @person, this was the only test that broke.
   #
   # There's something that's not quite getting set, most likely in the
-  # grant_role code, but it's not obvious.  This whole test should
+  # grant_capability code, but it's not obvious.  This whole test should
   # be reevaluated and make sure it's testing how it should be testing.
   #
   # See e0bb7e7 for that removal.
   xit "should allow accepting a swap to someone else as admin" do
-    grant_role! 'region_dat_admin'#, @person.shift_territory_ids
+    grant_capability! 'region_dat_admin'#, @person.shift_territory_ids
     @assignment.update_attribute :available_for_swap, true
 
     post :confirm, shift_assignment_id: @assignment.id, swap_to_id: @person2.id

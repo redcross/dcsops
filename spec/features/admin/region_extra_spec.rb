@@ -5,7 +5,7 @@ require 'spec_helper'
 # we decided to keep them live.  Which means they need tests!
 describe "Region Extra Configuration Pages", :type => :feature do
   before(:each) do
-    grant_role! :region_config
+    grant_capability! :region_config
   end
 
   it "Update the region shift territories" do

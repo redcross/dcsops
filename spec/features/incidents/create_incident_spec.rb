@@ -3,8 +3,8 @@ require 'spec_helper'
 describe "Manually create incident", :type => :feature do
 
   before do
-    grant_role! :submit_incident_report
-    grant_role! :incidents_admin
+    grant_capability! :submit_incident_report
+    grant_capability! :incidents_admin
     FactoryGirl.create :incidents_scope, region: @person.region
     FactoryGirl.create :response_territory, region: @person.region, name: 'SF Response Territory', counties: ['San Francisco, CA']
   end

@@ -7,7 +7,7 @@ describe "Incident Responders Console", :type => :feature do
   end
 
   before do
-    grant_role! :incidents_admin
+    grant_capability! :incidents_admin
     @region = @person.region
     @region.incidents_enable_dispatch_console = true
     @region.save!

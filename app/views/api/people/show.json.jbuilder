@@ -11,4 +11,4 @@ end
 json.positions resource.positions do |position|
   json.name position.name
 end
-json.roles resource.positions.includes{[role_memberships.role_scopes, role_memberships.role]}.flat_map{|p| p.role_memberships.map{|rm| rm.role.grant_name } }
+json.capabilities resource.positions.includes{[capability_memberships.capability_scopes, capability_memberships.capability]}.flat_map{|p| p.capability_memberships.map{|rm| rm.capability.grant_name } }

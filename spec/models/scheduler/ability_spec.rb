@@ -64,7 +64,7 @@ describe Scheduler::Ability, :type => :model do
 
   context "as shift_territory dat admin" do
     before(:each) do
-      grant_role! 'shift_territory_dat_admin', @person.shift_territory_ids
+      grant_capability! 'shift_territory_dat_admin', @person.shift_territory_ids
 
       @non_shift_territory_person = FactoryGirl.create :person, region: @person.region
     end

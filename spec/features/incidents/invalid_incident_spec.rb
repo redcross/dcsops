@@ -4,7 +4,7 @@ describe "Invalid Incident Report", :type => :feature do
   #self.use_transactional_fixtures = false
 
   it "Should be submittable" do
-    grant_role! 'submit_incident_report'
+    grant_capability! 'submit_incident_report'
 
     @region = @person.region
     FactoryGirl.create :incidents_scope, region: @person.region

@@ -10,7 +10,7 @@ class AdminAbility
 
   def initialize(person)
 
-    is_config = person.has_role 'region_config'
+    is_config = person.has_capability 'region_config'
 
     if is_config # is site manager
       can [:read, :update], Roster::Region
@@ -18,7 +18,7 @@ class AdminAbility
       can :manage, Roster::Position
       can :manage, Roster::CellCarrier
       can :manage, Roster::Person
-      can :manage, Roster::Role
+      can :manage, Roster::Capability
 
       can :manage, Scheduler::DispatchConfig
       can :manage, Scheduler::Shift
@@ -46,7 +46,7 @@ class AdminAbility
       can :manage, :all
     end
 
-    is_admin = person.has_role 'region_admin'
+    is_admin = person.has_capability 'region_admin'
     if is_admin
       region = person.region_id
       can :read, [Roster::Person, Roster::ShiftTerritory, Roster::Position], region_id: region

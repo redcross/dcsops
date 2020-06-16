@@ -9,19 +9,19 @@ class Scheduler::Ability
 
     personal
 
-    shift_territory_ids = person.scope_for_role('shift_territory_roster')
+    shift_territory_ids = person.scope_for_capability('shift_territory_roster')
     shift_territory_roster(shift_territory_ids) if shift_territory_ids.present?
 
-    admin_shift_territory_ids = person.scope_for_role('shift_territory_scheduler')
-    if person.has_role 'region_scheduler'
+    admin_shift_territory_ids = person.scope_for_capability('shift_territory_scheduler')
+    if person.has_capability 'region_scheduler'
         admin_shift_territory_ids.concat person.region.shift_territory_ids
     end
     admin_shift_territory_ids.uniq!
     scheduler admin_shift_territory_ids if admin_shift_territory_ids.present?
 
-    region_dat_admin person.region_id if person.has_role 'region_dat_admin'
+    region_dat_admin person.region_id if person.has_capability 'region_dat_admin'
 
-    dat_admin_shift_territories = person.scope_for_role('shift_territory_dat_admin')
+    dat_admin_shift_territories = person.scope_for_capability('shift_territory_dat_admin')
     shift_territory_dat_admin dat_admin_shift_territories if dat_admin_shift_territories.present? # is dat shift_territory admin
 
     read_only if ENV['READ_ONLY']

@@ -13,11 +13,11 @@ class Roster::Ability
       end
     end
 
-    if person.has_role 'region_dat_admin'
+    if person.has_capability 'region_dat_admin'
       can [:read, :update], Roster::Person, region_id: person.region_id
     end
 
-    admin_shift_territory_ids = person.scope_for_role('shift_territory_dat_admin')
+    admin_shift_territory_ids = person.scope_for_capability('shift_territory_dat_admin')
     if admin_shift_territory_ids.present? # is dat shift_territory admin
       can [:read, :update], Roster::Person, shift_territory_memberships: {shift_territory_id: admin_shift_territory_ids}
     end

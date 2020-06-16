@@ -12,7 +12,7 @@ describe "Responder History", :type => :feature do
   end
 
   it "Should be viewable for someone with permissions" do
-    grant_role! 'see_responses'
+    grant_capability! 'see_responses'
     FactoryGirl.create :incidents_scope, region: @person.region
 
     visit "/incidents/#{@person.region.url_slug}"
@@ -20,7 +20,7 @@ describe "Responder History", :type => :feature do
   end
 
   it "Should have responders" do
-    grant_role! 'see_responses'
+    grant_capability! 'see_responses'
     incident = FactoryGirl.create :incident, region: @person.region, date: Date.current
     FactoryGirl.create :responder_assignment, person: @person, incident: incident
 

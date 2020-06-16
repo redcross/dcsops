@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Incidents::NotificationsController, :type => :controller do
   include LoggedIn
   render_views
-  before(:each) { @person.region.incidents_use_escalation_levels = true; @person.region.save!; grant_role! :submit_incident_report }
+  before(:each) { @person.region.incidents_use_escalation_levels = true; @person.region.save!; grant_capability! :submit_incident_report }
   before(:each) { allow(Incidents::Notifications::Notification).to receive :create }
 
   let!(:incident) { FactoryGirl.create :incident, region: @person.region }

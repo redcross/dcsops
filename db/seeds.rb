@@ -12,9 +12,9 @@ end
 
 cell_carrier = Roster::CellCarrier.create! name: 'Verizon', sms_gateway: '@vtext.com'
 
-region_config_role     = Roster::Role.create!(name: 'Region Config',     grant_name: 'region_config')
-region_dat_admin_role  = Roster::Role.create!(name: 'Region DAT Admin',  grant_name: 'region_dat_admin')
-shift_territory_dat_admin_role   = Roster::Role.create!(name: 'Shift Territory DAT Admin',   grant_name: 'shift_territory_dat_admin')
+region_config_capability     = Roster::Capability.create!(name: 'Region Config',     grant_name: 'region_config')
+region_dat_admin_capability  = Roster::Capability.create!(name: 'Region DAT Admin',  grant_name: 'region_dat_admin')
+shift_territory_dat_admin_capability   = Roster::Capability.create!(name: 'Shift Territory DAT Admin',   grant_name: 'shift_territory_dat_admin')
 
 arcba = Roster::Region.create! name:'American Red Cross Bay Area', short_name:'ARCBA', url_slug: 'arcba', code: '05503', time_zone_raw: 'America/Los_Angeles', scheduler_flex_day_start: 28800, scheduler_flex_night_start: 72000
 
@@ -27,11 +27,11 @@ mr = arcba.shift_territories.create! name: 'Marin', vc_regex_raw: 'Marin', abbre
 cc = arcba.shift_territories.create! name: 'Contra Costa', vc_regex_raw: 'Contra Costa', abbrev: 'CC'
 
 region_config_position = arcba.positions.create!(name: 'Region Configuration', hidden: true).tap do |position|
-  position.role_memberships.create!(role: region_config_role)
+  position.capability_memberships.create!(capability: region_config_capability)
 end
 
 region_dat_admin_position = arcba.positions.create!(name: 'Region DAT Admin', hidden: true).tap do |position|
-  position.role_memberships.create!(role: region_dat_admin_role)
+  position.capability_memberships.create!(capability: region_dat_admin_capability)
 end
 
 shift_territory_dat_admin_position = nil
@@ -41,7 +41,7 @@ shift_territory_dat_admin_position = nil
     arcba.positions.create!(name: "DAT Administrator - #{shift_territory.name}", vc_regex_raw: "#{shift_territory.name}.*DAT Administrator$"),
     arcba.positions.create!(name: "Disaster Manager - #{shift_territory.name}",  vc_regex_raw: "#{shift_territory.name}.*Disaster Manager$")
   ].each do |position|
-    position.role_memberships.create!(role: shift_territory_dat_admin_role)
+    position.capability_memberships.create!(capability: shift_territory_dat_admin_capability)
   end
   shift_territory_dat_admin_position = positions.first if shift_territory == sf
 end

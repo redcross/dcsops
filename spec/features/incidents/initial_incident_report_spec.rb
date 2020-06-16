@@ -12,7 +12,7 @@ describe "Initial Incident Report", :type => :feature do
   end
 
   it "Should be editable" do
-    grant_role! :submit_incident_report
+    grant_capability! :submit_incident_report
     visit "/incidents/#{@region.url_slug}/incidents/#{@incident.incident_number}"
 
     click_link "IIR"
@@ -49,7 +49,7 @@ describe "Initial Incident Report", :type => :feature do
   end
 
   it "Should be approvable and unapprovable" do
-    grant_role! :approve_iir
+    grant_capability! :approve_iir
 
     iir = FactoryGirl.create :complete_initial_incident_report, incident: @incident
     @incident.event_logs.create event_time: Time.current, event: 'incident_occurred'

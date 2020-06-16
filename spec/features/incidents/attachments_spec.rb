@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Incident Attachments", :type => :feature do
 
   it "Should be addable" do
-    grant_role! 'submit_incident_report'
+    grant_capability! 'submit_incident_report'
 
     incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: @person.shift_territories.first, date: Date.current
     FactoryGirl.create :incidents_scope, region: @person.region

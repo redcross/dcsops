@@ -189,7 +189,7 @@ describe "Shift Scheduler Spec", :type => :feature do
     @other_person.positions = @positions
     @other_person.shift_territories = @shift_territories
 
-    grant_role! 'shift_territory_dat_admin', @other_person.shift_territory_ids, @other_person
+    grant_capability! 'shift_territory_dat_admin', @other_person.shift_territory_ids, @other_person
 
     visit month_of_interest_link
     all(".shift-checkbox")[5].click

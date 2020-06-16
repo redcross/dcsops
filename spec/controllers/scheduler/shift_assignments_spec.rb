@@ -64,7 +64,7 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
           FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+6+i), shift: shift, shift_time: @shift_time
         }
 
-        grant_role! 'shift_territory_dat_admin', @person.shift_territory_ids, @person
+        grant_capability! 'shift_territory_dat_admin', @person.shift_territory_ids, @person
 
         get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
 
@@ -80,7 +80,7 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
           FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+i), shift: shift, shift_time: @shift_time
         }
 
-        grant_role! 'shift_territory_dat_admin', @person.shift_territory_ids, @person
+        grant_capability! 'shift_territory_dat_admin', @person.shift_territory_ids, @person
 
         get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
 

@@ -4,8 +4,8 @@ json.phones resource.phone_order
 json.region resource.region, :name, :short_name, :id
 json.positions resource.positions, :name, :abbrev, :id
 json.shift_territories resource.shift_territories, :name, :abbrev, :id
-json.roles resource.role_memberships do |membership|
+json.capabilities resource.capability_memberships do |membership|
   json.extract! membership, :name
-  json.extract! membership.role, :grant_name
-  json.role_scopes membership.role_scopes.map(&:scope) if membership.role_scopes.present?
+  json.extract! membership.capability, :grant_name
+  json.capability_scopes membership.capability_scopes.map(&:scope) if membership.capability_scopes.present?
 end

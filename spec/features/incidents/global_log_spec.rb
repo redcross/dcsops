@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "View Global Log", :type => :feature do
 
   it "Should be submittable" do
-    grant_role! :incidents_admin
+    grant_capability! :incidents_admin
     @region = @person.region
     @region.incidents_use_global_log = true
     @region.save!

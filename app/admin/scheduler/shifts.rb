@@ -8,7 +8,6 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   filter :region
   filter :name
   filter :abbrev
-  filter :dispatch_role
   filter :shift_ends
   
   scope :all do |shifts|
@@ -94,7 +93,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
 
   controller do
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :shift_category_id, :max_signups, :shift_territory_id, :ordinal, :spreadsheet_ordinal, :dispatch_role, :shift_begins, :shift_ends, :signups_frozen_before, :min_desired_signups, :max_advance_signup, :min_advance_signup, :ignore_shift_territory, :vc_hours_type, :show_in_dispatch_console, :exclusive, :position_ids => [], :shift_time_ids => [])]
+      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :shift_category_id, :max_signups, :shift_territory_id, :ordinal, :spreadsheet_ordinal, :shift_begins, :shift_ends, :signups_frozen_before, :min_desired_signups, :max_advance_signup, :min_advance_signup, :ignore_shift_territory, :vc_hours_type, :show_in_dispatch_console, :exclusive, :position_ids => [], :shift_time_ids => [])]
     end
   end
 end

@@ -36,7 +36,7 @@ describe Incidents::RespondersController, :type => :controller do
   let(:person) { FactoryGirl.create :person, work_phone_carrier: FactoryGirl.create(:cell_carrier), region: incident.region }
 
   before :each do
-    grant_role! 'submit_incident_report'
+    grant_capability! 'submit_incident_report'
   end
 
   describe "POST create" do

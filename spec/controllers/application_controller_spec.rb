@@ -23,7 +23,7 @@ describe ApplicationController, :type => :controller do
 
     it "Does not redirect if has the always_active role" do
       @person.update_attribute :vc_is_active, false
-      grant_role! 'always_active'
+      grant_capability! 'always_active'
 
       get :index
       expect(response).to be_success
