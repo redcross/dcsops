@@ -44,7 +44,7 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :vc_regex_raw, :hidden, :region_id, :watchfire_role, 
+      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :vc_regex_raw, :hidden, :region_id, 
         :capability_memberships_attributes => [:id, :_destroy, :capability_id, capability_scopes_attributes: [:scope, :id, :_destroy]])]
     end
   end
