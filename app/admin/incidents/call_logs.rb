@@ -15,7 +15,7 @@ ActiveAdmin.register Incidents::CallLog, as: 'Call Log' do
 
   controller do
     def collection 
-      @coll ||= super.preload{[:incident, :region]}
+      @coll ||= super.preload(:incident, :region)
     end
   end
 

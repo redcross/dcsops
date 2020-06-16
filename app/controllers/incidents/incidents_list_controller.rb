@@ -36,7 +36,7 @@ class Incidents::IncidentsListController < Incidents::BaseController
 
   def collection
     @_incidents ||= begin
-      scope = apply_scopes(super).order(date: :desc, incident_number: :desc)#.preload{[shift_territory, dat_incident, team_lead.person]}
+      scope = apply_scopes(super).order(date: :desc, incident_number: :desc)#.preload(:shift_territory, :dat_incident, team_lead: :person)
       scope
     end
   end

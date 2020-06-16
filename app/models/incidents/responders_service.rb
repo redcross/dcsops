@@ -29,7 +29,7 @@ class Incidents::RespondersService
   end
 
   def scheduled_responders
-    @scheduled ||= service.scheduled_responders(shift_territories: scheduled_shift_territories, exclude: exclude_scheduled, dispatch_console: true).preload{person.positions}
+    @scheduled ||= service.scheduled_responders(shift_territories: scheduled_shift_territories, exclude: exclude_scheduled, dispatch_console: true).preload(person: :positions)
   end
 
   def flex_responders

@@ -12,6 +12,6 @@ class Incidents::CasIncidentsController < Incidents::BaseController
   end
 
   def collection
-    @_cas_incidents ||= super.preload{[cases, incident]}
+    @_cas_incidents ||= super.preload(:cases, :incident)
   end
 end

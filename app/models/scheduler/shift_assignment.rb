@@ -137,7 +137,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
     where(:"#{type}_reminder_sent" => false)
     .joins(:notification_setting)
     .where.not(notification_setting.__send__("#{type}_advance_hours") => nil)
-    .with_active_person.for_region(region).readonly(false).preload{[notification_setting,shift_time.region]}
+    .with_active_person.for_region(region).readonly(false).preload(:notification_setting, shift_time: :region)
     .select{|ass|
       now = region.time_zone.now
       start = ass.local_start_time
@@ -178,7 +178,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
   end
 
   def self.ordered_shifts region
-    joins(:person).where{person.region_id==my{region}}.readonly(false).joins(:shift, :shift_time).order('shift.ordinal', 'shift_time.start_offset', 'person_id'}.preload{[shift.shift_territory, person, shift, shift_time]}
+    joins(:person).where(person: {region_id: region)).readonly(false).joins(:shift, :shift_time).order('shift.ordinal', 'shift_time.start_offset', 'person_id').preload(:person, :shift, :shift_time, shift: :shift_territory)
   end
 
   def self.todays_shifts_with_notes region

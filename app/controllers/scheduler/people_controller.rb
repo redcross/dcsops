@@ -22,22 +22,22 @@ class Scheduler::PeopleController < Scheduler::BaseController
   end
 
   def collection
-    @collection ||= apply_scopes(super).preload{[shift_territory_memberships, shift_territories, positions]}.uniq
+    @collection ||= apply_scopes(super).preload(:shift_territory_memberships, :shift_territories, :positions).uniq
   end
 
   helper_method :prev_shift
   def prev_shift person
-    person.shift_assignments.where{date < Date.current}.maximum('date')
+    person.shift_assignments.where("date < ?", Date.current).maximum('date')
   end
 
   helper_method :num_shifts
   def num_shifts person
-    person.shift_assignments.where{date < Date.current}.count
+    person.shift_assignments.where("date < ?", Date.current).count
   end
 
   helper_method :next_shift
   def next_shift person
-    person.shift_assignments.where{date >= Date.current}.minimum('date')
+    person.shift_assignments.where("date >= ?", Date.current).minimum('date')
   end
 
   helper_method :date_ranges
