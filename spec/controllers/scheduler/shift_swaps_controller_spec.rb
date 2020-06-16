@@ -16,11 +16,11 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
   end
 
   it "should show the assignment page" do
-    get :show, shift_assignment_id: @assignment.id
+    get :show, params: { shift_assignment_id: @assignment.id }
   end
 
   it "should allow to mark a shift as swappable" do
-    post :create, shift_assignment_id: @assignment.id
+    post :create, params: { shift_assignment_id: @assignment.id }
     expect(@assignment.reload.available_for_swap).to be_truthy
     expect(ActionMailer::Base.deliveries).to be_empty
   end
@@ -30,7 +30,7 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
     @adminsettings = Scheduler::NotificationSetting.create id: @admin.id
     @adminsettings.update_attribute :email_all_swaps, true
 
-    post :create, shift_assignment_id: @assignment.id
+    post :create, params: { shift_assignment_id: @assignment.id }
     expect(ActionMailer::Base.deliveries).not_to be_empty
     expect(ActionMailer::Base.deliveries.first.body).to include("has made a shift available for swap")
   end
@@ -40,7 +40,7 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
     @adminsettings = Scheduler::NotificationSetting.create id: @admin.id
     @adminsettings.update_attribute :email_swap_requested, true
 
-    post :create, shift_assignment_id: @assignment.id
+    post :create, params: { shift_assignment_id: @assignment.id }
     expect(ActionMailer::Base.deliveries).not_to be_empty
     expect(ActionMailer::Base.deliveries.first.body).to include("has made a shift available for swap")
   end
@@ -50,7 +50,7 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
     @adminsettings = Scheduler::NotificationSetting.create id: @admin.id
     @adminsettings.update_attribute :email_all_swaps, true
 
-    post :create, shift_assignment_id: @assignment.id, swap_to_id: @person2.id
+    post :create, params: { shift_assignment_id: @assignment.id, swap_to_id: @person2.id }
     expect(@assignment.reload.available_for_swap).to be_truthy
 
     expect(ActionMailer::Base.deliveries.size).to eq(2) # Admin and recipient
@@ -71,7 +71,7 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
 
     @assignment.update_attribute :available_for_swap, true
 
-    post :confirm, shift_assignment_id: @assignment.id
+    post :confirm, params: { shift_assignment_id: @assignment.id }
 
     expect(response).to be_redirect
 
@@ -82,7 +82,7 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
   it "should not allow accepting a swap to someone else" do
     @assignment.update_attribute :available_for_swap, true
 
-    post :confirm, shift_assignment_id: @assignment.id, swap_to_id: @person2.id
+    post :confirm, params: { shift_assignment_id: @assignment.id, swap_to_id: @person2.id }
 
     expect(response).to redirect_to(scheduler_shift_assignment_shift_swap_path(@assignment))
 
@@ -101,7 +101,7 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
     grant_capability! 'region_dat_admin'#, @person.shift_territory_ids
     @assignment.update_attribute :available_for_swap, true
 
-    post :confirm, shift_assignment_id: @assignment.id, swap_to_id: @person2.id
+    post :confirm, params: { shift_assignment_id: @assignment.id, swap_to_id: @person2.id }
     new_assignment = Scheduler::ShiftAssignment.last
     expect(new_assignment.id).not_to eq(@assignment.id)
     expect(response).to redirect_to(new_scheduler_shift_assignment_shift_swap_path(new_assignment))
@@ -116,7 +116,7 @@ describe Scheduler::ShiftSwapsController, :type => :controller do
     @assignment.available_for_swap = true
     @assignment.save
 
-    delete :destroy, shift_assignment_id: @assignment.id
+    delete :destroy, params: { shift_assignment_id: @assignment.id }
 
     expect(@assignment.reload.available_for_swap).to be_falsey
     expect(ActionMailer::Base.deliveries).to be_empty

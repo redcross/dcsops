@@ -43,12 +43,12 @@ describe Incidents::RespondersController, :type => :controller do
     describe "with valid params" do
       it "creates a new Incidents::Responder" do
         expect {
-          post :create, {:incidents_responder_assignment => valid_attributes, incident_id: incident.to_param, region_id: incident.region.to_param}, valid_session
+          post :create, params: { :incidents_responder_assignment => valid_attributes, incident_id: incident.to_param, region_id: incident.region.to_param }, session: valid_session
         }.to change(Incidents::ResponderAssignment, :count).by(1)
       end
 
       it "redirects to index" do
-        post :create, {:incidents_responder_assignment => valid_attributes, incident_id: incident.to_param, region_id: incident.region.to_param}, valid_session
+        post :create, params: { :incidents_responder_assignment => valid_attributes, incident_id: incident.to_param, region_id: incident.region.to_param }, session: valid_session
         expect(response).to redirect_to(incidents_region_incident_responders_url(incident.region, incident))
       end
 
@@ -58,26 +58,26 @@ describe Incidents::RespondersController, :type => :controller do
         Bitly.stub(client: double(:shorten => double(short_url: "https://short.url")))
         expect(client_stub).to receive(:send_message).with(an_instance_of(Incidents::ResponderMessage))
         expect(Incidents::RespondersMailer).to receive(:assign_email).and_return(double deliver: true)
-        post :create, {:incidents_responder_assignment => valid_attributes.merge(role: 'team_lead'), incident_id: incident.to_param, region_id: incident.region.to_param, send_assignment_sms: true, send_assignment_email: true}, valid_session
+        post :create, params: { :incidents_responder_assignment => valid_attributes.merge(role: 'team_lead'), incident_id: incident.to_param, region_id: incident.region.to_param, send_assignment_sms: true, send_assignment_email: true }, session: valid_session
       end
 
       it "triggers the assignment mailers with a non-responding role" do
         expect(Incidents::RespondersMailer).not_to receive(:assign_sms)
         expect(Incidents::RespondersMailer).not_to receive(:assign_email)
-        post :create, {:incidents_responder_assignment => valid_attributes.merge(role: 'not_available'), incident_id: incident.to_param, region_id: incident.region.to_param, send_assignment_sms: true, send_assignment_email: true}, valid_session
+        post :create, params: { :incidents_responder_assignment => valid_attributes.merge(role: 'not_available'), incident_id: incident.to_param, region_id: incident.region.to_param, send_assignment_sms: true, send_assignment_email: true }, session: valid_session
       end
     end
   end
 
   describe "GET index" do
     it "should succeed" do
-      get :index, {incident_id: incident.to_param, region_id: incident.region.to_param}
+      get :index, params: { incident_id: incident.to_param, region_id: incident.region.to_param }
       expect(response).to be_success
     end
 
     it "should set the flash if incident doesn't have a location" do
       incident.update_attributes lat: nil, lng: nil
-      get :index, {incident_id: incident.to_param, region_id: incident.region.to_param}
+      get :index, params: { incident_id: incident.to_param, region_id: incident.region.to_param }
       expect(response).to be_success
       expect(flash.now[:error]).not_to be_empty
     end
@@ -85,14 +85,14 @@ describe Incidents::RespondersController, :type => :controller do
 
   describe "GET new" do
     it "should succeed" do
-      get :new, {incident_id: incident.to_param, region_id: incident.region.to_param}
+      get :new, params: { incident_id: incident.to_param, region_id: incident.region.to_param }
       expect(response).to be_success
 
       expect(controller.send(:person)).to eq(nil)
     end
 
     it "should assign the person if given" do
-      get :new, {incident_id: incident.to_param, region_id: incident.region.to_param, person_id: person.id}
+      get :new, params: { incident_id: incident.to_param, region_id: incident.region.to_param, person_id: person.id }
       expect(response).to be_success
 
       expect(controller.send(:person)).to eq(person)

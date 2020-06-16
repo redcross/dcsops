@@ -16,7 +16,7 @@ describe Scheduler::FlexSchedulesController, :type => :controller do
     end
 
     it "should filter by shift territory" do
-      get :index, shift_territory: @person.shift_territory_ids.first
+      get :index, params: { shift_territory: @person.shift_territory_ids.first }
       expect(response).to be_success
     end
 
@@ -29,12 +29,12 @@ describe Scheduler::FlexSchedulesController, :type => :controller do
 
   describe "#show" do
     it "should render" do
-      get :show, id: @person.id
+      get :show, params: { id: @person.id }
       expect(response).to be_success
     end
 
     it "should allow updating" do
-      put :update, id: @person.id, scheduler_flex_schedule: {available_monday_day: true}, format: 'json'
+      put :update, params: { id: @person.id, scheduler_flex_schedule: {available_monday_day: true}, format: 'json' }
       expect(response).to be_success
       expect(@sched.reload.available_monday_day).to eq true
     end

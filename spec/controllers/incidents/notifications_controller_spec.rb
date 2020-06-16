@@ -22,14 +22,14 @@ describe Incidents::NotificationsController, :type => :controller do
   describe "#new" do
 
     it "renders normally" do
-      get :new, {incident_id: incident.to_param, region_id: incident.region.to_param}
+      get :new, params: { incident_id: incident.to_param, region_id: incident.region.to_param }
       expect(response).to render_template('new')
       expect(response).to render_template(partial: '_form')
       expect(response).to render_template(layout: 'application')
     end
 
     it "renders without layout when xhr" do
-      xhr :get, :new, {incident_id: incident.to_param, region_id: incident.region.to_param}
+      get :new, xhr: true, params: {incident_id: incident.to_param, region_id: incident.region.to_param}
       expect(response).to render_template('new')
       expect(response).to render_template(layout: nil)
     end
@@ -38,13 +38,13 @@ describe Incidents::NotificationsController, :type => :controller do
       @person.position_memberships.delete_all
       @person.reload
       expect {
-        get :new, {incident_id: incident.to_param, region_id: incident.region.to_param}
+        get :new, params: { incident_id: incident.to_param, region_id: incident.region.to_param }
       }.to raise_error
     end
 
     it "redirects if the incident is closed" do
       incident.update_attribute :status, 'closed'
-      get :new, {incident_id: incident.to_param, region_id: incident.region.to_param}
+      get :new, params: { incident_id: incident.to_param, region_id: incident.region.to_param }
       expect(response).to redirect_to(incidents_region_incident_path(incident.region, incident))
       expect(flash[:error]).not_to be_blank
     end
@@ -54,7 +54,7 @@ describe Incidents::NotificationsController, :type => :controller do
     it "creates with a valid object" do
       expect(Incidents::Notifications::Notification).to receive(:create).with(incident, event, {message: message})
       expect {
-        post :create, {incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_notifications_message => valid_attributes}
+        post :create, params: { incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_notifications_message => valid_attributes }
       }.to change(Incidents::EventLog, :count).by(1)
       expect(response).not_to be_error
       incident.reload
@@ -64,12 +64,12 @@ describe Incidents::NotificationsController, :type => :controller do
 
     context "when HTML" do
       it "redirects to the incident when valid" do
-        post :create, {incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_notifications_message => valid_attributes}
+        post :create, params: { incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_notifications_message => valid_attributes }
         expect(response).to redirect_to(controller: 'incidents/incidents', id: incident.to_param, action: :show, anchor: "inc-details")
       end
 
       it "renders new with layout when invalid" do
-        post :create, {incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_notifications_message => invalid_attributes}
+        post :create, params: { incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_notifications_message => invalid_attributes }
         expect(response).to be_success
         expect(response).to render_template('new')
         expect(response).to render_template(layout: 'application')
@@ -78,12 +78,12 @@ describe Incidents::NotificationsController, :type => :controller do
 
     context "when JS" do
       it "triggers the incident page refresh" do
-        xhr :post, :create, {incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_notifications_message => valid_attributes}
+        post :create, xhr: true, params: {incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_notifications_message => valid_attributes}
         expect(response).to render_template('update')
       end
 
       it "renders the form within javascript when invalid" do
-        xhr :post, :create, {incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_notifications_message => invalid_attributes}
+        post :create, xhr: true, params: {incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_notifications_message => invalid_attributes}
         expect(response).to render_template('edit')
         expect(response).to render_template(partial: '_form.html')
         expect(response).to render_template(layout: nil)

@@ -14,13 +14,13 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
   end
 
   it "when not logged in, should be unauthorized" do
-    get :index, format: :ics
+    get :index, params: { format: :ics }
 
     expect(response.code).to eq "401"
   end
 
   it "with invalid api token, should be unauthorized" do
-    get :index, format: :ics, api_token: "test123"
+    get :index, format: :ics, params: { api_token: "test123" }
 
     expect(response.code).to eq "401"
   end
@@ -30,7 +30,7 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
     render_views
 
     it "should allow exporting my shifts to calendar" do
-      get :index, format: :ics, api_token: @settings.calendar_api_token
+      get :index, params: { format: :ics, api_token: @settings.calendar_api_token }
 
       expect(response.code).to eq "200"
       expect(response.body.scan(/BEGIN:VEVENT/).count).to eq(5)
@@ -39,7 +39,7 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
     it "should only include my shifts on the calendar" do
       3.times { FactoryGirl.create :shift_assignment }
 
-      get :index, format: :ics, api_token: @settings.calendar_api_token
+      get :index, params: { format: :ics, api_token: @settings.calendar_api_token }
 
       expect(response.code).to eq "200"
       expect(response.body.scan(/BEGIN:VEVENT/).count).to eq(5)
@@ -53,7 +53,7 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
       it "should access denied if a regular user" do
         3.times { FactoryGirl.create :shift_assignment }
         expect {
-          get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
+          get :index, format: :ics, params: { api_token: @settings.calendar_api_token, show_shifts: 'all' }
         }.to raise_error(CanCan::AccessDenied)
       end
 
@@ -66,7 +66,7 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
 
         grant_capability! 'shift_territory_dat_admin', @person.shift_territory_ids, @person
 
-        get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
+        get :index, format: :ics, params: { api_token: @settings.calendar_api_token, show_shifts: 'all' }
 
         expect(response.code).to eq "200"
         expect(response.body.scan(/BEGIN:VEVENT/).count).to eq(8)
@@ -82,7 +82,7 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
 
         grant_capability! 'shift_territory_dat_admin', @person.shift_territory_ids, @person
 
-        get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
+        get :index, format: :ics, params: { api_token: @settings.calendar_api_token, show_shifts: 'all' }
 
         expect(response.code).to eq "200"
         expect(response.body.scan(/BEGIN:VEVENT/).count).to eq(5)

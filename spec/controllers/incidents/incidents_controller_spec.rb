@@ -22,13 +22,13 @@ describe Incidents::IncidentsController, :type => :controller do
     let(:inc) {FactoryGirl.create :incident, region: @person.region}
     it "should succeed with no cas or dat" do
       inc = FactoryGirl.create :incident, region: @person.region
-      get :show, id: inc.to_param, region_id: inc.region.to_param
+      get :show, params: { id: inc.to_param, region_id: inc.region.to_param }
       expect(response).to be_success
     end
 
     it "should succeed in editable mode" do
       @person.region.update_attributes incidents_report_editable: true
-      get :show, id: inc.to_param, region_id: inc.region.to_param
+      get :show, params: { id: inc.to_param, region_id: inc.region.to_param }
       expect(response).to be_success
     end
 
@@ -36,18 +36,18 @@ describe Incidents::IncidentsController, :type => :controller do
       cas = FactoryGirl.create :cas_incident
       inc.link_to_cas_incident cas
 
-      get :show, id: inc.to_param, region_id: inc.region.to_param
+      get :show, params: { id: inc.to_param, region_id: inc.region.to_param }
       expect(response).to be_success
     end
 
     it "should succeed with dat" do
       dat = FactoryGirl.create :dat_incident, incident: inc
-      get :show, id: inc.to_param, region_id: inc.region.to_param
+      get :show, params: { id: inc.to_param, region_id: inc.region.to_param }
       expect(response).to be_success
     end
 
     it "should succeed rendering a partial" do
-      get :show, id: inc.to_param, region_id: inc.region.to_param, partial: 'details'
+      get :show, params: { id: inc.to_param, region_id: inc.region.to_param, partial: 'details' }
       expect(response).to render_template(partial: '_details', layout: nil)
     end
   end
@@ -99,14 +99,14 @@ describe Incidents::IncidentsController, :type => :controller do
 
     it "should succeed with a complete incident" do
       expect {
-        post :close, id: complete_incident.to_param, region_id: complete_incident.region.to_param
+        post :close, params: { id: complete_incident.to_param, region_id: complete_incident.region.to_param }
         expect(response).to redirect_to("/incidents/#{complete_incident.region.to_param}/incidents/#{complete_incident.to_param}")
       }.to change{complete_incident.reload.status}.to('closed')
     end
 
     it "should not succeed with an incomplete incident" do
       expect {
-        post :close, id: raw_incident.to_param, region_id: raw_incident.region.to_param
+        post :close, params: { id: raw_incident.to_param, region_id: raw_incident.region.to_param }
         expect(response).to redirect_to("/incidents/#{raw_incident.region.to_param}/incidents/#{raw_incident.to_param}/dat/edit?status=closed")
       }.to_not change{raw_incident.reload.status}
     end
@@ -118,7 +118,7 @@ describe Incidents::IncidentsController, :type => :controller do
 
     it "should succeed" do
       expect {
-        post :reopen, id: complete_incident.to_param, region_id: complete_incident.region.to_param
+        post :reopen, params: { id: complete_incident.to_param, region_id: complete_incident.region.to_param }
         expect(response).to redirect_to("/incidents/#{complete_incident.region.to_param}/incidents/#{complete_incident.to_param}")
       }.to change{complete_incident.reload.status}.to('open')
     end
@@ -138,19 +138,19 @@ describe Incidents::IncidentsController, :type => :controller do
     it "should succeed with valid params in editable mode" do
       @person.region.update_attributes incidents_report_editable: true
       expect {
-        post :create, incidents_incident: params, region_id: @person.region.to_param
+        post :create, params: { incidents_incident: params, region_id: @person.region.to_param }
         expect(response).to redirect_to("/incidents/#{@person.region.to_param}/incidents/#{params[:incident_number]}")
       }.to change(Incidents::Incident, :count).by(1)
     end
 
     it "should trigger the created notification" do
       expect(Incidents::Notifications::Notification).to receive(:create_for_event).with(anything, 'new_incident')
-      post :create, incidents_incident: params, region_id: @person.region.to_param
+      post :create, params: { incidents_incident: params, region_id: @person.region.to_param }
     end
 
     it "should succeed with valid params in normal mode" do
       expect {
-        post :create, incidents_incident: params, region_id: @person.region.to_param
+        post :create, params: { incidents_incident: params, region_id: @person.region.to_param }
         expect(response).to redirect_to("/incidents/#{@person.region.to_param}/incidents/#{params[:incident_number]}/dat/new")
       }.to change(Incidents::Incident, :count).by(1)
     end
@@ -166,7 +166,7 @@ describe Incidents::IncidentsController, :type => :controller do
 
       it "should succeed with valid params with sequence number generator" do
         expect {
-          post :create, incidents_incident: params, region_id: @person.region.to_param
+          post :create, params: { incidents_incident: params, region_id: @person.region.to_param }
         }.to(change(Incidents::Incident, :count).by(1))
         inc = Incidents::Incident.last
         expect(inc.incident_number).to eq("#{FiscalYear.current.year}-334")
@@ -178,7 +178,7 @@ describe Incidents::IncidentsController, :type => :controller do
 
         expect {
           expect {
-            post :create, incidents_incident: params, region_id: @person.region.to_param
+            post :create, params: { incidents_incident: params, region_id: @person.region.to_param }
             expect(response).to be_success # Re-renders the create page rather than redirecting to the incident
           }.to_not(change(Incidents::Incident, :count))
         }.to_not(change{sequence.current_number})
@@ -192,7 +192,7 @@ describe Incidents::IncidentsController, :type => :controller do
     before(:each) { grant_capability! 'cas_details'; PaperTrail.whodunnit = @person.id }
 
     it "should succeed" do
-      get :activity, region_id: @person.region.to_param
+      get :activity, params: { region_id: @person.region.to_param }
       expect(response).to be_success
     end
 
@@ -207,7 +207,7 @@ describe Incidents::IncidentsController, :type => :controller do
       i.update_attributes narrative: 'test'
       expect(i.versions).not_to be_blank
 
-      get :activity, {region_id: i.region.to_param}
+      get :activity, params: { region_id: i.region.to_param }
       
       expect(controller.resource_changes).to match_array(i.versions)
       expect(controller.resource_change_people.keys).to match_array([@person.id])
@@ -230,7 +230,7 @@ describe Incidents::IncidentsController, :type => :controller do
       i.update_attributes narrative: 'test'
       expect(i.versions).not_to be_blank
 
-      get :show, {id: i.to_param, region_id: i.region.to_param}
+      get :show, params: { id: i.to_param, region_id: i.region.to_param }
       
       expect(controller.resource_changes).to match_array(i.versions)
       expect(controller.resource_change_people.keys).to match_array([@person.id])

@@ -9,7 +9,7 @@ describe Roster::SessionsController, :type => :controller do
   context "#new" do
 
     it "should render" do
-      get :new, legacy: true
+      get :new, params: { legacy: true }
       expect(response).to be_success
     end
 

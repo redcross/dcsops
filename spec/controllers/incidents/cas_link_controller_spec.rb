@@ -13,7 +13,7 @@ describe Incidents::CasLinkController, :type => :controller do
 
     inc.link_to_cas_incident(cas2)
 
-    get :index, region_id: inc.region.to_param
+    get :index, params: { region_id: inc.region.to_param }
 
     expect(response).to be_success
     expect(controller.send(:collection)).to match_array([cas])
@@ -23,7 +23,7 @@ describe Incidents::CasLinkController, :type => :controller do
     cas = FactoryGirl.create :cas_incident, region: @person.region
     inc = FactoryGirl.create :incident, region: @person.region
 
-    post :link, id: cas.to_param, incident_id: inc.id, region_id: inc.region.to_param
+    post :link, params: { id: cas.to_param, incident_id: inc.id, region_id: inc.region.to_param }
     expect(response).to be_redirect
     expect(flash[:info]).not_to be_empty
 
@@ -37,7 +37,7 @@ describe Incidents::CasLinkController, :type => :controller do
 
     inc.link_to_cas_incident(cas2)
     expect {
-      post :link, id: cas2.to_param, incident_id: inc2.id, region_id: inc.region.to_param
+      post :link, params: { id: cas2.to_param, incident_id: inc2.id, region_id: inc.region.to_param }
       expect(response).to be_redirect
       expect(flash[:error]).not_to be_empty
     }.to_not change{inc.reload.cas_event_number}
@@ -47,7 +47,7 @@ describe Incidents::CasLinkController, :type => :controller do
     cas = FactoryGirl.create :cas_incident, region: @person.region
 
     expect {
-      post :ignore, id: cas.to_param, region_id: @person.region.to_param
+      post :ignore, params: { id: cas.to_param, region_id: @person.region.to_param }
     }.to change{cas.reload.ignore_incident}.to(true)
 
     expect(response).to be_redirect
@@ -63,7 +63,7 @@ describe Incidents::CasLinkController, :type => :controller do
              city: Faker::Address.city, district: Faker::Address.city, zip: Faker::Address.zip_code, state: Faker::Address.state)
 
     expect {
-      post :promote, id: cas.to_param, commit: 'Promote to Incident', region_id: cas.region.to_param
+      post :promote, params: { id: cas.to_param, commit: 'Promote to Incident', region_id: cas.region.to_param }
       expect(response).to be_redirect
       expect(flash[:info]).not_to be_empty
 
