@@ -10,9 +10,9 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
     when 'mine'
       if controller.params[:person_id]
         controller.authorize! :read, Scheduler::ShiftAssignment.new(person_id: controller.params[:person_id])
-        scope.where{person_id == my{controller.params[:person_id]}}
+        scope.where(person_id: controller.params[:person_id])
       else
-        scope.where{person_id == my{controller.current_user.id}}
+        scope.where(person_id: controller.current_user.id)
       end
     when 'all'
       controller.authorize! :read_all_shifts, Scheduler::ShiftAssignment
@@ -65,8 +65,9 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
 
   def collection
     @shift_assignments ||= apply_scopes(super).order(:date).left_outer_joins(:person)
-                  .where{(person.region_id == my{current_region}) & (date <= my{current_region.time_zone.today + 30})}
-                  .includes(:person, shift_time: :region, shift: :shift_territory, person: [:shift_territories, :region]).uniq
+                  .where(person: { region_id: current_region})
+                  .where('date <= ?', current_region.time_zone.today + 30)
+                  .includes(:person, shift_group: :region, shift: :shift_territory, person: [:shift_territories, :region]).uniq
   end
 
   helper_method :grouped_collection

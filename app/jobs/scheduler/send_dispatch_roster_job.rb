@@ -32,6 +32,6 @@ class Scheduler::SendDispatchRosterJob
   def shifts_needing_update?
     end_window = Date.current.advance days: trigger_within
     dispatch_shifts = Scheduler::DispatchConfig.for_region(region).active.flat_map(&:shift_list)
-    Scheduler::ShiftAssignment.for_region(region).for_shifts(dispatch_shifts).where{(date <= end_window.to_date) & (synced != true)}.exists?
+    Scheduler::ShiftAssignment.for_region(region).for_shifts(dispatch_shifts).where('date <= ?', end_window.to_date).where.not(synced: true).exists?
   end
 end

@@ -13,7 +13,10 @@ class Scheduler::SwapMailer < ActionMailer::Base
   end
 
   def swap_request_notify(shift_assignment)
-    people = Roster::Person.in_shift_territory(shift_assignment.shift.shift_territory).with_position(shift_assignment.shift.positions).joins(:notification_setting).where{notification_setting.email_swap_requested eq true}
+    people = Roster::Person.in_shift_territory(shift_assignment.shift.shift_territory)
+      .with_position(shift_assignment.shift.positions)
+      .joins(:notification_setting)
+      .where(notification_setting: { email_swap_requested: true })
   end
 
   def swap_confirmed(old_shift, new_shift, recipient)

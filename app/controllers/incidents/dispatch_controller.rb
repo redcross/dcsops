@@ -55,7 +55,7 @@ class Incidents::DispatchController < Incidents::BaseController
     # of open and valid incidents will be small at any given time, so we don't need to build
     # it into the query.
     @coll ||= super.
-      where{(current_dispatch_contact_id != nil) & (status.not_in ['closed', 'invalid'])}.
+      where.not(:current_dispatch_contact_id: nil).where.not(status: ['closed', 'invalid']).
       order(created_at: :desc).
       reject {|i| i.dispatched? }
   end

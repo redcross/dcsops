@@ -59,7 +59,7 @@ class Roster::MemberPositionsImporter < ImportParser
     @position_names = Hash.new{|h, k| h[k] = 0}
 
     @vc_ids_seen = Set.new
-    @filters = DataFilter.where{model == 'Roster::Person'}.group_by(&:field)
+    @filters = DataFilter.where(model: 'Roster::Person').group_by(&:field)
     @filter_hits = Hash.new{|h, k| h[k] = 0}
 
     @num_people = 0
@@ -72,7 +72,7 @@ class Roster::MemberPositionsImporter < ImportParser
     Roster::VcImportData.find_or_initialize_by(region_id: @region.id).update_attributes position_data: @position_names, region_id: @region.id
 
     Roster::Person.where(vc_id: @vc_ids_seen.to_a).update_all :vc_imported_at => Time.now
-    deactivated = Roster::Person.for_region(@region).where{vc_id.not_in(my{@vc_ids_seen.to_a})}.update_all(:vc_is_active => false) if @vc_ids_seen.present?
+    deactivated = Roster::Person.for_region(@region).where.not(vc_id: @vc_ids_seen.to_a).update_all(:vc_is_active => false) if @vc_ids_seen.present?
     logger.info "Processed #{@num_people} active users and #{@num_positions} filtered positions"
     logger.info "Deactivated #{deactivated} accounts not received in update"
     logger.info "Filter hits: #{@filter_hits.inspect}"

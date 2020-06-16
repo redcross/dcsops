@@ -29,7 +29,7 @@ class CreateIncidentsScopes < ActiveRecord::Migration
       dir.up do
         say_with_time "Create Scopes" do
           scope_attrs = Incidents::Scope.serialized_columns.keys.map(&:to_s)
-          Chapter.where{id != 0}.each do |ch|
+          Chapter.where.not(id: 0).each do |ch|
             Scope.create! id: ch.id, chapter_id: ch.id, name: ch.name, short_name: ch.short_name, url_slug: ch.url_slug, config: ch.config.slice(*scope_attrs)
           end
         end

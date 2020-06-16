@@ -27,6 +27,6 @@ class Incidents::ResponderMessage < ApplicationRecord
   end
 
   def self.unacknowledged_for_incident(incident)
-    where{(incident_id == incident) & (acknowledged != true)}
+    where(incident_id: incident).where.not(acknowledged: true)
   end
 end

@@ -29,9 +29,12 @@ class Scheduler::SubmitHoursJob
 
   def assignments_to_upload
     if @assignment_ids
-      Scheduler::ShiftAssignment.where{id.in my{@assignment_ids}}
+      Scheduler::ShiftAssignment.where(id: @assignment_ids)
     else
-      Scheduler::ShiftAssignment.joins(:shift).includes(:person, :shift_time, :shift).for_region(region).readonly(false).where{(shift.vc_hours_type != nil) & (vc_hours_uploaded != true) & (date < my{region.time_zone.today})}
+      Scheduler::ShiftAssignment.joins(:shift).includes(:person, :shift_time, :shift).for_region(region).readonly(false)
+        .where.not(shift: { vc_hours_type: nil })
+        .where.not(vc_hours_uploaded: true)
+        .where('date < ?', region.time_zone.today)
     end
   end
 

@@ -9,8 +9,7 @@ class Roster::Position < ApplicationRecord
   has_many :vc_positions, through: :vc_position_configurations, class_name: 'Roster::VcPosition'
 
   validates_presence_of :region, :name
-
-  scope :visible, ->{where{hidden != true}}
+  scope :visible, ->{where.not(hidden: true)}
 
   accepts_nested_attributes_for :capability_memberships, allow_destroy: true
 

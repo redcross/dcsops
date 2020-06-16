@@ -11,13 +11,20 @@ class Incidents::CasIncident < ApplicationRecord
   end
 
   def self.to_link_for_region region
-    for_region(region).left_outer_joins(:incident).where{(ignore_incident==false) & (incident.id == nil)}.order(incident_date: :desc)
+    for_region(region)
+      .left_outer_joins(:incident)
+      .where(ignore_incident: false, incident: { id: nil })
+      .order(incident_date: :desc)
   end
 
   def self.open_cases
-    left_outer_joins(:cases).where{
-      ((cases_open > 0) | (last_date_with_open_cases >= 7.days.ago)) & 
-       (cases.case_last_updated > 2.months.ago)}.uniq
+    left_outer_joins(:cases).where(
+      where('cases_open > ?', 0).or(
+        where('last_date_with_open_cases >= ?', 7.days.ago)
+      )
+    )
+    .where('cases.case_last_updated > ?', 2.months.ago)
+    .uniq
   end
 
   def self.[] incident_number

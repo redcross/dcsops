@@ -34,18 +34,18 @@ class Incidents::ResponderAssignment < ApplicationRecord
     ON_SCENE_ROLES.include? role
   end
 
-  scope :on_scene, -> { where{ role.in( ON_SCENE_ROLES ) } }
-  scope :was_available, -> { where{ role.in( my{ROLES}) }}
-  scope :with_person_in_shift_territories, ->(shift_territories){ joins(person: :shift_territory_memberships).where{person.shift_territory_memberships.shift_territory_id.in(my{Array(shift_territories)}) } }
-  scope :for_region, -> region { joins(:incident).where{incident.region_id==region} }
+  scope :on_scene, -> { where(role: ON_SCENE_ROLES) }
+  scope :was_available, -> { where(role: ROLES)}
+  scope :with_person_in_shift_territories, ->(shift_territories){ joins(person: :shift_territory_memberships).where(person: { shift_territory_memberships: { shift_territory_id: Array(shift_territories) } }) }
+  scope :for_region, -> region { joins(:incident).where(incident: { region_id: region }) }
   def self.open
     was_available
   end
   def self.for_person person
-    where{person_id == person}
+    where(person_id: person)
   end
   def self.for_incident inc
-    where{incident_id == inc}
+    where(incident_id: inc)
   end
   def self.driving_distance
     on_scene.pluck(:driving_distance).flatten.select(&:present?).map{|dist| [50, dist * 2].min}.sum.round
@@ -64,7 +64,7 @@ class Incidents::ResponderAssignment < ApplicationRecord
   def departed_scene!(user=nil)
     update_attribute :departed_scene_at, incident.region.time_zone.now unless departed_scene_at
 
-    responders_still_on_scene = incident.all_responder_assignments.where{departed_scene_at == nil}.on_scene.exists?
+    responders_still_on_scene = incident.all_responder_assignments.where(departed_scene_at: nil).on_scene.exists?
     if !responders_still_on_scene
      create_event_unless_exists('dat_departed_scene', incident.region.time_zone.now, "#{person.full_name} was the last to depart the scene.  (Automatic message)", user)
     end

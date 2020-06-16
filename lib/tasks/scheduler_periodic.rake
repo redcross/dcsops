@@ -27,7 +27,7 @@ namespace :scheduler_periodic do
   task :send_daily_shift_swap => [:environment] do
     begin
       Raven.capture do
-        Scheduler::NotificationSetting.where{(email_all_swaps_daily == true)}.each do |setting|
+        Scheduler::NotificationSetting.where(email_all_swaps_daily: true).each do |setting|
           Scheduler::RemindersMailer.daily_swap_reminder(setting).deliver
         end
       end

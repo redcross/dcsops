@@ -46,7 +46,7 @@ class AddShiftGroupToShiftAssignments < ActiveRecord::Migration
     end
     say_with_time "Update Shift Assignment Group Ids" do
       shift_replacements.each do |old_shift_id, replacement|
-        ShiftAssignment.where{shift_id == old_shift_id}.update_all(replacement)
+        ShiftAssignment.where(shift_id: old_shift_id).update_all(replacement)
       end
     end
 
@@ -59,7 +59,7 @@ class AddShiftGroupToShiftAssignments < ActiveRecord::Migration
     end
 
     say_with_time "Delete redundant shifts" do
-      Shift.where{id.in shifts_to_delete}.destroy_all
+      Shift.where(id: shifts_to_delete).destroy_all
     end
 
     remove_column :scheduler_shift_assignments, :shift_id

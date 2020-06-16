@@ -10,7 +10,7 @@ class Incidents::Scope < ApplicationRecord
   end
 
   def self.including_region region_ids
-    joins(:regions).where{regions.id.in region_ids}
+    joins(:regions).where(regions: { id: region_ids })
   end
 
   def incidents

@@ -40,7 +40,7 @@ class Scheduler::HomeController < Scheduler::BaseController
 
   helper_method :responses
   def responses
-    @_responses ||= Incidents::ResponderAssignment.where(person_id: current_person).joins(:incident).where{incident.status == 'closed'}.includes(:incident).order('incidents_incidents.date desc').first(5)
+    @_responses ||= Incidents::ResponderAssignment.where(person_id: current_person).joins(:incident).where(incident: { status: 'closed' }).includes(:incident).order('incidents_incidents.date desc').first(5)
   end
 
   helper_method :days_of_week, :shift_times, :current_person

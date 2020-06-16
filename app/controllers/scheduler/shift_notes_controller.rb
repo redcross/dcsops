@@ -7,7 +7,7 @@ class Scheduler::ShiftNotesController < Scheduler::BaseController
 
   has_scope :date, only: :index, default: ->controller{Date.current.to_s} do |controller, scope, val|
     d = Date.parse val
-    scope.where{date == d}
+    scope.where(date: d)
   end
 
   protected

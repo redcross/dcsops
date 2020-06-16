@@ -102,7 +102,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
     @_show_categories ||= if params[:categories].present?
       Array(params[:categories]).select(&:present?).map(&:to_i)
     else
-      Scheduler::ShiftCategory.for_region(current_region).where{show == true}.ids
+      Scheduler::ShiftCategory.for_region(current_region).where(show: true).ids
     end
   end
 

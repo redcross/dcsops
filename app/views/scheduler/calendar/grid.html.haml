@@ -1,0 +1,83 @@
+= provide :header do
+  %meta(name="pdfkit-orientation" content="Landscape")
+=render partial: 'view_header'
+
+- all_shifts = {}
+-# shifts = @all_assignments.reduce({}) { |hash, shift| hash[shift.person] ||= {}; hash[shift.person][shift.date] ||= {}; hash[shift.person][shift.date][shift.shift.shift_group] = shift; all_shifts[shift.shift.abbrev] = shift.shift.name; hash}
+- flex_schedules = Scheduler::FlexSchedule.where(id: calendar.people_with_shifts).group_by(&:id)
+-unless spreadsheet_county
+  No county to display.
+-else
+  %h3
+    = spreadsheet_county.name
+    DAT Schedule - 
+    = @month.strftime "%B %Y"
+  %table.calendar-grid.table-bordered
+    %thead
+      %tr
+        %th{colspan: 3}
+          =spreadsheet_county.name
+          ==-
+          =@month.strftime "%B, %Y"
+          %span.noscreen
+            ==-
+            Page
+            %span.pageno
+            of
+            %span.pagect
+
+        - (@month..@month.end_of_month).each do |day|
+          %th{colspan: calendar.daily_groups.length}=day.day
+      %tr
+        %th Person
+        %th Call First
+        /%th Call Second
+        %th City
+        - (@month..@month.end_of_month).each do |day|
+          - calendar.daily_groups.each do |grp, _|
+            %th=grp.name[0].upcase
+    -calendar.people_with_shifts.each do |person|
+      -flex = flex_schedules[person.id].try(:first)
+      %tr.data-row
+        %td.header=person.full_name
+        - numbers = person.phone_order
+        %td.header
+          - if numbers.first
+            = numbers.first[:number]
+            (#{numbers.first[:label][0]})
+          - if numbers[1]
+            %br
+            = numbers[1][:number]
+            (#{numbers[1][:label][0]})
+        %td.header=person.city.try(:titleize)
+        - (@month..@month.end_of_month).each do |day|
+          - calendar.daily_groups.each do |grp, shifts|
+            - is_flex = flex && %w(day night).include?(grp.name.downcase) && flex.available(Date::DAYNAMES[day.wday].downcase, grp.name.downcase)
+            - ass = calendar.assignment_for_person_on_day_in_group(person, day, grp)
+            %td.period{class: (ass) ? "has-shift" : (is_flex ? 'flex-shift' : "no-shift")}
+              -if ass
+                -all_shifts[ass.shift.abbrev] = ass.shift.name
+                = ass.shift.abbrev.split("").join(" ")
+              -elsif is_flex
+                F
+    %tfoot
+      %tr
+        %th Person
+        %th Call First
+        /%th Call Second
+        %th City
+        - (@month..@month.end_of_month).each do |day|
+          - calendar.daily_groups.each do |grp, _|
+            %th=grp.name[0].upcase
+      %tr
+        %th{colspan: 3}
+          =spreadsheet_county.name
+          =@month.strftime "%B, %Y"
+        - (@month..@month.end_of_month).each do |day|
+          %th{colspan: calendar.daily_groups.length}=day.day
+      %tr
+        %th{colspan: (@month.end_of_month.day * calendar.daily_groups.length) + 3}
+          Legend:
+          F: Flex, 
+          = all_shifts.each_pair.map{|abbrev, name| "#{abbrev}: #{name}"}.join(", ")
+      

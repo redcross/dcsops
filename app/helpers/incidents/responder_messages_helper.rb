@@ -11,7 +11,7 @@ module Incidents::ResponderMessagesHelper
   end
 
   def responder_info_message(exclude_person=nil)
-    assignments = incident.all_responder_assignments.was_available.where{departed_scene_at == nil}
+    assignments = incident.all_responder_assignments.was_available.where(departed_scene_at: nil)
     if exclude_person
       assignments = assignments.reject{|a| a.person == exclude_person}
     end

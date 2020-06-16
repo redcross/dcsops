@@ -15,7 +15,7 @@ ActiveAdmin.register Roster::Region, as: 'Region Admin' do
     end
 
     def scoped_collection
-      Roster::Region.where{id == my{current_user}.region_id}
+      Roster::Region.where(id: current_user.region_id)
     end
 
     def apply_authorization_scope scope

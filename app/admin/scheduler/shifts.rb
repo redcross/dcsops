@@ -14,7 +14,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
     shifts.includes([:shift_times, {:shift_territory => :region}, :positions]).order(:shift_territory_id, :ordinal)
   end
   scope :active, default: true do |shifts|
-    shifts.where{(shift_ends == nil) | (shift_ends >= Date.current)}.includes([:shift_times, {:shift_territory => :region}, :positions]).order(:shift_territory_id, :ordinal)
+    shifts.where(shift_ends: nil).or(where(shift_ends: Date.current..DateTime::Infinity.new)).includes([:shift_times, {:shift_territory => :region}, :positions]).order(:shift_territory_id, :ordinal)
   end
 
   index do
@@ -62,7 +62,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   end
 
   batch_action :reschedule, if: proc{AdminAbility.new(current_user).can? :create, Scheduler::Shift} do |ids|
-    shifts = Scheduler::Shift.includes(:region).where{id.in ids}
+    shifts = Scheduler::Shift.includes(:region).where(id: ids)
 
     region_ids = shifts.map{|sh| sh.region.id}
 
@@ -102,7 +102,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
         new_shifts << ns
       end
 
-      Scheduler::ShiftAssignment.where{shift_id.in(shifts) & (date >= switch_date)}.destroy_all
+      Scheduler::ShiftAssignment.where(shift_id: shifts, date: switch_date..DateTime::Infinity.new).destroy_all
     end
 
     flash[:success] = "The shifts have been rescheduled."

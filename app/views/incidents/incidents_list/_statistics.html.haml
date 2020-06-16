@@ -8,7 +8,7 @@
         %td=num stats.incident_count
       %tr
         %th No Response
-        %td=num collection_for_stats.with_status('invalid').where{reason_marked_invalid.in(['not_eligible_for_services', 'no_response_needed'])}.count
+        %td=num collection_for_stats.with_status('invalid').where(reason_marked_invalid: ['not_eligible_for_services', 'no_response_needed']).count
       %tr
         %th Clients
         %td=num stats.client_count

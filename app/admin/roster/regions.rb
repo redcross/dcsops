@@ -9,7 +9,7 @@ ActiveAdmin.register Roster::Region, as: 'Region' do
   controller do
     def resource
       param = params[:id]
-      @region ||= (end_of_association_chain.where{(url_slug == param)}.first || end_of_association_chain.find(param))
+      @region ||= (end_of_association_chain.where(url_slug: param).first || end_of_association_chain.find(param))
     end
 
     def resource_params

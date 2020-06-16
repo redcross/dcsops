@@ -25,7 +25,7 @@ class Roster::Region < ApplicationRecord
   end
 
   def self.find_by_slug slug
-    where{(url_slug == slug)}.first || find(slug)
+    where(url_slug: slug).first || find(slug)
   end
 
   serialized_accessor :config, :incidents_geocode_bounds, :string

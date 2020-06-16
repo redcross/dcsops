@@ -4,11 +4,11 @@ class Roster::Membership < ApplicationRecord
   belongs_to :person
 
   def self.for_region region 
-    joins(:person).where{(person.region_id == region)}
+    joins(:person).where(person: { region_id: region })
   end
 
   def self.not_persistent
-    where{(persistent == nil) | (persistent == false)}
+    where(persistent: nil).or(where(persistent: false))
   end
 
   def self.destroy_all_for_region(region)

@@ -22,7 +22,7 @@ namespace :incidents_periodic do
 
   task :get_deployments => [:environment, :get_disasters] do
     Raven.capture do
-      Roster::Region.where{vc_username != nil}.each do |region|
+      Roster::Region.where.not(vc_username: nil).each do |region|
         next unless region.vc_username.present?
         begin
           Incidents::DeploymentImporter.get_deployments region
@@ -35,7 +35,7 @@ namespace :incidents_periodic do
 
   task :get_disasters => :environment do
     Raven.capture do
-      Roster::Region.where{vc_username != nil}.each do |region|
+      Roster::Region.where.not(vc_username: nil).each do |region|
         next unless region.vc_username.present?
         begin
           Incidents::DisastersImporter.get_disasters region

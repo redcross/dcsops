@@ -22,19 +22,19 @@ class Incidents::ReportSubscription < ApplicationRecord
   end
 
   def self.for_scope scope
-    where{scope_id == scope}
+    where(scope_id: scope)
   end
 
   #def self.for_region region
-  #  joins(:person).where{person.region_id == region}
+  #  joins(:person).where(person: { region_id: region })
   #end
 #
   #def self.for_shift_territory shift_territory
-  #  where{(shift_territory_id == nil) | (shift_territory_id == shift_territory)}
+  #  where(shift_territory_id: nil).or(where(shift_territory_id: shift_territory))
   #end
 
   def self.for_type type
-    where{report_type == type}
+    where(report_type: type)
   end
 
   def self.to_send_on today
@@ -53,7 +53,7 @@ class Incidents::ReportSubscription < ApplicationRecord
   end
 
   def self.with_active_person
-    joins(:person).where{person.vc_is_active == true}
+    joins(:person).where(person: { vc_is_active: true })
   end
 
   def time_zone

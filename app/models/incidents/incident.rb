@@ -22,7 +22,7 @@ class Incidents::Incident < ApplicationRecord
   has_many :cases, class_name: 'Incidents::Case', inverse_of: :incident
   has_one :initial_incident_report, class_name: 'Incidents::InitialIncidentReport', inverse_of: :incident
 
-  has_many :responder_assignments, lambda { where{role != 'team_lead'}}, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id, inverse_of: :incident
+  has_many :responder_assignments, lambda { where.not(role: 'team_lead')}, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id, inverse_of: :incident
   has_many :all_responder_assignments, class_name: 'Incidents::ResponderAssignment', foreign_key: :incident_id 
   has_one :team_lead, lambda{ where(role: 'team_lead')}, class_name: 'Incidents::ResponderAssignment', foreign_key: 'incident_id'
 
@@ -39,24 +39,24 @@ class Incidents::Incident < ApplicationRecord
   validates :incident_number, presence: true, format: /\A\w*\d{2}-\d{3,}\z/, uniqueness: { scope: :region_id }
 
   scope :for_region, -> (region) { where(region: region) }
-  scope :in_shift_territory, -> area {where{shift_territory_id == shift_territory}}
+  scope :in_shift_territory, -> area {where(shift_territory_id: shift_territory)}
   scope :valid, -> { where.not(status: 'invalid') }
   scope :with_status, -> (filter_status) { where(status: filter_status) }
   scope :needs_incident_report, lambda {
     with_status 'open'
   }
   scope :without_cas, -> {
-    left_outer_joins(:cas_incident).where{(cas_incident.id == nil)}
+    left_outer_joins(:cas_incident).where(cas_incident: { id: nil })
   }
   scope :with_date_in, -> date_range {
-    where{date.in(date_range)}
+    where(date: date_range)
   }
   scope :with_county, -> county_in {
-    where{county == county_in}
+    where(county: county_in)
   }
 
   def self.with_location
-    where{(lat != nil) & (lng != nil) & (lat != 0) & (lng != 0)}
+    where.not(lat: nil, lng: nil).where.not(lat: 0, lng: 0)
   end
 
   def self.incident_stats

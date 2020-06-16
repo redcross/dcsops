@@ -16,7 +16,7 @@ class Scheduler::DispatchConfig < ApplicationRecord
 
   validates_presence_of :name, :region
 
-  scope :active, ->{ where{is_active == true} }
+  scope :active, ->{ where(is_active: true) }
 
   def self.for_shift_territory(shift_territory)
     self.where(shift_territory_id: shift_territory).first_or_create

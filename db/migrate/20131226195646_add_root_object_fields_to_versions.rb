@@ -22,7 +22,7 @@ class AddRootObjectFieldsToVersions < ActiveRecord::Migration
     say_with_time 'Associating root objects' do
 
       VersionMigrator.reset_column_information
-      VersionMigrator.where{item_type != 'Incidents::Incident'}.includes(:item).find_each do |version|
+      VersionMigrator.where.not(item_type: 'Incidents::Incident').includes(:item).find_each do |version|
         unless version.item
           version.destroy
           next
@@ -40,7 +40,7 @@ class AddRootObjectFieldsToVersions < ActiveRecord::Migration
     end
 
     say_with_time 'Updating chapter on Incident changes' do
-      VersionMigrator.where{item_type == 'Incidents::Incident'}.includes(:item).find_each do |version|
+      VersionMigrator.where(item_type: 'Incidents::Incident').includes(:item).find_each do |version|
         version.chapter_id = version.object.try(:fetch, 'chapter_id') || version.object_changes.try(:fetch, "chapter_id", []).last || version.item.chapter_id
         version.save!
       end

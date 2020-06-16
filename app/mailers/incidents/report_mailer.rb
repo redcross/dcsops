@@ -24,7 +24,7 @@ class Incidents::ReportMailer < ActionMailer::Base
     @incident_scope = date_scope(rel, date_range).order(:date).includes(responder_assignments: :person)
     @incidents = @incident_scope.map{|i| Incidents::IncidentPresenter.new(i) }
     @weekly_stats = date_scope(rel, date_range).incident_stats
-    @yearly_stats = rel.where{date.in(fiscal.range)}.incident_stats
+    @yearly_stats = rel.where(date: fiscal.range).incident_stats
 
     tag :incidents, :weekly_report
     mail to: format_address(recipient), subject: subject, template_name: 'report'
@@ -45,7 +45,7 @@ private
   end
 
   def date_scope(scope, date_range)
-    scope.where{date.in(date_range)}
+    scope.where(date: date_range)
   end
 
   def subtitle
@@ -69,7 +69,7 @@ private
     Incidents::Deployment.for_region(regions).seen_since(@date_range.first)
                           .preload{[disaster, person.shift_territories]}
                           .joins(:disaster)
-                          .where{ disaster.dr_number.not_in(ignore) }
+                          .where.not(disaster: { dr_number: ignore })
                           .order(date_first_seen: :desc)
                           .to_a
                           .uniq{|a| [a.person_id, a.disaster_id] }
@@ -87,7 +87,7 @@ private
   }
 
   def responder_assignments
-    Incidents::ResponderAssignment.where{incident_id.in(my{@incidents.map(&:id)})}.was_available
+    Incidents::ResponderAssignment.where(incident_id: @incidents.map(&:id)).was_available
   end
 
   expose(:responders_summary_count) {
