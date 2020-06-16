@@ -3,7 +3,7 @@
   -if can? :create, resource.attachments.build
     %button.btn.btn-primary{data: {edit_panel: new_resource_attachment_path(resource)}} Add Attachment
 
-- resource.attachments(true).each do |att|
+- resource.attachments.reload.each do |att|
   %h5
     =att.name
     \-
