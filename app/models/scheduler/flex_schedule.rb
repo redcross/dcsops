@@ -23,7 +23,7 @@ class Scheduler::FlexSchedule < ApplicationRecord
   }
 
   def self.by_distance_from inc
-    joins(:person).order{_(person.lat.op(:-, inc.lat)).op('^', 2).op(:+, _(person.lng.op(:-, inc.lng)).op('^', 2))}
+    joins(:person).order('(person.lat - :inc_lat)^2 + (person.lng - :inc_lng)^2)', { inc_lat: inc.lat, inc_lng: inc.lng })
   end
 
   def available(day, shift)

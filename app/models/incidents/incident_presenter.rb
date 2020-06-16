@@ -18,7 +18,7 @@ class Incidents::IncidentPresenter < SimpleDelegator
   end
 
   def time_to_on_scene
-    received = self.event_logs.where(event: ['dispatch_received', 'dispatch_note', 'dat_received', 'dispatch_relayed', 'responders_identified']).reorder{event_time.asc}.first
+    received = self.event_logs.where(event: ['dispatch_received', 'dispatch_note', 'dat_received', 'dispatch_relayed', 'responders_identified']).order(:event_time).first
     on_scene = self.event_logs.where(event: ['dat_on_scene']).first
 
     if received and on_scene
