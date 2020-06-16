@@ -124,7 +124,7 @@ class Scheduler::Shift < ApplicationRecord
     arr = Scheduler::ShiftAssignment
       .where(shift_id: shifts.to_a, date: month..(month.at_end_of_month))
       .select('COUNT(id) AS count, shift_id, shift_group_id, date')
-      .group{[shift_id, shift_group_id, date]}
+      .group(:shift_id, :shift_group_id, :date)
       .reduce(arr) do |hash, ass|
 
       shift = shifts_by_id[ass.shift_id]
