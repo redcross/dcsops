@@ -15,7 +15,6 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 # The following are gems required by the application itself:
 
-gem 'baby_squeel'
 gem 'rack-rewrite'
 gem 'pg', '~> 0.2'
 
@@ -63,7 +62,6 @@ gem 'geokit'#, github: 'mikefarmer/geokit' # Found a branch that removes some we
 gem 'formtastic'
 gem 'formtastic-bootstrap'
 gem 'cocoon'
-gem 'ransack'
 gem 'activeadmin'
 gem 'nokogiri'
 
