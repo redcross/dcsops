@@ -1,8 +1,6 @@
 class Incidents::InitialIncidentReportsController < Incidents::EditPanelController
   self.panel_name = 'iir'
-  # Belongs to is reversed for singletons
-  belongs_to :incident, finder: :find_by_incident_number!, parent_class: Incidents::Incident
-  belongs_to :chapter, finder: :find_by_url_slug!, parent_class: Roster::Chapter
+  belongs_to_incident
   defaults singleton: true
   include RESTfulNotification
   respond_to :html, :js

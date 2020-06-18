@@ -205,6 +205,7 @@ describe "Shift Scheduler Spec", :type => :feature do
     page.should have_text @person.full_name
     find('.tt-suggestion', text: @person.full_name).click
 
+    page.should have_css(".shift-checkbox:enabled")
     all(".shift-checkbox")[5].click
     page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}", count: 2
   end

@@ -85,12 +85,20 @@ Scheduler::Application.configure do
 
   config.action_mailer.default_url_options = { host: ENV['WWW_HOSTNAME'] }
 
-  config.paperclip_defaults = {storage: :s3, s3_permissions: :private, bucket: ENV['S3_FILE_BUCKET']}
+  config.paperclip_defaults = {
+    storage: :s3,
+    s3_permissions: :private,
+    s3_region: ENV['AWS_DEFAULT_REGION'] || 'us-east-1',
+    s3_credentials: {
+      bucket: ENV['S3_FILE_BUCKET'],
+      access_key_id: ENV['AWS_SECRET_KEY_ID'],
+      secret_access_key: ENV['AWS_SECRET_KEY'],
+    }
+  }
 
   config.middleware.insert(0, Rack::Rewrite) do
     r301 %r{.*}, "https://#{ENV['WWW_HOSTNAME']}\$&", :if => Proc.new {|rack_env|
       ENV['WWW_HOSTNAME'].present? && rack_env['SERVER_NAME'] != ENV['WWW_HOSTNAME']
     }
   end
-  Rails.application.config.middleware.insert_before(ActionDispatch::Static, Rack::Zippy::AssetServer)
 end

@@ -1,7 +1,7 @@
 class window.GridController
   constructor: (@baseUrl, @template)->
     @seq = 1
-    $(document).on 'click', 'input[type=submit]', (evt) =>
+    $(document).on 'click', "input[type='submit']", (evt) =>
       el = evt.target
       data = {}
       parent = $(el).closest("tr")
@@ -15,7 +15,7 @@ class window.GridController
   submitForm: (parent) ->
     id = $(parent).data('resource-id')
     data = {}
-    $(parent).find("input:not([type=checkbox]), input:checked, select").each (idx, el) =>
+    $(parent).find("input:not([type='checkbox']), input:checked, select").each (idx, el) =>
       name = $(el).attr('name')
       val = $(el).val()
       if name.match /\[\]$/
@@ -47,5 +47,5 @@ class window.GridController
     dom = $(@template)
     id = "New"+(@seq += 1)
     $(dom).attr('data-resource-id', id).data('is-new', true)
-    $(dom).find('input[name=row_id]').val(id)
+    $(dom).find("input[name='row_id']").val(id)
     $('table.table-edit-grid tbody').append(dom)
