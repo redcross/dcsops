@@ -126,6 +126,48 @@ While there are no strict rules on how to summarize a branch's purpose
 in its name, it may help to keep in mind some common starting words:
 "`fix`", "`feature`", "`refactor`", "`remove`", "`improve`", and "`test`".
 
+#### Feature life cycle
+
+Each feature branch should be started from some point on master, with pull
+requests for review before merging into master.  At some point in the future,
+the code will make it into the `candidate-production`, and moved into
+heroku staging.  Once it passes muster, it will be merged into production
+and pushed to heroku production.
+
+'''NOTE''': Please include any database migration information, database updates,
+environment variable changes, etc, in the pull request.
+
+#### `master` Branch
+
+This is the development branch, which while always deployable, will have
+the latest and greatest merged in development features.
+
+#### `production` Branch
+
+This branch is synced up with the current deployed production heroku branch.
+In order to make sure the two are in line, you can add the heroku branch to your
+git checkout (after running `heroku login`)
+
+```
+$ git remote add heroku-production https://git.heroku.com/arcdata.git
+$ git fetch heroku-production
+```
+
+It should only be merged when changes have passed muster in the following
+`candidate-production` branch.
+
+#### `candidate-production` Branch
+
+This branch is synced up with the current deployed staging heroku branch.
+As above, to make sure the two are aligned, you can do:
+
+```
+$ git remote add heroku-staging https://git.heroku.com/arcdata-staging.git
+$ git fetch heroku-staging
+```
+
+
+
 ### Commit Messages
 Please adhere
 to [these guidelines](https://chris.beams.io/posts/git-commit/) for

@@ -8,10 +8,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   SimpleCov::Formatter::HTMLFormatter,
   Coveralls::SimpleCov::Formatter
 ]
-SimpleCov.start 'rails' do
-  add_filter "/app\\/admin/"
-  add_filter "/lib\\/tasks/"
-end
+SimpleCov.start 'rails'
 
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
@@ -51,6 +48,17 @@ PaperTrail.enabled = false
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
+
+# Load rake tasks so they can be tested.
+module TempFixForRakeLastComment
+  def last_comment
+    last_description
+  end
+end
+Rake::Application.send :include, TempFixForRakeLastComment
+
+Rake.application = Rake::Application.new
+Rails.application.load_tasks
 
 RSpec.configure do |config|
   # ## Mock Framework

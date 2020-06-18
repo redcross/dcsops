@@ -2,13 +2,27 @@ require 'spec_helper'
 
 describe "Shift Scheduler Spec", :type => :feature do
 
-  def next_month_calendar
-    next_month = Date.current.next_month.strftime("%B").downcase
-    next_month_year = Date.current.next_month.strftime("%Y")
-    "/scheduler/calendar/#{next_month_year}/#{next_month}"
+  def month_of_interest_link
+    # If we're in the first half of the month, use the current month,
+    # otherwise next month.  We need to ensure that the shifts we're
+    # signing up for aren't too far out so they don't show up for stuff
+    # like swaps.
+    if Date.current.day < 15
+      d = Date.current
+    else
+      d = Date.current.next_month
+    end
+    month_str = d.strftime("%B").downcase
+    year_str = d.strftime("%Y")
+    "/scheduler/calendar/#{year_str}/#{month_str}"
   end
 
   before :each do
+    # This has to happen up here, so that the county/position/category create
+    # includes this person, because the chapters have to match before FactoryGirl
+    # creates these.
+    @other_person = FactoryGirl.create(:person, rco_id: rand(100000), chapter: @person.chapter)
+
     group = FactoryGirl.create :shift_group, chapter: @person.chapter, start_offset: 10.hours, end_offset: 22.hours
     @counties = (1..2).map{|i| FactoryGirl.create :county, name: "County #{i}", chapter: @person.chapter}
     @positions = (1..2).map{|i| FactoryGirl.create :position, name: "Position #{i}", chapter: @person.chapter}
@@ -45,7 +59,7 @@ describe "Shift Scheduler Spec", :type => :feature do
   end
 
   it "Looks at all shifts" do
-    visit next_month_calendar
+    visit month_of_interest_link
     click_on "All Shifts"
 
     page.should have_text("OPEN")
@@ -60,7 +74,7 @@ describe "Shift Scheduler Spec", :type => :feature do
     page.should have_text "You have no upcoming shifts scheduled."
     page.should have_text "#{Date.current.next_month.end_of_month.day * @person.positions.length} Shifts Available"
 
-    visit next_month_calendar
+    visit month_of_interest_link
     page.should have_text "OPEN"
     
     checkbox = first(".shift-checkbox")
@@ -75,7 +89,7 @@ describe "Shift Scheduler Spec", :type => :feature do
     @person.positions = @positions[0..0]
     @person.counties = @counties
 
-    visit next_month_calendar
+    visit month_of_interest_link
     
     first(".shift-checkbox").click
     page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
@@ -88,7 +102,7 @@ describe "Shift Scheduler Spec", :type => :feature do
   it "Looks at and filters county shifts by County and Category" do
     @person.positions = @positions
     @person.counties = @counties
-    visit next_month_calendar
+    visit month_of_interest_link
     click_on "County Shifts"
 
     # The county with shifts isn't the default, so no shifts should show up here
@@ -118,11 +132,11 @@ describe "Shift Scheduler Spec", :type => :feature do
     @person.positions = @positions
     @person.counties = @counties
 
-    other_person = FactoryGirl.create(:person, rco_id: rand(100000))
-    other_person.counties = @counties
-    other_person.positions = @positions
+    @other_person = FactoryGirl.create(:person, rco_id: rand(100000))
+    @other_person.counties = @counties
+    @other_person.positions = @positions
 
-    visit next_month_calendar
+    visit month_of_interest_link
     all(".shift-checkbox")[5].click
     page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
     visit "/scheduler/"
@@ -132,7 +146,7 @@ describe "Shift Scheduler Spec", :type => :feature do
     click_on "Start Swap"
 
     logout
-    login_person other_person
+    login_person @other_person
     visit "/scheduler/"
     click_on "Claim"
     click_on "Confirm Swap"
@@ -143,5 +157,55 @@ describe "Shift Scheduler Spec", :type => :feature do
     login_person @person
     visit "/scheduler/"
     page.should have_text "You have no upcoming shifts scheduled."
+  end
+
+  it "Can view another person's shifts" do
+    @person.positions = @positions
+    @person.counties = @counties
+
+    @other_person.positions = @positions
+    @other_person.counties = @counties
+
+    visit month_of_interest_link
+    all(".shift-checkbox")[5].click
+    page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
+    logout
+
+    login_person @other_person
+    visit month_of_interest_link
+    page.should have_text "Shift 1"
+    page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
+    page.should_not have_css ".my-shift"
+    fill_in "select-person", with: @person.first_name[0..2]
+    page.should have_text @person.full_name
+    find('.tt-suggestion', text: @person.full_name).click
+    page.should have_css ".my-shift"
+  end
+
+  it "Can assign another person a shift as admin" do
+    @person.positions = @positions
+    @person.counties = @counties
+
+    @other_person.positions = @positions
+    @other_person.counties = @counties
+
+    grant_role! 'county_dat_admin', @other_person.county_ids, @other_person
+
+    visit month_of_interest_link
+    all(".shift-checkbox")[5].click
+    page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
+    logout
+
+    login_person @other_person
+    visit month_of_interest_link
+    page.should have_text "Shift 1"
+    page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}"
+    page.should_not have_css ".my-shift"
+    fill_in "select-person", with: @person.first_name[0..2]
+    page.should have_text @person.full_name
+    find('.tt-suggestion', text: @person.full_name).click
+
+    all(".shift-checkbox")[5].click
+    page.should have_text "#{@person.first_name[0..0]} #{@person.last_name}", count: 2
   end
 end

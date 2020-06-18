@@ -1,25 +1,8 @@
 require 'spec_helper'
 
-describe "incidents_periodic:send_reminders" do
-  include_context "rake"
-
-  describe '#prerequisites' do
-    subject { super().prerequisites }
-    it { is_expected.to eq(['send_missing_incident_report'])}
-  end
-end
-
 describe "" do
   include_context "rake"
   let(:task_name) { self.class.description }
-
-  before(:each) do
-    
-  end
-
-  after(:each) do
-    Delorean.back_to_1985
-  end
 
   describe "incidents_periodic:send_no_incident_report" do
 
