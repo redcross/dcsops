@@ -23,7 +23,8 @@ class Scheduler::FlexSchedule < ApplicationRecord
   }
 
   def self.by_distance_from inc
-    joins(:person).order('(person.lat - :inc_lat)^2 + (person.lng - :inc_lng)^2)', { inc_lat: inc.lat, inc_lng: inc.lng })
+    distance_select_clause = sanitize_sql_array(['(roster_people.lat - ?)^2 + (roster_people.lng - ?)^2 AS distance', inc.lat, inc.lng])
+    joins(:person).select('*').select(distance_select_clause).order(:distance)
   end
 
   def available(day, shift)
