@@ -1,8 +1,8 @@
 %h1 Shifts
 
-- by_county_group_shift.each do |county, shifts|
+- by_shift_territory_group_shift.each do |shift_territory, shifts|
   =form_tag '', method: :put do
-    %h3=county.name
+    %h3=shift_territory.name
     %table.table-condensed.table-bordered.table-striped
       %thead
         %tr
@@ -22,7 +22,7 @@
       - shifts.each_with_index do |shift, shift_idx|
         = fields_for "shifts[#{shift.id}]", shift do |f|
           %tr
-            %th=safe_join shift.shift_groups.map(&:name), tag(:br)
+            %th=safe_join shift.shift_times.map(&:name), tag(:br)
             %th=shift.name
             %td=shift.abbrev
             - dates_for_count.each_with_index do |date, idx|
@@ -43,7 +43,7 @@
                 %span.input-group-addon days
       %tfoot
         %tr.all-shifts
-          = fields_for "county_shifts[#{county.id}]" do |f|
+          = fields_for "shift_territory_shifts[#{shift_territory.id}]" do |f|
             %th{colspan: 5}
               All Shifts
               %button.btn.btn-mini.btn-default Cancel

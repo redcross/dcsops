@@ -7,7 +7,7 @@
 %p
   Incident: #{@incident.incident_number}
   %br
-  County: #{@incident.area_name}
+  Shift Territory: #{@incident.shift_territory_name}
   %br
   -if dispatch = @incident.dispatch_log
     Incident Type: #{dispatch.incident_type}
@@ -47,9 +47,9 @@
       #{item.action_type}: #{item.recipient} - #{item.result}
       %br
 
-- if chapter_message(@incident)
-  %p=chapter_message(@incident)
+- if region_message(@incident)
+  %p=region_message(@incident)
 
 %p
   View in DCSOps:
-  =link_to incidents_chapter_incident_url(@incident.chapter, @incident), incidents_chapter_incident_url(@incident.chapter, @incident)
+  =link_to incidents_region_incident_url(@incident.region, @incident), incidents_region_incident_url(@incident.region, @incident)

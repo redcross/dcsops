@@ -219,7 +219,7 @@ ActiveAdmin.setup do |config|
     config.namespace ns do |ns_config|
       ns_config.build_menu do |menu|
         menu.add label: 'DAT Scheduling', url: '/scheduler'
-        #menu.add label: 'Roster', url: '/roster_admin/chapters'
+        #menu.add label: 'Roster', url: '/roster_admin/regions'
         #menu.add label: 'Scheduling', url: '/scheduler_admin/shifts'
         #menu.add label: 'Incidents', url: '/scheduler_admin/notifications'
       end

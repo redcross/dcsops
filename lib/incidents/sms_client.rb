@@ -1,6 +1,6 @@
 class Incidents::SMSClient
-  def initialize(chapter)
-    @chapter = chapter
+  def initialize(region)
+    @region = region
   end
 
   def send_message(responder_message)
@@ -22,15 +22,15 @@ class Incidents::SMSClient
   protected
 
   def have_credentials?
-    @chapter.twilio_account_sid.present? && @chapter.twilio_auth_token.present?
+    @region.twilio_account_sid.present? && @region.twilio_auth_token.present?
   end
 
   def from_phone_number
-    @chapter.incidents_twilio_number
+    @region.incidents_twilio_number
   end
 
   def client
-    @client ||= Twilio::REST::Client.new @chapter.twilio_account_sid, @chapter.twilio_auth_token
+    @client ||= Twilio::REST::Client.new @region.twilio_account_sid, @region.twilio_auth_token
   end
 
   def format_phone(ph)

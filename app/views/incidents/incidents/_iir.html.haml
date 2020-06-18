@@ -6,9 +6,9 @@
     Initial Incident Report
     %small
       -if iir.approved_by_id == nil && can?( :approve, iir)
-        =edit_panel_link_to 'Approve', approve_incidents_chapter_incident_initial_incident_report_path(parent, resource), class: 'btn btn-success'
+        =edit_panel_link_to 'Approve', approve_incidents_region_incident_initial_incident_report_path(parent, resource), class: 'btn btn-success'
       -if iir.approved_by_id && can?( :unapprove, iir)
-        =link_to 'Unapprove', unapprove_incidents_chapter_incident_initial_incident_report_path(parent, resource), class: 'btn btn-warning', remote: true, method: 'post', data: {confirm: 'Are you sure you want to unapprove this IIR?'}
+        =link_to 'Unapprove', unapprove_incidents_region_incident_initial_incident_report_path(parent, resource), class: 'btn btn-warning', remote: true, method: 'post', data: {confirm: 'Are you sure you want to unapprove this IIR?'}
   .row
     .col-sm-5
       =render 'details_location', header_tag: 'h4'

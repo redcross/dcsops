@@ -4,6 +4,6 @@
   =f.input :units_major
   =f.input :units_minor
   =f.input :units_affected
-  -if f.object.incident.chapter.incidents_report_advanced_details
+  -if f.object.incident.region.incidents_report_advanced_details
     =f.input :units_unknown, label: "Units Undefined/Unknown"
   =f.input :units_total, input_html: {readonly: true, editable: false}

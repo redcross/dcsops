@@ -3,10 +3,10 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 class window.SwapController
-  constructor: (county_id, position_ids) ->
+  constructor: (shift_territory_id, position_ids) ->
 
     filter = 
-      in_county: county_id
+      in_shift_territory: shift_territory_id
       with_position: position_ids
 
     new PersonTypeaheadController $('#select-person'), ((id, record) => $("#swap-to-id").val(id)), 'shift-swap', filter

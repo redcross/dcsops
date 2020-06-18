@@ -4,8 +4,8 @@ describe Incidents::ReportSubscriptionsController, :type => :controller do
   include LoggedIn
   render_views
 
-  let(:chapter) { @person.chapter }
-  let!(:scope) { FactoryGirl.create :incidents_scope, chapter: chapter}
+  let(:region) { @person.region }
+  let!(:scope) { FactoryGirl.create :incidents_scope, region: region}
   let(:report_type) { 'report' }
 
   describe '#new' do

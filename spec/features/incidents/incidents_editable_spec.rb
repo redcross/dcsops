@@ -3,19 +3,19 @@ require 'spec_helper'
 describe "Invalid Incident Report", :type => :feature do
   self.use_transactional_fixtures = false
   before do
-    grant_role! 'submit_incident_report'
+    grant_capability! 'submit_incident_report'
 
-    @chapter = @person.chapter
-    @chapter.incidents_report_editable = true
-    @chapter.save!
-    FactoryGirl.create :incidents_scope, chapter: @person.chapter
+    @region = @person.region
+    @region.incidents_report_editable = true
+    @region.save!
+    FactoryGirl.create :incidents_scope, region: @person.region
   end
 
   it "Should be submittable" do
 
-    @incident = FactoryGirl.create :raw_incident, chapter: @person.chapter, area: @person.counties.first, date: Date.current
+    @incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: @person.shift_territories.first, date: Date.current
 
-    visit "/incidents/#{@chapter.url_slug}/incidents/#{@incident.incident_number}"
+    visit "/incidents/#{@region.url_slug}/incidents/#{@incident.incident_number}"
 
     open_panel "Narrative"
     fill_in 'Narrative*', with: Faker::Lorem.paragraph

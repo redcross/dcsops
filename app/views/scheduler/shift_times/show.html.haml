@@ -1,0 +1,28 @@
+- model_class = Scheduler::ShiftTime
+.page-header
+  %h1=t '.title', :default => model_class.model_name.human
+
+%p
+  %strong= model_class.human_attribute_name(:name) + ':'
+  %br
+  = resource.name
+%p
+  %strong= model_class.human_attribute_name(:period) + ':'
+  %br
+  = resource.period
+%p
+  %strong= model_class.human_attribute_name(:start_offset) + ':'
+  %br
+  = resource.start_offset
+%p
+  %strong= model_class.human_attribute_name(:end_offset) + ':'
+  %br
+  = resource.end_offset
+%p
+  %strong= model_class.human_attribute_name(:region_id) + ':'
+  %br
+  = resource.region_id
+
+.form-actions
+  = link_to t('.back', :default => t("helpers.links.back")), collection_path, :class => 'btn'
+  = link_to t('.edit', :default => t("helpers.links.edit")), edit_resource_path, :class => 'btn'

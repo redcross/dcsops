@@ -9,20 +9,20 @@ class Scheduler::PeopleController < Scheduler::BaseController
   load_and_authorize_resource class: Roster::Person
 
   has_scope :name_contains
-  has_scope :in_county, as: :county, default: Proc.new {|controller| controller.current_user.primary_county_id}
-  #has_scope :in_county, as: :county do |controller, scope, val|
-  #  positions = Scheduler::Shift.where(county_id: val).map{|sh| sh.positions}.flatten
-  #  scope.in_county(val)
+  has_scope :in_shift_territory, as: :shift_territory, default: Proc.new {|controller| controller.current_user.primary_shift_territory_id}
+  #has_scope :in_shift_territory, as: :shift_territory do |controller, scope, val|
+  #  positions = Scheduler::Shift.where(shift_territory_id: val).map{|sh| sh.positions}.flatten
+  #  scope.in_shift_territory(val)
   #end
 
-  # , default: Proc.new {|controller| controller.current_chapter.positions.where{name.in(['DAT Team Lead', 'DAT Technician', 'DAT Trainee', 'DAT Dispatcher'])}.map(&:id)}
+  # , default: Proc.new {|controller| controller.current_region.positions.where{name.in(['DAT Team Lead', 'DAT Technician', 'DAT Trainee', 'DAT Dispatcher'])}.map(&:id)}
   has_scope :with_position, type: :array, default: []
   has_scope :last_shift do |controller, scope, val|
     scope.where(Scheduler::ShiftAssignment.where{(person_id == roster_people.id) & (date > (Date.current-val.to_i))}.exists.not)
   end
 
   def collection
-    @collection ||= apply_scopes(super).preload{[county_memberships, counties, positions]}.select(
+    @collection ||= apply_scopes(super).preload{[shift_territory_memberships, shift_territories, positions]}.select(
       "roster_people.*, roster_people.last_name, roster_people.first_name, " +
       "(SELECT count(*) FROM scheduler_shift_assignments sa WHERE sa.person_id=roster_people.id AND date < '#{Date.current}') AS num_shifts, " +
       "(SELECT min(date) FROM scheduler_shift_assignments sa WHERE sa.person_id=roster_people.id AND date >= '#{Date.current}') AS next_shift," +

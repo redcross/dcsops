@@ -1,4 +1,4 @@
-class CreateIncidentsTerritories < ActiveRecord::Migration
+class CreateIncidentsResponseTerritories < ActiveRecord::Migration
   def change
     create_table :incidents_territories do |t|
       t.references :chapter, index: true

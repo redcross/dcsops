@@ -1,0 +1,2 @@
+module Roster::RegionsHelper
+end

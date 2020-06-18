@@ -4,7 +4,7 @@ FactoryGirl.define do
   factory :shift_assignment, :class => 'Scheduler::ShiftAssignment' do
     date {Date.tomorrow}
     association :person
-    shift { |f| f.association :shift, county: f.person.counties.first, positions: f.person.positions}
-    shift_group { |f| f.shift.shift_groups.first }
+    shift { |f| f.association :shift, shift_territory: f.person.shift_territories.first, positions: f.person.positions}
+    shift_time { |f| f.shift.shift_times.first }
   end
 end

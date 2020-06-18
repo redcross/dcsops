@@ -2,7 +2,7 @@
 
 .well#filter-form
   =search_form_for search, url: url_for(), class: "form", style: "margin-bottom: 0" do |f|
-    - proto = Incidents::Incident.new chapter: current_chapter
+    - proto = Incidents::Incident.new region: current_region
     /%table
     /  %tr
     .row.collapase

@@ -13,8 +13,8 @@
           %h5 Incident Number:
           =f.text_field :incident_number_cont, class: "form-control input-sm input-block"
         .field
-          %h5 County:
-          =f.select :area_id_eq, options_from_collection_for_select(current_chapter.counties, :id, :name, params[:q].try(:[], :area_id_eq)), {include_blank: true}, class: "form-control input-sm"
+          %h5 Shift Territory:
+          =f.select :shift_territory_id_eq, options_from_collection_for_select(current_region.shift_territories, :id, :name, params[:q].try(:[], :shift_territory_id_eq)), {include_blank: true}, class: "form-control input-sm"
         .field
           %h5 City:
           =f.text_field :city_cont, class: "form-control input-sm"

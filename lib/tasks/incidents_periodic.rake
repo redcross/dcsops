@@ -22,10 +22,10 @@ namespace :incidents_periodic do
 
   task :get_deployments => [:environment, :get_disasters] do
     Raven.capture do
-      Roster::Chapter.where{vc_username != nil}.each do |chapter|
-        next unless chapter.vc_username.present?
+      Roster::Region.where{vc_username != nil}.each do |region|
+        next unless region.vc_username.present?
         begin
-          Incidents::DeploymentImporter.get_deployments chapter
+          Incidents::DeploymentImporter.get_deployments region
         rescue => e
           Raven.capture_exception e
         end
@@ -35,14 +35,14 @@ namespace :incidents_periodic do
 
   task :get_disasters => :environment do
     Raven.capture do
-      Roster::Chapter.where{vc_username != nil}.each do |chapter|
-        next unless chapter.vc_username.present?
+      Roster::Region.where{vc_username != nil}.each do |region|
+        next unless region.vc_username.present?
         begin
-          Incidents::DisastersImporter.get_disasters chapter
+          Incidents::DisastersImporter.get_disasters region
         rescue => e
           Raven.capture_exception e
         end
-        #break # For now, this only needs to run for one chapter since it pulls national data
+        #break # For now, this only needs to run for one region since it pulls national data
       end
     end
   end

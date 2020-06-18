@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :shift_category, :class => 'Scheduler::ShiftCategory' do
-    chapter nil
+    region nil
     name "Shift Category #{SecureRandom.random_number 20}"
     show true
   end

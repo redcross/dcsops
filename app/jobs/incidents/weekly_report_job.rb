@@ -1,8 +1,8 @@
 class Incidents::WeeklyReportJob
 
   def self.enqueue
-    Incidents::Scope.with_report_send_automatically_value(true).each do |chapter|
-      new(chapter.id).perform
+    Incidents::Scope.with_report_send_automatically_value(true).each do |region|
+      new(region.id).perform
     end
   end
 
@@ -51,7 +51,7 @@ class Incidents::WeeklyReportJob
     Incidents::ReportSubscription.for_type('report')
                                  .for_scope(scope)
                                  .to_send_on(current_send_date)
-                                 .includes{person.chapter}
+                                 .includes{person.region}
                                  .with_active_person
                                  .readonly(false)
   end

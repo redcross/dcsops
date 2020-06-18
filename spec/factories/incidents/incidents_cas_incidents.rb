@@ -7,7 +7,7 @@ FactoryGirl.define do
     cas_name "Some Incident Some Date"
     dr_level nil
     is_dr false
-    county_name "MyString"
+    county "MyString"
     cases_opened 1
     cases_open 1
     cases_closed 1

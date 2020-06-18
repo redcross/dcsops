@@ -19,7 +19,7 @@ class Incidents::ReportMailer < ActionMailer::Base
 
     fiscal = FiscalYear.for_date(@date_range.first)
 
-    rel = Incidents::Incident.valid.for_chapter(scope.all_chapters)
+    rel = Incidents::Incident.valid.for_region(scope.all_regions)
     
     @incident_scope = date_scope(rel, date_range).order{date}.includes{responder_assignments.person}
     @incidents = @incident_scope.map{|i| Incidents::IncidentPresenter.new(i) }
@@ -65,9 +65,9 @@ private
 
   def deployments
     ignore = scope.report_dro_ignore_array
-    chapters = scope.all_chapters
-    Incidents::Deployment.for_chapter(chapters).seen_since(@date_range.first)
-                          .preload{[disaster, person.counties]}
+    regions = scope.all_regions
+    Incidents::Deployment.for_region(regions).seen_since(@date_range.first)
+                          .preload{[disaster, person.shift_territories]}
                           .joins{disaster}
                           .where{ disaster.dr_number.not_in(ignore) }
                           .order{ date_first_seen.desc }
@@ -78,7 +78,7 @@ private
 
   expose(:detailed_deployments) {
     deployments.map do |name, deps|
-      [name, deps.sort_by{|a| [a.person.counties.first.try(:name) || '', a.person.last_name] }]
+      [name, deps.sort_by{|a| [a.person.shift_territories.first.try(:name) || '', a.person.last_name] }]
     end
   }
 
@@ -99,7 +99,7 @@ private
   }
 
   expose(:incident_statistics) {
-    resources = scope.all_chapters.flat_map(&:incidents_resources_tracked_array).uniq
+    resources = scope.all_regions.flat_map(&:incidents_resources_tracked_array).uniq
     @incident_scope.count_resources(resources)
   }
 

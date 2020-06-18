@@ -3,13 +3,13 @@ class Incidents::Incident < ActiveRecord::Base
   include Incidents::IncidentPartners
   include Mappable
 
-  has_paper_trail class_name: 'Version', meta: {chapter_id: ->(inc){inc.chapter_id}}
+  has_paper_trail class_name: 'Version', meta: {region_id: ->(inc){inc.region_id}}
 
   before_validation :set_incident_number, on: :create
 
-  belongs_to :chapter, class_name: 'Roster::Chapter'
-  belongs_to :area, class_name: 'Roster::County'
-  belongs_to :territory, class_name: 'Incidents::Territory'
+  belongs_to :region, class_name: 'Roster::Region'
+  belongs_to :shift_territory, class_name: 'Roster::ShiftTerritory'
+  belongs_to :response_territory, class_name: 'Incidents::ResponseTerritory'
 
   belongs_to :cas_incident, class_name: 'Incidents::CasIncident', primary_key: 'cas_incident_number', foreign_key: 'cas_event_number'
   has_one :dat_incident, class_name: 'Incidents::DatIncident', inverse_of: :incident
@@ -35,11 +35,11 @@ class Incidents::Incident < ActiveRecord::Base
   accepts_nested_attributes_for :event_logs
 
   # We always want these to be present
-  validates :chapter, :date, :territory, presence: true
-  validates :incident_number, presence: true, format: /\A\w*\d{2}-\d{3,}\z/, uniqueness: { scope: :chapter_id }
+  validates :region, :date, :response_territory, presence: true
+  validates :incident_number, presence: true, format: /\A\w*\d{2}-\d{3,}\z/, uniqueness: { scope: :region_id }
 
-  scope :for_chapter, -> chapter { where{chapter_id.in chapter}}
-  scope :in_area, -> area {where{area_id == area}}
+  scope :for_region, -> region { where{region_id.in region}}
+  scope :in_shift_territory, -> shift_territory {where{shift_territory_id == shift_territory}}
   scope :valid, lambda {
     where{status != 'invalid'}
   }
@@ -55,8 +55,8 @@ class Incidents::Incident < ActiveRecord::Base
   scope :with_date_in, -> date_range {
     where{date.in(date_range)}
   }
-  scope :with_county_name, -> name {
-    where{county == name}
+  scope :with_county, -> county_in {
+    where{county == county_in}
   }
 
   def self.with_location
@@ -120,7 +120,7 @@ class Incidents::Incident < ActiveRecord::Base
 
   def valid_incident_types
     types = self.class.main_incident_types
-    types += self.class.extended_incident_types if chapter && chapter.incidents_report_advanced_details
+    types += self.class.extended_incident_types if region && region.incidents_report_advanced_details
     types
   end
 
@@ -176,7 +176,7 @@ class Incidents::Incident < ActiveRecord::Base
   end
 
   def set_incident_number
-    if chapter && (seq = chapter.incident_number_sequence)
+    if region && (seq = region.incident_number_sequence)
       self.incident_number = seq.next_sequence!
     end
     true
@@ -194,7 +194,7 @@ class Incidents::Incident < ActiveRecord::Base
 
   def close!
     self.status = 'closed'
-    self.response_date = chapter.time_zone.today
+    self.response_date = region.time_zone.today
     dat_incident && dat_incident.valid? && save
   end
 

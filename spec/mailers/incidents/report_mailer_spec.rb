@@ -3,10 +3,10 @@ require "spec_helper"
 describe Incidents::ReportMailer, :type => :mailer do
   let(:from_address) {["incidents@dcsops.org"]}
   let(:scope) { FactoryGirl.create :incidents_scope }
-  let(:person) { FactoryGirl.create :person, chapter: scope.chapter }
+  let(:person) { FactoryGirl.create :person, region: scope.region }
 
   before do
-    FactoryGirl.create :incident, chapter: scope.chapter, date: scope.chapter.time_zone.today.yesterday
+    FactoryGirl.create :incident, region: scope.region, date: scope.region.time_zone.today.yesterday
   end
 
   let(:mail) { Incidents::ReportMailer.report(scope, person) }
@@ -55,7 +55,7 @@ describe Incidents::ReportMailer, :type => :mailer do
         scope.report_dro_ignore = "123-456"
         scope.save
         disaster = FactoryGirl.create :disaster
-        deployment = FactoryGirl.create :deployment, person: person, disaster: disaster, date_first_seen: scope.chapter.time_zone.today.yesterday, date_last_seen: scope.chapter.time_zone.today
+        deployment = FactoryGirl.create :deployment, person: person, disaster: disaster, date_first_seen: scope.region.time_zone.today.yesterday, date_last_seen: scope.region.time_zone.today
         expect(mail.body.encoded).to match(disaster.name)
       end
     end

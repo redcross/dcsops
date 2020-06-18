@@ -16,7 +16,7 @@ Scheduling
    * see your flex schedule
      * can edit it
    * go into schedule for a month, play with different options
-     * see shifts, county shifts
+     * see shifts, shift territory shifts
      * sign up for a schedule
        * then de*sign up for it
 
@@ -89,10 +89,10 @@ Potentially
 
 Creating shifts in the admin console
  * shifts are made up of
-   * geography (territory in the new world)
+   * geography (response territory in the new world)
    * position
    * time (shift group)
  * see All shifts
-   * you can only sign up for shifts if you have a position and county that match
-   * there are regular expressions in the admin, rosters, counties (and positions)
+   * you can only sign up for shifts if you have a position and shift territory that match
+   * there are regular expressions in the admin, rosters, shift territories (and positions)
      * those need to match up to somethign

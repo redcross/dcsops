@@ -11,17 +11,17 @@ class Roster::MemberPositionsImporter < ImportParser
     gap_primary: 'primary_gap', gap_secondary: 'secondary_gap', gap_tertiary: 'tertiary_gap',
     vc_is_active: 'status_name', second_lang: 'second_language', third_lang: 'third_language',
     vc_last_login: 'last_login', vc_last_profile_update: 'profile_last_updated',
-    address1: 'address1', address2: 'address2', city: 'address3', state: 'address4', zip: 'address5', county_name: 'county', rco_id: 'rco_id'
+    address1: 'address1', address2: 'address2', city: 'address3', state: 'address4', zip: 'address5', county: 'county', rco_id: 'rco_id'
   }
 
-  POSITION_ATTR_NAMES = [:county_name, :position_name, :position_start, :position_end, :second_lang, :third_lang, :is_primary]
+  POSITION_ATTR_NAMES = [:county, :position_name, :position_start, :position_end, :second_lang, :third_lang, :is_primary]
 
   def positions
-    @_positions ||= @chapter.positions.select(&:vc_regex)
+    @_positions ||= @region.positions.select(&:vc_regex)
   end
 
-  def counties
-    @_counties ||= @chapter.counties.select(&:vc_regex)
+  def shift_territories
+    @_shift_territories ||= @region.shift_territories.select(&:vc_regex)
   end
 
 
@@ -41,9 +41,9 @@ class Roster::MemberPositionsImporter < ImportParser
 
       @num_people += 1
 
-      # Adding chapter: to the attrs merge should prevent the validates_presence_of: chapter from doing a db query
+      # Adding region: to the attrs merge should prevent the validates_presence_of: region from doing a db query
       @person.attributes = attrs
-      @person.chapter = @chapter
+      @person.region = @region
 
       filter @person
 
@@ -55,7 +55,7 @@ class Roster::MemberPositionsImporter < ImportParser
 
   def before_import
     @positions_matcher = Roster::PositionMatcher.new(positions)
-    @counties_matcher = Roster::PositionMatcher.new(counties)
+    @shift_territories_matcher = Roster::PositionMatcher.new(shift_territories)
     @position_names = Hash.new{|h, k| h[k] = 0}
 
     @vc_ids_seen = Set.new
@@ -67,12 +67,12 @@ class Roster::MemberPositionsImporter < ImportParser
   end
 
   def after_import
-    import_memberships @counties_matcher, Roster::CountyMembership, :county_id
+    import_memberships @shift_territories_matcher, Roster::ShiftTerritoryMembership, :shift_territory_id
     import_memberships @positions_matcher, Roster::PositionMembership, :position_id
-    Roster::VcImportData.find_or_initialize_by(chapter_id: @chapter.id).update_attributes position_data: @position_names, chapter_id: @chapter.id
+    Roster::VcImportData.find_or_initialize_by(region_id: @region.id).update_attributes position_data: @position_names, region_id: @region.id
 
     Roster::Person.where(vc_id: @vc_ids_seen.to_a).update_all :vc_imported_at => Time.now
-    deactivated = Roster::Person.for_chapter(@chapter).where{vc_id.not_in(my{@vc_ids_seen.to_a})}.update_all(:vc_is_active => false) if @vc_ids_seen.present?
+    deactivated = Roster::Person.for_region(@region).where{vc_id.not_in(my{@vc_ids_seen.to_a})}.update_all(:vc_is_active => false) if @vc_ids_seen.present?
     logger.info "Processed #{@num_people} active users and #{@num_positions} filtered positions"
     logger.info "Deactivated #{deactivated} accounts not received in update"
     logger.info "Filter hits: #{@filter_hits.inspect}"
@@ -80,8 +80,8 @@ class Roster::MemberPositionsImporter < ImportParser
   end
 
   def import_memberships matcher, klass, key
-    # Filter out existing counties in the database before we import.
-    matcher.remove_duplicates klass.for_chapter(@chapter).pluck(:person_id, key)
+    # Filter out existing shift_territories in the database before we import.
+    matcher.remove_duplicates klass.for_region(@region).pluck(:person_id, key)
     klass.import [:person_id, key], matcher.matches.to_a
   end
 
@@ -107,8 +107,8 @@ class Roster::MemberPositionsImporter < ImportParser
   end
 
   def match_county attrs
-    county_name = attrs.delete :county_name
-    match_position_named county_name if county_name.present?
+    county = attrs.delete :county
+    match_position_named county if county.present?
   end
 
   def match_positions attrs
@@ -135,10 +135,10 @@ class Roster::MemberPositionsImporter < ImportParser
 
   def match_position_named position_name
     @position_names[position_name] += 1
-    matched_counties = @counties_matcher.match(position_name, @person.id) 
+    matched_shift_territories = @shift_territories_matcher.match(position_name, @person.id) 
     matched_positions = @positions_matcher.match(position_name, @person.id)
 
-    unless !logger.debug? || matched_counties || matched_positions
+    unless !logger.debug? || matched_shift_territories || matched_positions
       logger.debug "Didn't match a record for item #{position_name}"
     end
   end
@@ -147,8 +147,8 @@ class Roster::MemberPositionsImporter < ImportParser
     return @_filter_regex if defined?(@_filter_regex)
     if ENV['POSITIONS_FILTER']
       @_filter_regex = Regexp.new(ENV['POSITIONS_FILTER'])
-    elsif @chapter.vc_position_filter.present?
-      @_filter_regex = Regexp.new(@chapter.vc_position_filter)
+    elsif @region.vc_position_filter.present?
+      @_filter_regex = Regexp.new(@region.vc_position_filter)
     end
   end
 
@@ -175,12 +175,12 @@ class Roster::MemberPositionsImporter < ImportParser
   end
 
   def is_importable_status(status_name)
-    is_active_status(status_name) || (@chapter.roster_import_prospective_members && (status_name == 'Prospective Volunteer'))
+    is_active_status(status_name) || (@region.roster_import_prospective_members && (status_name == 'Prospective Volunteer'))
   end
 
   def preload_identities(identities)
     ids = identities.group_by{|i| i[:identity][:vc_id].to_i }
-    people = Roster::Person.for_chapter(@chapter).where(vc_id: ids.keys).to_a
+    people = Roster::Person.for_region(@region).where(vc_id: ids.keys).to_a
     people.each do |person|
       ids[person.vc_id].first[:object] = person
     end

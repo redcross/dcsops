@@ -2,15 +2,15 @@
 
 FactoryGirl.define do
   factory :person, :class => 'Roster::Person' do
-    chapter { |f| f.association :chapter }
+    region { |f| f.association :region }
 
     first_name {Faker::Name.first_name}
     last_name {Faker::Name.last_name}
     email {Faker::Internet.email}
-    counties { |f| [f.association(:county, chapter: f.chapter)] }
-    positions { |f| [f.association(:position, chapter: f.chapter)] }
+    shift_territories { |f| [f.association(:shift_territory, region: f.region)] }
+    positions { |f| [f.association(:position, region: f.region)] }
 
-    primary_county { |f| f.counties.first }
+    primary_shift_territory { |f| f.shift_territories.first }
 
     work_phone {Faker::PhoneNumber.phone_number}
     

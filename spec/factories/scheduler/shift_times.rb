@@ -1,0 +1,12 @@
+# Read about factories at https://github.com/thoughtbot/factory_girl
+
+FactoryGirl.define do
+  factory :shift_time, :class => 'Scheduler::ShiftTime' do
+    name 'Group'
+    period "daily"
+    start_offset 0
+    end_offset 24.hours
+
+    association :region
+  end
+end

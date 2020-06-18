@@ -48,7 +48,7 @@ class Incidents::InitialIncidentReportsController < Incidents::EditPanelControll
   end
 
   def notify resource
-    Incidents::UpdatePublisher.new(@chapter, parent).publish_iir
+    Incidents::UpdatePublisher.new(@region, parent).publish_iir
   end
 
   def resource_params
@@ -59,16 +59,16 @@ class Incidents::InitialIncidentReportsController < Incidents::EditPanelControll
     params[:page] != 'all'
   end
 
-  def chapter_id
-    @chapter.id
+  def region_id
+    @region.id
   end
 
   def after_create_url
-    incidents_chapter_incident_path(@chapter, @incident, anchor: "inc-iir")
+    incidents_region_incident_path(@region, @incident, anchor: "inc-iir")
   end
 
   def resource_path *args
-    incidents_chapter_incident_initial_incident_report_path(@chapter, @incident, *args)
+    incidents_region_incident_initial_incident_report_path(@region, @incident, *args)
   end
 
   public

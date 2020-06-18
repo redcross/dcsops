@@ -2,14 +2,14 @@ helper = self
 grouped_collection.each do |item|
   cal.event do
     description helper.shift_title(item)
-    if item.shift_group.period == 'daily'
+    if item.shift_time.period == 'daily'
       dtstart (item.local_start_time)
       dtend (item.local_end_time)
     else
       dtstart (item.local_start_time.to_date)
       dtend (item.local_end_time.to_date)
     end
-    location item.shift.county.name
+    location item.shift.shift_territory.name
     summary helper.shift_summary(item)
     alarm do
       description "DAT Time!"

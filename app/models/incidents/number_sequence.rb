@@ -1,5 +1,5 @@
 class Incidents::NumberSequence < ActiveRecord::Base
-  has_many :chapters, class_name: 'Roster::Chapter', foreign_key: 'incident_number_sequence_id'
+  has_many :regions, class_name: 'Roster::Region', foreign_key: 'incident_number_sequence_id'
 
   def next_sequence!
     number = nil

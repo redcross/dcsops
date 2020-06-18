@@ -1,20 +1,20 @@
 module Incidents::Notifications
   class RoleScope < ActiveRecord::Base
     belongs_to :role
-    belongs_to :territory, class_name: 'Incidents::Territory'
+    belongs_to :response_territory, class_name: 'Incidents::ResponseTerritory'
 
-    validates_presence_of :territory, if: ->(obj){obj.level == 'territory'}
+    validates_presence_of :response_territory, if: ->(obj){obj.level == 'response_territory'}
 
     assignable_values_for :level do
-      %w(region territory county)
+      %w(region response_territory shift_territory)
     end
 
     before_validation :clean_values
     def clean_values
-      if level == 'territory'
+      if level == 'response_territory'
         value = nil
       else
-        territory_id = nil
+        response_territory_id = nil
       end
     end
   end

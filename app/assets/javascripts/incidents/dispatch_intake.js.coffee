@@ -79,17 +79,17 @@ class window.DispatchIntakeController
 
         @updateAddressFields(result)
 
-        @getTerritory result, (territory) =>
-          console.log territory
-          if !territory? or !territory.permissions.create
-            $('.inside-territory').collapse('hide')
-            $('.outside-territory').collapse('show')
-            number = if territory? then territory.dispatch_number else '855-891-7325'
+        @getResponseTerritory result, (response_territory) =>
+          console.log response_territory
+          if !response_territory? or !response_territory.permissions.create
+            $('.inside-response-territory').collapse('hide')
+            $('.outside-response-territory').collapse('show')
+            number = if response_territory? then response_territory.dispatch_number else '855-891-7325'
             $('.dispatch-referral').text(number)
           else
-            $('.inside-territory').collapse('show')
-            $('.outside-territory').collapse('hide')
-          @updateTerritoryDisplay(territory)
+            $('.inside-response-territory').collapse('show')
+            $('.outside-response-territory').collapse('hide')
+          @updateResponseTerritoryDisplay(response_territory)
           
 
 
@@ -102,10 +102,10 @@ class window.DispatchIntakeController
 
         @updateAddressFields(result)
 
-        @getTerritory result, (territory) =>
-          number = if territory then territory.non_disaster_number else '800-RED-CROSS (800-733-2767)'
+        @getResponseTerritory result, (response_territory) =>
+          number = if response_territory then response_territory.non_disaster_number else '800-RED-CROSS (800-733-2767)'
           $('.referral-number').text(number)
-          @updateTerritoryDisplay(territory)
+          @updateResponseTerritoryDisplay(response_territory)
 
 
 
@@ -127,24 +127,24 @@ class window.DispatchIntakeController
         console.log loc
         callback(loc)
 
-  updateTerritoryDisplay: (territory) ->
-    if territory?
-      region = territory.region_name || ''
-      name = territory.name || ''
+  updateResponseTerritoryDisplay: (response_territory) ->
+    if response_territory?
+      region = response_territory.region_name || ''
+      name = response_territory.name || ''
     else
       region = ''
       name = ''
     $('.dispatch-region-name').text(region)
-    $('.dispatch-territory-name').text(name)
+    $('.dispatch-response-territory-name').text(name)
 
-    @setFieldVal 'chapter_id', territory.chapter_id
-    @setFieldVal 'territory_id', territory.id
+    @setFieldVal 'region_id', response_territory.region_id
+    @setFieldVal 'response_territory_id', response_territory.id
 
-  getTerritory: (data, callback) ->
+  getResponseTerritory: (data, callback) ->
     $.ajax
-      url: '/incidents/api/territories.json'
+      url: '/incidents/api/response_territories.json'
       data:
-        territory_lookup:
+        response_territory_lookup:
           data
       success: (result, status, xhr) ->
         callback(result)

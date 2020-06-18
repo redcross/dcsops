@@ -13,7 +13,7 @@
         %td(style="white-space: nowrap")=evt.event_time.try :to_s, :date_time
         %td
           -if evt.incident
-            =link_to evt.incident.incident_number, incidents_chapter_incident_path(evt.incident.chapter, evt.incident)
+            =link_to evt.incident.incident_number, incidents_region_incident_path(evt.incident.region, evt.incident)
         %td=evt.humanized_event
         %td(style="width: 50%")=simple_format evt.message, {}, wrapper_tag: :span
         %td=evt.person.try(:full_name)

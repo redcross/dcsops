@@ -12,22 +12,22 @@ module Scheduler::HomeHelper
     end
   end
 
-  def current_shifts_tree(counties, groups=nil)
-    counties = counties.to_a
-    groups ||= Scheduler::ShiftGroup.current_groups_for_chapter(current_person.chapter, current_chapter.time_zone.now, Scheduler::ShiftGroup.includes{shifts})
+  def current_shifts_tree(shift_territories, groups=nil)
+    shift_territories = shift_territories.to_a
+    groups ||= Scheduler::ShiftTime.current_groups_for_region(current_person.region, current_region.time_zone.now, Scheduler::ShiftTime.includes{shifts})
     groups_by_id = groups.group_by(&:id)
     groups_by_shift = groups.reduce({}){|hash, group| group.shift_ids.each{|id| hash[id] = group}; hash }
 
-    # Get the list of shifts we're going to display: only for given counties, and only active on the current day for that shift
-    shifts = Scheduler::Shift.for_groups(groups).for_counties(counties).order(:ordinal)
+    # Get the list of shifts we're going to display: only for given shift_territories, and only active on the current day for that shift
+    shifts = Scheduler::Shift.for_groups(groups).for_shift_territories(shift_territories).order(:ordinal)
                              .select{|shift| group = groups_by_shift[shift.id]; shift.active_on_day?(group.start_date, group)}
-    shifts_by_county = shifts.group_by(&:county_id)
+    shifts_by_shift_territory = shifts.group_by(&:shift_territory_id)
 
     # The assignments for those shifts
-    assignments_by_shift = assignments_for_shifts(groups, shifts_by_county.values.flatten.compact).group_by(&:shift_id)
+    assignments_by_shift = assignments_for_shifts(groups, shifts_by_shift_territory.values.flatten.compact).group_by(&:shift_id)
 
-    # Return a hash structure of county => { shift => [assignments]}
+    # Return a hash structure of shift_territory => { shift => [assignments]}
     # There has got to be a better way of doing this...
-    Hash[counties.map{|c| shifts = shifts_by_county[c.id] || []; [c, Hash[shifts.map{|sh| [sh, assignments_by_shift[sh.id] || []]}]]}]
+    Hash[shift_territories.map{|c| shifts = shifts_by_shift_territory[c.id] || []; [c, Hash[shifts.map{|sh| [sh, assignments_by_shift[sh.id] || []]}]]}]
   end
 end

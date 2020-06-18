@@ -13,16 +13,16 @@ class Incidents::UpdateCasEventJob
     @incident ||= Incidents::Incident.find(incident_id)
   end
 
-  def chapter
-    incident.chapter
+  def region
+    incident.region
   end
 
   def client
-    @client ||= Cas::Client.new(chapter.cas_host, chapter.cas_username, chapter.cas_password)
+    @client ||= Cas::Client.new(region.cas_host, region.cas_username, region.cas_password)
   end
 
   def cas_configured?
-    chapter.cas_host.present? && chapter.cas_username.present? && chapter.cas_password.present?
+    region.cas_host.present? && region.cas_username.present? && region.cas_password.present?
   end
 
   def perform
@@ -41,7 +41,7 @@ class Incidents::UpdateCasEventJob
   end
 
   def publish_update
-    Incidents::UpdatePublisher.new(chapter, incident).publish_details
+    Incidents::UpdatePublisher.new(region, incident).publish_details
   end
 
 end

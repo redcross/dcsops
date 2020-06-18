@@ -7,18 +7,18 @@ describe "Incident Dispatch Intake Console", :type => :feature do
   end
 
   before do
-    @chapter = @person.chapter
-    @chapter.incidents_enable_dispatch_console = true
-    @chapter.incident_number_sequence = FactoryGirl.create :incident_number_sequence
-    @chapter.save!
+    @region = @person.region
+    @region.incidents_enable_dispatch_console = true
+    @region.incident_number_sequence = FactoryGirl.create :incident_number_sequence
+    @region.save!
 
-    @scope = FactoryGirl.create :incidents_scope, enable_dispatch_console: true, chapter: @chapter
+    @scope = FactoryGirl.create :incidents_scope, enable_dispatch_console: true, region: @region
 
-    grant_role!(:dispatch_console, [@scope.id])
+    grant_capability!(:dispatch_console, [@scope.id])
 
-    backup_person = FactoryGirl.create :person, chapter: @chapter
-    dc = FactoryGirl.create :scheduler_dispatch_config, chapter: @chapter, backup_first: backup_person
-    @terr = FactoryGirl.create :territory, chapter: @chapter, dispatch_config: dc, counties: ["San Francisco, CA"]
+    backup_person = FactoryGirl.create :person, region: @region
+    dc = FactoryGirl.create :scheduler_dispatch_config, region: @region, backup_first: backup_person
+    @terr = FactoryGirl.create :response_territory, region: @region, dispatch_config: dc, counties: ["San Francisco, CA"]
 
   end
 
@@ -38,10 +38,10 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     page.should have_text "The local Red Cross number for San Francisco County is #{@terr.non_disaster_number} ."
 
     within ".dispatch-region-name" do
-      page.should have_text @chapter.name
+      page.should have_text @region.name
     end
 
-    within ".dispatch-territory-name" do
+    within ".dispatch-response-territory-name" do
       page.should have_text @terr.name
     end
 
@@ -54,10 +54,10 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     log = Incidents::CallLog.last!
     expect(log.call_type).to eq "referral"
     expect(log.referral_reason).to_not be_blank
-    expect(log.chapter_id).to eq @chapter.id
+    expect(log.region_id).to eq @region.id
   end
 
-  it "handles an incident in territory" do
+  it "handles an incident in response territory" do
     visit intake_url
     choose 'Yes'
     page.should have_text "What is the address of the incident?"
@@ -74,10 +74,10 @@ describe "Incident Dispatch Intake Console", :type => :feature do
 
     log = Incidents::CallLog.last!
     expect(log.call_type).to eq "incident"
-    expect(log.chapter_id).to eq @chapter.id
+    expect(log.region_id).to eq @region.id
 
     expect(log.incident).to_not be_nil
-    expect(log.incident.chapter).to eq @chapter
+    expect(log.incident.region).to eq @region
 
     page.should have_text log.incident.incident_number
   end
@@ -104,7 +104,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
   end
 
 
-  it "handles an incident in an unknown territory" do
+  it "handles an incident in an unknown response territory" do
     visit intake_url
     choose 'Yes'
     page.should have_text "What is the address of the incident?"
@@ -115,8 +115,8 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     page.should_not have_text "Create Incident"
   end
 
-  it "handles an incident in an unauthorized territory" do
-    @other_terr = FactoryGirl.create :territory, counties: ["Alameda, CA"]
+  it "handles an incident in an unauthorized response territory" do
+    @other_terr = FactoryGirl.create :response_territory, counties: ["Alameda, CA"]
 
     visit intake_url
     choose 'Yes'

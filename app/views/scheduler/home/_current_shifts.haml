@@ -1,8 +1,8 @@
 - groups ||= nil
-- current_shifts_tree(counties, groups).each do |county, shifts|
+- current_shifts_tree(shift_territories, groups).each do |shift_territory, shifts|
   - next if shifts.blank?
-  -if counties.length > 1
-    %strong=county.name
+  -if shift_territories.length > 1
+    %strong=shift_territory.name
     %br
   - shifts.each do |shift, assignments|
     .shift

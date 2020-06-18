@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "System Jobs Admin Page", :type => :feature do
   before(:each) do
-    grant_role! :chapter_config
+    grant_capability! :region_config
   end
 
   # Jobs actually get created by enqueing a job, not

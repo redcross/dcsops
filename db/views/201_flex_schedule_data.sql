@@ -1,7 +1,7 @@
 DROP VIEW IF EXISTS reporting.flex_schedule_data;
 CREATE VIEW reporting.flex_schedule_data AS
   SELECT 
-    p.chapter_id, p.id as person_id,
+    p.region_id, p.id as person_id,
     p.first_name, p.last_name,
 
     flex.updated_at,

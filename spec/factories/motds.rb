@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :motd do
-    chapter nil
+    region nil
     begins nil
     ends nil
     cookie_code "MyString"

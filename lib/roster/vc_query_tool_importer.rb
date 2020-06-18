@@ -5,7 +5,7 @@ class Roster::VcQueryToolImporter
 
   attr_accessor :logger
   attr_accessor :row_counter
-  attr_reader :chapter
+  attr_reader :region
   attr_reader :client
 
   def initialize(logger=nil, row_counter=nil)
@@ -29,7 +29,7 @@ class Roster::VcQueryToolImporter
 
   def get_query name
     if Rails.env.development? and true
-      xls = Rails.cache.fetch "vc-query-#{name}-#{chapter.id}" do
+      xls = Rails.cache.fetch "vc-query-#{name}-#{region.id}" do
         client.execute_query query_mappings[name]
       end
     else
@@ -112,21 +112,21 @@ class Roster::VcQueryToolImporter
     positions
   end
 
-  def import(chapter, queries=query_mappings.keys)
-    @chapter = chapter
-    @client = Vc::QueryTool.new chapter.vc_username, chapter.vc_password
+  def import(region, queries=query_mappings.keys)
+    @region = region
+    @client = Vc::QueryTool.new region.vc_username, region.vc_password
     @client.logger = self.logger
 
     positions = join_positions_and_usage
 
-    handler = Roster::MemberPositionsImporter.new(positions, chapter, logger)
+    handler = Roster::MemberPositionsImporter.new(positions, region, logger)
     handler.process { self.row_counter.row! if self.row_counter }
     Roster::Person.transaction do
       logger.info "Beginning Bulk-update Transaction"
 
       if queries.include?(:positions) || queries.include?(:qualifications)
-        Roster::PositionMembership.destroy_all_for_chapter(chapter)
-        Roster::CountyMembership.destroy_all_for_chapter(chapter)
+        Roster::PositionMembership.destroy_all_for_region(region)
+        Roster::ShiftTerritoryMembership.destroy_all_for_region(region)
       end
 
       logger.info "Deleted existing memberships"

@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  helper_method :current_user, :current_user_session, :current_chapter, :impersonating_user
+  helper_method :current_user, :current_user_session, :current_region, :impersonating_user
 
   before_filter :require_valid_user!
   before_filter :require_active_user!
@@ -14,12 +14,12 @@ class ApplicationController < ActionController::Base
   before_filter :set_frame_options
 
   def user_time_zone(&block)
-    tz = current_user.try(:chapter).try(:time_zone) || Time.zone 
+    tz = current_user.try(:region).try(:time_zone) || Time.zone 
     Time.use_zone(tz, &block)
   end
 
   def annotate_newrelic_user
-    ::NewRelic::Agent.add_custom_parameters(user_id: current_user.try(:id), user_name: current_user.try(:full_name), chapter_id: current_chapter.id)
+    ::NewRelic::Agent.add_custom_parameters(user_id: current_user.try(:id), user_name: current_user.try(:full_name), region_id: current_region.id)
   end
 
   #check_authorization
@@ -39,8 +39,8 @@ class ApplicationController < ActionController::Base
     current_user_session.try(:person)
   end
 
-  def current_chapter
-    @current_chapter ||= current_user.chapter if current_user
+  def current_region
+    @current_region ||= current_user.region if current_user
   end
 
   def impersonating_user

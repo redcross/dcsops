@@ -1,5 +1,5 @@
 class Roster::VcImportData < ActiveRecord::Base
-  belongs_to :chapter
+  belongs_to :region
 
   def positions_matching regex_str
     regex = Regexp.new(regex_str)

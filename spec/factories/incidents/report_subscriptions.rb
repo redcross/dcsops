@@ -3,8 +3,8 @@
 FactoryGirl.define do
   factory :report_subscription, :class => 'Incidents::ReportSubscription' do
     association :scope, factory: :incidents_scope
-    person { |sub| sub.association :person, chapter: sub.scope.chapter }
-    county nil
+    person { |sub| sub.association :person, region: sub.scope.region }
+    shift_territory nil
     report_type "report"
     frequency 'weekly'
   end

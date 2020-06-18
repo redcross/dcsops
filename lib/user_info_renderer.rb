@@ -23,7 +23,7 @@ class UserInfoRenderer
 
   def vc_basic
     if scopes.include? 'openid'
-      {chapter: person.chapter_id, active: person.vc_is_active}
+      {region: person.region_id, active: person.vc_is_active}
     end
   end
 
@@ -36,7 +36,7 @@ class UserInfoRenderer
   end
 
   def render_position pos
-    {id: pos.id, chapter_id: pos.chapter_id, name: pos.name, roles: pos.role_memberships.map{|r| {name: r.role.grant_name, scope: r.role_scopes.map(&:scope)}}}
+    {id: pos.id, region_id: pos.region_id, name: pos.name, capabilties: pos.capability_memberships.map{|r| {name: r.capability.grant_name, scope: r.capability_scopes.map(&:scope)}}}
   end
 
   def deployments

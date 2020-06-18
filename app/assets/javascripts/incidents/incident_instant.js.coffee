@@ -6,7 +6,7 @@ class window.IncidentInstantController
 
   setIncident: (@incidentNumber) ->
 
-  setChapter: (@chapterNumber) ->
+  setRegion: (@regionNumber) ->
 
   handleMessage: (msg) ->
     console.log msg
@@ -14,7 +14,7 @@ class window.IncidentInstantController
     if @incidentNumber?
       if msg.incident != @incidentNumber
         return
-    else if msg.chapter != @chapterNumber
+    else if msg.region != @regionNumber
       return
     
     values = msg.refresh

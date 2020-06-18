@@ -18,29 +18,29 @@ describe "Shift Scheduler Spec", :type => :feature do
   end
 
   before :each do
-    # This has to happen up here, so that the county/position/category create
-    # includes this person, because the chapters have to match before FactoryGirl
+    # This has to happen up here, so that the shift_territory/position/category create
+    # includes this person, because the regions have to match before FactoryGirl
     # creates these.
-    @other_person = FactoryGirl.create(:person, rco_id: rand(100000), chapter: @person.chapter)
+    @other_person = FactoryGirl.create(:person, rco_id: rand(100000), region: @person.region)
 
-    group = FactoryGirl.create :shift_group, chapter: @person.chapter, start_offset: 10.hours, end_offset: 22.hours
-    @counties = (1..2).map{|i| FactoryGirl.create :county, name: "County #{i}", chapter: @person.chapter}
-    @positions = (1..2).map{|i| FactoryGirl.create :position, name: "Position #{i}", chapter: @person.chapter}
-    @categories = (1..2).map{|i| FactoryGirl.create :shift_category, name: "Category #{i}", chapter: @person.chapter}
+    group = FactoryGirl.create :shift_time, region: @person.region, start_offset: 10.hours, end_offset: 22.hours
+    @shift_territories = (1..2).map{|i| FactoryGirl.create :shift_territory, name: "Shift Territory #{i}", region: @person.region}
+    @positions = (1..2).map{|i| FactoryGirl.create :position, name: "Position #{i}", region: @person.region}
+    @categories = (1..2).map{|i| FactoryGirl.create :shift_category, name: "Category #{i}", region: @person.region}
 
     FactoryGirl.create :shift,
-      shift_groups: [group],
+      shift_times: [group],
       name: "Shift 1",
       positions: [@positions.find{|p| p.name == "Position 1"}],
       shift_category: @categories.find{|c| c.name == "Category 1"},
-      county: @counties.find{|c| c.name == "County 1"}
+      shift_territory: @shift_territories.find{|c| c.name == "Shift Territory 1"}
 
     FactoryGirl.create :shift,
-      shift_groups: [group],
+      shift_times: [group],
       name: "Shift 2",
       positions: [@positions.find{|p| p.name == "Position 2"}],
       shift_category: @categories.find{|c| c.name == "Category 2"},
-      county: @counties.find{|c| c.name == "County 2"}
+      shift_territory: @shift_territories.find{|c| c.name == "Shift Territory 2"}
   end
 
   it "Visits this months schedule" do
@@ -53,7 +53,7 @@ describe "Shift Scheduler Spec", :type => :feature do
     end
 
     page.should have_text("My Positions")
-    page.should have_text("County Shifts")
+    page.should have_text("Shift Territory Shifts")
     page.should have_text("Available Shifts")
     page.should have_text(next_month)
   end
@@ -68,7 +68,7 @@ describe "Shift Scheduler Spec", :type => :feature do
 
   it "Signs up for a shift" do
     @person.positions = @positions[0..0]
-    @person.counties = @counties
+    @person.shift_territories = @shift_territories
 
     visit "/scheduler/"
     page.should have_text "You have no upcoming shifts scheduled."
@@ -87,7 +87,7 @@ describe "Shift Scheduler Spec", :type => :feature do
 
   it "Signs up and removes sign up for a shift" do
     @person.positions = @positions[0..0]
-    @person.counties = @counties
+    @person.shift_territories = @shift_territories
 
     visit month_of_interest_link
     
@@ -99,18 +99,18 @@ describe "Shift Scheduler Spec", :type => :feature do
     page.should_not have_text "#{@person.first_name[0..0]} #{@person.last_name}"
   end
 
-  it "Looks at and filters county shifts by County and Category" do
+  it "Looks at and filters shift territory shifts by Shift Territory and Category" do
     @person.positions = @positions
-    @person.counties = @counties
+    @person.shift_territories = @shift_territories
     visit month_of_interest_link
-    click_on "County Shifts"
+    click_on "Shift Territory Shifts"
 
-    # The county with shifts isn't the default, so no shifts should show up here
+    # The shift territory with shifts isn't the default, so no shifts should show up here
     page.should have_text("Categories")
     page.should have_text("Category 1")
     page.should_not have_text("OPEN")
 
-    find("#choose-county").select("County 1")
+    find("#choose-shift_territory").select("Shift Territory 1")
     page.should have_text("Shift 1")
     page.should_not have_text("Shift 2")
 
@@ -123,17 +123,17 @@ describe "Shift Scheduler Spec", :type => :feature do
     page.should_not have_text("Shift 1")
     page.should_not have_text("Shift 2")
 
-    find("#choose-county").select("County 2")
+    find("#choose-shift_territory").select("Shift Territory 2")
     page.should_not have_text("Shift 1")
     page.should have_text("Shift 2")
   end
 
   it "Allows a swap between two users" do
     @person.positions = @positions
-    @person.counties = @counties
+    @person.shift_territories = @shift_territories
 
     @other_person = FactoryGirl.create(:person, rco_id: rand(100000))
-    @other_person.counties = @counties
+    @other_person.shift_territories = @shift_territories
     @other_person.positions = @positions
 
     visit month_of_interest_link
@@ -161,10 +161,10 @@ describe "Shift Scheduler Spec", :type => :feature do
 
   it "Can view another person's shifts" do
     @person.positions = @positions
-    @person.counties = @counties
+    @person.shift_territories = @shift_territories
 
     @other_person.positions = @positions
-    @other_person.counties = @counties
+    @other_person.shift_territories = @shift_territories
 
     visit month_of_interest_link
     all(".shift-checkbox")[5].click
@@ -184,12 +184,12 @@ describe "Shift Scheduler Spec", :type => :feature do
 
   it "Can assign another person a shift as admin" do
     @person.positions = @positions
-    @person.counties = @counties
+    @person.shift_territories = @shift_territories
 
     @other_person.positions = @positions
-    @other_person.counties = @counties
+    @other_person.shift_territories = @shift_territories
 
-    grant_role! 'county_dat_admin', @other_person.county_ids, @other_person
+    grant_capability! 'shift_territory_dat_admin', @other_person.shift_territory_ids, @other_person
 
     visit month_of_interest_link
     all(".shift-checkbox")[5].click

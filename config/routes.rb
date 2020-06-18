@@ -17,7 +17,7 @@ Scheduler::Application.routes.draw do
     resources :shifts, only: [:index] do
       match '', via: [:put], action: :update_shifts, on: :collection
     end
-    resources :shift_groups
+    resources :shift_times
 
     get 'calendar/:year/:month(/:display)',  year: /\d{4}/,
                                   month: /(january|february|march|april|may|june|july|august|september|october|november|december)/,
@@ -44,7 +44,7 @@ Scheduler::Application.routes.draw do
   end
 
   namespace :roster do
-    resources :chapters
+    resources :regions
     resources :people
     resource :session do
       get :new_rco
@@ -62,12 +62,12 @@ Scheduler::Application.routes.draw do
   end
 
   namespace :incidents do
-    root to: "home#redirect_to_chapter"
+    root to: "home#redirect_to_region"
     scope ':scope_id', as: :scope do
       resources :report_subscriptions, report_type: 'report'
     end
 
-    scope ':chapter_id', as: :chapter do
+    scope ':region_id', as: :region do
       root to: "home#root"
       get :operations, to: "home#operations"
       resources :event_logs
@@ -139,12 +139,12 @@ Scheduler::Application.routes.draw do
     end
 
     namespace :api do
-      resources :territories, only: :index
+      resources :response_territories, only: :index
       resources :incidents, only: :index
       post :twilio_incoming, controller: :responder_messages_twilio, action: :incoming
     end
 
-    get '*glob', to: "home#redirect_to_chapter"
+    get '*glob', to: "home#redirect_to_region"
   end
 
   namespace :partners do
@@ -152,7 +152,7 @@ Scheduler::Application.routes.draw do
   end
 
   namespace :api do
-    resources :chapters, only: [:index, :show]
+    resources :regions, only: [:index, :show]
     resources :people, only: [:index, :show] do
       get :me, on: :collection
     end
@@ -160,9 +160,9 @@ Scheduler::Application.routes.draw do
   end
 
   namespace :admin do
-    resources :chapters do
+    resources :regions do
       resources :positions
-      resources :counties
+      resources :shift_territories
       resources :shifts
       resource :vc_positions, only: :show
     end

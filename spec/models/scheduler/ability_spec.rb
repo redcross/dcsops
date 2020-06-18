@@ -5,7 +5,7 @@ describe Scheduler::Ability, :type => :model do
     @person = FactoryGirl.create :person
     @position = @person.positions.first
 
-    @other_person = FactoryGirl.create :person, chapter: @person.chapter, counties: @person.counties
+    @other_person = FactoryGirl.create :person, region: @person.region, shift_territories: @person.shift_territories
   end
 
   let(:ability) { Scheduler::Ability.new(@person) }
@@ -62,19 +62,19 @@ describe Scheduler::Ability, :type => :model do
     end
   end
 
-  context "as county dat admin" do
+  context "as shift_territory dat admin" do
     before(:each) do
-      grant_role! 'county_dat_admin', @person.county_ids
+      grant_capability! 'shift_territory_dat_admin', @person.shift_territory_ids
 
-      @non_county_person = FactoryGirl.create :person, chapter: @person.chapter
+      @non_shift_territory_person = FactoryGirl.create :person, region: @person.region
     end
 
-    it "can read people in county" do
+    it "can read people in shift_territory" do
       expect(can?(:read, @other_person)).to be_truthy
-      expect(cannot?(:read, @non_county_person)).to be_truthy
+      expect(cannot?(:read, @non_shift_territory_person)).to be_truthy
     end
 
-    it "can manage county's shifts" do
+    it "can manage shift territory's shifts" do
       ass = Scheduler::ShiftAssignment.new person: @other_person
 
       expect(can?(:create, ass)).to be_truthy
@@ -83,8 +83,8 @@ describe Scheduler::Ability, :type => :model do
       expect(can?(:swap, ass)).to be_truthy
     end
 
-    it "can't manage other county's shifts" do
-      ass = Scheduler::ShiftAssignment.new person: @non_county_person
+    it "can't manage other shift territory's shifts" do
+      ass = Scheduler::ShiftAssignment.new person: @non_shift_territory_person
 
       expect(cannot?(:create, ass)).to be_truthy
       expect(cannot?(:read, ass)).to be_truthy
@@ -92,50 +92,50 @@ describe Scheduler::Ability, :type => :model do
       expect(cannot?(:swap, ass)).to be_truthy
     end
 
-    it "can manage only own county's dispatch config" do
-      config = Scheduler::DispatchConfig.new id: @person.county_ids.first
+    it "can manage only own shift territory's dispatch config" do
+      config = Scheduler::DispatchConfig.new id: @person.shift_territory_ids.first
 
       expect(can?(:read, config)).to be_truthy
       expect(can?(:update, config)).to be_truthy
     end
 
-    it "can't manage other county's dispatch config" do
-      config = Scheduler::DispatchConfig.new id: @non_county_person.county_ids.first
+    it "can't manage other shift territory's dispatch config" do
+      config = Scheduler::DispatchConfig.new id: @non_shift_territory_person.shift_territory_ids.first
 
       expect(cannot?(:read, config)).to be_truthy
       expect(cannot?(:update, config)).to be_truthy
     end
 
-    it "can read and update county person's notification setting" do
+    it "can read and update shift territory person's notification setting" do
       expect(can?(:read, Scheduler::NotificationSetting.new( id: @other_person.id))).to be_truthy
       expect(can?(:update, Scheduler::NotificationSetting.new( id: @other_person.id))).to be_truthy
     end
 
-    it "can't read and update other county person's notification setting" do
-      expect(cannot?(:read, Scheduler::NotificationSetting.new( id: @non_county_person.id))).to be_truthy
-      expect(cannot?(:update, Scheduler::NotificationSetting.new( id: @non_county_person.id))).to be_truthy
+    it "can't read and update other shift territory person's notification setting" do
+      expect(cannot?(:read, Scheduler::NotificationSetting.new( id: @non_shift_territory_person.id))).to be_truthy
+      expect(cannot?(:update, Scheduler::NotificationSetting.new( id: @non_shift_territory_person.id))).to be_truthy
     end
 
-    it "can read and update county person's flex schedule" do
+    it "can read and update shift territory person's flex schedule" do
       expect(can?(:read, Scheduler::FlexSchedule.new( id: @other_person.id))).to be_truthy
       expect(can?(:update, Scheduler::FlexSchedule.new( id: @other_person.id))).to be_truthy
     end
 
-    it "can't read and update other county person's flex schedule" do
-      expect(cannot?(:read, Scheduler::FlexSchedule.new( id: @non_county_person.id))).to be_truthy
-      expect(cannot?(:update, Scheduler::FlexSchedule.new( id: @non_county_person.id))).to be_truthy
+    it "can't read and update other shift territory person's flex schedule" do
+      expect(cannot?(:read, Scheduler::FlexSchedule.new( id: @non_shift_territory_person.id))).to be_truthy
+      expect(cannot?(:update, Scheduler::FlexSchedule.new( id: @non_shift_territory_person.id))).to be_truthy
     end
 
-    it "can manage own county's shifts" do
-      shift = Scheduler::Shift.new county_id: @person.county_ids.first
+    it "can manage own shift territory's shifts" do
+      shift = Scheduler::Shift.new shift_territory_id: @person.shift_territory_ids.first
 
       expect(can?(:read, shift)).to be_truthy
       expect(can?(:update, shift)).to be_truthy
       expect(can?(:update_shifts, shift)).to be_truthy
     end
 
-    it "can't manage other county's shifts" do
-      shift = Scheduler::Shift.new county_id: @non_county_person.county_ids.first
+    it "can't manage other shift territory's shifts" do
+      shift = Scheduler::Shift.new shift_territory_id: @non_shift_territory_person.shift_territory_ids.first
 
       expect(cannot?(:read, shift)).to be_truthy
       expect(cannot?(:update, shift)).to be_truthy

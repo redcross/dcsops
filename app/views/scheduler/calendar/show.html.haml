@@ -6,9 +6,9 @@
   .row
     .col-sm-3
       %h5 Select Shifts
-      .btn-group-vertical.btn-block#select-shift-group
+      .btn-group-vertical.btn-block#select-shift-time
         %button.btn.btn-default.btn-block{:"data-shifts" => "mine", class: show_shifts==:mine && "active"} My Positions
-        %button.btn.btn-default.btn-block{:"data-shifts" => "county", class: show_shifts==:county && "active"} County Shifts
+        %button.btn.btn-default.btn-block{:"data-shifts" => "shift_territory", class: show_shifts==:shift_territory && "active"} Shift Territory Shifts
         %button.btn.btn-default.btn-block{:"data-shifts" => "all", class: show_shifts==:all && "active"} All Shifts
     .col-sm-3
       %h5 Select Highlighting
@@ -21,9 +21,9 @@
         .col-xs-8
           =text_field_tag :person, (person and person.full_name), id: "select-person", class: "form-control col-xs-8"
         %button.btn.btn-default.col-xs-4#clear-person{data: {clear_typeahead: "select-person"}} Clear
-      #choose-counties{style: show_shifts==:county || 'display: none'}
-        =select_tag "counties[]", options_from_collection_for_select(current_chapter.counties.enabled, :id, :name, show_counties.first), multiple: false, id: 'choose-county', class: "form-control"
-        - cats = Scheduler::ShiftCategory.for_chapter(current_chapter).to_a
+      #choose-shift_territories{style: show_shifts==:shift_territory || 'display: none'}
+        =select_tag "shift_territories[]", options_from_collection_for_select(current_region.shift_territories.enabled, :id, :name, show_shift_territories.first), multiple: false, id: 'choose-shift_territory', class: "form-control"
+        - cats = Scheduler::ShiftCategory.for_region(current_region).to_a
         -if cats.count > 1
           %h5 Categories
           - cats.each do |cat|

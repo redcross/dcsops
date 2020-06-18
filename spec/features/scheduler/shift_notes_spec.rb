@@ -5,27 +5,27 @@ require 'spec_helper'
 # the usual rule of traversing to the page naturally at least once
 describe "Shift Notes Page", :type => :feature do
   before :each do
-    grant_role! 'county_dat_admin'
+    grant_capability! 'shift_territory_dat_admin'
 
-    group = FactoryGirl.create :shift_group, chapter: @person.chapter, start_offset: 10.hours, end_offset: 22.hours
-    county = FactoryGirl.create :county, name: "County", chapter: @person.chapter
-    position = FactoryGirl.create :position, name: "Position", chapter: @person.chapter
-    category = FactoryGirl.create :shift_category, name: "Category", chapter: @person.chapter
+    time = FactoryGirl.create :shift_time, region: @person.region, start_offset: 10.hours, end_offset: 22.hours
+    shift_territory = FactoryGirl.create :shift_territory, name: "Shift Territory", region: @person.region
+    position = FactoryGirl.create :position, name: "Position", region: @person.region
+    category = FactoryGirl.create :shift_category, name: "Category", region: @person.region
 
     shift = FactoryGirl.create :shift,
-      shift_groups: [group],
+      shift_times: [time],
       name: "Shift",
       positions: [position],
       shift_category: category,
-      county: county
+      shift_territory: shift_territory
 
-    @person.counties = [county]
+    @person.shift_territories = [shift_territory]
     @person.positions = [position]
     @person.save
 
     @assignment = FactoryGirl.create :shift_assignment,
       shift: shift,
-      shift_group: group,
+      shift_time: time,
       person: @person,
       date: Time.current.beginning_of_day
   end

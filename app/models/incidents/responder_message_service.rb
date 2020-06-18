@@ -23,7 +23,7 @@ class Incidents::ResponderMessageService
   end
 
   def reply
-    @response = Incidents::ResponderMessage.new chapter: incoming.chapter, person: incoming.person
+    @response = Incidents::ResponderMessage.new region: incoming.region, person: incoming.person
     incoming.acknowledged = true
 
     if @assignment = open_assignment_for_person(incoming.person)
@@ -146,6 +146,6 @@ class Incidents::ResponderMessageService
   end
 
   def publisher
-    @publisher ||= Incidents::UpdatePublisher.new(incident.chapter, incident)
+    @publisher ||= Incidents::UpdatePublisher.new(incident.region, incident)
   end
 end

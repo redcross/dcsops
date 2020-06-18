@@ -8,16 +8,16 @@ describe Incidents::IncidentsController, :type => :routing do
     #end
 
     it "routes to #show" do
-      expect(get("/incidents/slug/incidents/15-555")).to route_to("incidents/incidents#show", :id => "15-555", chapter_id: 'slug')
+      expect(get("/incidents/slug/incidents/15-555")).to route_to("incidents/incidents#show", :id => "15-555", region_id: 'slug')
     end
 
     it "routes to #link_cas" do
-      expect(get("/incidents/slug/incidents/link_cas")).to route_to("incidents/incidents#link_cas", chapter_id: 'slug')
-      expect(post("/incidents/slug/incidents/link_cas")).to route_to("incidents/incidents#link_cas", chapter_id: 'slug')
+      expect(get("/incidents/slug/incidents/link_cas")).to route_to("incidents/incidents#link_cas", region_id: 'slug')
+      expect(post("/incidents/slug/incidents/link_cas")).to route_to("incidents/incidents#link_cas", region_id: 'slug')
     end
 
     it "routes to #needs_report" do
-      expect(get("/incidents/slug/incidents/needs_report")).to route_to("incidents/incidents#needs_report", chapter_id: 'slug')
+      expect(get("/incidents/slug/incidents/needs_report")).to route_to("incidents/incidents#needs_report", region_id: 'slug')
     end
 
     #it "routes to #edit" do

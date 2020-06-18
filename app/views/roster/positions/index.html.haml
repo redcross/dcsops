@@ -5,7 +5,7 @@
   %thead
     %tr
       %th= model_class.human_attribute_name(:id)
-      %th= model_class.human_attribute_name(:chapter_id)
+      %th= model_class.human_attribute_name(:region_id)
       %th= model_class.human_attribute_name(:name)
       %th= model_class.human_attribute_name(:vc_regex_raw)
       %th= model_class.human_attribute_name(:created_at)
@@ -14,7 +14,7 @@
     - collection.each do |position|
       %tr
         %td= link_to position.id, roster_position_path(position)
-        %td= position.chapter_id
+        %td= position.region_id
         %td= position.name
         %td= position.vc_regex_raw
         %td=l position.created_at

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160129023314) do
+ActiveRecord::Schema.define(version: 20200616210846) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   enable_extension "pg_stat_statements"
   enable_extension "tablefunc"
 
-  create_table "active_admin_comments", force: true do |t|
+  create_table "active_admin_comments", force: :cascade do |t|
     t.string   "resource_id",   null: false
     t.string   "resource_type", null: false
     t.integer  "author_id"
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
-  create_table "api_clients", force: true do |t|
+  create_table "api_clients", force: :cascade do |t|
     t.string   "name"
     t.string   "app_token"
     t.string   "app_secret"
@@ -42,21 +42,21 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  create_table "connect_access_token_request_objects", force: true do |t|
+  create_table "connect_access_token_request_objects", force: :cascade do |t|
     t.integer  "access_token_id"
     t.integer  "request_object_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "connect_access_token_scopes", force: true do |t|
+  create_table "connect_access_token_scopes", force: :cascade do |t|
     t.integer  "access_token_id"
     t.integer  "scope_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "connect_access_tokens", force: true do |t|
+  create_table "connect_access_tokens", force: :cascade do |t|
     t.integer  "account_id"
     t.integer  "client_id"
     t.string   "token"
@@ -67,21 +67,21 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "connect_access_tokens", ["token"], name: "index_connect_access_tokens_on_token", unique: true, using: :btree
 
-  create_table "connect_authorization_request_objects", force: true do |t|
+  create_table "connect_authorization_request_objects", force: :cascade do |t|
     t.integer  "authorization_id"
     t.integer  "request_object_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "connect_authorization_scopes", force: true do |t|
+  create_table "connect_authorization_scopes", force: :cascade do |t|
     t.integer  "authorization_id"
     t.integer  "scope_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "connect_authorizations", force: true do |t|
+  create_table "connect_authorizations", force: :cascade do |t|
     t.integer  "account_id"
     t.integer  "client_id"
     t.string   "code"
@@ -94,7 +94,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "connect_authorizations", ["code"], name: "index_connect_authorizations_on_code", unique: true, using: :btree
 
-  create_table "connect_clients", force: true do |t|
+  create_table "connect_clients", force: :cascade do |t|
     t.integer  "account_id"
     t.string   "identifier"
     t.string   "secret"
@@ -114,7 +114,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "connect_clients", ["identifier"], name: "index_connect_clients_on_identifier", unique: true, using: :btree
 
-  create_table "connect_grants", force: true do |t|
+  create_table "connect_grants", force: :cascade do |t|
     t.integer  "client_id"
     t.integer  "account_id"
     t.integer  "scope_id"
@@ -127,14 +127,14 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "connect_grants", ["client_id"], name: "index_connect_grants_on_client_id", using: :btree
   add_index "connect_grants", ["scope_id"], name: "index_connect_grants_on_scope_id", using: :btree
 
-  create_table "connect_id_token_request_objects", force: true do |t|
+  create_table "connect_id_token_request_objects", force: :cascade do |t|
     t.integer  "id_token_id"
     t.integer  "request_object_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "connect_id_tokens", force: true do |t|
+  create_table "connect_id_tokens", force: :cascade do |t|
     t.integer  "account_id"
     t.integer  "client_id"
     t.string   "nonce"
@@ -143,7 +143,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  create_table "connect_pairwise_pseudonymous_identifiers", force: true do |t|
+  create_table "connect_pairwise_pseudonymous_identifiers", force: :cascade do |t|
     t.integer  "account_id"
     t.string   "identifier"
     t.string   "sector_identifier"
@@ -151,13 +151,13 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  create_table "connect_request_objects", force: true do |t|
+  create_table "connect_request_objects", force: :cascade do |t|
     t.text     "jwt_string"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "connect_scopes", force: true do |t|
+  create_table "connect_scopes", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -165,7 +165,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "connect_scopes", ["name"], name: "index_connect_scopes_on_name", unique: true, using: :btree
 
-  create_table "data_filters", force: true do |t|
+  create_table "data_filters", force: :cascade do |t|
     t.string   "model"
     t.string   "field"
     t.string   "pattern_raw"
@@ -173,7 +173,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  create_table "delayed_jobs", force: true do |t|
+  create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   default: 0, null: false
     t.integer  "attempts",   default: 0, null: false
     t.text     "handler",                null: false
@@ -189,13 +189,13 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
-  create_table "homepage_link_roles", force: true do |t|
+  create_table "homepage_link_roles", force: :cascade do |t|
     t.integer "homepage_link_id"
     t.string  "role_scope"
   end
 
-  create_table "homepage_links", force: true do |t|
-    t.integer  "chapter_id"
+  create_table "homepage_links", force: :cascade do |t|
+    t.integer  "region_id"
     t.string   "name"
     t.text     "description"
     t.string   "icon"
@@ -211,9 +211,9 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  add_index "homepage_links", ["chapter_id"], name: "index_homepage_links_on_chapter_id", using: :btree
+  add_index "homepage_links", ["region_id"], name: "index_homepage_links_on_region_id", using: :btree
 
-  create_table "incidents_attachments", force: true do |t|
+  create_table "incidents_attachments", force: :cascade do |t|
     t.integer  "incident_id",       null: false
     t.string   "attachment_type"
     t.string   "name"
@@ -226,9 +226,9 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "incidents_attachments", ["incident_id"], name: "index_incidents_attachments_on_incident_id", using: :btree
 
-  create_table "incidents_call_logs", force: true do |t|
-    t.integer  "chapter_id"
-    t.integer  "dispatching_chapter_id"
+  create_table "incidents_call_logs", force: :cascade do |t|
+    t.integer  "region_id"
+    t.integer  "dispatching_region_id"
     t.string   "call_type"
     t.string   "contact_name"
     t.string   "contact_number"
@@ -246,16 +246,16 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.text     "referral_reason"
     t.datetime "call_start"
     t.integer  "incident_id"
-    t.integer  "territory_id"
+    t.integer  "response_territory_id"
     t.integer  "creator_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "incidents_call_logs", ["chapter_id"], name: "index_incidents_call_logs_on_chapter_id", using: :btree
-  add_index "incidents_call_logs", ["dispatching_chapter_id"], name: "index_incidents_call_logs_on_dispatching_chapter_id", using: :btree
+  add_index "incidents_call_logs", ["dispatching_region_id"], name: "index_incidents_call_logs_on_dispatching_region_id", using: :btree
+  add_index "incidents_call_logs", ["region_id"], name: "index_incidents_call_logs_on_region_id", using: :btree
 
-  create_table "incidents_cas_cases", force: true do |t|
+  create_table "incidents_cas_cases", force: :cascade do |t|
     t.integer  "cas_incident_id"
     t.string   "case_number"
     t.integer  "num_clients"
@@ -280,13 +280,13 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "incidents_cas_cases", ["cas_incident_id"], name: "index_incidents_cas_cases_on_cas_incident_id", using: :btree
   add_index "incidents_cas_cases", ["case_number"], name: "index_incidents_cas_cases_on_case_number", unique: true, using: :btree
 
-  create_table "incidents_cas_incidents", force: true do |t|
+  create_table "incidents_cas_incidents", force: :cascade do |t|
     t.string   "dr_number"
     t.string   "cas_incident_number"
     t.string   "cas_name"
     t.integer  "dr_level"
     t.boolean  "is_dr"
-    t.string   "county_name"
+    t.string   "county"
     t.integer  "cases_opened"
     t.integer  "cases_open"
     t.integer  "cases_closed"
@@ -300,14 +300,14 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "last_import"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "chapter_id"
-    t.string   "chapter_code"
+    t.integer  "region_id"
+    t.string   "region_code"
     t.boolean  "ignore_incident",           default: false, null: false
   end
 
   add_index "incidents_cas_incidents", ["cas_incident_number"], name: "index_incidents_cas_incidents_on_cas_incident_number", unique: true, using: :btree
 
-  create_table "incidents_case_assistance_items", force: true do |t|
+  create_table "incidents_case_assistance_items", force: :cascade do |t|
     t.integer  "price_list_item_id"
     t.integer  "case_id"
     t.integer  "quantity"
@@ -319,7 +319,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "incidents_case_assistance_items", ["case_id"], name: "index_incidents_case_assistance_items_on_case_id", using: :btree
   add_index "incidents_case_assistance_items", ["price_list_item_id"], name: "index_incidents_case_assistance_items_on_price_list_item_id", using: :btree
 
-  create_table "incidents_cases", force: true do |t|
+  create_table "incidents_cases", force: :cascade do |t|
     t.integer  "incident_id"
     t.string   "cas_case_number"
     t.string   "first_name"
@@ -343,7 +343,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "incidents_cases", ["incident_id"], name: "index_incidents_cases_on_incident_id", using: :btree
 
-  create_table "incidents_dat_incidents", force: true do |t|
+  create_table "incidents_dat_incidents", force: :cascade do |t|
     t.integer  "incident_id",             null: false
     t.string   "incident_call_type"
     t.string   "verified_by"
@@ -384,7 +384,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true, using: :btree
 
-  create_table "incidents_deployments", force: true do |t|
+  create_table "incidents_deployments", force: :cascade do |t|
     t.integer  "person_id"
     t.string   "gap"
     t.string   "group"
@@ -398,7 +398,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.integer  "disaster_id"
   end
 
-  create_table "incidents_disasters", force: true do |t|
+  create_table "incidents_disasters", force: :cascade do |t|
     t.integer  "vc_incident_id"
     t.string   "dr_number"
     t.integer  "fiscal_year"
@@ -407,7 +407,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  create_table "incidents_dispatch_log_items", force: true do |t|
+  create_table "incidents_dispatch_log_items", force: :cascade do |t|
     t.integer  "dispatch_log_id"
     t.datetime "action_at"
     t.string   "action_type"
@@ -420,9 +420,9 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "incidents_dispatch_log_items", ["dispatch_log_id"], name: "index_incidents_dispatch_log_items_on_dispatch_log_id", using: :btree
 
-  create_table "incidents_dispatch_logs", force: true do |t|
+  create_table "incidents_dispatch_logs", force: :cascade do |t|
     t.string   "incident_number"
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.integer  "incident_id"
     t.datetime "received_at"
     t.datetime "delivered_at"
@@ -430,7 +430,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.string   "incident_type"
     t.string   "address"
     t.string   "cross_street"
-    t.string   "county_name"
+    t.string   "county"
     t.string   "displaced"
     t.string   "services_requested"
     t.string   "agency"
@@ -443,10 +443,10 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.string   "message_number"
   end
 
-  add_index "incidents_dispatch_logs", ["chapter_id"], name: "index_incidents_dispatch_logs_on_chapter_id", using: :btree
   add_index "incidents_dispatch_logs", ["incident_id"], name: "index_incidents_dispatch_logs_on_incident_id", using: :btree
+  add_index "incidents_dispatch_logs", ["region_id"], name: "index_incidents_dispatch_logs_on_region_id", using: :btree
 
-  create_table "incidents_event_logs", force: true do |t|
+  create_table "incidents_event_logs", force: :cascade do |t|
     t.integer  "incident_id"
     t.integer  "person_id"
     t.string   "event"
@@ -455,15 +455,15 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "source_id"
-    t.integer  "chapter_id"
+    t.integer  "region_id"
   end
 
-  add_index "incidents_event_logs", ["chapter_id"], name: "index_incidents_event_logs_on_chapter_id", using: :btree
   add_index "incidents_event_logs", ["incident_id"], name: "index_incidents_event_logs_on_incident_id", using: :btree
   add_index "incidents_event_logs", ["person_id"], name: "index_incidents_event_logs_on_person_id", using: :btree
+  add_index "incidents_event_logs", ["region_id"], name: "index_incidents_event_logs_on_region_id", using: :btree
 
-  create_table "incidents_incidents", force: true do |t|
-    t.integer  "chapter_id"
+  create_table "incidents_incidents", force: :cascade do |t|
+    t.integer  "region_id"
     t.string   "incident_number"
     t.string   "incident_type"
     t.string   "cas_event_number"
@@ -494,7 +494,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.boolean  "hotel_partner_used",          default: false
     t.boolean  "shelter_partner_used",        default: false
     t.boolean  "feeding_partner_used",        default: false
-    t.integer  "area_id"
+    t.integer  "shift_territory_id"
     t.string   "county"
     t.string   "status",                                      null: false
     t.date     "response_date"
@@ -503,18 +503,18 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.string   "recruitment_message"
     t.integer  "cas_event_id"
     t.boolean  "address_directly_entered",    default: false, null: false
-    t.integer  "territory_id"
+    t.integer  "response_territory_id"
     t.integer  "current_dispatch_contact_id"
     t.datetime "dispatch_contact_due_at"
   end
 
   add_index "incidents_incidents", ["cas_event_number"], name: "index_incidents_incidents_on_cas_event_number", using: :btree
-  add_index "incidents_incidents", ["chapter_id", "id", "date"], name: "index_incidents_incidents_on_chapter_id_id_date", using: :btree
-  add_index "incidents_incidents", ["chapter_id", "incident_number"], name: "index_incidents_incidents_on_chapter_id_incident_number", unique: true, using: :btree
-  add_index "incidents_incidents", ["chapter_id"], name: "index_incidents_incidents_on_chapter_id", using: :btree
   add_index "incidents_incidents", ["incident_number"], name: "index_incidents_incidents_on_incident_number", using: :btree
+  add_index "incidents_incidents", ["region_id", "id", "date"], name: "index_incidents_incidents_on_region_id_id_date", using: :btree
+  add_index "incidents_incidents", ["region_id", "incident_number"], name: "index_incidents_incidents_on_region_id_incident_number", unique: true, using: :btree
+  add_index "incidents_incidents", ["region_id"], name: "index_incidents_incidents_on_region_id", using: :btree
 
-  create_table "incidents_initial_incident_reports", force: true do |t|
+  create_table "incidents_initial_incident_reports", force: :cascade do |t|
     t.integer  "incident_id"
     t.integer  "completed_by_id"
     t.integer  "approved_by_id"
@@ -535,8 +535,8 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "incidents_initial_incident_reports", ["completed_by_id"], name: "index_incidents_initial_incident_reports_on_completed_by_id", using: :btree
   add_index "incidents_initial_incident_reports", ["incident_id"], name: "index_incidents_initial_incident_reports_on_incident_id", using: :btree
 
-  create_table "incidents_notifications_events", force: true do |t|
-    t.integer  "chapter_id"
+  create_table "incidents_notifications_events", force: :cascade do |t|
+    t.integer  "region_id"
     t.string   "name"
     t.string   "description"
     t.string   "event_type"
@@ -546,41 +546,41 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  add_index "incidents_notifications_events", ["chapter_id"], name: "index_incidents_notifications_events_on_chapter_id", using: :btree
+  add_index "incidents_notifications_events", ["region_id"], name: "index_incidents_notifications_events_on_region_id", using: :btree
 
-  create_table "incidents_notifications_role_scopes", force: true do |t|
+  create_table "incidents_notifications_role_scopes", force: :cascade do |t|
     t.integer  "role_id"
     t.string   "level"
     t.string   "value"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "territory_id"
+    t.integer  "response_territory_id"
   end
 
   add_index "incidents_notifications_role_scopes", ["role_id"], name: "index_incidents_notifications_role_scopes_on_role_id", using: :btree
 
-  create_table "incidents_notifications_roles", force: true do |t|
-    t.integer  "chapter_id"
+  create_table "incidents_notifications_roles", force: :cascade do |t|
+    t.integer  "region_id"
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "incidents_notifications_roles_roster_positions", id: false, force: true do |t|
+  create_table "incidents_notifications_roles_roster_positions", id: false, force: :cascade do |t|
     t.integer "role_id",     null: false
     t.integer "position_id", null: false
   end
 
   add_index "incidents_notifications_roles_roster_positions", ["role_id", "position_id"], name: "index_incidents_notifications_roles_roster_positions", unique: true, using: :btree
 
-  create_table "incidents_notifications_roles_scheduler_shifts", id: false, force: true do |t|
+  create_table "incidents_notifications_roles_scheduler_shifts", id: false, force: :cascade do |t|
     t.integer "role_id",  null: false
     t.integer "shift_id", null: false
   end
 
   add_index "incidents_notifications_roles_scheduler_shifts", ["role_id", "shift_id"], name: "index_incidents_notifications_roles_scheduler_shifts", unique: true, using: :btree
 
-  create_table "incidents_notifications_triggers", force: true do |t|
+  create_table "incidents_notifications_triggers", force: :cascade do |t|
     t.integer  "role_id"
     t.integer  "event_id"
     t.string   "template"
@@ -592,14 +592,14 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "incidents_notifications_triggers", ["event_id"], name: "index_incidents_notifications_triggers_on_event_id", using: :btree
   add_index "incidents_notifications_triggers", ["role_id"], name: "index_incidents_notifications_triggers_on_role_id", using: :btree
 
-  create_table "incidents_number_sequences", force: true do |t|
+  create_table "incidents_number_sequences", force: :cascade do |t|
     t.string  "name"
     t.integer "current_year"
     t.integer "current_number"
     t.string  "format"
   end
 
-  create_table "incidents_partner_uses", force: true do |t|
+  create_table "incidents_partner_uses", force: :cascade do |t|
     t.integer  "incident_id"
     t.integer  "partner_id"
     t.string   "role"
@@ -613,7 +613,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "incidents_partner_uses", ["incident_id"], name: "index_incidents_partner_uses_on_incident_id", using: :btree
   add_index "incidents_partner_uses", ["partner_id"], name: "index_incidents_partner_uses_on_partner_id", using: :btree
 
-  create_table "incidents_price_list_items", force: true do |t|
+  create_table "incidents_price_list_items", force: :cascade do |t|
     t.integer  "item_class"
     t.string   "name"
     t.string   "type"
@@ -624,11 +624,11 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.boolean  "enabled",     default: true, null: false
   end
 
-  create_table "incidents_report_subscriptions", force: true do |t|
+  create_table "incidents_report_subscriptions", force: :cascade do |t|
     t.integer  "person_id"
-    t.integer  "county_id"
+    t.integer  "shift_territory_id"
     t.string   "report_type"
-    t.boolean  "persistent",  default: false
+    t.boolean  "persistent",         default: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.hstore   "options"
@@ -637,10 +637,10 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.integer  "scope_id"
   end
 
-  add_index "incidents_report_subscriptions", ["county_id"], name: "index_incidents_report_subscriptions_on_county_id", using: :btree
   add_index "incidents_report_subscriptions", ["person_id"], name: "index_incidents_report_subscriptions_on_person_id", using: :btree
+  add_index "incidents_report_subscriptions", ["shift_territory_id"], name: "index_incidents_report_subscriptions_on_shift_territory_id", using: :btree
 
-  create_table "incidents_responder_assignments", force: true do |t|
+  create_table "incidents_responder_assignments", force: :cascade do |t|
     t.integer  "person_id"
     t.integer  "incident_id"
     t.string   "role"
@@ -657,8 +657,8 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "incidents_responder_assignments", ["incident_id"], name: "index_incidents_responder_assignments_on_incident_id", using: :btree
   add_index "incidents_responder_assignments", ["person_id"], name: "index_incidents_responder_assignments_on_person_id", using: :btree
 
-  create_table "incidents_responder_messages", force: true do |t|
-    t.integer  "chapter_id"
+  create_table "incidents_responder_messages", force: :cascade do |t|
+    t.integer  "region_id"
     t.integer  "person_id"
     t.integer  "incident_id"
     t.integer  "responder_assignment_id"
@@ -673,10 +673,10 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  add_index "incidents_responder_messages", ["chapter_id"], name: "index_incidents_responder_messages_on_chapter_id", using: :btree
   add_index "incidents_responder_messages", ["person_id"], name: "index_incidents_responder_messages_on_person_id", using: :btree
+  add_index "incidents_responder_messages", ["region_id"], name: "index_incidents_responder_messages_on_region_id", using: :btree
 
-  create_table "incidents_responder_recruitments", force: true do |t|
+  create_table "incidents_responder_recruitments", force: :cascade do |t|
     t.integer  "incident_id"
     t.integer  "person_id"
     t.string   "response"
@@ -688,28 +688,8 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "incidents_responder_recruitments", ["incident_id", "person_id"], name: "index_responder_recruitments_incident_person", using: :btree
 
-  create_table "incidents_scopes", force: true do |t|
-    t.integer  "chapter_id"
-    t.string   "url_slug"
-    t.string   "abbrev"
-    t.string   "short_name"
-    t.string   "name"
-    t.hstore   "config"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "incidents_scopes", ["url_slug"], name: "index_incidents_scopes_on_url_slug", unique: true, using: :btree
-
-  create_table "incidents_scopes_roster_chapters", id: false, force: true do |t|
-    t.integer "scope_id",   null: false
-    t.integer "chapter_id", null: false
-  end
-
-  add_index "incidents_scopes_roster_chapters", ["scope_id", "chapter_id"], name: "index_incidents_scopes_roster_chapters", unique: true, using: :btree
-
-  create_table "incidents_territories", force: true do |t|
-    t.integer  "chapter_id"
+  create_table "incidents_response_territories", force: :cascade do |t|
+    t.integer  "region_id"
     t.string   "name"
     t.boolean  "enabled"
     t.boolean  "is_default"
@@ -724,16 +704,36 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.integer  "dispatch_config_id"
   end
 
-  add_index "incidents_territories", ["chapter_id"], name: "index_incidents_territories_on_chapter_id", using: :btree
+  add_index "incidents_response_territories", ["region_id"], name: "index_incidents_response_territories_on_region_id", using: :btree
 
-  create_table "incidents_territories_roster_counties", id: false, force: true do |t|
-    t.integer "territory_id"
-    t.integer "county_id"
+  create_table "incidents_response_territories_roster_shift_territories", id: false, force: :cascade do |t|
+    t.integer "response_territory_id"
+    t.integer "shift_territory_id"
   end
 
-  add_index "incidents_territories_roster_counties", ["territory_id", "county_id"], name: "incidents_territories_roster_counties_index", using: :btree
+  add_index "incidents_response_territories_roster_shift_territories", ["response_territory_id", "shift_territory_id"], name: "incidents_response_territories_roster_shift_territories_index", using: :btree
 
-  create_table "incidents_vehicle_uses", force: true do |t|
+  create_table "incidents_scopes", force: :cascade do |t|
+    t.integer  "region_id"
+    t.string   "url_slug"
+    t.string   "abbrev"
+    t.string   "short_name"
+    t.string   "name"
+    t.hstore   "config"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incidents_scopes", ["url_slug"], name: "index_incidents_scopes_on_url_slug", unique: true, using: :btree
+
+  create_table "incidents_scopes_roster_regions", id: false, force: :cascade do |t|
+    t.integer "scope_id",  null: false
+    t.integer "region_id", null: false
+  end
+
+  add_index "incidents_scopes_roster_regions", ["scope_id", "region_id"], name: "index_incidents_scopes_roster_regions", unique: true, using: :btree
+
+  create_table "incidents_vehicle_uses", force: :cascade do |t|
     t.integer  "vehicle_id"
     t.integer  "incident_id"
     t.datetime "created_at"
@@ -743,7 +743,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
   add_index "incidents_vehicle_uses", ["incident_id"], name: "index_incidents_vehicle_uses_on_incident_id", using: :btree
   add_index "incidents_vehicle_uses", ["vehicle_id"], name: "index_incidents_vehicle_uses_on_vehicle_id", using: :btree
 
-  create_table "job_logs", force: true do |t|
+  create_table "job_logs", force: :cascade do |t|
     t.string   "controller"
     t.string   "name"
     t.string   "url"
@@ -761,11 +761,11 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "tenant_id"
-    t.string   "tenant_type",       limit: nil
+    t.string   "tenant_type"
   end
 
-  create_table "logistics_vehicles", force: true do |t|
-    t.integer  "chapter_id"
+  create_table "logistics_vehicles", force: :cascade do |t|
+    t.integer  "region_id"
     t.string   "name"
     t.string   "category"
     t.string   "address"
@@ -778,8 +778,8 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  create_table "lookups", force: true do |t|
-    t.integer  "chapter_id"
+  create_table "lookups", force: :cascade do |t|
+    t.integer  "region_id"
     t.string   "scope"
     t.string   "name",       null: false
     t.string   "value",      null: false
@@ -788,10 +788,10 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  add_index "lookups", ["chapter_id"], name: "index_lookups_on_chapter_id", using: :btree
+  add_index "lookups", ["region_id"], name: "index_lookups_on_region_id", using: :btree
 
-  create_table "motds", force: true do |t|
-    t.integer  "chapter_id"
+  create_table "motds", force: :cascade do |t|
+    t.integer  "region_id"
     t.datetime "begins"
     t.datetime "ends"
     t.string   "cookie_code"
@@ -803,9 +803,9 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.string   "path_regex_raw"
   end
 
-  add_index "motds", ["chapter_id"], name: "index_motds_on_chapter_id", using: :btree
+  add_index "motds", ["region_id"], name: "index_motds_on_region_id", using: :btree
 
-  create_table "named_queries", force: true do |t|
+  create_table "named_queries", force: :cascade do |t|
     t.string   "name"
     t.string   "token"
     t.text     "parameters"
@@ -817,7 +817,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "named_queries", ["name", "token"], name: "index_named_queries_on_name_and_token", using: :btree
 
-  create_table "partners_partners", force: true do |t|
+  create_table "partners_partners", force: :cascade do |t|
     t.string   "name"
     t.string   "address1"
     t.string   "address2"
@@ -828,12 +828,32 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.float    "lng"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "chapter_id"
+    t.integer  "region_id"
   end
 
-  add_index "partners_partners", ["chapter_id"], name: "index_partners_partners_on_chapter_id", using: :btree
+  add_index "partners_partners", ["region_id"], name: "index_partners_partners_on_region_id", using: :btree
 
-  create_table "roster_cell_carriers", force: true do |t|
+  create_table "roster_capabilities", force: :cascade do |t|
+    t.string   "name"
+    t.string   "grant_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "roster_capability_memberships", force: :cascade do |t|
+    t.integer "capability_id"
+    t.integer "position_id"
+    t.string  "description"
+  end
+
+  create_table "roster_capability_scopes", force: :cascade do |t|
+    t.string   "scope"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "capability_membership_id"
+  end
+
+  create_table "roster_cell_carriers", force: :cascade do |t|
     t.string   "name"
     t.string   "sms_gateway"
     t.datetime "created_at"
@@ -841,48 +861,9 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.boolean  "pager"
   end
 
-  create_table "roster_chapters", force: true do |t|
-    t.string   "name"
-    t.string   "code"
-    t.string   "short_name"
-    t.string   "time_zone_raw"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "vc_username"
-    t.string   "vc_password"
-    t.string   "vc_position_filter"
-    t.hstore   "config"
-    t.integer  "vc_unit"
-    t.string   "url_slug"
-    t.integer  "incident_number_sequence_id"
-  end
-
-  add_index "roster_chapters", ["url_slug"], name: "index_roster_chapters_on_url_slug", unique: true, using: :btree
-
-  create_table "roster_counties", force: true do |t|
-    t.integer  "chapter_id"
-    t.string   "name"
-    t.string   "abbrev"
-    t.string   "county_code"
-    t.string   "fips_code"
-    t.string   "gis_name"
-    t.string   "vc_regex_raw"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "enabled",      default: true
-  end
-
-  create_table "roster_county_memberships", force: true do |t|
-    t.integer "county_id"
-    t.integer "person_id"
-    t.boolean "persistent"
-  end
-
-  add_index "roster_county_memberships", ["person_id"], name: "index_roster_county_memberships_on_person_id", using: :btree
-
-  create_table "roster_people", force: true do |t|
-    t.integer  "chapter_id"
-    t.integer  "primary_county_id"
+  create_table "roster_people", force: :cascade do |t|
+    t.integer  "region_id"
+    t.integer  "primary_shift_territory_id"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "email"
@@ -932,10 +913,10 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.string   "rco_id"
   end
 
-  add_index "roster_people", ["chapter_id", "vc_is_active"], name: "index_roster_people_on_chapter_active", using: :btree
+  add_index "roster_people", ["region_id", "vc_is_active"], name: "index_roster_people_on_region_active", using: :btree
   add_index "roster_people", ["vc_id"], name: "idx_vc_id", using: :btree
 
-  create_table "roster_position_memberships", force: true do |t|
+  create_table "roster_position_memberships", force: :cascade do |t|
     t.integer "position_id"
     t.integer "person_id"
     t.boolean "persistent"
@@ -943,55 +924,73 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "roster_position_memberships", ["person_id"], name: "index_roster_position_memberships_on_person_id", using: :btree
 
-  create_table "roster_positions", force: true do |t|
-    t.integer  "chapter_id"
+  create_table "roster_positions", force: :cascade do |t|
+    t.integer  "region_id"
     t.string   "name"
     t.string   "vc_regex_raw"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "hidden",         default: false
-    t.string   "watchfire_role"
+    t.boolean  "hidden",       default: false
     t.string   "abbrev"
   end
 
-  create_table "roster_positions_scheduler_shifts", id: false, force: true do |t|
+  create_table "roster_positions_scheduler_shifts", id: false, force: :cascade do |t|
     t.integer "shift_id"
     t.integer "position_id"
   end
 
   add_index "roster_positions_scheduler_shifts", ["shift_id", "position_id"], name: "index_roster_positions_scheduler_shifts", unique: true, using: :btree
 
-  create_table "roster_role_memberships", force: true do |t|
-    t.integer "role_id"
-    t.integer "position_id"
-    t.string  "description"
-  end
-
-  create_table "roster_role_scopes", force: true do |t|
-    t.string   "scope"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "role_membership_id"
-  end
-
-  create_table "roster_roles", force: true do |t|
+  create_table "roster_regions", force: :cascade do |t|
     t.string   "name"
-    t.string   "grant_name"
+    t.string   "code"
+    t.string   "short_name"
+    t.string   "time_zone_raw"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "vc_username"
+    t.string   "vc_password"
+    t.string   "vc_position_filter"
+    t.hstore   "config"
+    t.integer  "vc_unit"
+    t.string   "url_slug"
+    t.integer  "incident_number_sequence_id"
   end
 
-  create_table "roster_vc_import_data", force: true do |t|
-    t.integer  "chapter_id"
+  add_index "roster_regions", ["url_slug"], name: "index_roster_regions_on_url_slug", unique: true, using: :btree
+
+  create_table "roster_shift_territories", force: :cascade do |t|
+    t.integer  "region_id"
+    t.string   "name"
+    t.string   "abbrev"
+    t.string   "county_code"
+    t.string   "fips_code"
+    t.string   "gis_name"
+    t.string   "vc_regex_raw"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "enabled",      default: true
+  end
+
+  create_table "roster_shift_territory_memberships", force: :cascade do |t|
+    t.integer "shift_territory_id"
+    t.integer "person_id"
+    t.boolean "persistent"
+  end
+
+  add_index "roster_shift_territory_memberships", ["person_id"], name: "index_roster_shift_territory_memberships_on_person_id", using: :btree
+
+  create_table "roster_vc_import_data", force: :cascade do |t|
+    t.integer  "region_id"
     t.json     "position_data"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "roster_vc_import_data", ["chapter_id"], name: "index_roster_vc_import_data_on_chapter_id", using: :btree
+  add_index "roster_vc_import_data", ["region_id"], name: "index_roster_vc_import_data_on_region_id", using: :btree
 
-  create_table "scheduler_dispatch_configs", force: true do |t|
-    t.integer  "county_id"
+  create_table "scheduler_dispatch_configs", force: :cascade do |t|
+    t.integer  "shift_territory_id"
     t.integer  "backup_first_id"
     t.integer  "backup_second_id"
     t.integer  "backup_third_id"
@@ -999,26 +998,26 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.boolean  "is_active"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",             null: false
+    t.string   "name",               null: false
     t.integer  "shift_first_id"
     t.integer  "shift_second_id"
     t.integer  "shift_third_id"
     t.integer  "shift_fourth_id"
-    t.integer  "chapter_id"
+    t.integer  "region_id"
   end
 
   add_index "scheduler_dispatch_configs", ["backup_first_id"], name: "index_scheduler_dispatch_configs_on_backup_first_id", using: :btree
   add_index "scheduler_dispatch_configs", ["backup_fourth_id"], name: "index_scheduler_dispatch_configs_on_backup_fourth_id", using: :btree
   add_index "scheduler_dispatch_configs", ["backup_second_id"], name: "index_scheduler_dispatch_configs_on_backup_second_id", using: :btree
   add_index "scheduler_dispatch_configs", ["backup_third_id"], name: "index_scheduler_dispatch_configs_on_backup_third_id", using: :btree
-  add_index "scheduler_dispatch_configs", ["county_id"], name: "index_scheduler_dispatch_configs_on_county_id", using: :btree
+  add_index "scheduler_dispatch_configs", ["shift_territory_id"], name: "index_scheduler_dispatch_configs_on_shift_territory_id", using: :btree
 
-  create_table "scheduler_dispatch_configs_admin_notifications", id: false, force: true do |t|
+  create_table "scheduler_dispatch_configs_admin_notifications", id: false, force: :cascade do |t|
     t.integer "scheduler_dispatch_config_id"
     t.integer "roster_person_id"
   end
 
-  create_table "scheduler_flex_schedules", force: true do |t|
+  create_table "scheduler_flex_schedules", force: :cascade do |t|
     t.integer  "person_id"
     t.boolean  "available_sunday_day"
     t.boolean  "available_sunday_night"
@@ -1040,7 +1039,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "scheduler_flex_schedules", ["person_id"], name: "index_scheduler_flex_schedules_on_person_id", using: :btree
 
-  create_table "scheduler_notification_settings", force: true do |t|
+  create_table "scheduler_notification_settings", force: :cascade do |t|
     t.integer  "email_advance_hours"
     t.integer  "sms_advance_hours"
     t.integer  "sms_only_after",            default: 0
@@ -1062,7 +1061,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
 
   add_index "scheduler_notification_settings", ["calendar_api_token"], name: "index_scheduler_notification_settings_on_calendar_api_token", unique: true, using: :btree
 
-  create_table "scheduler_shift_assignments", force: true do |t|
+  create_table "scheduler_shift_assignments", force: :cascade do |t|
     t.integer  "person_id",                           null: false
     t.date     "date",                                null: false
     t.boolean  "email_invite_sent",   default: false
@@ -1072,18 +1071,18 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "synced",              default: false
-    t.integer  "shift_group_id",                      null: false
+    t.integer  "shift_time_id",                       null: false
     t.integer  "shift_id",                            null: false
     t.boolean  "vc_hours_uploaded",   default: false
     t.text     "note"
   end
 
-  add_index "scheduler_shift_assignments", ["date", "person_id", "shift_id", "shift_group_id"], name: "index_scheduler_shift_assignment_fields", unique: true, using: :btree
+  add_index "scheduler_shift_assignments", ["date", "person_id", "shift_id", "shift_time_id"], name: "index_scheduler_shift_assignment_fields", unique: true, using: :btree
   add_index "scheduler_shift_assignments", ["person_id"], name: "index_scheduler_shift_assignments_on_person_id", using: :btree
   add_index "scheduler_shift_assignments", ["shift_id", "date"], name: "index_scheduler_shift_assignments_on_shift_date", using: :btree
 
-  create_table "scheduler_shift_categories", force: true do |t|
-    t.integer  "chapter_id"
+  create_table "scheduler_shift_categories", force: :cascade do |t|
+    t.integer  "region_id"
     t.string   "name"
     t.boolean  "show",       default: false, null: false
     t.integer  "ordinal"
@@ -1091,14 +1090,14 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "updated_at"
   end
 
-  add_index "scheduler_shift_categories", ["chapter_id"], name: "index_scheduler_shift_categories_on_chapter_id", using: :btree
+  add_index "scheduler_shift_categories", ["region_id"], name: "index_scheduler_shift_categories_on_region_id", using: :btree
 
-  create_table "scheduler_shift_groups", force: true do |t|
+  create_table "scheduler_shift_times", force: :cascade do |t|
     t.string   "name"
     t.string   "period"
     t.integer  "start_offset"
     t.integer  "end_offset"
-    t.integer  "chapter_id"
+    t.integer  "region_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "active_sunday",    default: true, null: false
@@ -1110,20 +1109,20 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.boolean  "active_saturday",  default: true, null: false
   end
 
-  add_index "scheduler_shift_groups", ["chapter_id"], name: "index_scheduler_shift_groups_on_chapter_id", using: :btree
+  add_index "scheduler_shift_times", ["region_id"], name: "index_scheduler_shift_times_on_region_id", using: :btree
 
-  create_table "scheduler_shift_groups_shifts", id: false, force: true do |t|
-    t.integer "shift_id",       null: false
-    t.integer "shift_group_id", null: false
+  create_table "scheduler_shift_times_shifts", id: false, force: :cascade do |t|
+    t.integer "shift_id",      null: false
+    t.integer "shift_time_id", null: false
   end
 
-  add_index "scheduler_shift_groups_shifts", ["shift_id", "shift_group_id"], name: "idx_scheduler_shift_groups_shifts_unique", unique: true, using: :btree
+  add_index "scheduler_shift_times_shifts", ["shift_id", "shift_time_id"], name: "idx_scheduler_shift_times_shifts_unique", unique: true, using: :btree
 
-  create_table "scheduler_shifts", force: true do |t|
+  create_table "scheduler_shifts", force: :cascade do |t|
     t.string   "name"
     t.string   "abbrev"
     t.integer  "max_signups"
-    t.integer  "county_id"
+    t.integer  "shift_territory_id"
     t.integer  "ordinal"
     t.integer  "spreadsheet_ordinal"
     t.date     "shift_begins"
@@ -1134,7 +1133,7 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "min_desired_signups"
-    t.boolean  "ignore_county",            default: false
+    t.boolean  "ignore_shift_territory",   default: false
     t.integer  "min_advance_signup",       default: 0,     null: false
     t.integer  "shift_category_id"
     t.boolean  "exclusive",                default: true,  null: false
@@ -1142,9 +1141,9 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.boolean  "show_in_dispatch_console", default: true,  null: false
   end
 
-  add_index "scheduler_shifts", ["county_id"], name: "index_scheduler_shifts_on_county_id", using: :btree
+  add_index "scheduler_shifts", ["shift_territory_id"], name: "index_scheduler_shifts_on_shift_territory_id", using: :btree
 
-  create_table "versions", force: true do |t|
+  create_table "versions", force: :cascade do |t|
     t.string   "item_type",      null: false
     t.integer  "item_id",        null: false
     t.string   "event",          null: false
@@ -1154,10 +1153,10 @@ ActiveRecord::Schema.define(version: 20160129023314) do
     t.text     "object_changes"
     t.string   "root_type"
     t.integer  "root_id"
-    t.integer  "chapter_id",     null: false
+    t.integer  "region_id",      null: false
   end
 
-  add_index "versions", ["chapter_id", "root_type", "root_id"], name: "index_versions_on_chapter_id_root_type_root_id", using: :btree
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
+  add_index "versions", ["region_id", "root_type", "root_id"], name: "index_versions_on_region_id_root_type_root_id", using: :btree
 
 end

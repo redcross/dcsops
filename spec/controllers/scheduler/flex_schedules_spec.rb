@@ -15,13 +15,13 @@ describe Scheduler::FlexSchedulesController, :type => :controller do
       expect(response).to be_success
     end
 
-    it "should filter by county" do
-      get :index, county: @person.county_ids.first
+    it "should filter by shift territory" do
+      get :index, shift_territory: @person.shift_territory_ids.first
       expect(response).to be_success
     end
 
-    it "should render when the person has no county" do
-      @person.counties = []; @person.save
+    it "should render when the person has no shift territory" do
+      @person.shift_territories = []; @person.save
       get :index
       expect(response).to be_success
     end

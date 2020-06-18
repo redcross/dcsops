@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :lookup do
-    chapter nil
+    region nil
     scope "MyString"
     name "MyString"
   end

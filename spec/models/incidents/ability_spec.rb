@@ -2,20 +2,20 @@ require 'spec_helper'
 
 describe Incidents::Ability, :type => :model do
 
-  let(:roles) {[]}
-  let(:chapter) {FactoryGirl.create :chapter}
+  let(:capabilities) {[]}
+  let(:region) {FactoryGirl.create :region}
   let(:person) {
-    double(:person, chapter: chapter, id: 10, chapter_id: chapter.id).tap{|p|
-      allow(p).to receive(:has_role) do |role|
-        roles.include? role
+    double(:person, region: region, id: 10, region_id: region.id).tap{|p|
+      allow(p).to receive(:has_capability) do |capability|
+        capabilities.include? capability
       end
     }
   }
 
   subject { Incidents::Ability.new(person) }
 
-  def grant_role(role)
-    roles << role
+  def grant_capability(capability)
+    capabilities << capability
   end
 
   def can! *args
@@ -32,7 +32,7 @@ describe Incidents::Ability, :type => :model do
     it {cannot! :mark_invalid, Incidents::Incident}
 
     context "As incident report submitter" do
-      before(:each) {grant_role 'submit_incident_report'}
+      before(:each) {grant_capability 'submit_incident_report'}
 
       it {can! :create, Incidents::DatIncident}
       it {can! :needs_report, Incidents::Incident}
@@ -41,7 +41,7 @@ describe Incidents::Ability, :type => :model do
       context "Updating an incident report" do
         let(:incident) {FactoryGirl.build :incident}
         let(:report) {FactoryGirl.build :dat_incident, incident: incident}
-        let(:today) {chapter.time_zone.today}
+        let(:today) {region.time_zone.today}
 
         it "Can't update if the date was more than 5 days ago" do
           incident.status = 'closed'

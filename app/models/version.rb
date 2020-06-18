@@ -1,6 +1,6 @@
 class Version < PaperTrail::Version
   belongs_to :root, polymorphic: true
-  belongs_to :chapter, class_name: 'Roster::Chapter'
+  belongs_to :region, class_name: 'Roster::Region'
 
   scope :for_type, -> type {
     where{(item_type == type) | (root_type == type)}
@@ -10,7 +10,7 @@ class Version < PaperTrail::Version
     where{(item == obj) | (root == obj)}
   }
 
-  scope :for_chapter, -> chapter {
-    where{chapter_id == chapter}
+  scope :for_region, -> region {
+    where{region_id == region}
   }
 end

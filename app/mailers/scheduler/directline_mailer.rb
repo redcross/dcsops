@@ -10,8 +10,8 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
   #   en.scheduler.reminders_mailer.email_invite.subject
   #
 
-  def export(chapter, start_date, end_date)
-    @chapter = chapter
+  def export(region, start_date, end_date)
+    @region = region
     start_date = start_date.to_date
     end_date = end_date.to_date
     @people = []
@@ -20,40 +20,40 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
     attachments["roster.csv"] = people_csv
 
     tag :export
-    mail to: chapter.scheduler_dispatch_export_recipient, subject: "Red Cross Export", body: "Export processed at #{Time.zone.now}"
+    mail to: region.scheduler_dispatch_export_recipient, subject: "Red Cross Export", body: "Export processed at #{Time.zone.now}"
   end
 
   private
 
   def schedule_csv(start_date, end_date)
     shift_data = CSV.generate(row_sep: "\r\n") do |csv|
-      csv << ["County", "Start", "End", "On Call Person IDs"] + (1..20).map{|x| "On Call #{x}"}
-      Scheduler::DispatchConfig.active.for_chapter(@chapter).includes_everything.each do |config|
+      csv << ["Shift Territory", "Start", "End", "On Call Person IDs"] + (1..20).map{|x| "On Call #{x}"}
+      Scheduler::DispatchConfig.active.for_region(@region).includes_everything.each do |config|
         @people.concat config.backup_list
-        generate_shifts_for_county(csv, @chapter, config, start_date, end_date)
+        generate_shifts_for_shift_territory(csv, @region, config, start_date, end_date)
       end
     end
   end
 
-  def generate_shifts_for_county(csv, chapter, config, start_date, end_date)
+  def generate_shifts_for_shift_territory(csv, region, config, start_date, end_date)
     backups = config.backup_list.map(&:id)
     dispatch_shifts = config.shift_list
     return unless dispatch_shifts.present?
-    dispatch_group_ids = dispatch_shifts.first.shift_group_ids
+    dispatch_group_ids = dispatch_shifts.first.shift_time_ids
 
     @latest_time = nil
-    all_groups = Scheduler::ShiftGroup.for_chapter(chapter).order(:start_offset).to_a
+    all_groups = Scheduler::ShiftTime.for_region(region).order(:start_offset).to_a
     daily_groups = all_groups.select{ |grp| grp.period == 'daily' && dispatch_group_ids.include?(grp.id) }
     
-    all_assignments = Scheduler::ShiftAssignment.where{shift_id.in(dispatch_shifts)}.normalized_date_on_or_after(start_date).where{date <= end_date}.group_by{|sa| [sa.date, sa.shift_id, sa.shift_group_id]}
+    all_assignments = Scheduler::ShiftAssignment.where{shift_id.in(dispatch_shifts)}.normalized_date_on_or_after(start_date).where{date <= end_date}.group_by{|sa| [sa.date, sa.shift_id, sa.shift_time_id]}
 
     (start_date..end_date).each do |date|
       daily_groups.each do |daily_group|
-        start_time = local_offset(chapter, date, daily_group.start_offset)
-        end_time = local_offset(chapter, date, daily_group.end_offset)
+        start_time = local_offset(region, date, daily_group.start_offset)
+        end_time = local_offset(region, date, daily_group.end_offset)
         check_timing_overlap start_time, end_time
         
-        current_groups = Scheduler::ShiftGroup.current_groups_in_array(all_groups, start_time)
+        current_groups = Scheduler::ShiftTime.current_groups_in_array(all_groups, start_time)
         assignments = dispatch_shifts.flat_map{|sh| current_groups.flat_map{|grp| all_assignments[[grp.start_date, sh.id, grp.id]] }.compact }
 
         @people.concat assignments.map(&:person)
@@ -91,8 +91,8 @@ class Scheduler::DirectlineMailer < ActionMailer::Base
     (ph && ph[:carrier].try(:pager)) ? 'pager' : 'phone'
   end
 
-  def local_offset(chapter, date, offset)
-    beginning_of_day = date.in_time_zone(chapter.time_zone).at_beginning_of_day
+  def local_offset(region, date, offset)
+    beginning_of_day = date.in_time_zone(region.time_zone).at_beginning_of_day
     offset_time = beginning_of_day.advance seconds: offset
 
     # advance counts every instant that elapses, not just calendar seconds.  so

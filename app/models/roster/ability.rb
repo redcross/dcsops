@@ -4,22 +4,22 @@ class Roster::Ability
   def initialize(person)
 
     if person
-      can :index, Roster::Person, chapter_id: person.chapter_id
+      can :index, Roster::Person, region_id: person.region_id
       can [:index, :read, :update], Roster::Person, id: person.id
 
-      can :search_people, Roster::Chapter, id: person.chapter_id
-      can :search_people, Roster::Chapter, Roster::Chapter.with_incidents_delegate_chapter_value(person.chapter_id) do |chapter|
-        chapter.incidents_delegate_chapter == person.chapter_id
+      can :search_people, Roster::Region, id: person.region_id
+      can :search_people, Roster::Region, Roster::Region.with_incidents_delegate_region_value(person.region_id) do |region|
+        region.incidents_delegate_region == person.region_id
       end
     end
 
-    if person.has_role 'chapter_dat_admin'
-      can [:read, :update], Roster::Person, chapter_id: person.chapter_id
+    if person.has_capability 'region_dat_admin'
+      can [:read, :update], Roster::Person, region_id: person.region_id
     end
 
-    admin_county_ids = person.scope_for_role('county_dat_admin')
-    if admin_county_ids.present? # is dat county admin
-      can [:read, :update], Roster::Person, county_memberships: {county_id: admin_county_ids}
+    admin_shift_territory_ids = person.scope_for_capability('shift_territory_dat_admin')
+    if admin_shift_territory_ids.present? # is dat shift_territory admin
+      can [:read, :update], Roster::Person, shift_territory_memberships: {shift_territory_id: admin_shift_territory_ids}
     end
 
   end

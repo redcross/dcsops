@@ -3,17 +3,17 @@ require 'spec_helper'
 describe "Initial Incident Report", :type => :feature do
 
   before :each do
-    @chapter = @person.chapter
-    @chapter.incidents_report_editable = true
-    @chapter.save!
-    FactoryGirl.create :incidents_scope, chapter: @person.chapter
+    @region = @person.region
+    @region.incidents_report_editable = true
+    @region.save!
+    FactoryGirl.create :incidents_scope, region: @person.region
 
-    @incident = FactoryGirl.create :raw_incident, chapter: @person.chapter, area: @person.counties.first, date: Date.current, narrative: 'Blah'
+    @incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: @person.shift_territories.first, date: Date.current, narrative: 'Blah'
   end
 
   it "Should be editable" do
-    grant_role! :submit_incident_report
-    visit "/incidents/#{@chapter.url_slug}/incidents/#{@incident.incident_number}"
+    grant_capability! :submit_incident_report
+    visit "/incidents/#{@region.url_slug}/incidents/#{@incident.incident_number}"
 
     click_link "IIR"
     
@@ -49,14 +49,14 @@ describe "Initial Incident Report", :type => :feature do
   end
 
   it "Should be approvable and unapprovable" do
-    grant_role! :approve_iir
+    grant_capability! :approve_iir
 
     iir = FactoryGirl.create :complete_initial_incident_report, incident: @incident
     @incident.event_logs.create event_time: Time.current, event: 'incident_occurred'
     @incident.event_logs.create event_time: Time.current, event: 'dat_received'
     expect(Incidents::PrepareIirJob).to receive(:enqueue).with(iir)
 
-    visit "/incidents/#{@chapter.url_slug}/incidents/#{@incident.incident_number}"
+    visit "/incidents/#{@region.url_slug}/incidents/#{@incident.incident_number}"
 
     click_link "IIR"
     

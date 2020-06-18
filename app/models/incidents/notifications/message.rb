@@ -1,6 +1,6 @@
 # Form model for sending messages
 module Incidents::Notifications
-  class Message < Struct.new(:id, :event_id, :chapter_id, :message)
+  class Message < Struct.new(:id, :event_id, :region_id, :message)
     extend ActiveModel::Naming
     include ActiveModel::Validations
 
@@ -12,7 +12,7 @@ module Incidents::Notifications
     end
     def to_key; nil; end
     def event
-      Event.find_by(chapter_id: chapter_id, id: event_id)
+      Event.find_by(region_id: region_id, id: event_id)
     end
 
     validates :event_id, presence: true

@@ -3,8 +3,8 @@ require 'spec_helper'
 describe "Weekly Report", :type => :feature do
 
   it "Should be subscribable" do
-    grant_role! :incidents_admin
-    @scope = FactoryGirl.create :incidents_scope, chapter: @person.chapter, report_frequencies: 'weekly,daily'
+    grant_capability! :incidents_admin
+    @scope = FactoryGirl.create :incidents_scope, region: @person.region, report_frequencies: 'weekly,daily'
 
     visit "/incidents/#{@scope.url_slug}"
 

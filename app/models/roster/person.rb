@@ -4,15 +4,15 @@ class Roster::Person < ActiveRecord::Base
 
   PHONE_TYPES = [:cell_phone, :home_phone, :work_phone, :alternate_phone, :sms_phone]
 
-  belongs_to :chapter, class_name: 'Roster::Chapter'
-  belongs_to :primary_county, class_name: 'Roster::County'
+  belongs_to :region, class_name: 'Roster::Region'
+  belongs_to :primary_shift_territory, class_name: 'Roster::ShiftTerritory'
 
-  has_many :county_memberships, class_name: 'Roster::CountyMembership'
-  has_many :counties, class_name: 'Roster::County', through: :county_memberships
+  has_many :shift_territory_memberships, class_name: 'Roster::ShiftTerritoryMembership'
+  has_many :shift_territories, class_name: 'Roster::ShiftTerritory', through: :shift_territory_memberships
 
   has_many :position_memberships, class_name: 'Roster::PositionMembership'
   has_many :positions, class_name: 'Roster::Position', through: :position_memberships
-  has_many :role_memberships, class_name: 'Roster::RoleMembership', through: :positions
+  has_many :capability_memberships, class_name: 'Roster::CapabilityMembership', through: :positions
 
   belongs_to :home_phone_carrier, class_name: 'Roster::CellCarrier'
   belongs_to :cell_phone_carrier, class_name: 'Roster::CellCarrier'
@@ -24,10 +24,10 @@ class Roster::Person < ActiveRecord::Base
     where{lower(first_name.op('||', ' ').op('||', last_name)).like("%#{query.downcase}%")}
   }
 
-  scope :for_chapter, ->(chapter){where{chapter_id == chapter}}
+  scope :for_region, ->(region){where{region_id == region}}
 
-  scope :has_role_for_scope, -> role_name, scope {
-    joins{roles.role_scopes.outer}.where{(roles.grant_name == role_name) & ((roles.role_scopes.scope == nil) | (roles.role_scopes.scope == scope.to_s))}
+  scope :has_capability_for_scope, -> capability_name, scope {
+    joins{capabilities.capability_scopes.outer}.where{(capabilities.grant_name == capability_name) & ((capabilities.capability_scopes.scope == nil) | (capabilities.capability_scopes.scope == scope.to_s))}
   }
 
   scope :include_carriers, -> {
@@ -51,7 +51,7 @@ class Roster::Person < ActiveRecord::Base
   end
 
   scope :has_position, lambda { joins{positions} }
-  scope :in_county, lambda {|county| joins(:counties).where(:counties => {id: county})}
+  scope :in_shift_territory, lambda {|shift_territory| joins(:shift_territories).where(:shift_territories => {id: shift_territory})}
   scope :with_position, lambda {|positions| joins(:positions).where(:positions => {id: positions})}
   scope :by_name, lambda { order(:last_name, :first_name)}
 
@@ -59,36 +59,36 @@ class Roster::Person < ActiveRecord::Base
   has_one :notification_setting, class_name: 'Scheduler::NotificationSetting', foreign_key: 'id'
 
   validates *((1..4).map{|n| "phone_#{n}_preference".to_sym}), inclusion: {in: %w(home cell work alternate sms), allow_blank: true}
-  validates_presence_of :chapter
+  validates_presence_of :region
   validate :validate_disabled_phones
 
-  #validates_inclusion_of :primary_county_id, in: lambda{ |person| person.chapter.county_ids }, allow_nil: true, allow_blank: true
+  #validates_inclusion_of :primary_shift_territory_id, in: lambda{ |person| person.region.shift_territory_ids }, allow_nil: true, allow_blank: true
 
   default_scope {order(:last_name, :first_name)}
 
-  accepts_nested_attributes_for :county_memberships, :position_memberships, allow_destroy: true
+  accepts_nested_attributes_for :shift_territory_memberships, :position_memberships, allow_destroy: true
 
-  def has_role(grant_name)
-    roles_with_scopes.select{|mem| mem.role.grant_name == grant_name}.present?
+  def has_capability(grant_name)
+    capabilities_with_scopes.select{|mem| mem.capability.grant_name == grant_name}.present?
   end
 
-  def scope_for_role(grant_name)
-    roles_with_scopes.select{|mem| mem.role.grant_name == grant_name}
-                     .flat_map{|mem| mem.role_scopes.map(&:scope) }
-                     .flat_map{ |scope| scope == 'county_ids' ? county_ids : scope}
+  def scope_for_capability(grant_name)
+    capabilities_with_scopes.select{|mem| mem.capability.grant_name == grant_name}
+                     .flat_map{|mem| mem.capability_scopes.map(&:scope) }
+                     .flat_map{ |scope| scope == 'shift_territory_ids' ? shift_territory_ids : scope}
                      .compact.uniq
   end
 
-  def roles_with_scopes
-    @roles_with_scopes ||= role_memberships.includes{[role, role_scopes]}.joins{role_scopes.outer}.references(:role)
+  def capabilities_with_scopes
+    @capabilities_with_scopes ||= capability_memberships.includes{[capability, capability_scopes]}.joins{capability_scopes.outer}.references(:capability)
   end
 
-  def primary_county
-    super || counties.first
+  def primary_shift_territory
+    super || shift_territories.first
   end
 
-  def primary_county_id
-    (read_attribute(:primary_county_id) || counties.first.try(:id))
+  def primary_shift_territory_id
+    (read_attribute(:primary_shift_territory_id) || shift_territories.first.try(:id))
   end
 
   def first_initial
@@ -191,6 +191,6 @@ class Roster::Person < ActiveRecord::Base
   end
 
   def is_active?
-    vc_is_active or has_role 'always_active'
+    vc_is_active or has_capability 'always_active'
   end
 end

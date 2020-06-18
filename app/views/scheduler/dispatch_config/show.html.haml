@@ -3,9 +3,9 @@
   %h1=t '.title', :default => model_class.model_name.human
 
 %p
-  %strong= model_class.human_attribute_name(:county_id) + ':'
+  %strong= model_class.human_attribute_name(:shift_territory_id) + ':'
   %br
-  = resource.county.name
+  = resource.shift_territory.name
 %p
   %strong= model_class.human_attribute_name(:backup_first_id) + ':'
   %br

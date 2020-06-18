@@ -25,8 +25,8 @@ module Incidents::Notifications
       end
 
       reply_opts = {}
-      if @incident.chapter.incidents_notifications_reply_to.present?
-        reply_opts[:reply_to] = @incident.chapter.incidents_notifications_reply_to
+      if @incident.region.incidents_notifications_reply_to.present?
+        reply_opts[:reply_to] = @incident.region.incidents_notifications_reply_to
       end
 
       msg = mail({to: recipient, template_name: @render_template_name, subject: @subject, from: (message.from || self.class.default[:from])}.merge reply_opts)
@@ -70,7 +70,7 @@ module Incidents::Notifications
     end
 
     def initial_incident_report
-      @subject = "Initial Incident Report for #{@incident.incident_number} #{@incident.humanized_incident_type} in #{@incident.chapter.name}"
+      @subject = "Initial Incident Report for #{@incident.incident_number} #{@incident.humanized_incident_type} in #{@incident.region.name}"
       attachments[@options[:attachment_filename]] = @options[:attachment_data]
     end
 
@@ -79,10 +79,10 @@ module Incidents::Notifications
         short_url(@incident.map_url)
       end
       def short_incident_url(inc)
-        short_url(incidents_chapter_incident_url(inc.chapter, inc))
+        short_url(incidents_region_incident_url(inc.region, inc))
       end
-      def chapter_message(inc)
-        inc.chapter.incidents_notifications_custom_message.try(:presence)
+      def region_message(inc)
+        inc.region.incidents_notifications_custom_message.try(:presence)
       end
     end
   end

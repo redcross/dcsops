@@ -3,12 +3,12 @@ ActiveAdmin.register Scheduler::ShiftCategory, as: 'Shift Category' do
 
   actions :all, except: [:destroy]
 
-  filter :chapter
+  filter :region
   filter :name
 
   controller do
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :show, :chapter_id, :ordinal)]
+      [params.fetch(resource_request_name, {}).permit(:name, :show, :region_id, :ordinal)]
     end
   end
 end

@@ -1,11 +1,11 @@
 class Incidents::ResponderMessage < ActiveRecord::Base
-  belongs_to :chapter, class_name: 'Roster::Chapter'
+  belongs_to :region, class_name: 'Roster::Region'
   belongs_to :person, class_name: 'Roster::Person'
   belongs_to :incident, class_name: 'Incidents::Incident'
   belongs_to :responder_assignment, class_name: 'Incidents::ResponderAssignment'
   belongs_to :in_reply_to, class_name: 'Incidents::ResponderMessage'
 
-  validates :chapter, :message, presence: true
+  validates :region, :message, presence: true
   validates :person, presence: {if: ->msg{msg.direction != 'incoming'}}
   validates :message, length: {maximum: 1600}
 

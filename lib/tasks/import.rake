@@ -18,8 +18,8 @@ namespace :import_queue do
 
         logger.info "Import queue has item for #{endpoint}"
 
-        chapter_code = subject.split("-")[0]
-        chapter = Roster::Chapter.find_by(code: chapter_code)
+        region_code = subject.split("-")[0]
+        region = Roster::Region.find_by(code: region_code)
 
         # Retrieve associated data
         if message['object']
@@ -37,7 +37,7 @@ namespace :import_queue do
         end
 
         Core::JobLog.capture(importer.to_s) do |logger, counter|
-          importer.new.import_data(chapter, io) do |step|
+          importer.new.import_data(region, io) do |step|
             counter.row!
             logger.info "Importing attachment #{counter.num_rows} @ #{step}..." if (counter.num_rows % 100) == 0
           end

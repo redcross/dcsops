@@ -9,8 +9,8 @@ describe Scheduler::HomeController, :type => :controller do
     expect(response.code).to eq "200"
   end
 
-  it "should render when the person has no counties" do
-    @person.counties = []
+  it "should render when the person has no shift territories" do
+    @person.shift_territories = []
     @person.save
 
     get :root

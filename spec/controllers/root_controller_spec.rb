@@ -41,7 +41,7 @@ describe RootController, :type => :controller do
 
     let!(:link) {FactoryGirl.create(:homepage_link)}
 
-    it "should return a link for no chapter" do
+    it "should return a link for no region" do
       expect(controller.homepage_links.values.flatten).to match_array([link])
     end
 
@@ -49,22 +49,22 @@ describe RootController, :type => :controller do
       expect(controller.homepage_links).to be_a(Hash)
     end
 
-    it "should return a link for the current chapter" do
-      link.update_attributes chapter: @person.chapter
+    it "should return a link for the current region" do
+      link.update_attributes region: @person.region
       expect(controller.homepage_links.values.flatten).to match_array([link])
     end
 
-    it "should not return a link for another chapter" do
-      other_chapter = FactoryGirl.create :chapter
-      link.update_attributes chapter: other_chapter
+    it "should not return a link for another region" do
+      other_region = FactoryGirl.create :region
+      link.update_attributes region: other_region
       expect(controller.homepage_links.values.flatten).to match_array([])
     end
 
     it "should return a link where the current user has the correct role" do
-      role = FactoryGirl.create :role, grant_name: 'homepage_link'
-      pos = FactoryGirl.create :position, chapter: @person.chapter
-      mem = Roster::RoleMembership.create role: role, position: pos
-      mem.role_scopes.create! scope: 'test'
+      capability = FactoryGirl.create :capability, grant_name: 'homepage_link'
+      pos = FactoryGirl.create :position, region: @person.region
+      mem = Roster::CapabilityMembership.create capability: capability, position: pos
+      mem.capability_scopes.create! scope: 'test'
       @person.positions << pos
       @person.save
 
@@ -73,7 +73,7 @@ describe RootController, :type => :controller do
     end
 
     it "should not return a link where the current user does not have the right role" do
-      role = FactoryGirl.create :role, grant_name: 'homepage_link'
+      role = FactoryGirl.create :capability, grant_name: 'homepage_link'
       link.roles.create! role_scope: 'test'
       expect(controller.homepage_links.values.flatten).to match_array([])
     end

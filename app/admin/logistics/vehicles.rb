@@ -3,7 +3,7 @@ ActiveAdmin.register Logistics::Vehicle, as: 'Vehicle' do
 
   form do |f|
     f.inputs do
-      f.input :chapter
+      f.input :region
       f.input :name
       f.input :category, as: :assignable_select_admin
       f.input :address
@@ -15,13 +15,13 @@ ActiveAdmin.register Logistics::Vehicle, as: 'Vehicle' do
   end
 
   controller do
-    after_build :set_chapter
-    def set_chapter resource
-      resource.chapter ||= current_chapter
+    after_build :set_region
+    def set_region resource
+      resource.region ||= current_region
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:chapter_id, :name, :category, :address, :city, :state, :zip, :lat, :lng)]
+      [params.fetch(resource_request_name, {}).permit(:region_id, :name, :category, :address, :city, :state, :zip, :lat, :lng)]
     end
   end
 end

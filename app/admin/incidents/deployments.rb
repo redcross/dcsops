@@ -9,7 +9,7 @@ ActiveAdmin.register Incidents::Deployment, as: 'Deployment' do
 
   index do
     column :id
-    column("CID") { |d| d.person.try :chapter_id }
+    column("CID") { |d| d.person.try :region_id }
     column(:disaster)
     column :person
     column :gap

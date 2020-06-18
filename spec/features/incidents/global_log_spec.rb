@@ -3,15 +3,15 @@ require 'spec_helper'
 describe "View Global Log", :type => :feature do
 
   it "Should be submittable" do
-    grant_role! :incidents_admin
-    @chapter = @person.chapter
-    @chapter.incidents_use_global_log = true
-    @chapter.save!
-    FactoryGirl.create :incidents_scope, chapter: @person.chapter
+    grant_capability! :incidents_admin
+    @region = @person.region
+    @region.incidents_use_global_log = true
+    @region.save!
+    FactoryGirl.create :incidents_scope, region: @person.region
 
-    @log = FactoryGirl.create :event_log, chapter: @chapter, person: @person
+    @log = FactoryGirl.create :event_log, region: @region, person: @person
 
-    visit "/incidents/#{@chapter.url_slug}"
+    visit "/incidents/#{@region.url_slug}"
 
     click_link "ECC Log"
     

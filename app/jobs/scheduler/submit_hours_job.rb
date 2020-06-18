@@ -1,17 +1,17 @@
 class Scheduler::SubmitHoursJob
   def self.enqueue_all
-    Roster::Chapter.with_scheduler_submit_vc_hours_value(true).ids.each do |chapter_id|
-      new(chapter_id).perform
+    Roster::Region.with_scheduler_submit_vc_hours_value(true).ids.each do |region_id|
+      new(region_id).perform
     end
   end
 
-  def initialize(chapter_id, assignment_ids=nil)
-    @chapter_id = chapter_id
+  def initialize(region_id, assignment_ids=nil)
+    @region_id = region_id
     @assignment_ids = assignment_ids
   end
 
   def perform
-    Core::JobLog.capture self.class.to_s, chapter do |log, counter|
+    Core::JobLog.capture self.class.to_s, region do |log, counter|
       @counter = counter
       upload_hours
     end
@@ -19,19 +19,19 @@ class Scheduler::SubmitHoursJob
 
   protected
 
-  def chapter
-    @chapter ||= Roster::Chapter.find @chapter_id
+  def region
+    @region ||= Roster::Region.find @region_id
   end
 
   def client
-    @client ||= Vc::Client.new chapter.vc_username, chapter.vc_password
+    @client ||= Vc::Client.new region.vc_username, region.vc_password
   end
 
   def assignments_to_upload
     if @assignment_ids
       Scheduler::ShiftAssignment.where{id.in my{@assignment_ids}}
     else
-      Scheduler::ShiftAssignment.joins{shift}.includes{[person, shift_group, shift]}.for_chapter(chapter).readonly(false).where{(shift.vc_hours_type != nil) & (vc_hours_uploaded != true) & (date < my{chapter.time_zone.today})}
+      Scheduler::ShiftAssignment.joins{shift}.includes{[person, shift_time, shift]}.for_region(region).readonly(false).where{(shift.vc_hours_type != nil) & (vc_hours_uploaded != true) & (date < my{region.time_zone.today})}
     end
   end
 
@@ -43,8 +43,8 @@ class Scheduler::SubmitHoursJob
     to_upload = assignments_to_upload.group_by(&:person)
     to_upload.each do |person, assignments|
       assignments.group_by{|a| a.shift.vc_hours_type}.each do |type, assignments|
-        time = assignments.map{|a| hours = (a.shift_group.end_offset - a.shift_group.start_offset) / 1.hour; (hours*4).round / 4}.sum
-        desc = assignments.map{|a| "#{a.shift_group.name} #{a.shift.name} on #{a.date.to_s :mdy}"}.join("\n")
+        time = assignments.map{|a| hours = (a.shift_time.end_offset - a.shift_time.start_offset) / 1.hour; (hours*4).round / 4}.sum
+        desc = assignments.map{|a| "#{a.shift_time.name} #{a.shift.name} on #{a.date.to_s :mdy}"}.join("\n")
         client.hours.submit_hours person.vc_id, desc, time, hours_type: type
         count
       end

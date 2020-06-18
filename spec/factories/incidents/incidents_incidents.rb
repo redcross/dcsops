@@ -4,12 +4,12 @@ FactoryGirl.define do
   factory :raw_incident, :class => 'Incidents::Incident' do
     date "2013-06-05"
     status 'open'
-    territory { |i| Incidents::Territory.for_chapter(i.chapter).first || i.association(:territory, chapter: i.chapter) }
+    response_territory { |i| Incidents::ResponseTerritory.for_region(i.region).first || i.association(:response_territory, region: i.region) }
     incident_number {"13-#{'%03d' % SecureRandom.random_number(999)}"}
   end
 
   factory :incident, parent: :raw_incident do
-    chapter
+    region
     
     cas_event_number {"1-#{SecureRandom.hex(4).upcase}"}
     
@@ -33,14 +33,14 @@ FactoryGirl.define do
     lng {Faker::Address.longitude}
   end
 
-  factory :incident_without_territory, parent: :incident do
-    territory nil
+  factory :incident_without_response_territory, parent: :incident do
+    response_territory nil
   end
 
   factory :closed_incident, parent: :incident do
     status 'closed'
     association :dat_incident 
-    team_lead {|f| f.association :responder_assignment, person: f.association(:person, chapter: f.chapter), role: 'team_lead'}
+    team_lead {|f| f.association :responder_assignment, person: f.association(:person, region: f.region), role: 'team_lead'}
     before(:create) {|i| 
         i.event_logs.build event: 'dat_received', event_time: 2.hours.ago
         i.event_logs.build event: 'dat_on_scene', event_time: 1.hours.ago

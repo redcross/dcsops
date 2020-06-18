@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe Incidents::WeeklyReportJob do
 
-  let(:chapter) { double :chapter, id: 1, time_zone: ActiveSupport::TimeZone['America/Los_Angeles'] }
-  let(:scope) { double :scope, id: 2, chapter: chapter, report_send_at: 0, time_zone: ActiveSupport::TimeZone['America/Los_Angeles'] }
-  let(:job) { Incidents::WeeklyReportJob.new(chapter.id).tap{|j| j.stub scope: scope } }
-  let(:today) { chapter.time_zone.today }
+  let(:region) { double :region, id: 1, time_zone: ActiveSupport::TimeZone['America/Los_Angeles'] }
+  let(:scope) { double :scope, id: 2, region: region, report_send_at: 0, time_zone: ActiveSupport::TimeZone['America/Los_Angeles'] }
+  let(:job) { Incidents::WeeklyReportJob.new(region.id).tap{|j| j.stub scope: scope } }
+  let(:today) { region.time_zone.today }
 
   after :each do
     ActionMailer::Base.deliveries.clear
@@ -30,17 +30,17 @@ describe Incidents::WeeklyReportJob do
   end
 
   describe '#subscriptions' do
-    let!(:sub_in_chapter) { FactoryGirl.create :report_subscription }
-    let!(:sub_outside_chapter) { FactoryGirl.create :report_subscription }
-    let(:scope) { sub_in_chapter.scope }
+    let!(:sub_in_region) { FactoryGirl.create :report_subscription }
+    let!(:sub_outside_region) { FactoryGirl.create :report_subscription }
+    let(:scope) { sub_in_region.scope }
     let(:job) { Incidents::WeeklyReportJob.new(scope.id) }
-    it "returns a sub in the current chapter" do
-      expect(job.send(:subscriptions)).to match_array([sub_in_chapter])
+    it "returns a sub in the current region" do
+      expect(job.send(:subscriptions)).to match_array([sub_in_region])
     end
   end
 
   describe '#deliver_subscription' do
-    let(:person) { double :person, chapter: chapter }
+    let(:person) { double :person, region: region }
     let(:sub) { double :subscription, person: person, range_to_send: (today-5)..today, update_attribute: nil, scope: scope }
     it "calls the mailer" do
       expect(Incidents::ReportMailer).to receive(:report_for_date_range).with(scope, person, (today-5)..today) { double(:mailer).tap{|m| expect(m).to receive(:deliver)} }
@@ -72,7 +72,7 @@ describe Incidents::WeeklyReportJob do
   end
 
   describe '.enqueue' do
-    it 'performs for each chapter' do
+    it 'performs for each region' do
       scope = FactoryGirl.create :incidents_scope, report_send_automatically: true
       expect(Incidents::WeeklyReportJob).to receive(:new).with(scope.id).and_return(double perform: true)
       Incidents::WeeklyReportJob.enqueue

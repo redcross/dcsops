@@ -1,17 +1,17 @@
 h3 "Reschedule Shifts"
 form_for "reschedule", method: :post, url: url_for(action: :perform_reschedule) do |f|
   table_for params[:shifts] do
-    column :county
+    column :shift_territory
     column :name
-    column :shift_groups do |sh|
-      text_node safe_join(sh.shift_groups.map(&:name), tag(:br))
+    column :shift_times do |sh|
+      text_node safe_join(sh.shift_times.map(&:name), tag(:br))
       input type: 'hidden', name: 'reschedule[shift_ids][]', value: sh.id
     end
   end
-  h4 "Choose new Shift Groups"
-  table_for params[:shift_groups] do
-    column :shift_group do |sg|
-      input type: 'checkbox', name: "reschedule[shift_group_ids][]", value: sg.id
+  h4 "Choose new Shift Times"
+  table_for params[:shift_times] do
+    column :shift_time do |sg|
+      input type: 'checkbox', name: "reschedule[shift_time_ids][]", value: sg.id
       text_node sg.name
     end
   end

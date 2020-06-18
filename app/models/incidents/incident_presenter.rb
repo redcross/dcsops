@@ -35,8 +35,8 @@ class Incidents::IncidentPresenter < SimpleDelegator
     event && Incidents::EventLog::EVENTS_TO_DESCRIPTIONS[event]
   end
 
-  def area_name
-    area.try :name
+  def shift_territory_name
+    shift_territory.try :name
   end
 
   def services_description
@@ -82,15 +82,15 @@ class Incidents::IncidentPresenter < SimpleDelegator
   end
 
   def path
-    routes.incidents_chapter_incident_path(chapter, to_param)
+    routes.incidents_region_incident_path(region, to_param)
   end
 
   def submit_path
     param = to_param || "INVALID"
-    chapter.incidents_report_editable ? routes.incidents_chapter_incident_path(chapter, param) : routes.new_incidents_chapter_incident_dat_path(chapter, param)
+    region.incidents_report_editable ? routes.incidents_region_incident_path(region, param) : routes.new_incidents_region_incident_dat_path(region, param)
   end
 
   def invalid_path
-    routes.mark_invalid_incidents_chapter_incident_path(chapter, __getobj__)
+    routes.mark_invalid_incidents_region_incident_path(region, __getobj__)
   end
 end

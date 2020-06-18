@@ -6,13 +6,13 @@ describe ApplicationHelper, :type => :helper do
   end
 
   describe '#current_messages' do
-    let(:chapter) { FactoryGirl.create :chapter }
-    let!(:motd) { FactoryGirl.create :motd, chapter: chapter }
+    let(:region) { FactoryGirl.create :region }
+    let!(:motd) { FactoryGirl.create :motd, region: region }
     let(:user) { mock_model Roster::Person }
 
     before(:each) {
       allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:current_chapter).and_return(chapter)
+      allow(helper).to receive(:current_region).and_return(region)
     }
 
     it "returns nothing if motds aren't turned on" do

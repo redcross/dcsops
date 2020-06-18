@@ -8,7 +8,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
 
   def show
     @date = @month = month_param
-    params[:show_shifts] = 'county' if params[:display]
+    params[:show_shifts] = 'shift_territory' if params[:display]
 
     load_calendar @month, @month.next_month
     view = params[:display] || 'show'
@@ -41,7 +41,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
   private
 
   def load_calendar(start_date, end_date)
-    @calendar = Scheduler::Calendar.new(current_chapter, start_date, end_date, person: person, filter: show_shifts, counties: show_counties, categories: show_categories)
+    @calendar = Scheduler::Calendar.new(current_region, start_date, end_date, person: person, filter: show_shifts, shift_territories: show_shift_territories, categories: show_categories)
   end    
 
   helper_method :editable?
@@ -65,11 +65,11 @@ class Scheduler::CalendarController < Scheduler::BaseController
   end
 
   def pdf_file_name
-    ["DAT", spreadsheet_county.try(:abbrev), @month.strftime("%Y"), @month.strftime("%b")].compact.join "-"
+    ["DAT", spreadsheet_shift_territory.try(:abbrev), @month.strftime("%Y"), @month.strftime("%b")].compact.join "-"
   end
 
-  helper_method :person, :show_counties, :show_shifts, :show_categories,
-        :can_take_shift?, :spreadsheet_groups, :spreadsheet_county
+  helper_method :person, :show_shift_territories, :show_shifts, :show_categories,
+        :can_take_shift?, :spreadsheet_groups, :spreadsheet_shift_territory
 
   attr_reader :calendar, :date
   helper_method :calendar, :date
@@ -82,17 +82,17 @@ class Scheduler::CalendarController < Scheduler::BaseController
     elsif params[:person_id].blank?
       nil
     else
-      Roster::Person.for_chapter(current_chapter).includes(:counties).where(id: params[:person_id]).first!
+      Roster::Person.for_region(current_region).includes(:shift_territories).where(id: params[:person_id]).first!
     end
 
     return @_person
   end
 
-  def show_counties
-    @_show_counties ||= if params[:counties].present?
-      Array(params[:counties]).select(&:present?).map(&:to_i)
+  def show_shift_territories
+    @_show_shift_territories ||= if params[:shift_territories].present?
+      Array(params[:shift_territories]).select(&:present?).map(&:to_i)
     elsif person 
-      [person.primary_county_id]
+      [person.primary_shift_territory_id]
     else
       []
     end.compact
@@ -102,25 +102,25 @@ class Scheduler::CalendarController < Scheduler::BaseController
     @_show_categories ||= if params[:categories].present?
       Array(params[:categories]).select(&:present?).map(&:to_i)
     else
-      Scheduler::ShiftCategory.for_chapter(current_chapter).where{show == true}.ids
+      Scheduler::ShiftCategory.for_region(current_region).where{show == true}.ids
     end
   end
 
   def show_shifts
     case params[:show_shifts]
-    when 'county' then :county
+    when 'shift_territory' then :shift_territory
     when 'all' then :all
     else :mine
     end
   end
 
-  def spreadsheet_county
-    @_spreadsheet_county ||= (show_counties.present? && Roster::County.find( show_counties.first))
+  def spreadsheet_shift_territory
+    @_spreadsheet_shift_territory ||= (show_shift_territories.present? && Roster::ShiftTerritory.find( show_shift_territories.first))
   end
 
   def spreadsheet_groups
-    @_spreadsheet_groups ||= Scheduler::ShiftGroup.where(period: 'daily').reduce({}) do |hash, group|
-      hash[group] = group.shifts.where(county_id: spreadsheet_county).where('spreadsheet_ordinal is not null').order(:spreadsheet_ordinal)
+    @_spreadsheet_groups ||= Scheduler::ShiftTime.where(period: 'daily').reduce({}) do |hash, group|
+      hash[group] = group.shifts.where(shift_territory_id: spreadsheet_shift_territory).where('spreadsheet_ordinal is not null').order(:spreadsheet_ordinal)
       hash
     end
   end

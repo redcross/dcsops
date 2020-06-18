@@ -21,7 +21,7 @@ class Incidents::PrepareIirJob
   def distribute_notification pdf_data
     Incidents::Notifications::Notification.create_for_event iir.incident, 'initial_incident_report', attachment_filename: filename, attachment_data: pdf_data, extra_recipients: [iir.approved_by, iir.completed_by].compact
 
-    emails = iir.incident.chapter.iir_emails || ''
+    emails = iir.incident.region.iir_emails || ''
     extra_contacts = emails.split(',').select(&:present?)
     extra_contacts.each do |contact|
       Incidents::Notifications::Mailer.initial_incident_report_extra_contact(contact, iir.incident, attachment_filename: filename, attachment_data: pdf_data).deliver
@@ -36,7 +36,7 @@ class Incidents::PrepareIirJob
   end
 
   def view_html
-    tz = iir.incident.chapter.time_zone
+    tz = iir.incident.region.time_zone
     html = nil
     Time.use_zone(tz) do
       html = RenderMan.new(file: 'incidents/initial_incident_reports/show', defs: {resource: iir}, layout: 'thin').render 
@@ -82,7 +82,7 @@ class Incidents::PrepareIirJob
 
   def filename
     date_str = iir.incident.date.strftime "%Y%m%d"
-    "#{date_str}_#{iir.incident.chapter.name}_#{iir.incident.humanized_incident_type}_IIR.pdf"
+    "#{date_str}_#{iir.incident.region.name}_#{iir.incident.humanized_incident_type}_IIR.pdf"
   end
 
 end

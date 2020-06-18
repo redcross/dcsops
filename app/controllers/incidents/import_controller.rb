@@ -49,12 +49,12 @@ class Incidents::ImportController < ApplicationController
     matches = body.match(/Account: (\d+)/i)
     if matches
       account_number = matches[1]
-      chapter = Roster::Chapter.with_directline_account_number_value(account_number).first!
+      region = Roster::Region.with_directline_account_number_value(account_number).first!
     end
-    chapter ||= Roster::Chapter.find(1)
+    region ||= Roster::Region.find(1)
 
     Incidents::DispatchLog.transaction do
-      importer.import_data(chapter, body)
+      importer.import_data(region, body)
     end
   end
 

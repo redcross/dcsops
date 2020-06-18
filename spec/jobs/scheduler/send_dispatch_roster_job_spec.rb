@@ -1,30 +1,30 @@
 require 'spec_helper'
 
 describe Scheduler::SendDispatchRosterJob do
-  let(:chapter) { person.chapter }
+  let(:region) { person.region }
   let(:shift) { FactoryGirl.create :shift_with_positions }
-  let!(:config) { Scheduler::DispatchConfig.create! name: 'Config', chapter: chapter, shift_first: shift, is_active: true }
-  let(:person) { FactoryGirl.create :person, chapter: shift.county.chapter, positions: shift.positions, counties: [shift.county]}
+  let!(:config) { Scheduler::DispatchConfig.create! name: 'Config', region: region, shift_first: shift, is_active: true }
+  let(:person) { FactoryGirl.create :person, region: shift.shift_territory.region, positions: shift.positions, shift_territories: [shift.shift_territory]}
   let(:assignment) { FactoryGirl.create :shift_assignment, date: Date.today, person: person, shift: shift }
 
-  subject { Scheduler::SendDispatchRosterJob.new chapter }
+  subject { Scheduler::SendDispatchRosterJob.new region }
 
   describe "#perform" do
     it "should run if force is given" do
-      job = Scheduler::SendDispatchRosterJob.new(chapter, true)
+      job = Scheduler::SendDispatchRosterJob.new(region, true)
       expect(job).to receive :run!
       job.perform
     end
 
     it "should run if there are shifts needing update" do
-      job = Scheduler::SendDispatchRosterJob.new(chapter, false)
+      job = Scheduler::SendDispatchRosterJob.new(region, false)
       expect(job).to receive :run!
       expect(job).to receive(:shifts_needing_update?).and_return(true)
       job.perform
     end
 
     it "should not run otherwise" do
-      job = Scheduler::SendDispatchRosterJob.new(chapter, false)
+      job = Scheduler::SendDispatchRosterJob.new(region, false)
       expect(job).not_to receive :run!
       expect(job).to receive(:shifts_needing_update?).and_return(false)
       job.perform
@@ -32,7 +32,7 @@ describe Scheduler::SendDispatchRosterJob do
 
     it "should mark assignments as synced" do
       expect{
-        job = Scheduler::SendDispatchRosterJob.new(chapter, true)
+        job = Scheduler::SendDispatchRosterJob.new(region, true)
         expect(job).to receive :run!
         job.perform
       }.to change{assignment.reload.synced}.from(false).to(true)
@@ -43,7 +43,7 @@ describe Scheduler::SendDispatchRosterJob do
     it "should call the mailer" do
       delivery = double(:delivery)
       expect(delivery).to receive(:deliver).and_return(true)
-      expect(Scheduler::DirectlineMailer).to receive(:export).with(chapter, chapter.time_zone.today-1, chapter.time_zone.today+15).and_return(delivery)
+      expect(Scheduler::DirectlineMailer).to receive(:export).with(region, region.time_zone.today-1, region.time_zone.today+15).and_return(delivery)
       subject.run!
     end
   end

@@ -3,7 +3,7 @@ class Incidents::IncidentsListController < Incidents::BaseController
   respond_to :html, :js
   defaults finder: :find_by_incident_number!, resource_class: Incidents::Incident, collection_name: :incidents
   load_and_authorize_resource :scope
-  belongs_to :scope, parent_class: Incidents::Scope, finder: :find_by_url_slug!, param: :chapter_id
+  belongs_to :scope, parent_class: Incidents::Scope, finder: :find_by_url_slug!, param: :region_id
   helper Incidents::MapHelper
   include Searchable, Paginatable
 
@@ -21,22 +21,22 @@ class Incidents::IncidentsListController < Incidents::BaseController
 
   protected
 
-  has_scope :in_area, as: :area_id_eq
+  has_scope :in_shift_territory, as: :shift_territory_id_eq
   has_scope :county_state_eq do |controller, scope, val|
-    county_name, state_name = val.split ", "
-    scope.where{(lower(county) == county_name.downcase) & (state == state_name)}
+    county, state_name = val.split ", "
+    scope.where{(lower(county) == county.downcase) & (state == state_name)}
   end
 
   def resource_path(*args)
     opts = args.extract_options!
     obj = args.first || resource
-    incidents_chapter_incident_path(obj.chapter, obj, *opts)
+    incidents_region_incident_path(obj.region, obj, *opts)
   end
   helper_method :resource_path
 
   def collection
     @_incidents ||= begin
-      scope = apply_scopes(super).order{[date.desc, incident_number.desc]}#.preload{[area, dat_incident, team_lead.person]}
+      scope = apply_scopes(super).order{[date.desc, incident_number.desc]}#.preload{[shift_territory_incident, team_lead.person]}
       scope
     end
   end

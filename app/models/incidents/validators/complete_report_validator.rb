@@ -19,20 +19,20 @@ class Incidents::Validators::CompleteReportValidator < DelegatedValidator
 
   Incidents::DatIncident::TRACKED_RESOURCE_TYPES.each do |type_s|
     type = type_s.to_sym
-    conditional = ->(obj){ obj.incident && obj.incident.chapter.incidents_resources_tracked_array.include?(type_s)}
+    conditional = ->(obj){ obj.incident && obj.incident.region.incidents_resources_tracked_array.include?(type_s)}
     validates_presence_of type, if: conditional
     validates_numericality_of type, greater_than_or_equal_to: 0, allow_blank: false, allow_nil: false, if: conditional
   end
 
   def validate_fire_details?
-    incident.chapter.incidents_report_advanced_details && incident.incident_type == 'fire'
+    incident.region.incidents_report_advanced_details && incident.incident_type == 'fire'
   end
   validates :box, :box_at, :battalion, :num_alarms, :where_started, :under_control_at,
             :size_up, :num_exposures, :injuries_black, :injuries_red, :injuries_yellow,
             presence: {if: :validate_fire_details?}
 
   def validate_vacate_details?
-    incident.chapter.incidents_report_advanced_details && incident.incident_type == 'vacate'
+    incident.region.incidents_report_advanced_details && incident.incident_type == 'vacate'
   end
   validates :vacate_type, :vacate_number, presence: {if: :validate_vacate_details?}
 end

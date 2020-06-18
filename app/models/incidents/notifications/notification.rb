@@ -5,7 +5,7 @@ module Incidents::Notifications
     end
 
     def self.create_for_event incident, event_name, options=nil
-      event = Event.for_chapter(incident.chapter).for_type('event').for_event_name(event_name).first
+      event = Event.for_region(incident.region).for_type('event').for_event_name(event_name).first
       create incident, event, options if event
     end
 
@@ -42,7 +42,7 @@ module Incidents::Notifications
           case scope.level
           when 'region' then true
           when 'county' then scope.value.downcase == incident_county
-          when 'territory' then scope.territory_id == @incident.territory_id
+          when 'response_territory' then scope.response_territory_id == @incident.response_territory_id
           else false
           end
         }

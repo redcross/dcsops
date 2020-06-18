@@ -23,7 +23,7 @@
   %tr
     %th=passthrough_edit_link 'vehicles', 'Vehicles'
     %td= dat.vehicles.map(&:name).to_sentence
-  -if resource.chapter.incidents_report_advanced_details
+  -if resource.region.incidents_report_advanced_details
     %tr
       %th=passthrough_edit_link 'basic', 'Hazardous Materials'
       %td=dat.hazardous_materials
@@ -32,7 +32,7 @@
       %td
         =resource.cas_event_number
         =cas_event_button(resource)
-  -if resource.chapter.incidents_use_escalation_levels
+  -if resource.region.incidents_use_escalation_levels
     %tr
       %th=passthrough_edit_link '', "Notification Level", url: new_resource_notification_path
       %td

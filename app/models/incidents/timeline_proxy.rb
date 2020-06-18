@@ -11,7 +11,7 @@ class Incidents::TimelineProxy
 
   def initialize(incident, mandatory_fields=[])
     @incident = incident
-    @fields = incident.chapter.incidents_timeline_mandatory_array(EVENT_TYPES)
+    @fields = incident.region.incidents_timeline_mandatory_array(EVENT_TYPES)
   end
 
   def event_log_for(type, create: false)

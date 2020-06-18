@@ -1,7 +1,7 @@
 %h4 
   Responders
   -if enable_messaging && can?(:create, Incidents::ResponderMessage)
-    =link_to 'Message All', '#', class: 'btn btn-default', data: {edit_panel: new_incidents_chapter_incident_responder_message_path(parent.chapter, parent)}
+    =link_to 'Message All', '#', class: 'btn btn-default', data: {edit_panel: new_incidents_region_incident_responder_message_path(parent.region, parent)}
 %table.table.table-bordered.table-condensed
   %tr
     %th Name
@@ -30,4 +30,4 @@
               %li=link_to 'Edit…', edit_resource_path(assignment), tabindex: "-1"
               %li=next_status_link assignment
               -if enable_messaging && has_sms
-                %li=link_to 'Send Message', '#', data: {edit_panel: new_incidents_chapter_incident_responder_message_path(parent.chapter, parent, recipient: assignment.person_id)}
+                %li=link_to 'Send Message', '#', data: {edit_panel: new_incidents_region_incident_responder_message_path(parent.region, parent, recipient: assignment.person_id)}

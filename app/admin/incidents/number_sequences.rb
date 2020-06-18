@@ -9,7 +9,7 @@ ActiveAdmin.register Incidents::NumberSequence, as: 'Number Sequence' do
     column :current_year
     column :current_number
     column :format
-    column(:chapters) { |ns| safe_join(ns.chapters.map(&:name), tag(:br)) }
+    column(:regions) { |ns| safe_join(ns.regions.map(&:name), tag(:br)) }
     actions
   end
 
@@ -17,7 +17,7 @@ ActiveAdmin.register Incidents::NumberSequence, as: 'Number Sequence' do
 
   controller do
     def collection
-      @col ||= super.preload{chapters}
+      @col ||= super.preload{regions}
     end
   end
 end

@@ -19,9 +19,9 @@
         %td=inc.incident_number
         %td=inc.full_address
         %td
-          =inc.chapter.try :name
+          =inc.region.try :name
           %br
-          =inc.territory.try :name
+          =inc.response_territory.try :name
         %td=inc.date.to_s :dow_short
         %td=time_ago_in_words inc.created_at
         %td
@@ -30,6 +30,6 @@
           -if can? :mark_invalid, inc
             %a.btn.btn-danger{href: inc.invalid_path} No Response / Mark Invalid
 
--unless current_chapter.incidents_report_editable
+-unless current_region.incidents_report_editable
   %h3 Don't see your incident?
   The dispatch call center must assign an incident number in order to submit a report.  If you do not have an incident number, call dispatch and request one.  Then refresh the page and you should see your incident listed.

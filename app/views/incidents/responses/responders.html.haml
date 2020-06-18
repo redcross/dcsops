@@ -1,6 +1,6 @@
 =form_tag '', method: :get, class: 'form-inline' do
-  Show County:
-  =select_tag :county_id, options_from_collection_for_select(current_chapter.counties.enabled, :id, :name, current_scopes[:county_id]), class: "form-control"
+  Show Shift Territory:
+  =select_tag :shift_territory_id, options_from_collection_for_select(current_region.shift_territories.enabled, :id, :name, current_scopes[:shift_territory_id]), class: "form-control"
   =submit_tag 'Show', class: 'btn btn-primary'
 
 .legend
@@ -33,7 +33,7 @@
         %td=assignments.reject{|r| r.was_available || r.was_flex }.count
         - assignments.first(max_responses).each do |ass|
           %td
-            %a{href: incidents_chapter_incident_path(ass.incident.chapter, ass.incident), title: tooltip_for(ass)}(data-toggle="tooltip")
+            %a{href: incidents_region_incident_path(ass.incident.region, ass.incident), title: tooltip_for(ass)}(data-toggle="tooltip")
               -if ass.was_available
                 %i.icon-large.fa.fa-check-square.text-success
               -elsif ass.was_flex

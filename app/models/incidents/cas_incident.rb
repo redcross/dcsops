@@ -1,17 +1,17 @@
 class Incidents::CasIncident < ActiveRecord::Base
   has_one :incident, class_name: 'Incidents::Incident', primary_key: 'cas_incident_number', foreign_key: 'cas_event_number'
-  belongs_to :chapter, class_name: 'Roster::Chapter'
+  belongs_to :region, class_name: 'Roster::Region'
   has_many :cases, class_name: 'Incidents::CasCase', inverse_of: :cas_incident
   alias :cas_cases :cases
 
   #validates :incident_id, :cas_incident_number, :dr_number, uniqueness: {allow_blank: true, allow_nil: true}
 
-  def self.for_chapter chapter
-    where{chapter_id == chapter}
+  def self.for_region region
+    where{region_id == region}
   end
 
-  def self.to_link_for_chapter chapter
-    for_chapter(chapter).joins{incident.outer}.where{(ignore_incident==false) & (incident.id == nil)}.order{incident_date.desc}
+  def self.to_link_for_region region
+    for_region(region).joins{incident.outer}.where{(ignore_incident==false) & (incident.id == nil)}.order{incident_date.desc}
   end
 
   def self.open_cases
@@ -33,8 +33,8 @@ class Incidents::CasIncident < ActiveRecord::Base
   end
 
   # For Debug Purposes
-  def create_incident_from_cas!(chapter=nil)
-    Incidents::CasPromoter.promote!(self, chapter)
+  def create_incident_from_cas!(region=nil)
+    Incidents::CasPromoter.promote!(self, region)
   end
 
 end

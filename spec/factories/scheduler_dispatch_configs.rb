@@ -3,7 +3,7 @@
 FactoryGirl.define do
   factory :scheduler_dispatch_config, :class => 'Scheduler::DispatchConfig' do
     name { Faker::Address.city }
-    county nil
+    shift_territory nil
     backup_first nil
     backup_second nil
     backup_third nil

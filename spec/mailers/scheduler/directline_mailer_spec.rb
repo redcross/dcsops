@@ -3,32 +3,32 @@ require 'spec_helper'
 describe Scheduler::DirectlineMailer, :type => :mailer do
 
   before(:each) do
-    @chapter = FactoryGirl.create(:chapter)
-    @county1 = FactoryGirl.create :county, chapter: @chapter
-    @county2 = FactoryGirl.create :county, chapter: @chapter
-    @position = FactoryGirl.create :position, chapter: @chapter
-    @people1 = (0..5).map{|i| FactoryGirl.create :person, chapter: @chapter, counties:[@county1], positions: [@position]}
-    #@people2 = (0..5).map{|i| FactoryGirl.create :person, counties:[@county2], positions: [@position]}
+    @region = FactoryGirl.create(:region)
+    @shift_territory1 = FactoryGirl.create :shift_territory, region: @region
+    @shift_territory2 = FactoryGirl.create :shift_territory, region: @region
+    @position = FactoryGirl.create :position, region: @region
+    @people1 = (0..5).map{|i| FactoryGirl.create :person, region: @region, shift_territories:[@shift_territory1], positions: [@position]}
+    #@people2 = (0..5).map{|i| FactoryGirl.create :person, shift_territories:[@shift_territory2], positions: [@position]}
 
-    @day = FactoryGirl.create :shift_group, chapter: @chapter, start_offset: 7.hours, end_offset: 19.hours
-    @night = FactoryGirl.create :shift_group, chapter: @chapter, start_offset: 19.hours, end_offset: 31.hours
+    @day = FactoryGirl.create :shift_time, region: @region, start_offset: 7.hours, end_offset: 19.hours
+    @night = FactoryGirl.create :shift_time, region: @region, start_offset: 19.hours, end_offset: 31.hours
 
-    @leadshift = FactoryGirl.create :shift, shift_groups: [@day, @night], positions: [@position], county: @county1
-    @othershift = FactoryGirl.create :shift, shift_groups: [@day, @night], positions: [@position], county: @county1
+    @leadshift = FactoryGirl.create :shift, shift_times: [@day, @night], positions: [@position], shift_territory: @shift_territory1
+    @othershift = FactoryGirl.create :shift, shift_times: [@day, @night], positions: [@position], shift_territory: @shift_territory1
 
-    @leadass = FactoryGirl.create :shift_assignment, person: @people1.first, date: today, shift: @leadshift, shift_group: @day
-    FactoryGirl.create :shift_assignment, person: @people1[1], date: today, shift: @othershift, shift_group: @day
-    FactoryGirl.create :shift_assignment, person: @people1[2], date: today, shift: @leadshift, shift_group: @night
+    @leadass = FactoryGirl.create :shift_assignment, person: @people1.first, date: today, shift: @leadshift, shift_time: @day
+    FactoryGirl.create :shift_assignment, person: @people1[1], date: today, shift: @othershift, shift_time: @day
+    FactoryGirl.create :shift_assignment, person: @people1[2], date: today, shift: @leadshift, shift_time: @night
 
-    @config = Scheduler::DispatchConfig.new chapter: @chapter, name: @county1.name
+    @config = Scheduler::DispatchConfig.new region: @region, name: @shift_territory1.name
     @config.is_active = true
     @config.shift_first = @leadshift
     @config.backup_first = @people1.last
     @config.save!
   end
 
-  let(:today) { @chapter.time_zone.today }
-  let(:mail) { Scheduler::DirectlineMailer.export(@chapter, today, today.tomorrow)}
+  let(:today) { @region.time_zone.today }
+  let(:mail) { Scheduler::DirectlineMailer.export(@region, today, today.tomorrow)}
   let(:shift_filename) { "shift_data.csv"}
   let(:roster_filename) { "roster.csv"}
 
@@ -45,34 +45,34 @@ describe Scheduler::DirectlineMailer, :type => :mailer do
 
     let (:csv) {CSV.parse(mail.attachments[shift_filename].body.raw_source)}
 
-    it "should include a line for each day/shift group plus header" do
+    it "should include a line for each day/shift time plus header" do
       expect(csv.count).to eq 4 + 1
     end
 
     it "Should have the on call person plus backups" do
       row = csv[1]
-      expect(row[1]).to eq (@chapter.time_zone.now.at_beginning_of_day.advance(seconds: @day.start_offset).iso8601)
+      expect(row[1]).to eq (@region.time_zone.now.at_beginning_of_day.advance(seconds: @day.start_offset).iso8601)
       expect(row[3..row.count]).to match_array([@people1.first.id.to_s, @config.backup_first.id.to_s])
     end
 
     it "Should have the night person plus backups" do
       row = csv[2]
-      expect(row[1]).to eq (@chapter.time_zone.now.at_beginning_of_day.advance(seconds: @night.start_offset).iso8601)
+      expect(row[1]).to eq (@region.time_zone.now.at_beginning_of_day.advance(seconds: @night.start_offset).iso8601)
       expect(row[3..row.count]).to match_array([@people1[2].id.to_s, @config.backup_first.id.to_s])
     end
 
     it "Should have the backups when no on call person" do
       row = csv[3]
-      expect(row[1]).to eq (@chapter.time_zone.now.at_beginning_of_day.advance(days: 1, seconds: @day.start_offset).iso8601)
+      expect(row[1]).to eq (@region.time_zone.now.at_beginning_of_day.advance(days: 1, seconds: @day.start_offset).iso8601)
       expect(row[3..row.count]).to match_array([@config.backup_first.id.to_s])
     end
 
     it "Should include a weekly backup shift" do
-      @week = FactoryGirl.create :shift_group, chapter: @chapter, start_offset: 7.hours, end_offset: ((24 * 7) + 7).hours, period: 'weekly'
-      @weekshift = FactoryGirl.create :shift, shift_groups: [@week], positions: [@position], county: @county1
+      @week = FactoryGirl.create :shift_time, region: @region, start_offset: 7.hours, end_offset: ((24 * 7) + 7).hours, period: 'weekly'
+      @weekshift = FactoryGirl.create :shift, shift_times: [@week], positions: [@position], shift_territory: @shift_territory1
       @config.update_attributes! shift_second_id: @weekshift.id
       @weekperson = @people1[3]
-      @weekass = FactoryGirl.create :shift_assignment, person: @weekperson, date: today.at_beginning_of_week, shift: @weekshift, shift_group: @week
+      @weekass = FactoryGirl.create :shift_assignment, person: @weekperson, date: today.at_beginning_of_week, shift: @weekshift, shift_time: @week
 
       row = csv[1]
       expect(row[3..row.count]).to match_array([@people1.first.id.to_s, @weekperson.id.to_s, @config.backup_first.id.to_s])

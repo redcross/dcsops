@@ -6,24 +6,24 @@
       %ul.nav.nav-tabs.nav-stacked.nav-tabs-small
         -if can? :needs_report, Incidents::Incident
           %li
-            %a{href: needs_report_incidents_chapter_incidents_path(scope)}
+            %a{href: needs_report_incidents_region_incidents_path(scope)}
               Submit Incident Report
               %i.fa.fa-chevron-right
-        -if current_chapter.incidents_use_global_log && can?(:read, Incidents::EventLog)
+        -if current_region.incidents_use_global_log && can?(:read, Incidents::EventLog)
           %li
-            =link_to incidents_chapter_event_logs_path(scope) do
+            =link_to incidents_region_event_logs_path(scope) do
               ECC Log
               %i.fa.fa-chevron-right
         -#-if can? :link_cas, Incidents::Incident
         -#  %li
-        -#    %a{href: incidents_chapter_cas_link_index_path(scope)}
+        -#    %a{href: incidents_region_cas_link_index_path(scope)}
         -#      Link CAS Incidents
         -#      -if num_incidents_to_link > 0
         -#        (#{num_incidents_to_link})
         -#      %i.fa.fa-chevron-right
         -#-if can? :read, Incidents::CasIncident
         -#  %li
-        -#    %a{href: incidents_chapter_cas_incidents_path(scope)}
+        -#    %a{href: incidents_region_cas_incidents_path(scope)}
         -#      Incident Tracker
         -#      %i.fa.fa-chevron-right
         -if can? :create, Incidents::ReportSubscription.new(scope: scope, person: current_user, report_type: 'report')
@@ -33,7 +33,7 @@
               %i.fa.fa-chevron-right
         -if can? :show, :responders
           %li
-            %a{href: incidents_chapter_responders_path(scope)}
+            %a{href: incidents_region_responders_path(scope)}
               Responder History
               %i.fa.fa-chevron-right
         
@@ -62,17 +62,17 @@
     -if scope.enable_dispatch_console && can?(:dispatch_console, scope)
       %ul.nav.nav-tabs.nav-stacked.nav-tabs-small
         %li
-          %a{href: incidents_chapter_dispatch_index_path(scope)}
+          %a{href: incidents_region_dispatch_index_path(scope)}
             Dispatch Console
             %i.fa.fa-chevron-right
     .recent-table{data: {refresh_name: "timeline details", refresh: url_for(partial: 'recent_table')}}
       =render 'recent_table'
     -if can? :index, Incidents::Incident
       %h5
-        =link_to 'More Incidents&hellip;'.html_safe, incidents_chapter_incidents_path(scope)
-    -if can? :read_case_details, Incidents::Incident and current_chapter.incidents_report_editable
+        =link_to 'More Incidents&hellip;'.html_safe, incidents_region_incidents_path(scope)
+    -if can? :read_case_details, Incidents::Incident and current_region.incidents_report_editable
       %h5
-        =link_to 'Current Activity&hellip;'.html_safe, activity_incidents_chapter_incidents_path(scope)
+        =link_to 'Current Activity&hellip;'.html_safe, activity_incidents_region_incidents_path(scope)
 
   .col-sm-7.col-md-8
     .map-container
@@ -86,7 +86,7 @@
   - if ENV['BOUNDARY_TABLE_ID'] && scope.boundary_polygon_filter.present?
     :javascript
       allIncidentsMapController.configureBoundaryLayer(#{ENV['BOUNDARY_TABLE_ID'].to_json}, #{scope.boundary_polygon_filter.to_json});
-  =chapter_pubnub_setup(current_chapter)
+  =region_pubnub_setup(current_region)
 
 
 

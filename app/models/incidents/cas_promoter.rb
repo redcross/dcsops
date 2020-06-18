@@ -1,23 +1,23 @@
 class Incidents::CasPromoter
 
-  def self.promote! cas_incident, chapter=nil
-    new(cas_incident, chapter).promote!
+  def self.promote! cas_incident, region=nil
+    new(cas_incident, region).promote!
   end
 
-  def initialize cas_incident, chapter=nil
+  def initialize cas_incident, region=nil
     @cas_incident = cas_incident
-    @chapter = chapter
+    @region = region
   end
 
   attr_reader :cas_incident
 
-  def chapter
-    @chapter ||= Roster::Chapter.all.detect{|ch| ch.cas_chapter_codes_array.include? cas_incident.chapter_code}
+  def region
+    @region ||= Roster::Region.all.detect{|ch| ch.cas_region_codes_array.include? cas_incident.region_code}
   end
 
   def promote!
     return if cas_incident.incident
-    return unless chapter
+    return unless region
 
     cas_incident.class.transaction do
       inc = cas_incident.build_incident
@@ -25,15 +25,15 @@ class Incidents::CasPromoter
       inc.date = cas_incident.incident_date
       inc.status = 'closed'
       inc.incident_number = "19-#{cas_incident.id}"
-      inc.chapter = chapter
+      inc.region = region
       inc.num_adults = cas_incident.num_clients
       inc.num_children = 0
       inc.num_families = cas_incident.cases.count
       inc.num_cases = cas_incident.cases.count
 
       inc.cas_event_number = cas_incident.cas_incident_number
-      inc.area = chapter.counties.find_by(name: (cas_incident.county_name || 'Region')) || chapter.counties.find_by(name: 'Region')
-      return unless inc.area
+      inc.shift_territory = region.shift_territories.find_by(name: (cas_incident.county || 'Region')) || region.shift_territories.find_by(name: 'Region')
+      return unless inc.shift_territory
 
       geocode_incident inc
 
@@ -51,8 +51,8 @@ class Incidents::CasPromoter
       inc.state = kase.state
 
       Geokit::Geocoders::GoogleGeocoder.geocode( [inc.address, inc.city, inc.state].join(", "))
-    elsif cas_incident.county_name
-      Geokit::Geocoders::GoogleGeocoder.geocode "#{cas_incident.county_name}, CA, USA"
+    elsif cas_incident.county
+      Geokit::Geocoders::GoogleGeocoder.geocode "#{cas_incident.county}, CA, USA"
     end
 
     if geocode

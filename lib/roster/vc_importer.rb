@@ -1,8 +1,8 @@
 class Roster::VcImporter
   include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
-  def import_data(chapter, file)
-    @chapter = chapter
+  def import_data(region, file)
+    @region = region
     workbook = Spreadsheet.open(file)
     data_errs = nil
     Roster::Person.transaction do
@@ -17,7 +17,7 @@ class Roster::VcImporter
     (1..(sheet.last_row_index-1)).each do |row|
       break if sheet[row, 0].blank?
       id = sheet[row,23].to_i
-      person = Roster::Person.where(chapter_id: @chapter, vc_id: id).first
+      person = Roster::Person.where(region_id: @region, vc_id: id).first
       next unless person
       #cols = [:vc_member_number, nil, :first_name, nil, :last_name, nil, :email, :secondary_email, 
       #  :work_phone, :home_phone, :cell_phone, nil, nil, :alternate_phone,

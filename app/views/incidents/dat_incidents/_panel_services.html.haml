@@ -16,7 +16,7 @@
     %label.form-label Other Assistance
     .form-wrapper
       - other_services = {"Health Services" => 'health', "Mental Health" => 'mental_health', "Spiritual Care" => 'spiritual_care', 'Translation' => 'translation'}
-      - other_services["Referrals"] = 'referrals' if f.object.incident.chapter.incidents_report_advanced_details
+      - other_services["Referrals"] = 'referrals' if f.object.incident.region.incidents_report_advanced_details
       - other_services.each do |label, val|
         - local_services << val
         .checkbox

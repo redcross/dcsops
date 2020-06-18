@@ -5,8 +5,8 @@
   This is a calendar invite for the DAT shift you recently signed up with.  Accept the invite to automatically add the shift to your calendar.
 
 %p
-  You are signed up as <%= item.shift.name %> for the <%= item.shift_group.name %> shift
-  - if item.shift_group.period == 'daily'
+  You are signed up as <%= item.shift.name %> for the <%= item.shift_time.name %> shift
+  - if item.shift_time.period == 'daily'
     on #{item.date.strftime("%A, %B %d")} from #{item.local_start_time.strftime("%l:%M%p").strip} to #{item.local_end_time.strftime("%l:%M%p").strip}.
   - else
     from #{item.local_start_time.strftime("%A, %B %D at %k:%M%p")} to #{item.local_end_time.strftime("%A, %B %D at %k:%M%p")}.

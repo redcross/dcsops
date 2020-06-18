@@ -1,5 +1,5 @@
 %h1 Disaster Dispatch
-=link_to "New Incident", new_incidents_chapter_dispatch_intake_path(parent), class: "btn btn-primary"
+=link_to "New Incident", new_incidents_region_dispatch_intake_path(parent), class: "btn btn-primary"
 
 %h3 Dispatching Incidents
 .dispatch-table{data: {refresh_name: 'dispatch', refresh: collection_path(partial: 'dispatch_table')}}
@@ -15,4 +15,4 @@
       window.editPanelController = window.editPanelController || new IncidentEditPanelController();
       window.dispatchController = window.dispatchController || new DispatchController();
     })
-  =chapter_pubnub_setup
+  =region_pubnub_setup

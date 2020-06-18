@@ -10,19 +10,19 @@ class AdminAbility
 
   def initialize(person)
 
-    is_config = person.has_role 'chapter_config'
+    is_config = person.has_capability 'region_config'
 
     if is_config # is site manager
-      can [:read, :update], Roster::Chapter
-      can :manage, Roster::County
+      can [:read, :update], Roster::Region
+      can :manage, Roster::ShiftTerritory
       can :manage, Roster::Position
       can :manage, Roster::CellCarrier
       can :manage, Roster::Person
-      can :manage, Roster::Role
+      can :manage, Roster::Capability
 
       can :manage, Scheduler::DispatchConfig
       can :manage, Scheduler::Shift
-      can :manage, Scheduler::ShiftGroup
+      can :manage, Scheduler::ShiftTime
       can :manage, Scheduler::ShiftCategory
 
       can :manage, Incidents::ReportSubscription
@@ -46,27 +46,27 @@ class AdminAbility
       can :manage, :all
     end
 
-    is_admin = person.has_role 'chapter_admin'
+    is_admin = person.has_capability 'region_admin'
     if is_admin
-      chapter = person.chapter_id
-      can :read, [Roster::Person, Roster::County, Roster::Position], chapter_id: chapter
-      can :impersonate, Roster::Person, chapter_id: chapter
-      can :manage, Logistics::Vehicle, chapter_id: chapter
-      can :manage, HomepageLink, chapter_id: chapter
+      region = person.region_id
+      can :read, [Roster::Person, Roster::ShiftTerritory, Roster::Position], region_id: region
+      can :impersonate, Roster::Person, region_id: region
+      can :manage, Logistics::Vehicle, region_id: region
+      can :manage, HomepageLink, region_id: region
       can :new, Incidents::ReportSubscription
-      can :manage, Incidents::ReportSubscription, person: {chapter_id: chapter}
+      can :manage, Incidents::ReportSubscription, person: {region_id: region}
       can [:test_report, :send_report, :new], Incidents::ReportSubscription
 
-      can :manage, Incidents::Notifications::Event, chapter_id: chapter
-      can :manage, Incidents::Notifications::Role, chapter_id: chapter
+      can :manage, Incidents::Notifications::Event, region_id: region
+      can :manage, Incidents::Notifications::Role, region_id: region
 
-      can [:read, :update], Scheduler::DispatchConfig, chapter_id: chapter
-      can :read, Incidents::DispatchLog, chapter_id: chapter
+      can [:read, :update], Scheduler::DispatchConfig, region_id: region
+      can :read, Incidents::DispatchLog, region_id: region
 
-      can :manage, Incidents::Territory, chapter_id: chapter
+      can :manage, Incidents::ResponseTerritory, region_id: region
 
       can :manage, RegionAdminProxy do |region|
-        region.region_id.nil? || region.region_id == chapter
+        region.region_id.nil? || region.region_id == region
       end
     end
   end

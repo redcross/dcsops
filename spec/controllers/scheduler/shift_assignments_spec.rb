@@ -3,12 +3,12 @@ require 'spec_helper'
 describe Scheduler::ShiftAssignmentsController, :type => :controller do
   before(:each) do
     @person = FactoryGirl.create :person
-    @chapter = @person.chapter
-    @person2 = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties, positions: @person.positions
-    @shift = FactoryGirl.create :shift, county: @person.counties.first, positions: @person.positions
-    @shift_group = @shift.shift_groups.first
+    @region = @person.region
+    @person2 = FactoryGirl.create :person, region: @region, shift_territories: @person.shift_territories, positions: @person.positions
+    @shift = FactoryGirl.create :shift, shift_territory: @person.shift_territories.first, positions: @person.positions
+    @shift_time = @shift.shift_times.first
 
-    @assignments = (1..5).map{|i| Scheduler::ShiftAssignment.create! person:@person, date:Date.today+i, shift:@shift, shift_group:@shift_group}
+    @assignments = (1..5).map{|i| Scheduler::ShiftAssignment.create! person:@person, date:Date.today+i, shift:@shift, shift_time:@shift_time}
 
     @settings = Scheduler::NotificationSetting.create id: @person.id
   end
@@ -57,14 +57,14 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
         }.to raise_error(CanCan::AccessDenied)
       end
 
-      it 'should show all shifts I am a county admin for' do
+      it 'should show all shifts I am a shift territory admin for' do
         (0..2).map { |i| 
-          pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties
-          shift = FactoryGirl.create :shift, shift_groups: [@shift_group], county: pers.counties.first, positions: pers.positions
-          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+6+i), shift: shift, shift_group: @shift_group
+          pers = FactoryGirl.create :person, region: @region, shift_territories: @person.shift_territories
+          shift = FactoryGirl.create :shift, shift_times: [@shift_time], shift_territory: pers.shift_territories.first, positions: pers.positions
+          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+6+i), shift: shift, shift_time: @shift_time
         }
 
-        grant_role! 'county_dat_admin', @person.county_ids, @person
+        grant_capability! 'shift_territory_dat_admin', @person.shift_territory_ids, @person
 
         get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
 
@@ -73,14 +73,14 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
       end
 
       it "should merge other shifts into the same event" do
-        county = @person.counties.first
+        shift_territory = @person.shift_territories.first
         (1..3).map { |i| 
-          pers = FactoryGirl.create :person, chapter: @chapter, counties: @person.counties
-          shift = FactoryGirl.create :shift, shift_groups: [@shift_group], county: pers.counties.first, positions: pers.positions
-          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+i), shift: shift, shift_group: @shift_group
+          pers = FactoryGirl.create :person, region: @region, shift_territories: @person.shift_territories
+          shift = FactoryGirl.create :shift, shift_times: [@shift_time], shift_territory: pers.shift_territories.first, positions: pers.positions
+          FactoryGirl.create :shift_assignment, person: pers, date: (Date.today+i), shift: shift, shift_time: @shift_time
         }
 
-        grant_role! 'county_dat_admin', @person.county_ids, @person
+        grant_capability! 'shift_territory_dat_admin', @person.shift_territory_ids, @person
 
         get :index, format: :ics, api_token: @settings.calendar_api_token, show_shifts: 'all'
 

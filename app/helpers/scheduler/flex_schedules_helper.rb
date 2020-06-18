@@ -6,10 +6,10 @@ module Scheduler::FlexSchedulesHelper
     offset_time.to_s :time
   end
 
-  def flex_time_range(day_or_night, chapter = nil, joiner=" to ")
-    chapter ||= resource.person.chapter
-    times = [offset_to_time_string(chapter.scheduler_flex_day_start),
-             offset_to_time_string(chapter.scheduler_flex_night_start)]
+  def flex_time_range(day_or_night, region = nil, joiner=" to ")
+    region ||= resource.person.region
+    times = [offset_to_time_string(region.scheduler_flex_day_start),
+             offset_to_time_string(region.scheduler_flex_night_start)]
     times.reverse! if day_or_night == 'night'
     times.join joiner
   end

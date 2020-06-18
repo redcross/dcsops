@@ -7,7 +7,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
   menu parent: 'Roster'
 
   index do
-    column("CID") {|p| p.chapter_id }
+    column("CID") {|p| p.region_id }
     column :name_last_first, sortable: "last_name"
     column :username
     column :last_login
@@ -25,16 +25,16 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
     end
     f.actions
     f.inputs do
-      f.has_many :county_memberships do |county_form|
-        county_form.input :county, collection: (f.object.chapter && f.object.chapter.counties)
-        county_form.input :persistent
-        county_form.input :_destroy, as: :boolean, label: "Remove"
+      f.has_many :shift_territory_memberships do |shift_territory_form|
+        shift_territory_form.input :shift_territory, collection: (f.object.region && f.object.region.shift_territories)
+        shift_territory_form.input :persistent
+        shift_territory_form.input :_destroy, as: :boolean, label: "Remove"
       end
     end
     f.actions
     f.inputs do
       f.has_many :position_memberships do |form|
-        form.input :position, collection: (f.object.chapter && f.object.chapter.positions)
+        form.input :position, collection: (f.object.region && f.object.region.positions)
         form.input :persistent
         form.input :_destroy, as: :boolean, label: "Remove"
       end
@@ -44,7 +44,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
 
   show do |person|
     attributes_table do
-      attrs = %i(id chapter primary_county full_name email last_login vc_imported_at vc_is_active gap_primary gap_secondary gap_tertiary vc_last_login vc_last_profile_update address1 address2 city state zip lat lng rco_id)
+      attrs = %i(id region primary_shift_territory full_name email last_login vc_imported_at vc_is_active gap_primary gap_secondary gap_tertiary vc_last_login vc_last_profile_update address1 address2 city state zip lat lng rco_id)
       attrs.each do |a|
         row a
       end
@@ -56,14 +56,14 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
           table_for person.position_memberships do
             column( :name) { |rec| rec.position && rec.position.name }
             column(:persistent) { |rec| rec.persistent ? 'Yes' : ''}
-            column(:roles) {|rec| safe_join rec.position.role_memberships.map(&:display_name),  tag(:br)}
+            column(:capabilities) {|rec| safe_join rec.position.capability_memberships.map(&:display_name),  tag(:br)}
           end
         end
       end
       column do
-        panel "Counties" do
-          table_for person.county_memberships do
-            column( :name) { |rec| rec.county && rec.county.name }
+        panel "Shift Territories" do
+          table_for person.shift_territory_memberships do
+            column( :name) { |rec| rec.shift_territory && rec.shift_territory.name }
             column(:persistent) { |rec| rec.persistent ? 'Yes' : ''}
           end
         end
@@ -101,8 +101,8 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
 
   filter :first_name
   filter :last_name
-  filter :counties_id, :as => :check_boxes, :collection => proc {current_chapter.counties}
-  filter :positions_id, as: :check_boxes, collection: proc {current_chapter.positions.sort_by{|i| [i.hidden ? 1 : 0, i.name]}}
+  filter :shift_territories_id, :as => :check_boxes, :collection => proc {current_region.shift_territories}
+  filter :positions_id, as: :check_boxes, collection: proc {current_region.positions.sort_by{|i| [i.hidden ? 1 : 0, i.name]}}
   filter :last_login, as: :date_range
 
   def date_ranges
@@ -119,7 +119,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
   controller do
 
     before_filter only: :index do
-      #params['q'] ||= {counties_id_in: current_user.county_ids}
+      #params['q'] ||= {shift_territories_id_in: current_user.shift_territory_ids}
     end
 
     def resource
@@ -129,7 +129,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
 
     def resource_params
       [params.fetch(resource_request_name, {}).permit(:first_name, :last_name, :rco_id,
-        county_memberships_attributes: [:id, :_destroy, :persistent, :county_id],
+        shift_territory_memberships_attributes: [:id, :_destroy, :persistent, :shift_territory_id],
         position_memberships_attributes: [:id, :_destroy, :persistent, :position_id])]
     end
   end

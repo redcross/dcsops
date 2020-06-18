@@ -18,7 +18,7 @@
       =f.input :neighborhood, input_html: detail_options
       =f.input :county, input_html: detail_options
       =f.input :address_directly_entered, as: :hidden, input_html: {value: '1'}
-      -if f.object.chapter.incidents_report_allow_manual_address
+      -if f.object.region.incidents_report_allow_manual_address
         .form-group
           .col-xs-7.col-xs-offset-5
             =link_to "Edit Address", '#', class: 'manual-address', data: {confirm: "Are you sure you want to manually edit the address?  This should only be done as a last resort.  Use the search field to get as close as possible before manually editing."}

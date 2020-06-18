@@ -18,22 +18,22 @@ describe Incidents::DatIncidentsController, :type => :controller do
   describe "#new" do
 
     before(:each) do
-      grant_role! :submit_incident_report
+      grant_capability! :submit_incident_report
     end
 
     it "should redirect if there is a valid dat incident already" do
-      grant_role! :incidents_admin
-      incident = FactoryGirl.create :incident, chapter: @person.chapter
+      grant_capability! :incidents_admin
+      incident = FactoryGirl.create :incident, region: @person.region
       dat = FactoryGirl.create :dat_incident, incident: incident
 
-      get :new, incident_id: incident.to_param, chapter_id: incident.chapter.to_param
+      get :new, incident_id: incident.to_param, region_id: incident.region.to_param
 
       expect(response).to redirect_to(action: :edit, incident_id: incident.to_param)
     end
 
     it "should render under an incident" do
-      incident = FactoryGirl.create :incident, chapter: @person.chapter
-      get :new, incident_id: incident.to_param, chapter_id: incident.chapter.to_param
+      incident = FactoryGirl.create :incident, region: @person.region
+      get :new, incident_id: incident.to_param, region_id: incident.region.to_param
       expect(response).to be_success
     end
 
@@ -41,29 +41,29 @@ describe Incidents::DatIncidentsController, :type => :controller do
 
   describe "#edit" do
     before(:each) do
-      grant_role! :incidents_admin
+      grant_capability! :incidents_admin
     end
     before(:each) do
-      @incident = FactoryGirl.create :incident, chapter: @person.chapter
+      @incident = FactoryGirl.create :incident, region: @person.region
       @dat = FactoryGirl.create :dat_incident, incident: @incident
     end
     it "should render under an incident" do
-      get :edit, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param
+      get :edit, incident_id: @incident.to_param, region_id: @incident.region.to_param
     end
     it "should not render standalone" do
       expect {
-        get :edit, id: @dat.to_param, chapter_id: @incident.chapter.to_param
+        get :edit, id: @dat.to_param, region_id: @incident.region.to_param
       }.to raise_error
     end
   end
 
   context "with an existing incident" do  
     before(:each) do
-      grant_role! :submit_incident_report
+      grant_capability! :submit_incident_report
     end
 
     before(:each) do
-      @incident = FactoryGirl.create :incident, chapter: @person.chapter
+      @incident = FactoryGirl.create :incident, region: @person.region
       @dat = FactoryGirl.build :dat_incident
       @lead = FactoryGirl.create :person
       @vehicle = FactoryGirl.create :vehicle
@@ -82,34 +82,34 @@ describe Incidents::DatIncidentsController, :type => :controller do
 
     it "should allow creating" do
       expect {
-        post :create, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param, incidents_dat_incident: create_attrs
-        expect(response).to redirect_to(incidents_chapter_incident_path(@incident.chapter, @incident))
+        post :create, incident_id: @incident.to_param, region_id: @incident.region.to_param, incidents_dat_incident: create_attrs
+        expect(response).to redirect_to(incidents_region_incident_path(@incident.region, @incident))
       }.to change(Incidents::DatIncident, :count).by(1)
     end
     it "should not change incident attributes" do
       create_attrs[:incident_attributes].merge!( {:incident_number => "15-555"})
       expect {
-        post :create, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param, incidents_dat_incident: create_attrs
-        expect(response).to redirect_to(incidents_chapter_incident_path(@incident.chapter, @incident))
+        post :create, incident_id: @incident.to_param, region_id: @incident.region.to_param, incidents_dat_incident: create_attrs
+        expect(response).to redirect_to(incidents_region_incident_path(@incident.region, @incident))
       }.to_not change{@incident.reload.incident_number}
     end
     xit "should notify the report was filed" do
       expect(Incidents::Notifications::Notification).to receive(:create_for_event).with(anything, 'incident_report_filed', {is_new: true})
       create_attrs[:incident_attributes][:status] = 'closed'
-      post :create, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param, incidents_dat_incident: create_attrs
+      post :create, incident_id: @incident.to_param, region_id: @incident.region.to_param, incidents_dat_incident: create_attrs
     end
   end
 
   context "updating an existing report" do
     before(:each) do
-      @incident = FactoryGirl.create :closed_incident, chapter: @person.chapter
-      grant_role! :submit_incident_report
+      @incident = FactoryGirl.create :closed_incident, region: @person.region
+      grant_capability! :submit_incident_report
     end
 
     it "should notify the report was filed" do
       expect(Incidents::Notifications::Notification).to receive(:create_for_event).with(anything, 'incident_report_filed', {is_new: false})
-      put :update, incident_id: @incident.to_param, chapter_id: @incident.chapter.to_param, incidents_dat_incident: {incident_attributes: {num_adults: 3}}
-      expect(response).to redirect_to(incidents_chapter_incident_path(@incident.chapter, @incident))
+      put :update, incident_id: @incident.to_param, region_id: @incident.region.to_param, incidents_dat_incident: {incident_attributes: {num_adults: 3}}
+      expect(response).to redirect_to(incidents_region_incident_path(@incident.region, @incident))
     end
   end
 end

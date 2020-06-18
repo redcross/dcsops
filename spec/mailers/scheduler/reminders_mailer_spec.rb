@@ -54,13 +54,13 @@ describe Scheduler::RemindersMailer, :type => :mailer do
 
   context "daily reminders" do
     before(:each) do
-      @chapter = FactoryGirl.create :chapter
-      @admin = FactoryGirl.create :person, chapter: @chapter
-      @group = FactoryGirl.create(:shift_group, chapter: @chapter, period: 'daily', start_offset: 0.hours, end_offset: 24.hours)
-      @shift = FactoryGirl.create :shift, shift_groups: [@group], county: @admin.counties.first, positions: @admin.positions
+      @region = FactoryGirl.create :region
+      @admin = FactoryGirl.create :person, region: @region
+      @group = FactoryGirl.create(:shift_time, region: @region, period: 'daily', start_offset: 0.hours, end_offset: 24.hours)
+      @shift = FactoryGirl.create :shift, shift_times: [@group], shift_territory: @admin.shift_territories.first, positions: @admin.positions
 
-      @person = FactoryGirl.create :person, chapter: @chapter, positions: @shift.positions, counties: [@shift.county]
-      @ass = FactoryGirl.create :shift_assignment, shift: @shift, date: Date.current, person: @person, shift_group: @group
+      @person = FactoryGirl.create :person, region: @region, positions: @shift.positions, shift_territories: [@shift.shift_territory]
+      @ass = FactoryGirl.create :shift_assignment, shift: @shift, date: Date.current, person: @person, shift_time: @group
     
       @setting = Scheduler::NotificationSetting.create id: @admin.id
     end

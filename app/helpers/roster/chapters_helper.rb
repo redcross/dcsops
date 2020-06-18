@@ -1,2 +1,0 @@
-module Roster::ChaptersHelper
-end

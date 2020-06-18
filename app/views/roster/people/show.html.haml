@@ -17,8 +17,8 @@
         %br
         = pos.name
     %p
-      %strong Counties:
-      - resource.counties.each do |pos|
+      %strong ShiftTerritories:
+      - resource.shift_territories.each do |pos|
         %br
         = pos.name
     %small
@@ -73,7 +73,7 @@
     %h3 Contact Settings
     %p
       %small
-        These settings affect how various Disaster systems will contact you.  If you have chosen to receive shift notifications by text, those messages will be sent to any phones that you have selected a carrier for below.  For dispatch, calldown, and watchfire, calls will be made in the order you see under "Preferred Contact Order" above.  To remove a number, for instance a work phone that is not useful for reaching you in a disaster, change "Call Settings" below to read "Don't call this number."
+        These settings affect how various Disaster systems will contact you.  If you have chosen to receive shift notifications by text, those messages will be sent to any phones that you have selected a carrier for below.  For dispatch, and calldown, calls will be made in the order you see under "Preferred Contact Order" above.  To remove a number, for instance a work phone that is not useful for reaching you in a disaster, change "Call Settings" below to read "Don't call this number."
       %br
     %p
       Click on the blue underlined text to change a value.

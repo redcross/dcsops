@@ -1,7 +1,7 @@
 class Incidents::UpdatePublisher
-  attr_reader :chapter, :incident
-  def initialize(chapter, incident=nil)
-    @chapter = chapter
+  attr_reader :region, :incident
+  def initialize(region, incident=nil)
+    @region = region
     @incident = incident
   end
 
@@ -41,7 +41,7 @@ class Incidents::UpdatePublisher
 
   def update_tabs *tabs
     tabs << 'changes'
-    send_update({refresh: tabs, chapter: chapter.id, incident: (incident && incident.id)})
+    send_update({refresh: tabs, region: region.id, incident: (incident && incident.id)})
   end
 
   def send_update value

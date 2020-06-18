@@ -1,13 +1,13 @@
 class Scheduler::SendRemindersJob
 
   def self.enqueue
-    Roster::Chapter.all.each do |chapter|
-      new(chapter.id).perform
+    Roster::Region.all.each do |region|
+      new(region.id).perform
     end
   end
 
-  def initialize chapter_id
-    @chapter_id = chapter_id
+  def initialize region_id
+    @region_id = region_id
   end
 
   def perform
@@ -19,16 +19,16 @@ class Scheduler::SendRemindersJob
   end
 
   def send_shift_reminder type
-    Scheduler::ShiftAssignment.send("needs_#{type}", chapter).each do |assignment|
+    Scheduler::ShiftAssignment.send("needs_#{type}", region).each do |assignment|
       send_reminder type, assignment.person, assignment
       assignment.update_attribute("#{type}_sent", true) # don't fail!
     end
   end
 
   def send_daily type
-    Scheduler::NotificationSetting.send("needs_daily_#{type}", chapter).each do |setting|
+    Scheduler::NotificationSetting.send("needs_daily_#{type}", region).each do |setting|
       send_reminder "daily_#{type}_reminder", setting.person, setting
-      setting.update_attribute("last_all_shifts_#{type}", chapter.time_zone.today) # don't fail!
+      setting.update_attribute("last_all_shifts_#{type}", region.time_zone.today) # don't fail!
     end
   end
 
@@ -39,7 +39,7 @@ class Scheduler::SendRemindersJob
     Raven.capture e
   end
 
-  def chapter
-    @chapter ||= Roster::Chapter.find @chapter_id
+  def region
+    @region ||= Roster::Region.find @region_id
   end
 end

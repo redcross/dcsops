@@ -13,14 +13,14 @@ class Scheduler::SwapMailer < ActionMailer::Base
   end
 
   def swap_request_notify(shift_assignment)
-    people = Roster::Person.in_county(shift_assignment.shift.county).with_position(shift_assignment.shift.positions).joins(:notification_setting).where{notification_setting.email_swap_requested eq true}
+    people = Roster::Person.in_shift_territory(shift_assignment.shift.shift_territory).with_position(shift_assignment.shift.positions).joins(:notification_setting).where{notification_setting.email_swap_requested eq true}
   end
 
   def swap_confirmed(old_shift, new_shift, recipient)
     @from = old_shift
     @to = new_shift
 
-    subject = "Shift Swap Confirmed for #{new_shift.date.to_s :dow_short} #{new_shift.shift_group.name} #{new_shift.shift.name}"
+    subject = "Shift Swap Confirmed for #{new_shift.date.to_s :dow_short} #{new_shift.shift_time.name} #{new_shift.shift.name}"
 
     tag :scheduler, :swap, :swap_confirmed
     mail to: format_address(recipient), subject: subject
@@ -29,6 +29,6 @@ class Scheduler::SwapMailer < ActionMailer::Base
   private
 
   def swap_invite_subject
-    subject = "Shift Swap Requested for #{@shift.date.to_s :dow_short} #{@shift.shift_group.name} #{@shift.shift.name}"
+    subject = "Shift Swap Requested for #{@shift.date.to_s :dow_short} #{@shift.shift_time.name} #{@shift.shift.name}"
   end
 end

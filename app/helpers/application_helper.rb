@@ -1,15 +1,15 @@
 module ApplicationHelper
   def has_admin_dashboard_access
-    @_admin_access = current_user && (current_user.has_role('chapter_config') || current_user.has_role('chapter_admin'))
+    @_admin_access = current_user && (current_user.has_capability('region_config') || current_user.has_capability('region_admin'))
   end
 
   def current_messages
     if current_user and ENV['MOTD_ENABLED']
-      @_current_messages ||= MOTD.active(current_chapter).to_a.select{|motd|
+      @_current_messages ||= MOTD.active(current_region).to_a.select{|motd|
         motd.path_regex.nil? or motd.path_regex.match(request.fullpath)
       }
     else
-      @_current_messages ||= MOTD.where(chapter_id: nil).to_a.select{|motd|
+      @_current_messages ||= MOTD.where(region_id: nil).to_a.select{|motd|
         motd.path_regex.nil? or motd.path_regex.match(request.fullpath)
       }
     end

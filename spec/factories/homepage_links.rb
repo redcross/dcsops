@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :homepage_link do
-    chapter nil
+    region nil
     name "Home Link"
     description "MyText"
     icon "icon-name"

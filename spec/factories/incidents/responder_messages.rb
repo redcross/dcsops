@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :responder_message, :class => 'Incidents::ResponderMessage' do
-    chapter nil
+    region nil
     person nil
     responder_assignment nil
     in_reply_to nil

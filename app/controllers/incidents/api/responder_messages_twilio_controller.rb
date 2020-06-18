@@ -19,7 +19,7 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
       media = []
     end
 
-    message = Incidents::ResponderMessage.new chapter: chapter, message: body, person: person, local_number: params[:To], remote_number: params[:From], direction: 'incoming'
+    message = Incidents::ResponderMessage.new region: region, message: body, person: person, local_number: params[:To], remote_number: params[:From], direction: 'incoming'
     message.save!
 
     unless person
@@ -55,16 +55,16 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
   def find_person_by_phone phone
     phone = phone.gsub /^\+1/, ''
     phone = "#{phone[0..2]}-#{phone[3..5]}-#{phone[6..9]}"
-    Roster::Person.for_chapter(chapter).with_phone_number(phone).first
+    Roster::Person.for_region(region).with_phone_number(phone).first
   end
 
-  def chapter
-    @chapter ||= Roster::Chapter.with_twilio_account_sid_value(params[:AccountSid])
+  def region
+    @region ||= Roster::Region.with_twilio_account_sid_value(params[:AccountSid])
                                 .with_incidents_twilio_number_value(params[:To]).first!
   end
 
   def validate_twilio_incoming
-    @validator = Twilio::Util::RequestValidator.new chapter.twilio_auth_token
+    @validator = Twilio::Util::RequestValidator.new region.twilio_auth_token
     if !@validator.validate(request.original_url, request.POST, request.env['HTTP_X_TWILIO_SIGNATURE'])
       render status: 403, text: 'Invalid Signature'
     end

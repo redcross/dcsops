@@ -1,0 +1,21 @@
+- response_territory = resource.response_territory || Incidents::ResponseTerritory.new
+= fields_for :incidents_incident, resource, builder: FormtasticBootstrap::FormBuilder do |f|
+  %fieldset
+    %legend Region/Response Territory
+    - if resource.address.present? && response_territory.id.blank?
+      .alert.alert-danger That address does not appear to be covered by a DCSOps Region
+    - if cannot? :create, resource
+      .alert.alert-danger You cannot dispatch events for this region.  Please refer to the disaster dispatch number listed below.
+    .form-group
+      %label.control-label Region
+      %span.form-wrapper.form-control-static=response_territory.region.try :name
+    =f.input :response_territory, collection: Incidents::ResponseTerritory.for_region(resource.region)
+    .form-group
+      %label.control-label Refer Non-Disaster Calls To
+      %span.form-wrapper.form-control-static=response_territory.non_disaster_number
+    .form-group
+      %label.control-label Disaster Dispatch Number
+      %span.form-wrapper.form-control-static=response_territory.dispatch_number
+    .form-group
+      %label.control-label Special Instructions
+      %span.form-wrapper.form-control-static=simple_format response_territory.special_instructions

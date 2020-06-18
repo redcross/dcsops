@@ -6,7 +6,7 @@ describe "root/index.html.haml", :type => :view do
   before do
     view.stub :homepage_links => {}
     view.stub :current_user => person
-    view.stub :current_chapter => person.chapter
+    view.stub :current_region => person.region
   end
 
   it "should render" do

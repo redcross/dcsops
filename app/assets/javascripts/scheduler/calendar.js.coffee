@@ -35,17 +35,17 @@ class window.CalendarController
       $(evt.target).toggleClass('active', active)
       $('.calendar-container').toggleClass($(evt.target).data('style'), active)
 
-    $(document).on 'click', '#select-shift-group > button', (evt) =>
-      $('#select-shift-group > button').removeClass('active')
+    $(document).on 'click', '#select-shift-time > button', (evt) =>
+      $('#select-shift-time > button').removeClass('active')
       chosen = $(evt.target).data('shifts')
       @params['show_shifts'] = chosen
-      $('#select-shift-group > button[data-shifts='+chosen+']').addClass('active')
-      $('#choose-counties').toggle(chosen == 'county')
+      $('#select-shift-time > button[data-shifts='+chosen+']').addClass('active')
+      $('#choose-shift_territories').toggle(chosen == 'shift_territory')
       this.reload()
 
-    $('#choose-county').change (evt) =>
+    $('#choose-shift_territory').change (evt) =>
       val = $(evt.target).val()
-      @params['counties'] = if this.isArray(val) then val else [val]
+      @params['shift_territories'] = if this.isArray(val) then val else [val]
       this.reload()
 
     $(document).on 'change', '.choose-category', (evt) =>

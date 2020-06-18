@@ -1,5 +1,5 @@
 =form_tag '', method: :get, class: 'noprint' do
-  =select_tag "counties[]", options_from_collection_for_select(current_chapter.counties.enabled, :id, :name, show_counties), id: 'choose-county'
+  =select_tag "shift_territories[]", options_from_collection_for_select(current_region.shift_territories.enabled, :id, :name, show_shift_territories), id: 'choose-shift_territory'
   =submit_tag 'Show'
   %br
   View As: 

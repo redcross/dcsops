@@ -4,7 +4,7 @@ require 'spec_helper'
 # "can I get to the page" tests
 describe "Basic Admin Pages", :type => :feature do
   before(:each) do
-    grant_role! :chapter_config
+    grant_capability! :region_config
   end
 
   it "Visits the Call Logs page" do
@@ -84,11 +84,11 @@ describe "Basic Admin Pages", :type => :feature do
     expect(page).to have_current_path("/scheduler_admin/scopes")
   end
 
-  it "Visits the Territories page" do
+  it "Visits the Response Territories page" do
     visit "/scheduler_admin/people"
     find("#incidents").hover
-    click_on "Territories"
-    expect(page).to have_current_path("/scheduler_admin/territories")
+    click_on "Response Territories"
+    expect(page).to have_current_path("/scheduler_admin/response_territories")
   end
 
   it "Visits the Vehicles page" do
@@ -142,18 +142,18 @@ describe "Basic Admin Pages", :type => :feature do
     expect(page).to have_current_path("/scheduler_admin/cell_carriers")
   end
 
-  it "Visits the Chapters page" do
+  it "Visits the Regions page" do
     visit "/scheduler_admin/people"
     find("#roster").hover
-    click_on "Chapters"
-    expect(page).to have_current_path("/scheduler_admin/chapters")
+    click_on "Regions"
+    expect(page).to have_current_path("/scheduler_admin/regions")
   end
 
-  it "Visits the Counties page" do
+  it "Visits the Shift Territories page" do
     visit "/scheduler_admin/people"
     find("#roster").hover
-    click_on "Counties"
-    expect(page).to have_current_path("/scheduler_admin/counties")
+    click_on "Shift Territories"
+    expect(page).to have_current_path("/scheduler_admin/shift_territories")
   end
 
   it "Visits the People page" do
@@ -180,8 +180,8 @@ describe "Basic Admin Pages", :type => :feature do
   it "Visits the Roles page" do
     visit "/scheduler_admin/people"
     find("#roster").hover
-    click_on "Roles"
-    expect(page).to have_current_path("/scheduler_admin/roles")
+    click_on "Capabilities"
+    expect(page).to have_current_path("/scheduler_admin/capabilities")
   end
 
   it "Visits the Dispatch Configs page" do
@@ -198,11 +198,11 @@ describe "Basic Admin Pages", :type => :feature do
     expect(page).to have_current_path("/scheduler_admin/shift_categories")
   end
 
-  it "Visits the Shift Groups page" do
+  it "Visits the Shift Times page" do
     visit "/scheduler_admin/people"
     find("#scheduling").hover
-    click_on "Shift Groups"
-    expect(page).to have_current_path("/scheduler_admin/shift_groups")
+    click_on "Shift Times"
+    expect(page).to have_current_path("/scheduler_admin/shift_times")
   end
 
   it "Visits the Shifts page" do

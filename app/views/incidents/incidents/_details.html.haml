@@ -26,7 +26,7 @@
     .col-sm-5
       =render 'details_demographics'
       =render 'details_da'
-      - if resource.chapter.incidents_report_advanced_details
+      - if resource.region.incidents_report_advanced_details
         - if resource.incident_type == 'fire'
           =render 'details_fire'
         - if resource.incident_type == 'vacate'

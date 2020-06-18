@@ -1,0 +1,28 @@
+= form_for resource, :html => { :class => 'form-horizontal' } do |f|
+  .control-group
+    = f.label :region_id, :class => 'control-label'
+    .controls
+      = f.text_field :region_id, :class => 'text_field'
+  .control-group
+    = f.label :name, :class => 'control-label'
+    .controls
+      = f.text_field :name, :class => 'text_field'
+  .control-group
+    = f.label :shift_territory_code, :class => 'control-label'
+    .controls
+      = f.text_field :shift_territory_code, :class => 'text_field'
+  .control-group
+    = f.label :fips_code, :class => 'control-label'
+    .controls
+      = f.text_field :fips_code, :class => 'text_field'
+  .control-group
+    = f.label :gis_name, :class => 'control-label'
+    .controls
+      = f.text_field :gis_name, :class => 'text_field'
+  .control-group
+    = f.label :vc_regex_raw, :class => 'control-label'
+    .controls
+      = f.text_field :vc_regex_raw, :class => 'text_field'
+  .form-actions
+    = f.submit nil, :class => 'btn btn-primary'
+    = link_to t('.cancel', :default => t("helpers.links.cancel")), roster_shift_territories_path, :class => 'btn'

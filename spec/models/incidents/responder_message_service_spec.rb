@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Incidents::ResponderMessageService, :type => :model do
-  let(:chapter) { FactoryGirl.build_stubbed :chapter}
-  let(:incident) { FactoryGirl.build_stubbed :incident, chapter: chapter }
+  let(:region) { FactoryGirl.build_stubbed :region}
+  let(:incident) { FactoryGirl.build_stubbed :incident, region: region }
   let(:assignment) { FactoryGirl.build_stubbed :responder_assignment, incident: incident }
   let(:incoming_message) { FactoryGirl.build_stubbed :incoming_responder_message, message: "commands" }
   subject { Incidents::ResponderMessageService.new(incoming_message) }

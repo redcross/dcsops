@@ -11,7 +11,7 @@ ActiveAdmin.register Incidents::ReportSubscription, as: 'Report Subscriptions' d
     end
 
     def resource_params
-      request.get? ? [] : [params.require(:notification).permit(:person_id, :county_id, :report_type, :frequency)]
+      request.get? ? [] : [params.require(:notification).permit(:person_id, :shift_territory_id, :report_type, :frequency)]
     end
   end
 
@@ -19,7 +19,7 @@ ActiveAdmin.register Incidents::ReportSubscription, as: 'Report Subscriptions' d
     link_to('Send Test Report', {action: :test_report}, {method: :post}) if authorized? :test_report, Incidents::ReportSubscription
   end
   action_item :only => :index do
-    link_to('Send Reports', {action: :send_report}, {method: :post, data: {confirm: "This will send all notifications to chapter #{current_chapter.short_name}"}})  if authorized? :send_report, Incidents::ReportSubscription
+    link_to('Send Reports', {action: :send_report}, {method: :post, data: {confirm: "This will send all notifications to region #{current_region.short_name}"}})  if authorized? :send_report, Incidents::ReportSubscription
   end
 
   collection_action :test_report, :method => :post do
@@ -36,7 +36,7 @@ ActiveAdmin.register Incidents::ReportSubscription, as: 'Report Subscriptions' d
     begin
       response.content_type = :text
       response.stream.write "Sending subscriptions..."
-      job = Incidents::WeeklyReportJob.new(current_chapter.id)
+      job = Incidents::WeeklyReportJob.new(current_region.id)
       job.perform
       response.stream.write "Sent to #{job.count} people.\n"
     rescue => e
@@ -50,12 +50,12 @@ ActiveAdmin.register Incidents::ReportSubscription, as: 'Report Subscriptions' d
 
   index do
     column 'CID' do |sub|
-      sub.person.chapter_id
+      sub.person.region_id
     end
     column :person
     column :report_type
     column :frequency
-    column :county
+    column :shift_territory
     column :persistent
     column :last_sent
     actions
@@ -64,7 +64,7 @@ ActiveAdmin.register Incidents::ReportSubscription, as: 'Report Subscriptions' d
   form do |f|
     f.inputs do
       f.input :person
-      f.input :county
+      f.input :shift_territory
       f.input :report_type, as: :assignable_select
       f.input :frequency, as: :assignable_select
       f.input :persistent

@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe "Responder History", :type => :feature do
   it "Should be viewable should not be viewable with someone without permissions" do
-    FactoryGirl.create :incidents_scope, chapter: @person.chapter
+    FactoryGirl.create :incidents_scope, region: @person.region
 
-    visit "/incidents/#{@person.chapter.url_slug}/responses"
+    visit "/incidents/#{@person.region.url_slug}/responses"
 
     page.should have_text ("You are not authorized to access this page.")
 
@@ -12,19 +12,19 @@ describe "Responder History", :type => :feature do
   end
 
   it "Should be viewable for someone with permissions" do
-    grant_role! 'see_responses'
-    FactoryGirl.create :incidents_scope, chapter: @person.chapter
+    grant_capability! 'see_responses'
+    FactoryGirl.create :incidents_scope, region: @person.region
 
-    visit "/incidents/#{@person.chapter.url_slug}"
+    visit "/incidents/#{@person.region.url_slug}"
     click_on "Responder History"
   end
 
   it "Should have responders" do
-    grant_role! 'see_responses'
-    incident = FactoryGirl.create :incident, chapter: @person.chapter, date: Date.current
+    grant_capability! 'see_responses'
+    incident = FactoryGirl.create :incident, region: @person.region, date: Date.current
     FactoryGirl.create :responder_assignment, person: @person, incident: incident
 
-    visit "/incidents/#{@person.chapter.url_slug}/responses"
+    visit "/incidents/#{@person.region.url_slug}/responses"
 
     page.should have_text @person.full_name
   end
