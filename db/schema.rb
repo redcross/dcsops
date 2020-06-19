@@ -361,7 +361,7 @@ ActiveRecord::Schema.define(version: 20210203193926) do
     t.string   "structure_type",          limit: 255
     t.integer  "completed_by_id"
     t.text     "languages"
-    t.hstore   "resources"
+    t.hstore   "resources_hstore"
     t.integer  "num_first_responders"
     t.boolean  "suspicious_fire"
     t.integer  "injuries_black"
@@ -380,11 +380,11 @@ ActiveRecord::Schema.define(version: 20210203193926) do
     t.integer  "num_people_missing"
     t.string   "hazardous_materials",     limit: 255
     t.integer  "units_unknown"
-    t.jsonb    "resources_jsonb",                     default: {}, null: false
+    t.jsonb    "resources",                           default: {}, null: false
   end
 
   add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true, using: :btree
-  add_index "incidents_dat_incidents", ["resources_jsonb"], name: "index_incidents_dat_incidents_on_resources_jsonb", using: :gin
+  add_index "incidents_dat_incidents", ["resources"], name: "index_incidents_dat_incidents_on_resources", using: :gin
 
   create_table "incidents_deployments", force: :cascade do |t|
     t.integer  "person_id"
@@ -636,14 +636,14 @@ ActiveRecord::Schema.define(version: 20210203193926) do
     t.boolean  "persistent",                     default: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.hstore   "options"
+    t.hstore   "options_hstore"
     t.string   "frequency",          limit: 255
     t.date     "last_sent"
     t.integer  "scope_id"
-    t.jsonb    "options_jsonb",                  default: {},    null: false
+    t.jsonb    "options",                        default: {},    null: false
   end
 
-  add_index "incidents_report_subscriptions", ["options_jsonb"], name: "index_incidents_report_subscriptions_on_options_jsonb", using: :gin
+  add_index "incidents_report_subscriptions", ["options"], name: "index_incidents_report_subscriptions_on_options", using: :gin
   add_index "incidents_report_subscriptions", ["person_id"], name: "index_incidents_report_subscriptions_on_person_id", using: :btree
   add_index "incidents_report_subscriptions", ["shift_territory_id"], name: "index_incidents_report_subscriptions_on_shift_territory_id", using: :btree
 
@@ -722,17 +722,17 @@ ActiveRecord::Schema.define(version: 20210203193926) do
 
   create_table "incidents_scopes", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "url_slug",     limit: 255
-    t.string   "abbrev",       limit: 255
-    t.string   "short_name",   limit: 255
-    t.string   "name",         limit: 255
-    t.hstore   "config"
+    t.string   "url_slug",      limit: 255
+    t.string   "abbrev",        limit: 255
+    t.string   "short_name",    limit: 255
+    t.string   "name",          limit: 255
+    t.hstore   "config_hstore"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.jsonb    "config_jsonb",             default: {}, null: false
+    t.jsonb    "config",                    default: {}, null: false
   end
 
-  add_index "incidents_scopes", ["config_jsonb"], name: "index_incidents_scopes_on_config_jsonb", using: :gin
+  add_index "incidents_scopes", ["config"], name: "index_incidents_scopes_on_config", using: :gin
   add_index "incidents_scopes", ["url_slug"], name: "index_incidents_scopes_on_url_slug", unique: true, using: :btree
 
   create_table "incidents_scopes_roster_regions", id: false, force: :cascade do |t|
@@ -959,15 +959,15 @@ ActiveRecord::Schema.define(version: 20210203193926) do
     t.string   "vc_username",                 limit: 255
     t.string   "vc_password",                 limit: 255
     t.string   "vc_position_filter",          limit: 255
-    t.hstore   "config"
+    t.hstore   "config_hstore"
     t.integer  "vc_unit"
     t.string   "url_slug",                    limit: 255
     t.integer  "incident_number_sequence_id"
     t.string   "vc_hierarchy_name"
-    t.jsonb    "config_jsonb",                            default: {}, null: false
+    t.jsonb    "config",                                  default: {}, null: false
   end
 
-  add_index "roster_regions", ["config_jsonb"], name: "index_roster_regions_on_config_jsonb", using: :gin
+  add_index "roster_regions", ["config"], name: "index_roster_regions_on_config", using: :gin
   add_index "roster_regions", ["url_slug"], name: "index_roster_regions_on_url_slug", unique: true, using: :btree
 
   create_table "roster_shift_territories", force: :cascade do |t|
