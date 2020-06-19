@@ -344,7 +344,7 @@ ActiveRecord::Schema.define(version: 20210203193926) do
   add_index "incidents_cases", ["incident_id"], name: "index_incidents_cases_on_incident_id", using: :btree
 
   create_table "incidents_dat_incidents", force: :cascade do |t|
-    t.integer  "incident_id",                         null: false
+    t.integer  "incident_id",                                      null: false
     t.string   "incident_call_type",      limit: 255
     t.string   "verified_by",             limit: 255
     t.integer  "num_people_injured"
@@ -380,9 +380,11 @@ ActiveRecord::Schema.define(version: 20210203193926) do
     t.integer  "num_people_missing"
     t.string   "hazardous_materials",     limit: 255
     t.integer  "units_unknown"
+    t.jsonb    "resources_jsonb",                     default: {}, null: false
   end
 
   add_index "incidents_dat_incidents", ["incident_id"], name: "index_incidents_dat_incidents_on_incident_id", unique: true, using: :btree
+  add_index "incidents_dat_incidents", ["resources_jsonb"], name: "index_incidents_dat_incidents_on_resources_jsonb", using: :gin
 
   create_table "incidents_deployments", force: :cascade do |t|
     t.integer  "person_id"
@@ -638,8 +640,10 @@ ActiveRecord::Schema.define(version: 20210203193926) do
     t.string   "frequency",          limit: 255
     t.date     "last_sent"
     t.integer  "scope_id"
+    t.jsonb    "options_jsonb",                  default: {},    null: false
   end
 
+  add_index "incidents_report_subscriptions", ["options_jsonb"], name: "index_incidents_report_subscriptions_on_options_jsonb", using: :gin
   add_index "incidents_report_subscriptions", ["person_id"], name: "index_incidents_report_subscriptions_on_person_id", using: :btree
   add_index "incidents_report_subscriptions", ["shift_territory_id"], name: "index_incidents_report_subscriptions_on_shift_territory_id", using: :btree
 
@@ -718,15 +722,17 @@ ActiveRecord::Schema.define(version: 20210203193926) do
 
   create_table "incidents_scopes", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "url_slug",   limit: 255
-    t.string   "abbrev",     limit: 255
-    t.string   "short_name", limit: 255
-    t.string   "name",       limit: 255
+    t.string   "url_slug",     limit: 255
+    t.string   "abbrev",       limit: 255
+    t.string   "short_name",   limit: 255
+    t.string   "name",         limit: 255
     t.hstore   "config"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.jsonb    "config_jsonb",             default: {}, null: false
   end
 
+  add_index "incidents_scopes", ["config_jsonb"], name: "index_incidents_scopes_on_config_jsonb", using: :gin
   add_index "incidents_scopes", ["url_slug"], name: "index_incidents_scopes_on_url_slug", unique: true, using: :btree
 
   create_table "incidents_scopes_roster_regions", id: false, force: :cascade do |t|
@@ -958,8 +964,10 @@ ActiveRecord::Schema.define(version: 20210203193926) do
     t.string   "url_slug",                    limit: 255
     t.integer  "incident_number_sequence_id"
     t.string   "vc_hierarchy_name"
+    t.jsonb    "config_jsonb",                            default: {}, null: false
   end
 
+  add_index "roster_regions", ["config_jsonb"], name: "index_roster_regions_on_config_jsonb", using: :gin
   add_index "roster_regions", ["url_slug"], name: "index_roster_regions_on_url_slug", unique: true, using: :btree
 
   create_table "roster_shift_territories", force: :cascade do |t|
