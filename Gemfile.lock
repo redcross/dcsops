@@ -28,8 +28,8 @@ GIT
 
 GIT
   remote: git://github.com/redcross/arcdata_core.git
-  revision: 13193d8ddb0ac8d058b778be0535145748d7fe4b
-  branch: upgrade/rails-42
+  revision: 03a5396ba1ceaa80094e5958bf574b303091815d
+  branch: upgrade/rails-42-serialized-column-migration-step-2
   specs:
     arcdata_core (0.0.1)
       activeadmin (= 1.0.0.pre1)

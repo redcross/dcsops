@@ -7,6 +7,7 @@ FactoryGirl.define do
     short_name "ARCBA"
     name "ARC Bay Area"
     url_slug { |s| s.region.url_slug }
-    config { {report_frequencies: 'weekly,daily', time_zone_raw: 'America/Los_Angeles' }}
+    report_frequencies 'weekly,daily'
+    time_zone_raw 'America/Los_Angeles'
   end
 end

@@ -9,7 +9,7 @@ gem 'puma'
 gem 'rack-rewrite'
 gem 'pg', '~> 0.2'
 
-gem 'arcdata_core', github: 'redcross/arcdata_core', branch: 'upgrade/rails-42'
+gem 'arcdata_core', github: 'redcross/arcdata_core', branch: 'upgrade/rails-42-serialized-column-migration-step-2'
 gem 'connect', github: 'redcross/openid-connect-engine', branch: 'rails-42-upgrade'
 
 gem 'activerecord-postgresql-adapter'
