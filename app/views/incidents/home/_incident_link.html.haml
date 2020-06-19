@@ -1,0 +1,6 @@
+%strong
+  =inc.date.strftime "%-m/%-d "
+  =inc.city
+  - if scope.summary_show_state
+    , #{inc.state}
+%small (#{inc.address})

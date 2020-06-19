@@ -23,18 +23,6 @@ module Incidents::HomeControllerHelper
     "FYTD" => stats(fy_begin..today)}
   end
 
-  def incident_link(incident)
-    str = incident.date.strftime "%-m/%-d "
-    loc = [incident.city]
-    loc << incident.state if scope.summary_show_state
-    str << loc.compact.join(", ")
-    if can?(:read, incident) && can?(:read, incident.region)
-      link_to str, incident_path(incident)
-    else
-      str
-    end
-  end
-
   def time_on_at time
     if time.to_date == Date.current
       time.to_s :at_time
