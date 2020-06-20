@@ -17,7 +17,11 @@ describe "DAT Incident Report", type: :feature, versions: true do
 
     FactoryGirl.create :flex_schedule, person: @flex_responder
 
-    @incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: @person.shift_territories.first
+    @incident = FactoryGirl.create :raw_incident,
+      region: @person.region,
+      shift_territory: @person.shift_territories.first,
+      date: Date.current,
+      city: "Test City"
 
     navigate_to_incident
     #visit "/incidents/incidents/#{@incident.incident_number}/dat/new"
@@ -48,11 +52,8 @@ describe "DAT Incident Report", type: :feature, versions: true do
 
   def navigate_to_incident
     visit "/incidents/#{@region.url_slug}"
-
-    click_link "Submit Incident Report"
-    within :xpath, "//td[text()='#{@incident.incident_number}']/ancestor::tr" do
-      click_link "Submit Incident Information"
-    end
+    click_on "Test City"
+    click_link "Submit Report"
   end
 
   def fill_in_details

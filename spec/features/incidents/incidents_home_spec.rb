@@ -29,4 +29,14 @@ describe "View Incidents Home Page", :type => :feature do
     visit "/incidents/#{@person.region.url_slug}"
     page.should have_text("Test Address")
   end
+
+  # Tests Issue #198
+  it "should be able to see open incidents page as admin" do
+    visit "/incidents/#{@person.region.url_slug}"
+    page.should_not have_text("Currently Open Incidents")
+
+    grant_capability! "incidents_admin"
+    visit "/incidents/#{@person.region.url_slug}"
+    page.should have_text("Currently Open Incidents")
+  end
 end
