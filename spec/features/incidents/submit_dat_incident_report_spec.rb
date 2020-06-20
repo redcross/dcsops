@@ -17,7 +17,8 @@ describe "DAT Incident Report", type: :feature, versions: true do
 
     FactoryGirl.create :flex_schedule, person: @flex_responder
 
-    @incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: @person.shift_territories.first
+    @incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: @person.shift_territories.first, date:  Date.parse('2020-08-01')
+
 
     navigate_to_incident
     #visit "/incidents/incidents/#{@incident.incident_number}/dat/new"
@@ -56,6 +57,7 @@ describe "DAT Incident Report", type: :feature, versions: true do
   end
 
   def fill_in_details
+    save_page
 
     select 'Flood', from: 'Incident type*'
     select 'Cold', from: 'Incident call type*'
@@ -71,8 +73,11 @@ describe "DAT Incident Report", type: :feature, versions: true do
     click_button 'Look Up Address'
 
     select 'Apartment', from: 'Structure type*'
+
+    page.should_not have_text "Units affected"
     fill_in 'Units not livable*', with: 1
     fill_in 'Units livable*', with: 1
+    save_page
 
     # Need the times here
     t = @region.time_zone.now

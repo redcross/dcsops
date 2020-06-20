@@ -78,4 +78,12 @@ class Incidents::DatIncident < Incidents::DataModel
     end
   end
 
+  # Red Cross changes the damage assessments in July of 2020, but still wanted
+  # to display the old ones for legacy incidents.
+  def has_old_damage_assessments
+    (units_affected.present? && units_affected > 0) ||
+      (units_minor.present? && units_minor > 0) ||
+      (units_major.present? && units_major > 0) ||
+      (units_destroyed.present? && units_destroyed > 0)
+  end
 end

@@ -19,14 +19,16 @@
         %tr
           %th(style="width: 16.6%") Not Livable
           %th(style="width: 16.6%") Livable
-          %th(style="width: 16.6%") Affected
-          %th(style="width: 16.6%") Minor
-          %th(style="width: 16.6%") Major
-          %th(style="width: 16.6%") Destroyed
+          - if dat.has_old_damage_assessments
+            %th(style="width: 16.6%") Affected
+            %th(style="width: 16.6%") Minor
+            %th(style="width: 16.6%") Major
+            %th(style="width: 16.6%") Destroyed
         %tr
           %td=dat.units_not_livable
           %td=dat.units_livable
-          %td=dat.units_affected
-          %td=dat.units_minor
-          %td=dat.units_major
-          %td=dat.units_destroyed
+          - if dat.has_old_damage_assessments
+            %td=dat.units_affected
+            %td=dat.units_minor
+            %td=dat.units_major
+            %td=dat.units_destroyed

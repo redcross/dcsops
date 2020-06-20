@@ -2,10 +2,12 @@
   =f.input :structure_type, as: :assignable_select, required: true
   =f.input :units_not_livable
   =f.input :units_livable
-  =f.input :units_destroyed, required: false
-  =f.input :units_major, required: false
-  =f.input :units_minor, required: false
-  =f.input :units_affected, required: false
+  -# TODO Remove this check after 2020-08-01
+  -if f.object.incident.date < Date.parse('2020-07-01')
+    =f.input :units_destroyed, required: false
+    =f.input :units_major, required: false
+    =f.input :units_minor, required: false
+    =f.input :units_affected, required: false
   -if f.object.incident.region.incidents_report_advanced_details
     =f.input :units_unknown, label: "Units Undefined/Unknown"
   =f.input :units_total, input_html: {readonly: true, editable: false}
