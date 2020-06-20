@@ -67,6 +67,10 @@
     -if scope.enable_dispatch_console && can?(:dispatch_console, scope)
       %ul.nav.nav-tabs.nav-stacked.nav-tabs-small
         %li
+          %a{href: new_incidents_region_dispatch_intake_path(scope)}
+            New Incident
+            %i.fa.fa-chevron-right
+        %li
           %a{href: incidents_region_dispatch_index_path(scope)}
             Dispatch Console
             %i.fa.fa-chevron-right
