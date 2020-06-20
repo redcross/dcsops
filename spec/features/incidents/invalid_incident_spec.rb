@@ -8,14 +8,16 @@ describe "Invalid Incident Report", :type => :feature do
 
     @region = @person.region
     FactoryGirl.create :incidents_scope, region: @person.region
-    @incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: @person.shift_territories.first
+    @incident = FactoryGirl.create :raw_incident,
+      region: @person.region,
+      shift_territory: @person.shift_territories.first,
+      city: "Test City",
+      date: Date.current
 
     visit "/incidents/#{@region.url_slug}"
 
-    click_link "Submit Incident Report"
-    within :xpath, "//td[text()='#{@incident.incident_number}']/ancestor::tr" do
-      click_link "Mark Invalid"
-    end
+    click_on "Test City"
+    click_link "Invalid/No Response"
 
     select 'Not Eligible For Services'
     fill_in 'Please Explain*', with: 'A message'

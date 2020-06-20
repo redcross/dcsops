@@ -4,10 +4,15 @@
   %div(class=menu_col)
     -if editable?
       %ul.nav.nav-tabs.nav-stacked.nav-tabs-small
-        -if can? :needs_report, Incidents::Incident
+        -if can? :create, Incidents::Incident
+          %li
+            %a{href: new_incidents_region_incident_path(scope)}
+              Submit Incident Report
+              %i.fa.fa-chevron-right
+        -if can? :incidents_admin, Incidents::Incident
           %li
             %a{href: needs_report_incidents_region_incidents_path(scope)}
-              Submit Incident Report
+              Currently Open Incidents
               %i.fa.fa-chevron-right
         -if current_region.incidents_use_global_log && can?(:read, Incidents::EventLog)
           %li
