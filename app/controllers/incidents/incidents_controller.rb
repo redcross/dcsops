@@ -2,7 +2,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   inherit_resources
   respond_to :html
   respond_to :json, only: :update
-  respond_to :js, only: :index
+  respond_to :js, only: [:index, :needs_report]
   defaults finder: :find_by_incident_number!
   load_and_authorize_resource :region
   load_and_authorize_resource except: [:needs_report, :activity, :new, :create]
@@ -103,8 +103,16 @@ class Incidents::IncidentsController < Incidents::BaseController
     end
 
     expose(:needs_report_collection) { 
-      Incidents::Incident.for_region(delegated_region_ids).needs_incident_report.includes{shift_territory}.order{incident_number} 
+      @needs_report_collection_with_pagination ||= begin
+        collection = Incidents::Incident.for_region(delegated_region_ids).needs_incident_report.includes{shift_territory}.order{incident_number}
+        collection.page(params[:page])
+      end
     }
+
+    def original_url
+      request.original_url
+    end
+    helper_method :original_url
 
     expose(:resource_changes) {
       changes = Version.order{created_at.desc}.for_region(@region).includes{[root, item]}
