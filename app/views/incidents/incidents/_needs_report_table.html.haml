@@ -1,0 +1,30 @@
+.text-center= paginate needs_report_collection, :theme => 'twitter-bootstrap-3', remote: true
+
+%table.table
+  %thead
+    %tr
+      %th Incident Number
+      %th Address
+      %th Area
+      %th Date
+      %th Age
+      %th Actions
+  %tbody
+    -needs_report_collection.each do |inc|
+      - inc = Incidents::IncidentPresenter.new inc
+      %tr
+        %td=inc.incident_number
+        %td=inc.full_address
+        %td
+          =inc.region.try :name
+          %br
+          =inc.response_territory.try :name
+        %td=inc.date.to_s :dow_short
+        %td=time_ago_in_words inc.created_at
+        %td
+          -if can? :update, inc
+            %a.btn.btn-primary{href: inc.submit_path} Submit Incident Information
+          -if can? :mark_invalid, inc
+            %a.btn.btn-danger{href: inc.invalid_path} No Response / Mark Invalid
+
+.text-center= paginate needs_report_collection, :theme => 'twitter-bootstrap-3', remote: true
