@@ -6,13 +6,18 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     ActionMailer::Base.deliveries.clear
   end
 
-  before do
+  before :each do
     @region = @person.region
     @region.incidents_enable_dispatch_console = true
     @region.incident_number_sequence = FactoryGirl.create :incident_number_sequence
     @region.save!
 
-    @scope = FactoryGirl.create :incidents_scope, enable_dispatch_console: true, region: @region
+    # Emulate the production norcen_dispatch link
+    @scope = FactoryGirl.create :incidents_scope,
+      enable_dispatch_console: true,
+      region: @region,
+      url_slug: "norcen_dispatch",
+      regions: [@region]
 
     grant_capability!(:dispatch_console, [@scope.id])
 
@@ -22,12 +27,13 @@ describe "Incident Dispatch Intake Console", :type => :feature do
 
   end
 
-  def intake_url
-    "/incidents/#{@scope.url_slug}/dispatch_intake/new"
+  def visit_intake
+    visit "/incidents/norcen_dispatch"
+    click_on "New Incident"
   end
 
   it "handles a referral" do
-    visit intake_url
+    visit_intake
 
     choose "No"
 
@@ -58,7 +64,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
   end
 
   it "handles an incident in response territory" do
-    visit intake_url
+    visit_intake
     choose 'Yes'
     page.should have_text "What is the address of the incident?"
     fill_in "incidents_call_log[address_entry]", with: "1663 Market St San Francisco\n"
@@ -83,7 +89,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
   end
 
   it "handles invalid input to an incident" do
-    visit intake_url
+    visit_intake
     choose 'Yes'
     page.should have_text "What is the address of the incident?"
     fill_in "incidents_call_log[address_entry]", with: "1663 Market St San Francisco\n"
@@ -105,7 +111,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
 
 
   it "handles an incident in an unknown response territory" do
-    visit intake_url
+    visit_intake
     choose 'Yes'
     page.should have_text "What is the address of the incident?"
     fill_in "incidents_call_log[address_entry]", with: "Oakland, CA\n"
@@ -118,7 +124,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
   it "handles an incident in an unauthorized response territory" do
     @other_terr = FactoryGirl.create :response_territory, counties: ["Alameda, CA"]
 
-    visit intake_url
+    visit_intake
     choose 'Yes'
     page.should have_text "What is the address of the incident?"
     fill_in "incidents_call_log[address_entry]", with: "Oakland, CA\n"
