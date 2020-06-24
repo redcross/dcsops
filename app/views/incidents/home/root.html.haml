@@ -4,10 +4,20 @@
   %div(class=menu_col)
     -if editable?
       %ul.nav.nav-tabs.nav-stacked.nav-tabs-small
+        -if scope.enable_dispatch_console && can?(:dispatch_console, scope)
+          %li
+            %a{href: new_incidents_region_dispatch_intake_path(scope)}
+              Dispatch New Incident
+              %i.fa.fa-chevron-right
         -if can? :create, Incidents::Incident
           %li
             %a{href: new_incidents_region_incident_path(scope)}
-              Submit Incident Report
+              Create Incident Report
+              %i.fa.fa-chevron-right
+        -if scope.enable_dispatch_console && can?(:dispatch_console, scope)
+          %li
+            %a{href: incidents_region_dispatch_index_path(scope)}
+              Dispatch Console
               %i.fa.fa-chevron-right
         -if can? :incidents_admin, Incidents::Incident
           %li
@@ -64,16 +74,6 @@
 
 .row
   .col-sm-5.col-md-4
-    -if scope.enable_dispatch_console && can?(:dispatch_console, scope)
-      %ul.nav.nav-tabs.nav-stacked.nav-tabs-small
-        %li
-          %a{href: new_incidents_region_dispatch_intake_path(scope)}
-            New Incident
-            %i.fa.fa-chevron-right
-        %li
-          %a{href: incidents_region_dispatch_index_path(scope)}
-            Dispatch Console
-            %i.fa.fa-chevron-right
     .recent-table{data: {refresh_name: "timeline details", refresh: url_for(partial: 'recent_table')}}
       =render 'recent_table'
     -if can? :index, Incidents::Incident

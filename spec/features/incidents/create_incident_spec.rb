@@ -14,7 +14,7 @@ describe "Manually create incident", :type => :feature do
 
     @incident_number = FactoryGirl.build(:incident).incident_number
 
-    click_on "Submit Incident Report"
+    click_on "Create Incident Report"
 
     fill_in 'Incident number*', with: @incident_number
     select '2015'

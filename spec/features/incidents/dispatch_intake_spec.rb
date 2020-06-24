@@ -13,12 +13,9 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     @region.save!
 
     # Emulate the production norcen_dispatch link
-    @scope = FactoryGirl.create :incidents_scope,
-      enable_dispatch_console: true,
-      region: @region,
-      url_slug: "norcen_dispatch",
-      regions: [@region]
+    @scope = FactoryGirl.create :incidents_scope, enable_dispatch_console: true, region: @region
 
+    grant_capability!(:dispatch_console, [@scope.id])
     grant_capability!(:dispatch_console, [@scope.id])
 
     backup_person = FactoryGirl.create :person, region: @region
@@ -28,8 +25,9 @@ describe "Incident Dispatch Intake Console", :type => :feature do
   end
 
   def visit_intake
-    visit "/incidents/norcen_dispatch"
-    click_on "New Incident"
+    visit "/incidents/"
+    save_page
+    click_on "Dispatch New Incident"
   end
 
   it "handles a referral" do
