@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200616210846) do
+ActiveRecord::Schema.define(version: 20200624130802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,14 +20,14 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   enable_extension "tablefunc"
 
   create_table "active_admin_comments", force: :cascade do |t|
-    t.string   "resource_id",   null: false
-    t.string   "resource_type", null: false
+    t.string   "resource_id",   limit: 255, null: false
+    t.string   "resource_type", limit: 255, null: false
     t.integer  "author_id"
-    t.string   "author_type"
+    t.string   "author_type",   limit: 255
     t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "namespace"
+    t.string   "namespace",     limit: 255
   end
 
   add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
@@ -35,9 +35,9 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "api_clients", force: :cascade do |t|
-    t.string   "name"
-    t.string   "app_token"
-    t.string   "app_secret"
+    t.string   "name",       limit: 255
+    t.string   "app_token",  limit: 255
+    t.string   "app_secret", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   create_table "connect_access_tokens", force: :cascade do |t|
     t.integer  "account_id"
     t.integer  "client_id"
-    t.string   "token"
+    t.string   "token",      limit: 255
     t.datetime "expires_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -84,9 +84,9 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   create_table "connect_authorizations", force: :cascade do |t|
     t.integer  "account_id"
     t.integer  "client_id"
-    t.string   "code"
-    t.string   "nonce"
-    t.string   "redirect_uri"
+    t.string   "code",         limit: 255
+    t.string   "nonce",        limit: 255
+    t.string   "redirect_uri", limit: 255
     t.datetime "expires_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -96,16 +96,16 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "connect_clients", force: :cascade do |t|
     t.integer  "account_id"
-    t.string   "identifier"
-    t.string   "secret"
-    t.string   "name"
-    t.string   "jwks_uri"
-    t.string   "sector_identifier"
-    t.string   "redirect_uris"
-    t.boolean  "dynamic",             default: false
-    t.boolean  "native",              default: false
-    t.boolean  "ppid",                default: false
-    t.boolean  "superapp",            default: false
+    t.string   "identifier",          limit: 255
+    t.string   "secret",              limit: 255
+    t.string   "name",                limit: 255
+    t.string   "jwks_uri",            limit: 255
+    t.string   "sector_identifier",   limit: 255
+    t.string   "redirect_uris",       limit: 255
+    t.boolean  "dynamic",                         default: false
+    t.boolean  "native",                          default: false
+    t.boolean  "ppid",                            default: false
+    t.boolean  "superapp",                        default: false
     t.datetime "expires_at"
     t.text     "raw_registered_json"
     t.datetime "created_at"
@@ -137,7 +137,7 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   create_table "connect_id_tokens", force: :cascade do |t|
     t.integer  "account_id"
     t.integer  "client_id"
-    t.string   "nonce"
+    t.string   "nonce",      limit: 255
     t.datetime "expires_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -145,8 +145,8 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "connect_pairwise_pseudonymous_identifiers", force: :cascade do |t|
     t.integer  "account_id"
-    t.string   "identifier"
-    t.string   "sector_identifier"
+    t.string   "identifier",        limit: 255
+    t.string   "sector_identifier", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -158,7 +158,7 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   end
 
   create_table "connect_scopes", force: :cascade do |t|
-    t.string   "name"
+    t.string   "name",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -166,23 +166,23 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   add_index "connect_scopes", ["name"], name: "index_connect_scopes_on_name", unique: true, using: :btree
 
   create_table "data_filters", force: :cascade do |t|
-    t.string   "model"
-    t.string   "field"
-    t.string   "pattern_raw"
+    t.string   "model",       limit: 255
+    t.string   "field",       limit: 255
+    t.string   "pattern_raw", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "delayed_jobs", force: :cascade do |t|
-    t.integer  "priority",   default: 0, null: false
-    t.integer  "attempts",   default: 0, null: false
-    t.text     "handler",                null: false
+    t.integer  "priority",               default: 0, null: false
+    t.integer  "attempts",               default: 0, null: false
+    t.text     "handler",                            null: false
     t.text     "last_error"
     t.datetime "run_at"
     t.datetime "locked_at"
     t.datetime "failed_at"
-    t.string   "locked_by"
-    t.string   "queue"
+    t.string   "locked_by",  limit: 255
+    t.string   "queue",      limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -191,21 +191,21 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "homepage_link_roles", force: :cascade do |t|
     t.integer "homepage_link_id"
-    t.string  "role_scope"
+    t.string  "role_scope",       limit: 255
   end
 
   create_table "homepage_links", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "name"
+    t.string   "name",              limit: 255
     t.text     "description"
-    t.string   "icon"
-    t.string   "url"
-    t.string   "file_file_name"
-    t.string   "file_content_type"
+    t.string   "icon",              limit: 255
+    t.string   "url",               limit: 255
+    t.string   "file_file_name",    limit: 255
+    t.string   "file_content_type", limit: 255
     t.integer  "file_file_size"
     t.datetime "file_updated_at"
     t.integer  "ordinal"
-    t.string   "group"
+    t.string   "group",             limit: 255
     t.integer  "group_ordinal"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -214,12 +214,12 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   add_index "homepage_links", ["region_id"], name: "index_homepage_links_on_region_id", using: :btree
 
   create_table "incidents_attachments", force: :cascade do |t|
-    t.integer  "incident_id",       null: false
-    t.string   "attachment_type"
-    t.string   "name"
+    t.integer  "incident_id",                   null: false
+    t.string   "attachment_type",   limit: 255
+    t.string   "name",              limit: 255
     t.text     "description"
-    t.string   "file_file_name"
-    t.string   "file_content_type"
+    t.string   "file_file_name",    limit: 255
+    t.string   "file_content_type", limit: 255
     t.integer  "file_file_size"
     t.datetime "file_updated_at"
   end
@@ -229,18 +229,18 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   create_table "incidents_call_logs", force: :cascade do |t|
     t.integer  "region_id"
     t.integer  "dispatching_region_id"
-    t.string   "call_type"
-    t.string   "contact_name"
-    t.string   "contact_number"
-    t.string   "address_entry"
-    t.string   "address"
-    t.string   "city"
-    t.string   "state"
-    t.string   "zip"
-    t.string   "county"
+    t.string   "call_type",             limit: 255
+    t.string   "contact_name",          limit: 255
+    t.string   "contact_number",        limit: 255
+    t.string   "address_entry",         limit: 255
+    t.string   "address",               limit: 255
+    t.string   "city",                  limit: 255
+    t.string   "state",                 limit: 255
+    t.string   "zip",                   limit: 255
+    t.string   "county",                limit: 255
     t.float    "lat"
     t.float    "lng"
-    t.string   "incident_type"
+    t.string   "incident_type",         limit: 255
     t.text     "services_requested"
     t.integer  "num_displaced"
     t.text     "referral_reason"
@@ -257,18 +257,18 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "incidents_cas_cases", force: :cascade do |t|
     t.integer  "cas_incident_id"
-    t.string   "case_number"
+    t.string   "case_number",         limit: 255
     t.integer  "num_clients"
-    t.string   "family_name"
+    t.string   "family_name",         limit: 255
     t.date     "case_last_updated"
     t.date     "case_opened"
     t.boolean  "case_is_open"
-    t.string   "language"
+    t.string   "language",            limit: 255
     t.text     "narrative"
-    t.string   "address"
-    t.string   "city"
-    t.string   "state"
-    t.string   "post_incident_plans"
+    t.string   "address",             limit: 255
+    t.string   "city",                limit: 255
+    t.string   "state",               limit: 255
+    t.string   "post_incident_plans", limit: 255
     t.text     "notes"
     t.datetime "last_import"
     t.datetime "created_at"
@@ -281,12 +281,12 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   add_index "incidents_cas_cases", ["case_number"], name: "index_incidents_cas_cases_on_case_number", unique: true, using: :btree
 
   create_table "incidents_cas_incidents", force: :cascade do |t|
-    t.string   "dr_number"
-    t.string   "cas_incident_number"
-    t.string   "cas_name"
+    t.string   "dr_number",                 limit: 255
+    t.string   "cas_incident_number",       limit: 255
+    t.string   "cas_name",                  limit: 255
     t.integer  "dr_level"
     t.boolean  "is_dr"
-    t.string   "county"
+    t.string   "county",                    limit: 255
     t.integer  "cases_opened"
     t.integer  "cases_open"
     t.integer  "cases_closed"
@@ -301,8 +301,8 @@ ActiveRecord::Schema.define(version: 20200616210846) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "region_id"
-    t.string   "region_code"
-    t.boolean  "ignore_incident",           default: false, null: false
+    t.string   "region_code",               limit: 255
+    t.boolean  "ignore_incident",                       default: false, null: false
   end
 
   add_index "incidents_cas_incidents", ["cas_incident_number"], name: "index_incidents_cas_incidents_on_cas_incident_number", unique: true, using: :btree
@@ -321,36 +321,36 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "incidents_cases", force: :cascade do |t|
     t.integer  "incident_id"
-    t.string   "cas_case_number"
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "address"
-    t.string   "unit"
-    t.string   "city"
-    t.string   "state"
-    t.string   "zip"
+    t.string   "cas_case_number", limit: 255
+    t.string   "first_name",      limit: 255
+    t.string   "last_name",       limit: 255
+    t.string   "address",         limit: 255
+    t.string   "unit",            limit: 255
+    t.string   "city",            limit: 255
+    t.string   "state",           limit: 255
+    t.string   "zip",             limit: 255
     t.float    "lat"
     t.float    "lng"
-    t.string   "phone_number"
+    t.string   "phone_number",    limit: 255
     t.integer  "num_adults"
     t.integer  "num_children"
     t.decimal  "total_amount"
     t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "cac_masked"
+    t.string   "cac_masked",      limit: 255
   end
 
   add_index "incidents_cases", ["incident_id"], name: "index_incidents_cases_on_incident_id", using: :btree
 
   create_table "incidents_dat_incidents", force: :cascade do |t|
-    t.integer  "incident_id",             null: false
-    t.string   "incident_call_type"
-    t.string   "verified_by"
+    t.integer  "incident_id",                         null: false
+    t.string   "incident_call_type",      limit: 255
+    t.string   "verified_by",             limit: 255
     t.integer  "num_people_injured"
     t.integer  "num_people_hospitalized"
     t.integer  "num_people_deceased"
-    t.string   "cross_street"
+    t.string   "cross_street",            limit: 255
     t.integer  "units_affected"
     t.integer  "units_minor"
     t.integer  "units_major"
@@ -358,7 +358,7 @@ ActiveRecord::Schema.define(version: 20200616210846) do
     t.text     "services"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "structure_type"
+    t.string   "structure_type",          limit: 255
     t.integer  "completed_by_id"
     t.text     "languages"
     t.hstore   "resources"
@@ -367,18 +367,18 @@ ActiveRecord::Schema.define(version: 20200616210846) do
     t.integer  "injuries_black"
     t.integer  "injuries_red"
     t.integer  "injuries_yellow"
-    t.string   "where_started"
+    t.string   "where_started",           limit: 255
     t.datetime "under_control_at"
-    t.string   "box"
+    t.string   "box",                     limit: 255
     t.datetime "box_at"
-    t.string   "battalion"
+    t.string   "battalion",               limit: 255
     t.integer  "num_alarms"
-    t.string   "size_up"
+    t.string   "size_up",                 limit: 255
     t.integer  "num_exposures"
-    t.string   "vacate_type"
-    t.string   "vacate_number"
+    t.string   "vacate_type",             limit: 255
+    t.string   "vacate_number",           limit: 255
     t.integer  "num_people_missing"
-    t.string   "hazardous_materials"
+    t.string   "hazardous_materials",     limit: 255
     t.integer  "units_unknown"
   end
 
@@ -386,11 +386,11 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "incidents_deployments", force: :cascade do |t|
     t.integer  "person_id"
-    t.string   "gap"
-    t.string   "group"
-    t.string   "activity"
-    t.string   "position"
-    t.string   "qual"
+    t.string   "gap",             limit: 255
+    t.string   "group",           limit: 255
+    t.string   "activity",        limit: 255
+    t.string   "position",        limit: 255
+    t.string   "qual",            limit: 255
     t.date     "date_first_seen"
     t.date     "date_last_seen"
     t.datetime "created_at"
@@ -400,9 +400,9 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "incidents_disasters", force: :cascade do |t|
     t.integer  "vc_incident_id"
-    t.string   "dr_number"
+    t.string   "dr_number",      limit: 255
     t.integer  "fiscal_year"
-    t.string   "name"
+    t.string   "name",           limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -410,10 +410,10 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   create_table "incidents_dispatch_log_items", force: :cascade do |t|
     t.integer  "dispatch_log_id"
     t.datetime "action_at"
-    t.string   "action_type"
-    t.string   "recipient"
-    t.string   "operator"
-    t.string   "result"
+    t.string   "action_type",     limit: 255
+    t.string   "recipient",       limit: 255
+    t.string   "operator",        limit: 255
+    t.string   "result",          limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -421,26 +421,26 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   add_index "incidents_dispatch_log_items", ["dispatch_log_id"], name: "index_incidents_dispatch_log_items_on_dispatch_log_id", using: :btree
 
   create_table "incidents_dispatch_logs", force: :cascade do |t|
-    t.string   "incident_number"
+    t.string   "incident_number",    limit: 255
     t.integer  "region_id"
     t.integer  "incident_id"
     t.datetime "received_at"
     t.datetime "delivered_at"
-    t.string   "delivered_to"
-    t.string   "incident_type"
-    t.string   "address"
-    t.string   "cross_street"
-    t.string   "county"
-    t.string   "displaced"
-    t.string   "services_requested"
-    t.string   "agency"
-    t.string   "contact_name"
-    t.string   "contact_phone"
-    t.string   "caller_id"
+    t.string   "delivered_to",       limit: 255
+    t.string   "incident_type",      limit: 255
+    t.string   "address",            limit: 255
+    t.string   "cross_street",       limit: 255
+    t.string   "county",             limit: 255
+    t.string   "displaced",          limit: 255
+    t.string   "services_requested", limit: 255
+    t.string   "agency",             limit: 255
+    t.string   "contact_name",       limit: 255
+    t.string   "contact_phone",      limit: 255
+    t.string   "caller_id",          limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "state"
-    t.string   "message_number"
+    t.string   "state",              limit: 255
+    t.string   "message_number",     limit: 255
   end
 
   add_index "incidents_dispatch_logs", ["incident_id"], name: "index_incidents_dispatch_logs_on_incident_id", using: :btree
@@ -449,7 +449,7 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   create_table "incidents_event_logs", force: :cascade do |t|
     t.integer  "incident_id"
     t.integer  "person_id"
-    t.string   "event"
+    t.string   "event",       limit: 255
     t.datetime "event_time"
     t.text     "message"
     t.datetime "created_at"
@@ -464,45 +464,45 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "incidents_incidents", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "incident_number"
-    t.string   "incident_type"
-    t.string   "cas_event_number"
+    t.string   "incident_number",             limit: 255
+    t.string   "incident_type",               limit: 255
+    t.string   "cas_event_number",            limit: 255
     t.date     "date"
     t.integer  "num_adults"
     t.integer  "num_children"
     t.integer  "num_families"
     t.integer  "num_cases"
-    t.string   "incident_description"
+    t.string   "incident_description",        limit: 255
     t.text     "narrative_brief"
     t.text     "narrative"
-    t.string   "address"
-    t.string   "cross_street"
-    t.string   "neighborhood"
-    t.string   "city"
-    t.string   "state"
-    t.string   "zip"
+    t.string   "address",                     limit: 255
+    t.string   "cross_street",                limit: 255
+    t.string   "neighborhood",                limit: 255
+    t.string   "city",                        limit: 255
+    t.string   "state",                       limit: 255
+    t.string   "zip",                         limit: 255
     t.float    "lat"
     t.float    "lng"
-    t.string   "idat_incident_id"
-    t.string   "idat_incident_rev"
+    t.string   "idat_incident_id",            limit: 255
+    t.string   "idat_incident_rev",           limit: 255
     t.datetime "last_idat_sync"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "last_no_incident_warning"
     t.boolean  "ignore_incident_report"
-    t.boolean  "evac_partner_used",           default: false
-    t.boolean  "hotel_partner_used",          default: false
-    t.boolean  "shelter_partner_used",        default: false
-    t.boolean  "feeding_partner_used",        default: false
+    t.boolean  "evac_partner_used",                       default: false
+    t.boolean  "hotel_partner_used",                      default: false
+    t.boolean  "shelter_partner_used",                    default: false
+    t.boolean  "feeding_partner_used",                    default: false
     t.integer  "shift_territory_id"
-    t.string   "county"
-    t.string   "status",                                      null: false
+    t.string   "county",                      limit: 255
+    t.string   "status",                      limit: 255,                 null: false
     t.date     "response_date"
     t.integer  "notification_level_id"
     t.text     "notification_level_message"
-    t.string   "recruitment_message"
+    t.string   "recruitment_message",         limit: 255
     t.integer  "cas_event_id"
-    t.boolean  "address_directly_entered",    default: false, null: false
+    t.boolean  "address_directly_entered",                default: false, null: false
     t.integer  "response_territory_id"
     t.integer  "current_dispatch_contact_id"
     t.datetime "dispatch_contact_due_at"
@@ -519,11 +519,11 @@ ActiveRecord::Schema.define(version: 20200616210846) do
     t.integer  "completed_by_id"
     t.integer  "approved_by_id"
     t.boolean  "budget_exceeded"
-    t.string   "trend"
-    t.string   "triggers",              array: true
+    t.string   "trend",                 limit: 255
+    t.string   "triggers",              limit: 255, array: true
     t.integer  "estimated_units"
     t.integer  "estimated_individuals"
-    t.string   "expected_services",     array: true
+    t.string   "expected_services",     limit: 255, array: true
     t.boolean  "significant_media"
     t.boolean  "safety_concerns"
     t.boolean  "weather_concerns"
@@ -537,10 +537,10 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "incidents_notifications_events", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "name"
-    t.string   "description"
-    t.string   "event_type"
-    t.string   "event"
+    t.string   "name",        limit: 255
+    t.string   "description", limit: 255
+    t.string   "event_type",  limit: 255
+    t.string   "event",       limit: 255
     t.integer  "ordinal"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -550,8 +550,8 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "incidents_notifications_role_scopes", force: :cascade do |t|
     t.integer  "role_id"
-    t.string   "level"
-    t.string   "value"
+    t.string   "level",                 limit: 255
+    t.string   "value",                 limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "response_territory_id"
@@ -561,7 +561,7 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "incidents_notifications_roles", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "name"
+    t.string   "name",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -583,7 +583,7 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   create_table "incidents_notifications_triggers", force: :cascade do |t|
     t.integer  "role_id"
     t.integer  "event_id"
-    t.string   "template"
+    t.string   "template",   limit: 255
     t.boolean  "use_sms"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -593,16 +593,16 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   add_index "incidents_notifications_triggers", ["role_id"], name: "index_incidents_notifications_triggers_on_role_id", using: :btree
 
   create_table "incidents_number_sequences", force: :cascade do |t|
-    t.string  "name"
+    t.string  "name",           limit: 255
     t.integer "current_year"
     t.integer "current_number"
-    t.string  "format"
+    t.string  "format",         limit: 255
   end
 
   create_table "incidents_partner_uses", force: :cascade do |t|
     t.integer  "incident_id"
     t.integer  "partner_id"
-    t.string   "role"
+    t.string   "role",         limit: 255
     t.decimal  "hotel_rate"
     t.integer  "hotel_rooms"
     t.integer  "meals_served"
@@ -615,24 +615,24 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "incidents_price_list_items", force: :cascade do |t|
     t.integer  "item_class"
-    t.string   "name"
-    t.string   "type"
+    t.string   "name",        limit: 255
+    t.string   "type",        limit: 255
     t.decimal  "unit_price"
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "enabled",     default: true, null: false
+    t.boolean  "enabled",                 default: true, null: false
   end
 
   create_table "incidents_report_subscriptions", force: :cascade do |t|
     t.integer  "person_id"
     t.integer  "shift_territory_id"
-    t.string   "report_type"
-    t.boolean  "persistent",         default: false
+    t.string   "report_type",        limit: 255
+    t.boolean  "persistent",                     default: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.hstore   "options"
-    t.string   "frequency"
+    t.string   "frequency",          limit: 255
     t.date     "last_sent"
     t.integer  "scope_id"
   end
@@ -643,11 +643,11 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   create_table "incidents_responder_assignments", force: :cascade do |t|
     t.integer  "person_id"
     t.integer  "incident_id"
-    t.string   "role"
-    t.string   "response"
+    t.string   "role",              limit: 255
+    t.string   "response",          limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "was_flex",          default: false
+    t.boolean  "was_flex",                      default: false
     t.float    "driving_distance"
     t.datetime "dispatched_at"
     t.datetime "on_scene_at"
@@ -663,12 +663,12 @@ ActiveRecord::Schema.define(version: 20200616210846) do
     t.integer  "incident_id"
     t.integer  "responder_assignment_id"
     t.integer  "in_reply_to_id"
-    t.string   "direction"
-    t.string   "local_number"
-    t.string   "remote_number"
+    t.string   "direction",               limit: 255
+    t.string   "local_number",            limit: 255
+    t.string   "remote_number",           limit: 255
     t.text     "message"
     t.boolean  "acknowledged"
-    t.string   "status"
+    t.string   "status",                  limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -679,7 +679,7 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   create_table "incidents_responder_recruitments", force: :cascade do |t|
     t.integer  "incident_id"
     t.integer  "person_id"
-    t.string   "response"
+    t.string   "response",            limit: 255
     t.integer  "outbound_message_id"
     t.integer  "inbound_message_id"
     t.datetime "created_at"
@@ -690,14 +690,14 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "incidents_response_territories", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "name"
+    t.string   "name",                 limit: 255
     t.boolean  "enabled"
     t.boolean  "is_default"
-    t.string   "counties",             array: true
-    t.string   "cities",               array: true
-    t.string   "zip_codes",            array: true
-    t.string   "dispatch_number"
-    t.string   "non_disaster_number"
+    t.string   "counties",             limit: 255, array: true
+    t.string   "cities",               limit: 255, array: true
+    t.string   "zip_codes",            limit: 255, array: true
+    t.string   "dispatch_number",      limit: 255
+    t.string   "non_disaster_number",  limit: 255
     t.text     "special_instructions"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -715,10 +715,10 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "incidents_scopes", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "url_slug"
-    t.string   "abbrev"
-    t.string   "short_name"
-    t.string   "name"
+    t.string   "url_slug",   limit: 255
+    t.string   "abbrev",     limit: 255
+    t.string   "short_name", limit: 255
+    t.string   "name",       limit: 255
     t.hstore   "config"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -744,12 +744,12 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   add_index "incidents_vehicle_uses", ["vehicle_id"], name: "index_incidents_vehicle_uses_on_vehicle_id", using: :btree
 
   create_table "job_logs", force: :cascade do |t|
-    t.string   "controller"
-    t.string   "name"
-    t.string   "url"
-    t.string   "result"
-    t.string   "message_subject"
-    t.string   "file_name"
+    t.string   "controller",        limit: 255
+    t.string   "name",              limit: 255
+    t.string   "url",               limit: 255
+    t.string   "result",            limit: 255
+    t.string   "message_subject",   limit: 255
+    t.string   "file_name",         limit: 255
     t.integer  "file_size"
     t.integer  "num_rows"
     t.text     "log"
@@ -761,17 +761,17 @@ ActiveRecord::Schema.define(version: 20200616210846) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "tenant_id"
-    t.string   "tenant_type"
+    t.string   "tenant_type",       limit: 255
   end
 
   create_table "logistics_vehicles", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "name"
-    t.string   "category"
-    t.string   "address"
-    t.string   "city"
-    t.string   "state"
-    t.string   "zip"
+    t.string   "name",       limit: 255
+    t.string   "category",   limit: 255
+    t.string   "address",    limit: 255
+    t.string   "city",       limit: 255
+    t.string   "state",      limit: 255
+    t.string   "zip",        limit: 255
     t.float    "lat"
     t.float    "lng"
     t.datetime "created_at"
@@ -780,9 +780,9 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "lookups", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "scope"
-    t.string   "name",       null: false
-    t.string   "value",      null: false
+    t.string   "scope",      limit: 255
+    t.string   "name",       limit: 255, null: false
+    t.string   "value",      limit: 255, null: false
     t.integer  "ordinal"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -794,23 +794,23 @@ ActiveRecord::Schema.define(version: 20200616210846) do
     t.integer  "region_id"
     t.datetime "begins"
     t.datetime "ends"
-    t.string   "cookie_code"
+    t.string   "cookie_code",    limit: 255
     t.text     "html"
-    t.string   "dialog_class"
+    t.string   "dialog_class",   limit: 255
     t.integer  "cookie_version"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "path_regex_raw"
+    t.string   "path_regex_raw", limit: 255
   end
 
   add_index "motds", ["region_id"], name: "index_motds_on_region_id", using: :btree
 
   create_table "named_queries", force: :cascade do |t|
-    t.string   "name"
-    t.string   "token"
+    t.string   "name",       limit: 255
+    t.string   "token",      limit: 255
     t.text     "parameters"
-    t.string   "controller"
-    t.string   "action"
+    t.string   "controller", limit: 255
+    t.string   "action",     limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -818,12 +818,12 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   add_index "named_queries", ["name", "token"], name: "index_named_queries_on_name_and_token", using: :btree
 
   create_table "partners_partners", force: :cascade do |t|
-    t.string   "name"
-    t.string   "address1"
-    t.string   "address2"
-    t.string   "city"
-    t.string   "state"
-    t.string   "zip"
+    t.string   "name",       limit: 255
+    t.string   "address1",   limit: 255
+    t.string   "address2",   limit: 255
+    t.string   "city",       limit: 255
+    t.string   "state",      limit: 255
+    t.string   "zip",        limit: 255
     t.float    "lat"
     t.float    "lng"
     t.datetime "created_at"
@@ -834,8 +834,8 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   add_index "partners_partners", ["region_id"], name: "index_partners_partners_on_region_id", using: :btree
 
   create_table "roster_capabilities", force: :cascade do |t|
-    t.string   "name"
-    t.string   "grant_name"
+    t.string   "name",       limit: 255
+    t.string   "grant_name", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -843,19 +843,19 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   create_table "roster_capability_memberships", force: :cascade do |t|
     t.integer "capability_id"
     t.integer "position_id"
-    t.string  "description"
+    t.string  "description",   limit: 255
   end
 
   create_table "roster_capability_scopes", force: :cascade do |t|
-    t.string   "scope"
+    t.string   "scope",                    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "capability_membership_id"
   end
 
   create_table "roster_cell_carriers", force: :cascade do |t|
-    t.string   "name"
-    t.string   "sms_gateway"
+    t.string   "name",        limit: 255
+    t.string   "sms_gateway", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "pager"
@@ -864,25 +864,25 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   create_table "roster_people", force: :cascade do |t|
     t.integer  "region_id"
     t.integer  "primary_shift_territory_id"
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "email"
-    t.string   "secondary_email"
-    t.string   "username"
-    t.string   "home_phone"
-    t.string   "cell_phone"
-    t.string   "work_phone"
-    t.string   "alternate_phone"
-    t.string   "sms_phone"
-    t.string   "phone_1_preference"
-    t.string   "phone_2_preference"
-    t.string   "phone_3_preference"
-    t.string   "phone_4_preference"
-    t.string   "address1"
-    t.string   "address2"
-    t.string   "city"
-    t.string   "state"
-    t.string   "zip"
+    t.string   "first_name",                 limit: 255
+    t.string   "last_name",                  limit: 255
+    t.string   "email",                      limit: 255
+    t.string   "secondary_email",            limit: 255
+    t.string   "username",                   limit: 255
+    t.string   "home_phone",                 limit: 255
+    t.string   "cell_phone",                 limit: 255
+    t.string   "work_phone",                 limit: 255
+    t.string   "alternate_phone",            limit: 255
+    t.string   "sms_phone",                  limit: 255
+    t.string   "phone_1_preference",         limit: 255
+    t.string   "phone_2_preference",         limit: 255
+    t.string   "phone_3_preference",         limit: 255
+    t.string   "phone_4_preference",         limit: 255
+    t.string   "address1",                   limit: 255
+    t.string   "address2",                   limit: 255
+    t.string   "city",                       limit: 255
+    t.string   "state",                      limit: 255
+    t.string   "zip",                        limit: 255
     t.integer  "vc_id"
     t.integer  "vc_member_number"
     t.integer  "home_phone_carrier_id"
@@ -895,8 +895,8 @@ ActiveRecord::Schema.define(version: 20200616210846) do
     t.boolean  "cell_phone_disable"
     t.boolean  "alternate_phone_disable"
     t.boolean  "sms_phone_disable"
-    t.string   "encrypted_password"
-    t.string   "password_salt"
+    t.string   "encrypted_password",         limit: 255
+    t.string   "password_salt",              limit: 255
     t.binary   "persistence_token"
     t.datetime "last_login"
     t.datetime "vc_imported_at"
@@ -904,13 +904,13 @@ ActiveRecord::Schema.define(version: 20200616210846) do
     t.datetime "updated_at"
     t.float    "lat"
     t.float    "lng"
-    t.boolean  "vc_is_active",               default: true
-    t.string   "gap_primary"
-    t.string   "gap_secondary"
-    t.string   "gap_tertiary"
+    t.boolean  "vc_is_active",                           default: true
+    t.string   "gap_primary",                limit: 255
+    t.string   "gap_secondary",              limit: 255
+    t.string   "gap_tertiary",               limit: 255
     t.datetime "vc_last_login"
     t.datetime "vc_last_profile_update"
-    t.string   "rco_id"
+    t.string   "rco_id",                     limit: 255
   end
 
   add_index "roster_people", ["region_id", "vc_is_active"], name: "index_roster_people_on_region_active", using: :btree
@@ -926,12 +926,12 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "roster_positions", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "name"
-    t.string   "vc_regex_raw"
+    t.string   "name",         limit: 255
+    t.string   "vc_regex_raw", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "hidden",       default: false
-    t.string   "abbrev"
+    t.boolean  "hidden",                   default: false
+    t.string   "abbrev",       limit: 255
   end
 
   create_table "roster_positions_scheduler_shifts", id: false, force: :cascade do |t|
@@ -942,18 +942,18 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   add_index "roster_positions_scheduler_shifts", ["shift_id", "position_id"], name: "index_roster_positions_scheduler_shifts", unique: true, using: :btree
 
   create_table "roster_regions", force: :cascade do |t|
-    t.string   "name"
-    t.string   "code"
-    t.string   "short_name"
-    t.string   "time_zone_raw"
+    t.string   "name",                        limit: 255
+    t.string   "code",                        limit: 255
+    t.string   "short_name",                  limit: 255
+    t.string   "time_zone_raw",               limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "vc_username"
-    t.string   "vc_password"
-    t.string   "vc_position_filter"
+    t.string   "vc_username",                 limit: 255
+    t.string   "vc_password",                 limit: 255
+    t.string   "vc_position_filter",          limit: 255
     t.hstore   "config"
     t.integer  "vc_unit"
-    t.string   "url_slug"
+    t.string   "url_slug",                    limit: 255
     t.integer  "incident_number_sequence_id"
   end
 
@@ -961,15 +961,15 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "roster_shift_territories", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "name"
-    t.string   "abbrev"
-    t.string   "county_code"
-    t.string   "fips_code"
-    t.string   "gis_name"
-    t.string   "vc_regex_raw"
+    t.string   "name",         limit: 255
+    t.string   "abbrev",       limit: 255
+    t.string   "county_code",  limit: 255
+    t.string   "fips_code",    limit: 255
+    t.string   "gis_name",     limit: 255
+    t.string   "vc_regex_raw", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "enabled",      default: true
+    t.boolean  "enabled",                  default: true
   end
 
   create_table "roster_shift_territory_memberships", force: :cascade do |t|
@@ -998,7 +998,7 @@ ActiveRecord::Schema.define(version: 20200616210846) do
     t.boolean  "is_active"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",               null: false
+    t.string   "name",               limit: 255, null: false
     t.integer  "shift_first_id"
     t.integer  "shift_second_id"
     t.integer  "shift_third_id"
@@ -1042,10 +1042,10 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   create_table "scheduler_notification_settings", force: :cascade do |t|
     t.integer  "email_advance_hours"
     t.integer  "sms_advance_hours"
-    t.integer  "sms_only_after",            default: 0
-    t.integer  "sms_only_before",           default: 86400
+    t.integer  "sms_only_after",                        default: 0
+    t.integer  "sms_only_before",                       default: 86400
     t.boolean  "send_email_invites"
-    t.string   "calendar_api_token"
+    t.string   "calendar_api_token",        limit: 255
     t.text     "shift_notification_phones"
     t.boolean  "email_swap_requested"
     t.boolean  "email_all_swaps"
@@ -1083,8 +1083,8 @@ ActiveRecord::Schema.define(version: 20200616210846) do
 
   create_table "scheduler_shift_categories", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "name"
-    t.boolean  "show",       default: false, null: false
+    t.string   "name",       limit: 255
+    t.boolean  "show",                   default: false, null: false
     t.integer  "ordinal"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1093,20 +1093,20 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   add_index "scheduler_shift_categories", ["region_id"], name: "index_scheduler_shift_categories_on_region_id", using: :btree
 
   create_table "scheduler_shift_times", force: :cascade do |t|
-    t.string   "name"
-    t.string   "period"
+    t.string   "name",             limit: 255
+    t.string   "period",           limit: 255
     t.integer  "start_offset"
     t.integer  "end_offset"
     t.integer  "region_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active_sunday",    default: true, null: false
-    t.boolean  "active_monday",    default: true, null: false
-    t.boolean  "active_tuesday",   default: true, null: false
-    t.boolean  "active_wednesday", default: true, null: false
-    t.boolean  "active_thursday",  default: true, null: false
-    t.boolean  "active_friday",    default: true, null: false
-    t.boolean  "active_saturday",  default: true, null: false
+    t.boolean  "active_sunday",                default: true, null: false
+    t.boolean  "active_monday",                default: true, null: false
+    t.boolean  "active_tuesday",               default: true, null: false
+    t.boolean  "active_wednesday",             default: true, null: false
+    t.boolean  "active_thursday",              default: true, null: false
+    t.boolean  "active_friday",                default: true, null: false
+    t.boolean  "active_saturday",              default: true, null: false
   end
 
   add_index "scheduler_shift_times", ["region_id"], name: "index_scheduler_shift_times_on_region_id", using: :btree
@@ -1119,8 +1119,8 @@ ActiveRecord::Schema.define(version: 20200616210846) do
   add_index "scheduler_shift_times_shifts", ["shift_id", "shift_time_id"], name: "idx_scheduler_shift_times_shifts_unique", unique: true, using: :btree
 
   create_table "scheduler_shifts", force: :cascade do |t|
-    t.string   "name"
-    t.string   "abbrev"
+    t.string   "name",                     limit: 255
+    t.string   "abbrev",                   limit: 255
     t.integer  "max_signups"
     t.integer  "shift_territory_id"
     t.integer  "ordinal"
@@ -1133,30 +1133,37 @@ ActiveRecord::Schema.define(version: 20200616210846) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "min_desired_signups"
-    t.boolean  "ignore_shift_territory",   default: false
-    t.integer  "min_advance_signup",       default: 0,     null: false
+    t.boolean  "ignore_shift_territory",               default: false
+    t.integer  "min_advance_signup",                   default: 0,     null: false
     t.integer  "shift_category_id"
-    t.boolean  "exclusive",                default: true,  null: false
-    t.string   "vc_hours_type"
-    t.boolean  "show_in_dispatch_console", default: true,  null: false
+    t.boolean  "exclusive",                            default: true,  null: false
+    t.string   "vc_hours_type",            limit: 255
+    t.boolean  "show_in_dispatch_console",             default: true,  null: false
   end
 
   add_index "scheduler_shifts", ["shift_territory_id"], name: "index_scheduler_shifts_on_shift_territory_id", using: :btree
 
   create_table "versions", force: :cascade do |t|
-    t.string   "item_type",      null: false
-    t.integer  "item_id",        null: false
-    t.string   "event",          null: false
-    t.string   "whodunnit"
+    t.string   "item_type",      limit: 255, null: false
+    t.integer  "item_id",                    null: false
+    t.string   "event",          limit: 255, null: false
+    t.string   "whodunnit",      limit: 255
     t.text     "object"
     t.datetime "created_at"
     t.text     "object_changes"
-    t.string   "root_type"
+    t.string   "root_type",      limit: 255
     t.integer  "root_id"
-    t.integer  "region_id",      null: false
+    t.integer  "region_id",                  null: false
   end
 
+  add_index "versions", ["created_at"], name: "index_versions_on_created_at", using: :btree
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
   add_index "versions", ["region_id", "root_type", "root_id"], name: "index_versions_on_region_id_root_type_root_id", using: :btree
 
+  add_foreign_key "incidents_dat_incidents", "incidents_incidents", column: "incident_id", name: "incidents_ref"
+  add_foreign_key "roster_position_memberships", "roster_people", column: "person_id", name: "person_id_ref", on_delete: :cascade
+  add_foreign_key "roster_shift_territory_memberships", "roster_people", column: "person_id", name: "person_id_ref", on_delete: :cascade
+  add_foreign_key "scheduler_shift_assignments", "roster_people", column: "person_id", name: "person_id_ref", on_delete: :cascade
+  add_foreign_key "scheduler_shift_assignments", "scheduler_shift_times", column: "shift_time_id", name: "shift_group_id_ref"
+  add_foreign_key "scheduler_shift_assignments", "scheduler_shifts", column: "shift_id", name: "shift_id_ref"
 end
