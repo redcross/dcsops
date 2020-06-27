@@ -11,7 +11,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   responders :partial
 
   actions :all, except: :index
-  custom_actions collection: [:needs_report, :activity, :map], resource: [:mark_invalid, :close, :reopen]
+  custom_actions collection: [:needs_report, :activity, :map], resource: [:mark_invalid, :close, :force_close, :reopen]
 
   include HasManyRoutesFor
   has_many_routes_for :responder_messages, :dat, :event_logs, :responders, :attachments, :notifications, :cases, :initial_incident_report
@@ -40,6 +40,11 @@ class Incidents::IncidentsController < Incidents::BaseController
     else
       redirect_to edit_resource_dat_path(status: 'closed')
     end
+  end
+
+  def force_close
+    resource.force_close!
+    redirect_to resource_path
   end
 
   def reopen

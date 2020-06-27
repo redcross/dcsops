@@ -8,6 +8,8 @@
     -if resource.open_incident?
       -if can? :close, resource
         =link_to 'Close/Submit', close_resource_path, class: 'btn btn-default', method: 'post', data: {confirm: 'Really close this incident?'}
+      -if can? :close_without_completing, resource
+        =link_to 'Close Without Completion', force_close_resource_path, class: 'btn btn-default', method: 'post', data: {confirm: 'Really close this incident even if not complete?'}
       -if can? :mark_invalid, resource
         =link_to 'Invalid/No Response', mark_invalid_resource_path, class: 'btn btn-danger'
     -else

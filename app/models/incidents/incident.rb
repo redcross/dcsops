@@ -198,4 +198,10 @@ class Incidents::Incident < ActiveRecord::Base
     dat_incident && dat_incident.valid? && save
   end
 
+  def force_close!
+    self.status = 'closed'
+    self.response_date = region.time_zone.today
+    save(:validate => false)
+  end
+
 end
