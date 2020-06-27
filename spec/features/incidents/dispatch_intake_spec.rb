@@ -74,7 +74,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     fill_in "Are there any special instructions or specific services you are requesting?", with: Faker::Lorem.paragraph
     click_on "Create Incident"
 
-    page.should have_text "A Red Cross responder should return your call"
+    page.should have_text "Please immediately alert the Region to this incident so they"
 
     log = Incidents::CallLog.last!
     expect(log.call_type).to eq "incident"
@@ -104,7 +104,7 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     fill_in "Are there any special instructions or specific services you are requesting?", with: Faker::Lorem.paragraph
     click_on "Create Incident"
 
-    page.should have_text "A Red Cross responder should return your call"
+    page.should have_text "Please immediately alert the Region to this incident so they"
   end
 
 
