@@ -13,7 +13,7 @@
     -needs_report_collection.each do |inc|
       - inc = Incidents::IncidentPresenter.new inc
       %tr
-        %td=inc.incident_number
+        %td=link_to inc.incident_number, inc.path
         %td=inc.full_address
         %td
           =inc.region.try :name

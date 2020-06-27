@@ -50,6 +50,30 @@ describe "DAT Incident Report", type: :feature, versions: true do
 
   end
 
+  it "Can be foceably closed" do
+    grant_capability! 'incidents_admin'
+
+    @region = @person.region
+    FactoryGirl.create :incidents_scope, region: @person.region
+
+    @incident = FactoryGirl.create :raw_incident,
+      region: @person.region,
+      shift_territory: @person.shift_territories.first,
+      date: Date.current,
+      city: "Test City"
+
+    visit "/incidents/#{@region.url_slug}"
+    click_on "Test City"
+
+    accept_confirm do
+      click_on "Close Without Completion"
+    end
+
+    page.should have_text("Reopen")
+
+    expect(@incident.reload.status).to eq('closed')
+  end
+
   def navigate_to_incident
     visit "/incidents/#{@region.url_slug}"
     click_on "Test City"

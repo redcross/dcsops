@@ -116,6 +116,7 @@ Scheduler::Application.routes.draw do
         member do
           match :mark_invalid, via: [:get, :post, :put, :patch]
           match :close, via: [:post, :put, :patch]
+          match :force_close, via: [:post, :put, :patch]
           match :reopen, via: [:post, :put, :patch]
         end
       end
