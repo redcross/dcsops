@@ -25,7 +25,7 @@
         -#  =check_box_tag :ignore_area, '1', ignore_area
         -#  =submit_tag 'Filter', class: 'btn btn-mini'
         Recruitment message:
-        =editable_string parent, :recruitment_message, url: parent_path
+        =editable_string parent, :recruitment_message, url: parent_path, type: 'textarea'
       .responders-table{data: {refresh_name: "recruitment", refresh: url_for(partial: 'responders_table')}}
         =render 'responders_table'
 
