@@ -76,7 +76,7 @@ describe "Incident Responders Console", :type => :feature do
     # Set recruit message
     message = Faker::Lorem.sentence
     click_link "Empty"
-    find(".editable-input input").set message
+    find(".editable-input textarea").set message
     find(".editable-buttons .editable-submit").click
     expect(page).to have_text message
     
