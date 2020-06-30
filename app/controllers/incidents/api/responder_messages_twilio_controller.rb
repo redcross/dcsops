@@ -46,10 +46,10 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
   end
 
   def render_message_string message
-    twiml = Twilio::TwiML::Response.new do |r|
-      r.Message message
+    twiml = Twilio::TwiML::MessagingResponse.new do |r|
+      r.message body: message
     end
-    render text: twiml.text
+    render text: twiml.to_s
   end
 
   def find_person_by_phone phone
@@ -64,7 +64,7 @@ class Incidents::Api::ResponderMessagesTwilioController < ApplicationController
   end
 
   def validate_twilio_incoming
-    @validator = Twilio::Util::RequestValidator.new region.twilio_auth_token
+    @validator = Twilio::Security::RequestValidator.new region.twilio_auth_token
     if !@validator.validate(request.original_url, request.POST, request.env['HTTP_X_TWILIO_SIGNATURE'])
       render status: 403, text: 'Invalid Signature'
     end

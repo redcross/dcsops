@@ -10,7 +10,7 @@ class Incidents::SMSClient
     responder_message.local_number = from_phone_number
     responder_message.remote_number = sms_number(responder_message.person)
 
-    client.account.messages.create(
+    client.messages.create(
       :from => from_phone_number,
       :to => responder_message.remote_number,
       :body => responder_message.message
