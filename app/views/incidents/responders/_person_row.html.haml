@@ -1,0 +1,26 @@
+- editable = person_editable(person)
+- has_sms = person.sms_addresses.present?
+%tr.person{data: {person: person_json(person, obj, editable), person_id: person.id}}
+  %td
+    =role_name(obj)
+  %td
+    =qualifications(person)
+  %td
+    =person.full_name
+  %td
+    =location(person)
+  %td.distance
+  %td.travel-time
+  %td
+    =recruit_action(person, editable)
+  %td
+    .btn-group
+      =link_to '#', class: "btn btn-default btn-sm dropdown-toggle", data: {toggle: 'dropdown'} do
+        Actions
+        %span.caret
+      %ul.dropdown-menu{role: "menu", aria_labelledby: "dropdownMenu"}
+        %li=links(person, obj, editable)
+        -if enable_messaging && has_sms
+          %li=recruitment_message_link(person)
+        -if enable_messaging && has_sms
+          %li=link_to 'Send Message', '#', data: {edit_panel: new_incidents_region_incident_responder_message_path(parent.region, parent, recipient: person.id)}

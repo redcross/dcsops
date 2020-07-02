@@ -36,50 +36,51 @@ describe Incidents::RespondersHelper, :type => :helper do
     end
   end
 
+  # This really tests the helpers that are called from the _person_row partial
   describe "#person_schedule_row" do
     it "should return html" do
-      res = helper.person_schedule_row(assignment, true)
+      res = helper.links(person, assignment, true)
       expect(res).to be_a(ActiveSupport::SafeBuffer)
     end
 
     it "should link to a new assignment" do
-      res = helper.person_schedule_row(assignment, true)
+      res = helper.links(person, assignment, true)
       expect(res).to match(%r[responders/new\?person_id=#{person.id}])
     end
 
     it "should link to an existing assignment" do
       assignment = FactoryGirl.create :responder_assignment, person: person
-      res = helper.person_schedule_row(assignment, true)
+      res = helper.links(person, assignment, true)
       expect(res).to match(%r[responders/#{assignment.id}/edit])
-      expect(res).to match(assignment.humanized_role)
+      expect(role_name(assignment)).to match(assignment.humanized_role)
     end
 
     it "should provide the shift assignment name" do
       assignment = FactoryGirl.build_stubbed :shift_assignment, person: person
-      res = helper.person_schedule_row(assignment, true)
+      res = helper.role_name(assignment)
       expect(res).to match(assignment.shift.name)
     end
 
     it "should not link if not editable" do
-      res = helper.person_schedule_row(assignment, false)
+      res = helper.links(person, assignment, false)
       expect(res).not_to match(%r[responders/new\?person_id=#{person.id}])
     end
 
     it "should show message sent if a recruitment exists" do
       helper.stub recruitments: {person.id => [double(:recruitment, available?: false, unavailable?: false)]}
-      res = helper.person_schedule_row(assignment, true)
+      res = helper.recruit_action(person, true)
       expect(res).to match("Message Sent")
     end
 
     it "should show available if a recruitment exists" do
       helper.stub recruitments: {person.id => [double(:recruitment, available?: true, unavailable?: false)]}
-      res = helper.person_schedule_row(assignment, true)
+      res = helper.recruit_action(person, true)
       expect(res).to match("Available")
     end
 
     it "should show unavailable if a recruitment exists" do
       helper.stub recruitments: {person.id => [double(:recruitment, available?: false, unavailable?: true)]}
-      res = helper.person_schedule_row(assignment, true)
+      res = helper.recruit_action(person, true)
       expect(res).to match("Not Available")
     end
   end
