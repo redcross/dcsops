@@ -93,6 +93,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
       token_endpoint: "/as/token.oauth2",
       userinfo_endpoint: "/idp/userinfo.openid",
       jwks_uri: "/pf/JWKS",
+      redirect_uri: "#{ENV['OPENID_ISSUER']}/auth/rco/callback",
       discovery: true
     },
   }
