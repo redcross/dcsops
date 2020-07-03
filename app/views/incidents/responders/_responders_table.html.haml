@@ -20,27 +20,27 @@
             %a{data: {toggle: 'collapse', target: 'tbody.dispatch-list'}} show dispatch list
     %tbody.dispatch-list{class: dispatched && "collapse"}
       - service.dispatch_shifts.each do |assignment|
-        =person_schedule_row(assignment)
+        =render partial: 'person_row', locals: {person: assignment.person, obj: assignment}
       - service.dispatch_backup.each do |person|
-        =person_row("Backup", person)
+        =render partial: 'person_row', locals: {person: person, obj: "Backup"}
   %tbody
     %tr
       %th(colspan=8) Scheduled
   %tbody.responders-list.sort
     - service.scheduled_responders.each do |schedule|
-      =person_schedule_row(schedule)
+      =render partial: 'person_row', locals: {person: schedule.person, obj: schedule}
   %tbody
     %tr
       %th(colspan=8) Flex
   %tbody.responders-list.sort
     - service.flex_responders.each do |flex|
-      =person_schedule_row(flex)
+      =render partial: 'person_row', locals: {person: flex.person, obj: flex}
   %tbody
     %tr
       %th(colspan=8) Decline
   %tbody.responders-list.not-available.sort
     - collection.reject(&:was_available).each do |ass|
-      =person_schedule_row(ass)
+      =render partial: 'person_row', locals: {person: ass.person, obj: ass}
 
 :javascript
   if (window.respondersController) {

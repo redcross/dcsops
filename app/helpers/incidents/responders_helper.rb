@@ -13,25 +13,8 @@ module Incidents::RespondersHelper
     end
   end
 
-  def person_schedule_row obj, editable = nil
-    person_row(obj, obj.person, editable)
-  end
-
-  def person_row(obj, person, editable = nil)
-    editable = can?( :create, parent.responder_assignments.build( person: person)) if editable == nil
-
-    content_tag :tr, class: 'person', data: {person: person_json(person, obj, editable), person_id: person.id} do
-      safe_join([
-        content_tag(:td, role_name(obj)),
-        content_tag(:td, qualifications(person)),
-        content_tag(:td, person.full_name),
-        content_tag(:td, location(person)),
-        tag(:td, class: 'distance'),
-        tag(:td, class: 'travel-time'),
-        content_tag(:td, recruit_action(person, editable)),
-        content_tag(:td, links(person, obj, editable))
-      ])
-    end
+  def person_editable(person)
+     can?( :create, parent.responder_assignments.build( person: person))
   end
 
   def links(person, obj, editable)
@@ -49,8 +32,12 @@ module Incidents::RespondersHelper
     if recruitment
       existing_recruit_status recruitment
     elsif parent.region.incidents_enable_messaging && person.sms_addresses.present? && editable
-      link_to 'Send SMS', incidents_region_incident_responder_recruitments_path(parent.region, parent, person_id: person.id), method: :post, remote: true
+      recruitment_message_link person
     end
+  end
+
+  def recruitment_message_link person
+      link_to 'Send Recruitment Message', incidents_region_incident_responder_recruitments_path(parent.region, parent, person_id: person.id), method: :post, remote: true
   end
 
   def existing_recruit_status recruitment

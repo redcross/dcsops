@@ -53,7 +53,8 @@ describe "Incident Responders Console", :type => :feature do
     expect(page).to have_text(@committed_responder.full_name)
 
     within 'tr', text: @committed_responder.full_name do
-      click_link "Assign"
+      click_on "Actions"
+      click_on "Assign"
     end
     select "Team Lead", from: 'Response*'
     check "Send assignment sms"
@@ -62,6 +63,7 @@ describe "Incident Responders Console", :type => :feature do
     expect(find(".assigned-table")).to have_text(@committed_responder.full_name)
 
     within 'tr', text: @flex_responder.full_name do
+      click_on "Actions"
       click_link "Assign"
     end
     select "Not Available", from: "Response*"
@@ -81,7 +83,7 @@ describe "Incident Responders Console", :type => :feature do
     expect(page).to have_text message
     
     within 'tbody.responders-list tr', text: @committed_responder.full_name do
-      click_link "Send SMS"
+      click_link "Send Recruitment Message"
     end
 
     expect(find("tbody.responders-list tr", text: @committed_responder.full_name)).to have_text "Message Sent"
