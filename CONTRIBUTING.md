@@ -44,11 +44,11 @@ If your PR fixes a bug or adds a feature, please write a test to go
 with the change, and describe in your PR message how reviewers should
 test that your change works as expected.
 
-### The "Obvious Fix" rule: committing some minor changes directly to 'master'
+### The "Obvious Fix" rule: committing some minor changes directly to 'main'
 
 Certain kinds of presumed-safe changes may be reviewed post-commit
 instead of pre-commit, meaning that they can be committed directly to
-`master` without going through a PR, when the committer has push
+`main` without going through a PR, when the committer has push
 access to do so.
 
 The purpose of this is to save time for busy developers.  It avoids
@@ -91,10 +91,10 @@ through the regular review process.
 ### Keep Master Deployable
 
 As implied by the "Deployment" section in [INSTALL.md](INSTALL.md),
-the tip (HEAD) of the `master` branch should always be deployable.
+the tip (HEAD) of the `main` branch should always be deployable.
 
 Development work should be done on branches, as described in the next
-section, and merged to `master` only when it is ready and passing all
+section, and merged to `main` only when it is ready and passing all
 tests.
 
 ### Branching and Branch Names
@@ -103,9 +103,9 @@ We do development on lightweight branches, with each branch
 encapsulating one logical changeset (that is, one group of related
 commits).  Please try to keep changesets small and well-bounded: a
 branch should usually be short-lived, and should be turned into a PR,
-reviewed, and merged to `master` as soon as possible.  Keeping
+reviewed, and merged to `main` as soon as possible.  Keeping
 branches short-lived reduces the likelihood of conflicts when it comes
-time to merge them back into master.
+time to merge them back into main.
 
 When a branch is associated with an issue ticket, then the branch name
 should start with the issue number and then give a very brief summary,
@@ -128,8 +128,8 @@ in its name, it may help to keep in mind some common starting words:
 
 #### Feature life cycle
 
-Each feature branch should be started from some point on master, with pull
-requests for review before merging into master.  At some point in the future,
+Each feature branch should be started from some point on main, with pull
+requests for review before merging into main.  At some point in the future,
 the code will make it into the `candidate-production`, and moved into
 heroku staging.  Once it passes muster, it will be merged into production
 and pushed to heroku production.
@@ -137,7 +137,7 @@ and pushed to heroku production.
 '''NOTE''': Please include any database migration information, database updates,
 environment variable changes, etc, in the pull request.
 
-#### `master` Branch
+#### `main` Branch
 
 This is the development branch, which while always deployable, will have
 the latest and greatest merged in development features.
@@ -243,14 +243,14 @@ of that code if we accept your pull request.
 
 ### Expunge Branches Once They Are Merged
 
-Once a branch has been merged to `master`, please delete the branch.
+Once a branch has been merged to `main`, please delete the branch.
 You can do this via the GitHub PR management interface (it offers a
 button to delete the branch, once the PR has been merged), or if
 necessary you can do it from the command line:
 
     # Make sure you're not on the branch you want to delete.
     $ git branch | grep '^\* '
-    * master
+    * main
 
     # No output from this == up-to-date, nothing to fetch.
     $ git fetch --dry-run

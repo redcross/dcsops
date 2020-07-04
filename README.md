@@ -1,6 +1,6 @@
 # DCSOps ("Disaster Cycle Services Operations")
 
-Current build status: [![Build Status](https://travis-ci.org/redcross/arcdata.svg?branch=master)](https://travis-ci.org/redcross/arcdata) [![Coverage Status](https://coveralls.io/repos/github/redcross/arcdata/badge.svg?branch=master)](https://coveralls.io/github/redcross/arcdata?branch=master)
+Current build status: [![Build Status](https://travis-ci.org/redcross/arcdata.svg?branch=main)](https://travis-ci.org/redcross/arcdata) [![Coverage Status](https://coveralls.io/repos/github/redcross/arcdata/badge.svg?branch=main)](https://coveralls.io/github/redcross/arcdata?branch=main)
 
 DCSOps (a.k.a. ARCData) is an open source application for managing some Red Cross Disaster Services processes, such as Disaster Action Team (DAT) shifts.  The production instance is at [DCSOps.org](https://dcsops.org/).
 
