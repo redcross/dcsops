@@ -29,6 +29,7 @@ ActiveAdmin.register Incidents::Scope, as: 'Scope' do
       end
     end
     f.inputs "Map" do
+      f.input :boundary_polygon, as: :string_array
       f.template.render 'map', map_options: {bind_center: {lat: 'incidents_scope_incidents_map_center_lat', lng: 'incidents_scope_incidents_map_center_lng'}, bind_zoom: 'incidents_scope_incidents_map_zoom'}
     end
     f.actions
