@@ -1,1 +1,0 @@
-json.extract! resource, :first_name, :last_name, :email, :secondary_email, :home_phone, :cell_phone, :work_phone, :alternate_phone, :sms_phone, :phone_1_preference, :phone_2_preference, :phone_3_preference, :phone_4_preference, :address1, :address2, :city, :state, :zip, :vc_id, :vc_member_number, :created_at, :updated_at
