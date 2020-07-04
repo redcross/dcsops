@@ -127,19 +127,17 @@ class window.AllIncidentsMapController
         position: new google.maps.LatLng(obj.lat, obj.lng)
         map: @map
 
-  configureBoundaryLayer: (tableId, filter) ->
-    @boundaryLayer = new google.maps.FusionTablesLayer
-      query:
-        select: 'geometry'
-        from: tableId
-        where: "name='#{filter}'"
-      styles: [
-        polygonOptions:
-          fillColor: '#000000'
-          fillOpacity: 0.00001
-          strokeWeight: 3
-      ]
-    @boundaryLayer.setMap @map
+  configureBoundaryLayer: (coords) ->
+    coords = coords.map (pairStr) =>
+      pair = pairStr.split(',')
+      {lat: parseInt(pair[0]), lng: parseInt(pair[1])}
+
+    @map.data.add({geometry: new google.maps.Data.Polygon([coords])})
+    @map.data.setStyle({
+      fillColor: '#000000',
+      fillOpacity: 0.00001,
+      strokeWeight: 3
+    })
 
 class window.AllIncidentsHeatmapController
 

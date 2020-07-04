@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200624130802) do
+ActiveRecord::Schema.define(version: 20200703221426) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -715,13 +715,14 @@ ActiveRecord::Schema.define(version: 20200624130802) do
 
   create_table "incidents_scopes", force: :cascade do |t|
     t.integer  "region_id"
-    t.string   "url_slug",   limit: 255
-    t.string   "abbrev",     limit: 255
-    t.string   "short_name", limit: 255
-    t.string   "name",       limit: 255
+    t.string   "url_slug",         limit: 255
+    t.string   "abbrev",           limit: 255
+    t.string   "short_name",       limit: 255
+    t.string   "name",             limit: 255
     t.hstore   "config"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "boundary_polygon",             default: [], array: true
   end
 
   add_index "incidents_scopes", ["url_slug"], name: "index_incidents_scopes_on_url_slug", unique: true, using: :btree
