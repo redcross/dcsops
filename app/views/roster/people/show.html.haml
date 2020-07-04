@@ -67,9 +67,6 @@
           %li
             %strong=val[:label].to_s.titleize
             = val[:number]
-
-.row
-  .col-sm-12
     %h3 Contact Settings
     %p
       %small
@@ -79,8 +76,8 @@
       Click on the blue underlined text to change a value.
     %table.table.table-condensed
       %tr
-        %th
-        %th Phone Number
+        %th(style="width:100px")
+        %th(style="width:150px") Phone Number
         %th SMS/Carrier Settings
         %th Call Settings
       - [:home_phone, :cell_phone, :work_phone, :alternate_phone, :sms_phone].each do |phone|
