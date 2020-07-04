@@ -17,6 +17,9 @@
           %th # Clients
           %td #{pluralize kase.num_adults, 'adult'}, #{pluralize kase.num_children, 'child'}
         %tr
+          %th Phone Number
+          %td #{kase.phone_number}
+        %tr
           %th Unit
           %td
             =safe_join [kase.unit, kase.address], '<br />'.html_safe
