@@ -76,6 +76,24 @@
             %td=shift.person.full_name
             %td
               =link_to "Claim", scheduler_shift_assignment_shift_swap_path(shift), class: "btn btn-small"
+    %h5
+      %i.fa.fa-fire
+      Your Recent Responses
+    %table.table
+      %thead
+        %tr
+          %th Incident
+          %th Status
+      %tbody
+        - responses.each do |response|
+          %tr
+            %td
+              =link_to incidents_region_incident_path(response.incident.region, response.incident) do
+                = response.incident.incident_number
+                = response.incident.humanized_incident_type
+                = response.incident.address
+            %td=response.humanized_role
+    If this information is incomplete or incorrect, please contact your DAT Administrator.
   .col-sm-4
     %h5 
       %i.fa.fa-calendar
@@ -124,28 +142,6 @@
         %br
       %br
       = render partial: 'current_shifts', locals: {shift_territories: current_person.shift_territories, groups: groups}
-
-.row
-  .col-sm-6
-    %h5
-      %i.fa.fa-fire
-      Your Recent Responses
-    %table.table
-      %thead
-        %tr
-          %th Incident
-          %th Status
-      %tbody
-        - responses.each do |response|
-          %tr
-            %td
-              =link_to incidents_region_incident_path(response.incident.region, response.incident) do
-                = response.incident.incident_number
-                = response.incident.humanized_incident_type
-                = response.incident.address
-            %td=response.humanized_role
-    If this information is incomplete or incorrect, please contact your DAT Administrator.
-
 
 - content_for :footer_js do
   :javascript
