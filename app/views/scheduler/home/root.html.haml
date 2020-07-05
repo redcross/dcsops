@@ -53,6 +53,29 @@
             -avail = sched.send("available_#{dow}_#{time}")
             %td{class: avail && "avail"}
               =avail ? 'Yes' : 'No'
+    %h5 
+      %i.fa.fa-random
+      Available Shift Swaps
+    - if available_swaps.blank?
+      There are no shift swaps currently available to you.
+    - else
+      %table.table.table-condensed
+        %tr
+          %th Date
+          %th Shift
+          %th Shift Territory
+          %th From
+          %th 
+        - available_swaps.each do |shift|
+          %tr
+            %td=shift.date.to_s :dow_short
+            %td
+              =shift.shift_time.name
+              =shift.shift.name
+            %td=shift.shift.shift_territory.abbrev
+            %td=shift.person.full_name
+            %td
+              =link_to "Claim", scheduler_shift_assignment_shift_swap_path(shift), class: "btn btn-small"
   .col-sm-4
     %h5 
       %i.fa.fa-calendar
@@ -103,30 +126,6 @@
       = render partial: 'current_shifts', locals: {shift_territories: current_person.shift_territories, groups: groups}
 
 .row
-  .col-sm-6
-    %h5 
-      %i.fa.fa-random
-      Available Shift Swaps
-    - if available_swaps.blank?
-      There are no shift swaps currently available to you.
-    - else
-      %table.table.table-condensed
-        %tr
-          %th Date
-          %th Shift
-          %th Shift Territory
-          %th From
-          %th 
-        - available_swaps.each do |shift|
-          %tr
-            %td=shift.date.to_s :dow_short
-            %td
-              =shift.shift_time.name
-              =shift.shift.name
-            %td=shift.shift.shift_territory.abbrev
-            %td=shift.person.full_name
-            %td
-              =link_to "Claim", scheduler_shift_assignment_shift_swap_path(shift), class: "btn btn-small"
   .col-sm-6
     %h5
       %i.fa.fa-fire
