@@ -41,6 +41,6 @@ describe "Root Scheduler Page", :type => :feature do
 
     visit "/scheduler/"
 
-    page.should have_text "You have completed 5 shifts since the new scheduling system was launched."
+    page.should have_text "You have completed 5 shifts."
   end
 end
