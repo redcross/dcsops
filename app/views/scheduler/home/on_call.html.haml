@@ -1,6 +1,2 @@
 - groups = Scheduler::ShiftTime.current_groups_for_region(current_person.region)
-- groups.select{|g| g.period == 'daily' }.each do |grp| 
-  %h2
-    On Call Schedule - 
-    =grp.start_date.to_s(:dow_long) + " - " + grp.name
 =render partial: 'current_shifts', locals: {shift_territories: current_region.shift_territories.enabled.to_a, groups: groups}
