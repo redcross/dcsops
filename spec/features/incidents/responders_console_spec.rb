@@ -26,7 +26,7 @@ describe "Incident Responders Console", :type => :feature do
     @committed_responder.update_attributes work_phone_carrier: FactoryGirl.create( :cell_carrier)
     group = FactoryGirl.create :shift_time, region: @region
     shift = FactoryGirl.create :shift, shift_times: [group], shift_territory: shift_territory, positions: @committed_responder.positions
-    assignment = FactoryGirl.create :shift_assignment, person: @committed_responder, shift: shift, date: @region.time_zone.today
+    @assignment = FactoryGirl.create :shift_assignment, person: @committed_responder, shift: shift, date: @region.time_zone.today
 
     @incident = FactoryGirl.create :raw_incident, region: @person.region, shift_territory: shift_territory, date: Date.current
     @log = FactoryGirl.create :event_log, region: @region, person: @person, incident: @incident
@@ -172,6 +172,25 @@ describe "Incident Responders Console", :type => :feature do
 
       expect(page).to have_text "Departed at"
       expect(ra.reload.departed_scene_at).not_to be_nil
+    end
+  end
+
+  it "should have no shift notes when there are no notes" do
+    visit "/incidents/#{@region.url_slug}/incidents/#{@incident.incident_number}/responders"
+    page.should have_text "No Shift Notes"
+  end
+
+  it "should have shift notes when there are notes" do
+    @assignment.note = "Test Note"
+    @assignment.save!
+    visit "/incidents/#{@region.url_slug}/incidents/#{@incident.incident_number}/responders"
+    page.should have_text "View Shift Notes"
+
+    click_on "View Shift Notes"
+    page.should have_text "Test Note"
+
+    within("div.modal-dialog") do
+      find("a.close").click
     end
   end
 
