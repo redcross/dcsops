@@ -9,7 +9,10 @@
       .app
         %a{href: roster_person_path(current_user)}
           %i.fa.fa-info-circle.fa-2x
-          %h4 My Contact Info
+          %h4
+            My Contact Info
+            - if !current_user.phones_setup?
+              (Text messaging not enabled)
     .row
       .app
         %a{href: scheduler_root_path}
