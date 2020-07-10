@@ -136,39 +136,6 @@ body.calendar {
       margin-top: -3px;
     }
   }
-
-  .calendar-grid {
-    td,th {
-      font-size: 8pt;
-      atext-align: center;
-      line-height: 1;
-      //
-    }
-    th, td.period {
-      text-align: center;
-    }
-    td.header {
-      white-space: nowrap;
-      border-top: 1px solid rgb(221,221,221);
-    }
-    .no-shift {
-      background-color: black !important; //rgb(180,180,180);
-      //box-shadow: inset 0 0 0 1000px rgb(180,180,180);
-      //
-      background-image: -webkit-linear-gradient(top left, #000 0%, #000 100%);;
-    }
-    .flex-shift {
-      background-color: rgba(0, 0, 0, 0.5) !important;
-    }
-    .period {
-      width: .2in;
-      font-size: 6pt;
-      line-height: .9;
-      border-top: 1px solid rgb(221,221,221);
-      //border-bottom: 1px solid rgb(221,221,221);
-    }
-  }
-  
 }
 
 thead {
