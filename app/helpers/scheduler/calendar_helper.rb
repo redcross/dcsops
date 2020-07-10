@@ -108,7 +108,7 @@ module Scheduler::CalendarHelper
 
     link_params = {action: :show, year: date.year, month: date.strftime("%B").downcase, display: current}.merge ajax_params
 
-    links = {"Calendar" => "", "Spreadsheet" => 'spreadsheet', 'Grid' => 'grid'}.map do |name, val|
+    links = {"Calendar" => "", "Printable" => 'spreadsheet'}.map do |name, val|
       if val != current
         link_to name, url_for(link_params.merge({display: val}))
       else

@@ -111,7 +111,7 @@
           |
           %small=link_to "Shift Territory Schedule", calendar_month(month, show_shifts: :shift_territory)
           |
-          %small=link_to "Spreadsheet", calendar_month(month, display: :spreadsheet)
+          %small=link_to "Printable", calendar_month(month, display: :spreadsheet)
         - month = month.next_month
     %br
     -if can? :update, Scheduler::Shift

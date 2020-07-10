@@ -14,7 +14,7 @@ class Scheduler::CalendarController < Scheduler::BaseController
     view = params[:display] || 'show'
 
     case view
-    when 'spreadsheet', 'grid', 'show'
+    when 'spreadsheet', 'show'
       respond_with 1, {filename: pdf_file_name, template: "scheduler/calendar/#{view}.html.haml"}
     when 'open_shifts'
       render partial: 'open_shifts', locals: {month: @month, groups: calendar.daily_groups}
