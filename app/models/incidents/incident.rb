@@ -87,6 +87,10 @@ class Incidents::Incident < ActiveRecord::Base
     valid_incident_types
   end
 
+  assignable_values_for :reason_marked_invalid, allow_blank: true do
+    self.class.invalid_incident_types
+  end
+
   assignable_values_for :status do
     %w(open closed invalid)
   end

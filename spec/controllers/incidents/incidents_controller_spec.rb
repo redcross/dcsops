@@ -63,7 +63,7 @@ describe Incidents::IncidentsController, :type => :controller do
     end
 
     it "should succeed as post with valid params" do
-      post :mark_invalid, id: inc.to_param, region_id: inc.region.to_param, incidents_incident: {incident_type: 'invalid', narrative: 'Test'}
+      post :mark_invalid, id: inc.to_param, region_id: inc.region.to_param, incidents_incident: {reason_marked_invalid: 'invalid', narrative: 'Test'}
       expect(response).to redirect_to("/incidents/#{inc.region.to_param}/incidents/needs_report")
       inc.reload
       expect(inc.status).to eq('invalid')
@@ -88,7 +88,7 @@ describe Incidents::IncidentsController, :type => :controller do
 
     it "should trigger the invalid notification" do
       expect(Incidents::Notifications::Notification).to receive(:create_for_event).with(anything, 'incident_invalid')
-      post :mark_invalid, id: inc.to_param, region_id: inc.region.to_param, incidents_incident: {incident_type: 'invalid', narrative: 'Test'}
+      post :mark_invalid, id: inc.to_param, region_id: inc.region.to_param, incidents_incident: {reason_marked_invalid: 'invalid', narrative: 'Test'}
     end
   end
 

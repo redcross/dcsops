@@ -2,6 +2,6 @@ class Incidents::Validators::InvalidIncidentValidator < DelegatedValidator
 
   self.target_class = Incidents::Incident
 
-  validates :incident_type, :narrative, presence: true
+  validates :reason_marked_invalid, :narrative, presence: true
 
 end
