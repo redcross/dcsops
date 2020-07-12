@@ -8,13 +8,8 @@
       %h5 Select Shifts
       .btn-group-vertical.btn-block#select-shift-time
         %button.btn.btn-default.btn-block{:"data-shifts" => "mine", class: show_shifts==:mine && "active"} My Positions
-        %button.btn.btn-default.btn-block{:"data-shifts" => "shift_territory", class: show_shifts==:shift_territory && "active"} Shift Territory Shifts
+        %button.btn.btn-default.btn-block{:"data-shifts" => "shift_territory", class: show_shifts==:shift_territory && "active"} Shifts by Territory
         %button.btn.btn-default.btn-block{:"data-shifts" => "all", class: show_shifts==:all && "active"} All Shifts
-    .col-sm-3
-      %h5 Select Highlighting
-      .btn-group-vertical.btn-block#highlighting-group
-        %button.btn.btn-default.btn-block.active{:"data-style" => "highlight-my-shifts"} My Shifts
-        %button.btn.btn-default.btn-block{:"data-style" => "highlight-open-shifts"} Open Shifts
     .col-sm-3
       %h5 Show Shifts For
       .row
@@ -30,6 +25,11 @@
             =check_box_tag "categories[]", cat.id, show_categories.include?(cat.id), class: 'choose-category', id: "categories_#{cat.id}"
             =label_tag "categories_#{cat.id}", cat.name
             %br
+    .col-sm-3
+      %h5 Select Highlighting
+      .btn-group-vertical.btn-block#highlighting-group
+        %button.btn.btn-default.btn-block.active{:"data-style" => "highlight-my-shifts"} My Shifts
+        %button.btn.btn-default.btn-block{:"data-style" => "highlight-open-shifts"} Open Shifts
     .col-sm-3
       %h5 Other Views:
       #view-as-links=view_as_links
