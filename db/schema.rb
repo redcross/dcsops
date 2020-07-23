@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200725121219) do
+ActiveRecord::Schema.define(version: 20200726131205) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -990,6 +990,17 @@ ActiveRecord::Schema.define(version: 20200725121219) do
   end
 
   add_index "roster_vc_import_data", ["region_id"], name: "index_roster_vc_import_data_on_region_id", using: :btree
+
+  create_table "roster_vc_position_configurations", force: :cascade do |t|
+    t.integer "shift_territory_id"
+    t.integer "position_id"
+    t.integer "vc_position_id"
+  end
+
+  create_table "roster_vc_positions", force: :cascade do |t|
+    t.string  "name"
+    t.integer "region_id"
+  end
 
   create_table "scheduler_dispatch_configs", force: :cascade do |t|
     t.integer  "shift_territory_id"
