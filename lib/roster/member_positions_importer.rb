@@ -11,7 +11,7 @@ class Roster::MemberPositionsImporter < ImportParser
     gap_primary: 'primary_gap', gap_secondary: 'secondary_gap', gap_tertiary: 'tertiary_gap',
     vc_is_active: 'status_name', second_lang: 'second_language', third_lang: 'third_language',
     vc_last_login: 'last_login', vc_last_profile_update: 'profile_last_updated',
-    address1: 'address1', address2: 'address2', city: 'address3', state: 'address4', zip: 'address5', county: 'county', rco_id: 'rco_id'
+    address1: 'street', address2: 'street2', city: 'city', state: 'state', zip: 'zip', county: 'county', rco_id: 'rco_id'
   }
 
   POSITION_ATTR_NAMES = [:county, :position_name, :position_start, :position_end, :second_lang, :third_lang, :is_primary]

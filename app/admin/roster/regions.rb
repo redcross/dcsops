@@ -13,7 +13,7 @@ ActiveAdmin.register Roster::Region, as: 'Region' do
     end
 
     def resource_params
-      keys = [:name, :short_name, :code, :url_slug, :time_zone_raw, :vc_username, :vc_password, :vc_position_filter, :vc_unit, :incident_number_sequence_id]
+      keys = [:name, :short_name, :code, :url_slug, :time_zone_raw, :vc_username, :vc_password, :vc_hierarchy_name, :vc_position_filter, :vc_unit, :incident_number_sequence_id]
       keys = keys + resource_class.serialized_columns.values.map{|c| c.last.name.to_sym }
       [params.fetch(resource_request_name, {}).permit(*keys)]
     end
@@ -29,6 +29,7 @@ ActiveAdmin.register Roster::Region, as: 'Region' do
       f.input :time_zone_raw
       f.input :vc_username
       f.input :vc_password, as: :string
+      f.input :vc_hierarchy_name
       f.input :vc_position_filter
       f.input :incident_number_sequence
 
