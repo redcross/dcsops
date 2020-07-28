@@ -1,11 +1,13 @@
 require 'csv'
 
+csv_dir = ARGV[0]
+csv_basename = ARGV[1]
+region_slug = ARGV[2]
+people_r_slugs = ARGV[3..-1]
+
 #ActiveRecord::Base.logger = Logger.new(STDOUT)
-r = Roster::Region.find_by_slug('cni')
-people_rs = [
-  Roster::Region.find_by_slug('cni'),
-  Roster::Region.find_by_slug('central_illinois')
-]
+r = Roster::Region.find_by_slug(region_slug)
+people_rs = people_r_slugs.map {|slug| Roster::Region.find_by_slug(slug) }
 shifts = Scheduler::Shift.for_region(r)
 
 puts "VC Positions: " + Roster::VcPosition.where(region: r).length.to_s
@@ -30,12 +32,12 @@ Scheduler::Shift.for_region(r).destroy_all
 Roster::ShiftTerritory.where(region: r).delete_all
 Scheduler::ShiftTime.where(region: r).delete_all
 
-vc_position_data = CSV.parse(File.read("realignmentScripts/illinois/Illinois DCSOps Configurations - Volunteer Connection Positions.csv"), headers: true)
+vc_position_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Volunteer Connection Positions.csv"), headers: true)
 vc_position_data.each do |p_d|
   Roster::VcPosition.create(name: p_d["Volunteer Connection Position"], region: r)
 end
 
-position_data = CSV.parse(File.read("realignmentScripts/illinois/Illinois DCSOps Configurations - DCSOps Positions.csv"), headers: true)
+position_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - DCSOps Positions.csv"), headers: true)
 position_data.each do |p_d|
   p = Roster::Position.create(
     name: p_d["Position"],
@@ -55,7 +57,7 @@ position_data.each do |p_d|
   end
 end
 
-response_territory_data = CSV.read("realignmentScripts/illinois/Illinois DCSOps Configurations - Response Territories.csv")
+response_territory_data = CSV.read("#{csv_dir}/#{csv_basename} - Response Territories.csv")
 
 (1..(response_territory_data[0].size)).each do |idx|
   r_t = response_territory_data[0][idx]
@@ -73,7 +75,7 @@ response_territory_data = CSV.read("realignmentScripts/illinois/Illinois DCSOps 
   )
 end
 
-shift_territory_data = CSV.parse(File.read("realignmentScripts/illinois/Illinois DCSOps Configurations - Shift Territories.csv"), headers: true)
+shift_territory_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Shift Territories.csv"), headers: true)
 shift_territory_data.each do |s_t|
   Roster::ShiftTerritory.create(
     region: r,
@@ -82,7 +84,7 @@ shift_territory_data.each do |s_t|
   )
 end
 
-shift_time_data = CSV.parse(File.read("realignmentScripts/illinois/Illinois DCSOps Configurations - Shift Times.csv"), headers: true)
+shift_time_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Shift Times.csv"), headers: true)
 shift_time_data.each do |s_t|
   s = Scheduler::ShiftTime.create(
     region: r,
@@ -93,7 +95,7 @@ shift_time_data.each do |s_t|
   )
 end
 
-shift_data = CSV.parse(File.read("realignmentScripts/illinois/Illinois DCSOps Configurations - Shifts.csv"), headers: true)
+shift_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Shifts.csv"), headers: true)
 shift_data.each do |s|
   shift_territory = Roster::ShiftTerritory.where(region: r, name: s["Shift Territory"]).first
   if shift_territory.nil?
@@ -161,7 +163,7 @@ shift_data.each do |s|
   s.save!
 end
 
-notification_data = CSV.parse(File.read("realignmentScripts/illinois/Illinois DCSOps Configurations - Notifications.csv"), headers: true)
+notification_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Notifications.csv"), headers: true)
 notification_data.each do |n|
   if n["Members"].nil?
     next
@@ -185,7 +187,7 @@ notification_data.each do |n|
   )
 end
 
-dispatch_config_data = CSV.parse(File.read("realignmentScripts/illinois/Illinois DCSOps Configurations - Dispatch Configuration.csv"), headers: true)
+dispatch_config_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Dispatch Configuration.csv"), headers: true)
 dispatch_config_data.each do |s|
   find_shift = lambda do |shift_name, shift_territory|
     if shift_name.nil?
