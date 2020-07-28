@@ -13,7 +13,6 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
     id_column
     column :region_id
     column :name
-    #column :vc_regex_raw
     column :hidden
     column :capabilities do |pos|
       safe_join(pos.capability_memberships.map(&:display_name), tag(:br))
@@ -26,14 +25,10 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
     attributes_table do
       row("Number of Members") { resource.people.count }
     end
-    data = resource.region.vc_import_data
-    if data && resource.vc_regex_raw
-      positions = data.positions_matching resource.vc_regex_raw
-      panel "Matched VC Positions" do
-        table_for positions do
-          column("Name") { |r| r[:name] }
-          column("Number of Matches") { |r| r[:count] }
-        end
+    vc_positions = resource.vc_positions.uniq
+    panel "Matched VC Positions" do
+      table_for vc_positions do
+        column("Name") { |r| r[:name] }
       end
     end
   end
@@ -44,7 +39,7 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :vc_regex_raw, :hidden, :region_id, 
+      [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :hidden, :region_id,
         :capability_memberships_attributes => [:id, :_destroy, :capability_id, capability_scopes_attributes: [:scope, :id, :_destroy]])]
     end
   end

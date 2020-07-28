@@ -7,7 +7,6 @@
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:region_id)
       %th= model_class.human_attribute_name(:name)
-      %th= model_class.human_attribute_name(:vc_regex_raw)
       %th= model_class.human_attribute_name(:created_at)
       %th=t '.actions', :default => t("helpers.actions")
   %tbody
@@ -16,7 +15,6 @@
         %td= link_to position.id, roster_position_path(position)
         %td= position.region_id
         %td= position.name
-        %td= position.vc_regex_raw
         %td=l position.created_at
         %td
           = link_to t('.edit', :default => t("helpers.links.edit")), edit_roster_position_path(position), :class => 'btn btn-mini'

@@ -5,10 +5,9 @@ class Admin::ShiftTerritoriesController < GridController
 
   column :name
   column :abbrev
-  column :vc_regex_raw
 
   def build_resource_params
-    [params.fetch(:roster_shift_territory, {}).permit(:name, :vc_regex_raw, :abbrev)]
+    [params.fetch(:roster_shift_territory, {}).permit(:name, :abbrev)]
   end
 
   def current_ability

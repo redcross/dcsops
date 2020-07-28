@@ -17,11 +17,11 @@ class Roster::MemberPositionsImporter < ImportParser
   POSITION_ATTR_NAMES = [:county, :position_name, :position_start, :position_end, :second_lang, :third_lang, :is_primary]
 
   def positions
-    @_positions ||= @region.positions.select(&:vc_regex)
+    @_positions ||= @region.positions
   end
 
   def shift_territories
-    @_shift_territories ||= @region.shift_territories.select(&:vc_regex)
+    @_shift_territories ||= @region.shift_territories
   end
 
 
@@ -101,14 +101,6 @@ class Roster::MemberPositionsImporter < ImportParser
     #logger.debug "Matching #{self.class.name.underscore.split("_").first} #{position_name} for #{identity.inspect}"
     @num_positions += 1
     match_positions attrs if process_row?(attrs)
-    match_languages attrs
-    match_county attrs
-    match_position_named status
-  end
-
-  def match_county attrs
-    county = attrs.delete :county
-    match_position_named county if county.present?
   end
 
   def match_positions attrs
@@ -125,18 +117,18 @@ class Roster::MemberPositionsImporter < ImportParser
     match_position_named position_name
   end
 
-  def match_languages attrs
-    second_lang = attrs.delete :second_lang
-    third_lang = attrs.delete :third_lang
-
-    match_position_named second_lang if second_lang.present?
-    match_position_named third_lang if third_lang.present?
-  end
-
   def match_position_named position_name
     @position_names[position_name] += 1
     matched_shift_territories = @shift_territories_matcher.match(position_name, @person.id) 
     matched_positions = @positions_matcher.match(position_name, @person.id)
+
+#    if matched_shift_territories
+#      puts "**************"
+#      puts position_name
+#      puts matched_shift_territories
+#      puts matched_positions
+#      puts "**************"
+#    end
 
     unless !logger.debug? || matched_shift_territories || matched_positions
       logger.debug "Didn't match a record for item #{position_name}"

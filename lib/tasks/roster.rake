@@ -2,12 +2,8 @@ namespace :roster do
 
   task :update => :environment do
     Raven.capture do
-      begin
-        Core::JobLog.capture("UpdatePositions") do |logger, log|
-          Roster::VcQueryToolImporter.new(logger, log).import()
-        end
-      rescue => e
-        Raven.capture_exception e
+      Core::JobLog.capture("UpdatePositions") do |logger, log|
+        Roster::VcQueryToolImporter.new(logger, log).import()
       end
     end
   end

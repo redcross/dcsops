@@ -5,11 +5,10 @@ class Admin::PositionsController < GridController
 
   column :name
   column :abbrev
-  column :vc_regex_raw
   column :hidden
 
   def build_resource_params
-    [params.fetch(:roster_position, {}).permit(:name, :vc_regex_raw, :hidden, :abbrev)]
+    [params.fetch(:roster_position, {}).permit(:name, :hidden, :abbrev)]
   end
 
   def current_ability

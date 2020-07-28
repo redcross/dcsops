@@ -1,1 +1,1 @@
-json.extract! resource, :name, :vc_regex, :created_at, :updated_at
+json.extract! resource, :name, :created_at, :updated_at

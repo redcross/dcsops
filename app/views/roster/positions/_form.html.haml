@@ -7,10 +7,6 @@
     = f.label :name, :class => 'control-label'
     .controls
       = f.text_field :name, :class => 'text_field'
-  .control-group
-    = f.label :vc_regex_raw, :class => 'control-label'
-    .controls
-      = f.text_field :vc_regex_raw, :class => 'text_field'
   .form-actions
     = f.submit nil, :class => 'btn btn-primary'
     = link_to t('.cancel', :default => t("helpers.links.cancel")), roster_positions_path, :class => 'btn'

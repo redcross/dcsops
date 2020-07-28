@@ -10,7 +10,6 @@
       %th= model_class.human_attribute_name(:shift_territory_code)
       %th= model_class.human_attribute_name(:fips_code)
       %th= model_class.human_attribute_name(:gis_name)
-      %th= model_class.human_attribute_name(:vc_regex_raw)
       %th= model_class.human_attribute_name(:created_at)
       %th=t '.actions', :default => t("helpers.actions")
   %tbody
@@ -22,7 +21,6 @@
         %td= shift_territory.shift_territory_code
         %td= shift_territory.fips_code
         %td= shift_territory.gis_name
-        %td= shift_territory.vc_regex_raw
         %td=l shift_territory.created_at
         %td
           = link_to t('.edit', :default => t("helpers.links.edit")), edit_roster_shift_territory_path(shift_territory), :class => 'btn btn-mini'

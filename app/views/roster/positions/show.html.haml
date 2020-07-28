@@ -10,10 +10,6 @@
   %strong= model_class.human_attribute_name(:name) + ':'
   %br
   = resource.name
-%p
-  %strong= model_class.human_attribute_name(:vc_regex_raw) + ':'
-  %br
-  = resource.vc_regex_raw
 
 .form-actions
   = link_to t('.back', :default => t("helpers.links.back")), roster_positions_path, :class => 'btn'

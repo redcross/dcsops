@@ -12,7 +12,7 @@ class Roster::PositionMatcher
     matched = false
 
     positions.each do |pos|
-      if pos.vc_regex.match(position_name) && !existing[id].include?(pos.id)
+      if pos.vc_positions.select{|vcp| vcp.name == position_name}.any? && !existing[id].include?(pos.id)
         add_match pos, id
         matched = true
       end

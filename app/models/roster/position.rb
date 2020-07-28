@@ -5,15 +5,14 @@ class Roster::Position < ActiveRecord::Base
 
   has_many :capability_memberships, class_name: 'Roster::CapabilityMembership'
 
+  has_many :vc_position_configurations
+  has_many :vc_positions, through: :vc_position_configurations, class_name: 'Roster::VcPosition'
+
   validates_presence_of :region, :name
 
   scope :visible, ->{where{hidden != true}}
 
   accepts_nested_attributes_for :capability_memberships, allow_destroy: true
-
-  def vc_regex
-    @compiled_regex ||= (vc_regex_raw.present? && Regexp.new(vc_regex_raw))
-  end
 
   def display_name
     "#{region_id} - #{name}"
