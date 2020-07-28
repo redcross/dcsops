@@ -21,6 +21,8 @@ puts "Shift Times: " + Scheduler::ShiftTime.where(region: r).length.to_s
 Roster::VcPositionConfiguration.for_region(r).delete_all
 Roster::VcPosition.where(region: r).delete_all
 Roster::Position.where(region: r).delete_all
+Roster::PositionMembership.for_region(r).delete_all
+Roster::ShiftTerritoryMembership.for_region(r).delete_all
 Scheduler::DispatchConfig.where(region: r).delete_all
 Incidents::ResponseTerritory.where(region: r).delete_all
 Scheduler::ShiftAssignment.for_shifts(shifts).destroy_all
@@ -157,6 +159,30 @@ shift_data.each do |s|
   )
 
   s.save!
+end
+
+notification_data = CSV.parse(File.read("realignmentScripts/illinois/Illinois DCSOps Configurations - Notifications.csv"), headers: true)
+notification_data.each do |n|
+  if n["Members"].nil?
+    next
+  end
+
+  position = Roster::Position.where(region: r, name: n["Members"]).first
+  if position.nil?
+    puts "Can't find position #{n['Members']}"
+    exit
+  end
+
+  vc_position = Roster::VcPosition.where(region: r, name: n["Volunteer Connection Position"]).first
+  if vc_position.nil?
+    puts "Can't find vc position #{n["Volunteer Connection Position"]}"
+    exit
+  end
+
+  Roster::VcPositionConfiguration.create(
+    vc_position: vc_position,
+    position: position
+  )
 end
 
 dispatch_config_data = CSV.parse(File.read("realignmentScripts/illinois/Illinois DCSOps Configurations - Dispatch Configuration.csv"), headers: true)
