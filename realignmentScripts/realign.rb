@@ -27,18 +27,24 @@ Roster::PositionMembership.for_region(r).delete_all
 Roster::ShiftTerritoryMembership.for_region(r).delete_all
 Scheduler::DispatchConfig.where(region: r).delete_all
 Incidents::ResponseTerritory.where(region: r).delete_all
-Scheduler::ShiftAssignment.for_shifts(shifts).destroy_all
-Scheduler::Shift.for_region(r).destroy_all
+Scheduler::ShiftAssignment.for_shifts(shifts).delete_all
+Scheduler::Shift.for_region(r).delete_all
 Roster::ShiftTerritory.where(region: r).delete_all
 Scheduler::ShiftTime.where(region: r).delete_all
 
 vc_position_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Volunteer Connection Positions.csv"), headers: true)
 vc_position_data.each do |p_d|
-  Roster::VcPosition.create(name: p_d["Volunteer Connection Position"], region: r)
+  if p_d["Volunteer Connection Position"].nil? || p_d["Volunteer Connection Position"].strip.empty?
+    next
+  end
+  Roster::VcPosition.create(name: p_d["Volunteer Connection Position"].strip, region: r)
 end
 
 position_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - DCSOps Positions.csv"), headers: true)
 position_data.each do |p_d|
+  if p_d["Position"].nil?
+    next
+  end
   p = Roster::Position.create(
     name: p_d["Position"],
     abbrev: p_d["Abbreviation"],
@@ -49,7 +55,7 @@ position_data.each do |p_d|
     capability_names.each do |n|
       c = Roster::Capability.where(name: n)
       if c.nil?
-        puts "Oh no, #{n} doesn't seem to be in the database!"
+        puts "ERROR: Oh no, #{n} doesn't seem to be in the database!"
       else
         Roster::CapabilityMembership.create(position: p, capability: c[0])
       end
@@ -77,6 +83,9 @@ end
 
 shift_territory_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Shift Territories.csv"), headers: true)
 shift_territory_data.each do |s_t|
+  if s_t["Shift Territory"].nil?
+    next
+  end
   Roster::ShiftTerritory.create(
     region: r,
     name: s_t["Shift Territory"],
@@ -85,34 +94,42 @@ shift_territory_data.each do |s_t|
 end
 
 shift_time_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Shift Times.csv"), headers: true)
-shift_time_data.each do |s_t|
-  s = Scheduler::ShiftTime.create(
-    region: r,
-    name: s_t["Shift Times"],
-    start_offset: 0,
-    end_offset: 1234,
-    period: :daily
-  )
+shift_time_data.each do |s_ts|
+  if s_ts["Shift Times"].nil?
+    next
+  end
+  s_ts["Shift Times"].split("\n").each{ |s_t|
+    s = Scheduler::ShiftTime.create(
+      region: r,
+      name: s_t,
+      start_offset: 0,
+      end_offset: 1234,
+      period: :daily
+    )
+  }
 end
 
 shift_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Shifts.csv"), headers: true)
 shift_data.each do |s|
+  if s["Shift Territory"].nil?
+    next
+  end
   shift_territory = Roster::ShiftTerritory.where(region: r, name: s["Shift Territory"]).first
   if shift_territory.nil?
-    puts "Can't find shift territory #{s['Shift Territory']}"
+    puts "ERROR: Can't find shift territory #{s['Shift Territory']}"
     exit
   end
 
   position = Roster::Position.where(region: r, name: s["DCSOps Position"]).first
   if position.nil?
-    puts "Can't find position #{s['DCSOps Position']}"
+    puts "ERROR: Can't find position #{s['DCSOps Position']}"
     exit
   end
 
   shift_times = s["Shift Times"].split("\n").map{ |shift_time_name|
     shift_time = Scheduler::ShiftTime.where(region: r, name: shift_time_name).first
     if shift_time.nil?
-      puts "Can't find shift time #{shift_time_name}"
+      puts "ERROR: Can't find shift time #{shift_time_name}"
       exit
     end
     shift_time
@@ -120,15 +137,15 @@ shift_data.each do |s|
 
   shift_category = Scheduler::ShiftCategory.where(region: r, name: s["Shift Category"]).first
   if shift_category.nil?
-    puts "Can't find shift category #{s['Shift Category']}"
+    puts "ERROR: Can't find shift category #{s['Shift Category']}"
     exit
   end
 
   s["Volunteer Connection Position(s)"].split("\n").each do |vc_pos_name|
-    vc_position = Roster::VcPosition.where(region: r, name: vc_pos_name).first
+    vc_position = Roster::VcPosition.where(region: r, name: vc_pos_name.strip).first
 
     if vc_position.nil?
-      puts "Can't find vc position #{vc_pos_name}"
+      puts "ERROR: Can't find vc position #{vc_pos_name}"
       exit
     end
 
@@ -171,13 +188,13 @@ notification_data.each do |n|
 
   position = Roster::Position.where(region: r, name: n["Members"]).first
   if position.nil?
-    puts "Can't find position #{n['Members']}"
+    puts "ERROR: Can't find position #{n['Members']}"
     exit
   end
 
   vc_position = Roster::VcPosition.where(region: r, name: n["Volunteer Connection Position"]).first
   if vc_position.nil?
-    puts "Can't find vc position #{n["Volunteer Connection Position"]}"
+    puts "ERROR: Can't find vc position #{n["Volunteer Connection Position"]}"
     exit
   end
 
@@ -195,7 +212,7 @@ dispatch_config_data.each do |s|
     end
     shift = Scheduler::Shift.for_region(r).where(name: shift_name).first
     if shift.nil?
-      puts "Can't find shift #{shift_name}."
+      puts "ERROR: Can't find shift #{shift_name}."
       exit
     end
     shift
@@ -206,7 +223,7 @@ dispatch_config_data.each do |s|
     end
     person = Roster::Person.where(region: people_rs).where("CONCAT(first_name, ' ', last_name) like ?", person_name).first
     if person.nil?
-      puts "Can't find person #{person_name}"
+      puts "ERROR: Can't find person #{person_name}"
       exit
     end
     person
@@ -217,7 +234,7 @@ dispatch_config_data.each do |s|
   end
   shift_territory = Roster::ShiftTerritory.where(region: r, name: s["Shift Territory"]).first
   if shift_territory.nil?
-    puts "Can't find shift territory #{s['Shift Territory']}"
+    puts "ERROR: Can't find shift territory #{s['Shift Territory']}"
     exit
   end
   shift_first = find_shift.call(s["Shift first"], shift_territory)
@@ -245,4 +262,4 @@ dispatch_config_data.each do |s|
 end
 
 puts "Unused VC positions:"
-Roster::VcPosition.joins('left join roster_vc_position_configurations on "roster_vc_position_configurations"."vc_position_id" = "roster_vc_positions"."id"').where('"roster_vc_position_configurations"."id" is null').uniq.map(&:name).map{|s| puts "  " + s}
+Roster::VcPosition.where(region: r).joins('left join roster_vc_position_configurations on "roster_vc_position_configurations"."vc_position_id" = "roster_vc_positions"."id"').where('"roster_vc_position_configurations"."id" is null').uniq.map(&:name).map{|s| puts "  " + s}
