@@ -21,5 +21,9 @@
       %td= resource.address
       %td= resource.city
       %td= resource.county
-      %td= resource.humanized_incident_type
+      %td
+        =resource.humanized_incident_type
+        -if resource.invalid_incident? and resource.reason_marked_invalid.present?
+          (#{resource.humanized_reason_marked_invalid})
+
 .text-center= paginate collection, :theme => 'twitter-bootstrap-3', remote: true

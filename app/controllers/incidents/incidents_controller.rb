@@ -79,7 +79,7 @@ class Incidents::IncidentsController < Incidents::BaseController
   end
 
   def mark_invalid_params
-    params.require(:incidents_incident).permit(:incident_type, :narrative).merge(status: 'invalid')
+    params.require(:incidents_incident).permit(:reason_marked_invalid, :narrative).merge(status: 'invalid')
   end
 
   def require_open_incident    
@@ -159,7 +159,7 @@ class Incidents::IncidentsController < Incidents::BaseController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      keys = [:response_territory_id, :date, :incident_type, :status, :narrative, :address, :city, :state, :zip, :neighborhood, :county, :lat, :lng, :address_directly_entered, :recruitment_message]
+      keys = [:response_territory_id, :date, :incident_type, :reason_marked_invalid, :status, :narrative, :address, :city, :state, :zip, :neighborhood, :county, :lat, :lng, :address_directly_entered, :recruitment_message]
 
       keys << :incident_number if params[:action] == 'create' && !has_incident_number_sequence?
 

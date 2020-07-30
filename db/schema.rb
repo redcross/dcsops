@@ -506,6 +506,7 @@ ActiveRecord::Schema.define(version: 20200726163705) do
     t.integer  "response_territory_id"
     t.integer  "current_dispatch_contact_id"
     t.datetime "dispatch_contact_due_at"
+    t.string   "reason_marked_invalid"
   end
 
   add_index "incidents_incidents", ["cas_event_number"], name: "index_incidents_incidents_on_cas_event_number", using: :btree
