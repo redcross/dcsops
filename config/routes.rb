@@ -37,7 +37,7 @@ Scheduler::Application.routes.draw do
       get :me, on: :collection
     end
     resources :flex_schedules, only: [:index, :show, :update]
-    resources :people do
+    resources :people, only: [:index] do
       resources :shift_assignments
     end
     resources :dispatch_config, except: [:new, :create, :destroy]
