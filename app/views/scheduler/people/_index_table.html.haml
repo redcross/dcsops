@@ -19,14 +19,14 @@
           %small
             = person.positions.select{|p|!p.hidden}.map(&:name).join ", "
         %td
-          = pluralize person.num_shifts, 'shift'
+          = pluralize num_shifts(person), 'shift'
         %td
-          -if d = person.prev_shift
+          -if d = prev_shift(person)
             =d.to_s :dow_short
             %br
             (#{(Date.current-d).to_i} days ago)
         %td
-          -if d = person.next_shift
+          -if d = next_shift(person)
             =d.to_s :dow_short
         %td
           -if d = person.last_login

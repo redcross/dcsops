@@ -22,12 +22,22 @@ class Scheduler::PeopleController < Scheduler::BaseController
   end
 
   def collection
-    @collection ||= apply_scopes(super).preload{[shift_territory_memberships, shift_territories, positions]}.select(
-      "roster_people.*, roster_people.last_name, roster_people.first_name, " +
-      "(SELECT count(*) FROM scheduler_shift_assignments sa WHERE sa.person_id=roster_people.id AND date < '#{Date.current}') AS num_shifts, " +
-      "(SELECT min(date) FROM scheduler_shift_assignments sa WHERE sa.person_id=roster_people.id AND date >= '#{Date.current}') AS next_shift," +
-      "(SELECT max(date) FROM scheduler_shift_assignments sa WHERE sa.person_id=roster_people.id AND date < '#{Date.current}') AS prev_shift"
-    ).uniq
+    @collection ||= apply_scopes(super).preload{[shift_territory_memberships, shift_territories, positions]}.uniq
+  end
+
+  helper_method :prev_shift
+  def prev_shift person
+    person.shift_assignments.where{date < Date.current}.maximum('date')
+  end
+
+  helper_method :num_shifts
+  def num_shifts person
+    person.shift_assignments.where{date < Date.current}.count
+  end
+
+  helper_method :next_shift
+  def next_shift person
+    person.shift_assignments.where{date >= Date.current}.minimum('date')
   end
 
   helper_method :date_ranges
