@@ -7,8 +7,7 @@
     %p
       = "Welcome, #{current_person.first_name}."
       You have completed 
-      = pluralize(Scheduler::ShiftAssignment.where(person_id: current_person).where('date < ?', Date.current).count, 'shift')
-      since the new scheduling system was launched.
+      #{pluralize(Scheduler::ShiftAssignment.where(person_id: current_person).where('date < ?', Date.current).count, 'shift')}.
 
     %p
       -unless upcoming_shifts.blank?
