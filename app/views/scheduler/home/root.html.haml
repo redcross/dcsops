@@ -95,10 +95,6 @@
         Current On-Call Team:
         %strong=link_to 'See All', scheduler_on_call_path
       - groups = Scheduler::ShiftTime.current_groups_for_region(current_region)
-      - groups.select{|g| g.period == 'daily' }.each do |grp| 
-        %strong=grp.start_date.to_s(:dow_long) + " - " + grp.name
-        %br
-      %br
       = render partial: 'current_shifts', locals: {shift_territories: current_person.shift_territories, groups: groups}
 
 .row
