@@ -1,13 +1,27 @@
 def persistent_position(person_name, region_slug, position_name)
   region = Roster::Region.find_by_slug(region_slug)
-  person = Roster::Person.for_region(region).where("CONCAT(first_name, ' ', last_name) like ?", person_name).first
+  people = Roster::Person.where("CONCAT(first_name, ' ', last_name) like ?", person_name)
+
+  if people.count > 1
+    puts "INFO: Person #{person_name} has multiple entries in db"
+    person = people.for_region(region).first
+  else
+    person = people.first
+  end
 
   if person.nil?
-    "ERROR: Person #{person_name} wasn't in database!"
+    puts "ERROR: Person #{person_name} wasn't in database!"
+    exit
   end
   position = Roster::Position.where(name: position_name, region: region).first
-  if person.nil?
-    "ERROR: Postition #{position_name} wasn't in database!"
+  if position.nil?
+    puts "ERROR: Postition #{position_name} wasn't in database!"
+    exit
+  end
+
+  if person.positions.include? position
+    puts "INFO: Position #{position_name} already associated with #{person_name}"
+    return
   end
 
   Roster::PositionMembership.create(
@@ -23,3 +37,14 @@ Roster::CapabilityMembership.create(position: region_config, capability: Roster:
 csv.each { |row|
   persistent_position(row["Person Name"], row["Region Slug"], row["Region Config"])
 }
+
+Roster::Region.find_by_slug('cni').update_attribute(:vc_hierarchy_name, 'Illinois Region')
+Roster::Region.find_by_slug('gold_country').update_attribute(:vc_hierarchy_name, 'California Gold Country Region')
+Roster::Region.find_by_slug('cascades').update_attribute(:vc_hierarchy_name, 'Cascades Region')
+Roster::Region.find_by_slug('gny').update_attribute(:vc_hierarchy_name, 'Greater New York Region')
+Roster::Region.find_by_slug('idaho_montana').update_attribute(:vc_hierarchy_name, 'Idaho and Montana Region')
+#Roster::Region.find_by_slug('kansas').update_attribute(:vc_hierarchy_name, 'XXX')
+Roster::Region.find_by_slug('souther_minnesota').update_attribute(:vc_hierarchy_name, 'Minnesota and Dakotas Region')
+Roster::Region.find_by_slug('nebraska').update_attribute(:vc_hierarchy_name, 'Nebraska and Iowa Region')
+Roster::Region.find_by_slug('newjersey').update_attribute(:vc_hierarchy_name, 'New Jersey Region')
+Roster::Region.find_by_slug('gsr').update_attribute(:vc_hierarchy_name, 'Northern California Coastal Region')

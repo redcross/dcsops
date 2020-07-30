@@ -23,13 +23,15 @@ run_for_region() {
   echo "---------------------------------"
 }
 
+rails r $BASE_DIR/pre_realign.rb
+
 run_for_region "Illinois DCSOps Configurations.xlsx" cni cni central_illinois
-run_for_region "California Gold Country DCSOps Configurations.xlsx" gold_country gold_country
+run_for_region "California Gold Country DCSOps Configurations.xlsx" gold_country gold_country gsr
 run_for_region "Cascades DCSOps Configurations.xlsx" cascades cascades
 run_for_region "Greater New York DCSOps Configurations.xlsx" gny gny
 run_for_region "Idaho and Montana DCSOps Configurations.xlsx" idaho_montana idaho_montana
 run_for_region "Kansas DCSOps Configurations.xlsx" kansas kansas
-run_for_region "Minnesota and Dakotas DCSOps Configurations.xlsx" dakotas dakotas
+run_for_region "Minnesota and Dakotas DCSOps Configurations.xlsx" southern_minnesota southern_minnesota
 run_for_region "Nebraska DCSOps Configurations.xlsx" nebraska nebraska
 run_for_region "New Jersey DCSOps Configurations.xlsx" newjersey newjersey
 run_for_region "Northern California Coastal DCSOps Configurations.xlsx" gsr gsr
