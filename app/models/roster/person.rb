@@ -186,6 +186,10 @@ class Roster::Person < ActiveRecord::Base
     end
   end
 
+  def phones_setup?
+    PHONE_TYPES.map{|label| !self.send("#{label}_disable").nil? || !self.send("#{label}_carrier_id").nil?}.reduce(:|)
+  end
+
   def profile_complete?
     [:lat, :lng, :address1, :email].all?{|f| self[f].present?}
   end
