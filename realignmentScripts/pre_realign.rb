@@ -20,4 +20,3 @@ Scheduler::ShiftAssignment.delete_all
 Scheduler::Shift.delete_all
 Roster::ShiftTerritory.delete_all
 Scheduler::ShiftTime.delete_all
-

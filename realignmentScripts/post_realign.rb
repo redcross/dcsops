@@ -1,3 +1,5 @@
+admin_csv = ARGV[0]
+
 def persistent_position(person_name, region_slug, position_name)
   region = Roster::Region.find_by_slug(region_slug)
   people = Roster::Person.where("CONCAT(first_name, ' ', last_name) like ?", person_name)
@@ -11,11 +13,11 @@ def persistent_position(person_name, region_slug, position_name)
 
   if person.nil?
     puts "ERROR: Person #{person_name} wasn't in database!"
-    exit
+    return
   end
   position = Roster::Position.where(name: position_name, region: region).first
   if position.nil?
-    puts "ERROR: Postition #{position_name} wasn't in database!"
+    puts "ERROR: Postition #{position_name} wasn't in database for region #{region_slug}!"
     exit
   end
 
@@ -34,8 +36,9 @@ end
 region_config = Roster::Position.create(name: "Region Config", abbrev: "Region Config", region: Roster::Region.find_by_slug("cni"))
 Roster::CapabilityMembership.create(position: region_config, capability: Roster::Capability.where(name: "Region Config").first)
 
-csv.each { |row|
-  persistent_position(row["Person Name"], row["Region Slug"], row["Region Config"])
+admin_data = CSV.parse(File.read(admin_csv), headers: true)
+admin_data.each { |row|
+  persistent_position(row["Person Name"], row["Region Slug"], row["Position Name"])
 }
 
 Roster::Region.find_by_slug('cni').update_attribute(:vc_hierarchy_name, 'Illinois Region')
