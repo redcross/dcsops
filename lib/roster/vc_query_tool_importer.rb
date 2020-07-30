@@ -42,6 +42,7 @@ class Roster::VcQueryToolImporter
     queries.each do |query|
       positions = get_query query
 
+      header = positions[0]
       grouped_positions = positions[1..-1].group_by { |p| p[2] }
 
       grouped_positions.each do |name, group|
@@ -55,7 +56,9 @@ class Roster::VcQueryToolImporter
           next
         end
 
-        handler = Roster::MemberPositionsImporter.new(positions, region, logger)
+        logger.info "Importing #{group.size} positions for region #{name} into region #{region.name}"
+
+        handler = Roster::MemberPositionsImporter.new([header] + group, region, logger)
         handler.process { self.row_counter.row! if self.row_counter }
         Roster::Person.transaction do
           logger.info "Beginning Bulk-update Transaction"

@@ -122,14 +122,6 @@ class Roster::MemberPositionsImporter < ImportParser
     matched_shift_territories = @shift_territories_matcher.match(position_name, @person.id) 
     matched_positions = @positions_matcher.match(position_name, @person.id)
 
-#    if matched_shift_territories
-#      puts "**************"
-#      puts position_name
-#      puts matched_shift_territories
-#      puts matched_positions
-#      puts "**************"
-#    end
-
     unless !logger.debug? || matched_shift_territories || matched_positions
       logger.debug "Didn't match a record for item #{position_name}"
     end
