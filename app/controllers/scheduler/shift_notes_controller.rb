@@ -17,12 +17,8 @@ class Scheduler::ShiftNotesController < Scheduler::BaseController
     resource.save validate: false
   end
 
-  def end_of_association_chain
-    Scheduler::ShiftAssignment.joins{person}.where{person.region_id==my{current_region}}.readonly(false)
-  end
-
   def collection
-    @collection ||= apply_scopes(end_of_association_chain).joins{[shift, shift_time]}.order{[shift.ordinal, shift_time.start_offset, person_id]}.preload{[shift.shift_territory, person, shift, shift_time]}
+    @collection ||= apply_scopes(Scheduler::ShiftAssignment.ordered_shifts current_region)
   end
 
   def build_resource_params

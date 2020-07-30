@@ -124,6 +124,11 @@ class Incidents::RespondersController < Incidents::BaseController
   end
   helper_method :recruitments
 
+  def has_shift_notes
+    @has_shift_notes ||= !Scheduler::ShiftAssignment.todays_shifts_with_notes(parent.region).empty?
+  end
+  helper_method :has_shift_notes
+
   expose(:ignore_shift_territory) { parent.region.incidents_dispatch_console_ignore_shift_territory || (params[:ignore_shift_territory] == '1') }
   expose(:dispatched) { parent.event_logs.for_type("dispatch_relayed").exists? }
   expose(:service) { 

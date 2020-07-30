@@ -119,6 +119,10 @@
         %a{href: scheduler_shifts_path}
           %i.fa.fa-cog
           Manage Calendars
+    %div
+      %a{href: scheduler_shift_notes_path}
+        %i.fa.fa-sticky-note
+        Shift Notes
     -if can? :read, Scheduler::FlexSchedule
       %div
         %a{href: scheduler_flex_schedules_path}

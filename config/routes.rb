@@ -108,6 +108,8 @@ Scheduler::Application.routes.draw do
         end
         resources :responder_recruitments
 
+        resources :shift_notes_panel, only: [:index]
+
         collection do
           get :needs_report
           get :activity

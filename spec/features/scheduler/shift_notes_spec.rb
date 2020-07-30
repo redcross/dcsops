@@ -1,8 +1,5 @@
 require 'spec_helper'
 
-# This page isn't linked to from anywhere, as of now, but it's used
-# from people who know the URL.  So we should have tests, but they break
-# the usual rule of traversing to the page naturally at least once
 describe "Shift Notes Page", :type => :feature do
   before :each do
     grant_capability! 'shift_territory_dat_admin'
@@ -31,12 +28,14 @@ describe "Shift Notes Page", :type => :feature do
   end
 
   it "visits the page" do
-    visit "/scheduler/shift_notes"
+    visit "/scheduler/"
+    click_on "Shift Notes"
     page.should have_text(@person.full_name, count: 2)
   end
 
   it "adds a note" do
-    visit "/scheduler/shift_notes"
+    visit "/scheduler/"
+    click_on "Shift Notes"
 
     page.should have_text(@person.full_name, count: 2)
 

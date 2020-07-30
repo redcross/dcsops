@@ -1,0 +1,24 @@
+.modal-dialog
+  .modal-content
+    .modal-header
+      %a.close(data-dismiss="modal") &times;
+      %h4.modal-title
+        Today's Shift Notes
+    .modal-body
+      %table.table.table-bordered.table-condensed
+        %tr
+          %th Period
+          %th Shift
+          %th Person
+          %th Notes
+        - collection.group_by{|ass| ass.shift.shift_territory}.each do |shift_territory, assignments|
+          %tr
+            %th(colspan=4)=shift_territory.name
+          - assignments.each do |ass|
+            %tr
+              %td
+                =ass.date.to_s :dow_short
+                =ass.shift_time.name
+              %td=ass.shift.name
+              %td=ass.person.full_name
+              %td=ass.note

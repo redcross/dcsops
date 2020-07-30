@@ -171,6 +171,14 @@ class Scheduler::ShiftAssignment < ActiveRecord::Base
     joins{shift_time}.where("scheduler_shift_assignments.date >= #{normalized_date_sql time}")
   end
 
+  def self.ordered_shifts region
+    joins{person}.where{person.region_id==my{region}}.readonly(false).joins{[shift, shift_time]}.order{[shift.ordinal, shift_time.start_offset, person_id]}.preload{[shift.shift_territory, person, shift, shift_time]}
+  end
+
+  def self.todays_shifts_with_notes region
+    ordered_shifts(region).where{(note != nil) & (date == Date.current)}
+  end
+
   scope :starts_after, ->(time){
     start_date = time.to_date
     joins{shift_time}.where{(date > start_date) | ((date == start_date) & (shift_time.end_offset > time.in_time_zone.seconds_since_midnight))}
