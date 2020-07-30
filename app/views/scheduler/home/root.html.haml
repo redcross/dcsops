@@ -93,7 +93,7 @@
       %h5 
         %i.fa.fa-group
         Current On-Call Team:
-        %small=link_to 'See All', scheduler_on_call_path
+        %strong=link_to 'See All', scheduler_on_call_path
       - groups = Scheduler::ShiftTime.current_groups_for_region(current_region)
       - groups.select{|g| g.period == 'daily' }.each do |grp| 
         %strong=grp.start_date.to_s(:dow_long) + " - " + grp.name
