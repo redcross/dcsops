@@ -10,28 +10,6 @@ r = Roster::Region.find_by_slug(region_slug)
 people_rs = people_r_slugs.map {|slug| Roster::Region.find_by_slug(slug) }
 shifts = Scheduler::Shift.for_region(r)
 
-puts "VC Positions: " + Roster::VcPosition.where(region: r).length.to_s
-puts "VC Position Configurations: " + Roster::VcPositionConfiguration.for_region(r).length.to_s
-puts "Positions: " + Roster::Position.where(region: r).length.to_s
-puts "Dispatch Configs: " + Scheduler::DispatchConfig.where(region: r).length.to_s
-puts "Response Territories: " + Incidents::ResponseTerritory.where(region: r).length.to_s
-puts "Shift Assignments: " + Scheduler::ShiftAssignment.for_shifts(shifts).length.to_s
-puts "Shifts: " + Scheduler::Shift.for_region(r).length.to_s
-puts "Shift Territories: " + Roster::ShiftTerritory.where(region: r).length.to_s
-puts "Shift Times: " + Scheduler::ShiftTime.where(region: r).length.to_s
-
-Roster::VcPositionConfiguration.for_region(r).delete_all
-Roster::VcPosition.where(region: r).delete_all
-Roster::Position.where(region: r).delete_all
-Roster::PositionMembership.for_region(r).delete_all
-Roster::ShiftTerritoryMembership.for_region(r).delete_all
-Scheduler::DispatchConfig.where(region: r).delete_all
-Incidents::ResponseTerritory.where(region: r).delete_all
-Scheduler::ShiftAssignment.for_shifts(shifts).delete_all
-Scheduler::Shift.for_region(r).delete_all
-Roster::ShiftTerritory.where(region: r).delete_all
-Scheduler::ShiftTime.where(region: r).delete_all
-
 vc_position_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Volunteer Connection Positions.csv"), headers: true)
 vc_position_data.each do |p_d|
   if p_d["Volunteer Connection Position"].nil? || p_d["Volunteer Connection Position"].strip.empty?
@@ -142,6 +120,9 @@ shift_data.each do |s|
   end
 
   s["Volunteer Connection Position(s)"].split("\n").each do |vc_pos_name|
+    if vc_pos_name.empty?
+      next
+    end
     vc_position = Roster::VcPosition.where(region: r, name: vc_pos_name.strip).first
 
     if vc_position.nil?
@@ -182,7 +163,7 @@ end
 
 notification_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Notifications.csv"), headers: true)
 notification_data.each do |n|
-  if n["Members"].nil?
+  if n["Members"].nil? || n["Volunteer Connection Position"].nil?
     next
   end
 
@@ -221,10 +202,10 @@ dispatch_config_data.each do |s|
     if person_name.nil?
       return
     end
-    person = Roster::Person.where(region: people_rs).where("CONCAT(first_name, ' ', last_name) like ?", person_name).first
+    person = Roster::Person.where(region: people_rs).where("CONCAT(first_name, ' ', last_name) ilike ?", person_name).first
     if person.nil?
       puts "ERROR: Can't find person #{person_name}"
-      exit
+      return
     end
     person
   end
