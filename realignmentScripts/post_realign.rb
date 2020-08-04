@@ -33,7 +33,10 @@ def persistent_position(person_name, region_slug, position_name)
   )
 end
 
-region_config = Roster::Position.create(name: "Region Config", abbrev: "Region Config", region: Roster::Region.find_by_slug("cni"))
+region_config = Roster::Position.where(name: "Region Config", region: Roster::Region.find_by_slug("cni")).first
+if region_config.nil?
+  region_config = Roster::Position.create(name: "Region Config", abbrev: "Region Config", region: Roster::Region.find_by_slug("cni"))
+end
 Roster::CapabilityMembership.create(position: region_config, capability: Roster::Capability.where(name: "Region Config").first)
 
 admin_data = CSV.parse(File.read(admin_csv), headers: true)
@@ -46,8 +49,8 @@ Roster::Region.find_by_slug('gold_country').update_attribute(:vc_hierarchy_name,
 Roster::Region.find_by_slug('cascades').update_attribute(:vc_hierarchy_name, 'Cascades Region')
 Roster::Region.find_by_slug('gny').update_attribute(:vc_hierarchy_name, 'Greater New York Region')
 Roster::Region.find_by_slug('idaho_montana').update_attribute(:vc_hierarchy_name, 'Idaho and Montana Region')
-#Roster::Region.find_by_slug('kansas').update_attribute(:vc_hierarchy_name, 'XXX')
-Roster::Region.find_by_slug('souther_minnesota').update_attribute(:vc_hierarchy_name, 'Minnesota and Dakotas Region')
+Roster::Region.find_by_slug('kansas').update_attribute(:vc_hierarchy_name, 'Kansas and Oklahoma Region')
+Roster::Region.find_by_slug('southern_minnesota').update_attribute(:vc_hierarchy_name, 'Minnesota and Dakotas Region')
 Roster::Region.find_by_slug('nebraska').update_attribute(:vc_hierarchy_name, 'Nebraska and Iowa Region')
 Roster::Region.find_by_slug('newjersey').update_attribute(:vc_hierarchy_name, 'New Jersey Region')
 Roster::Region.find_by_slug('gsr').update_attribute(:vc_hierarchy_name, 'Northern California Coastal Region')
