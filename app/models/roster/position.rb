@@ -15,6 +15,6 @@ class Roster::Position < ActiveRecord::Base
   accepts_nested_attributes_for :capability_memberships, allow_destroy: true
 
   def display_name
-    "#{region_id} - #{name}"
+    "#{region.short_name} - #{name}"
   end
 end
