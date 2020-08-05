@@ -33,6 +33,17 @@ def persistent_position(person_name, region_slug, position_name)
   )
 end
 
+def get_unique_incident_number(incident, region, n=0)
+  working_number = (n == 0) ? incident.incident_number : (incident.incident_number + "-" + n.to_s)
+  potential_conflict = Incidents::Incident.for_region(region)[working_number]
+
+  if potential_conflict.present?
+    return get_unique_incident_number(incident, region, n + 1)
+  else
+    return working_number
+  end
+end
+
 region_config = Roster::Position.where(name: "Region Config", region: Roster::Region.find_by_slug("cni")).first
 if region_config.nil?
   region_config = Roster::Position.create(name: "Region Config", abbrev: "Region Config", region: Roster::Region.find_by_slug("cni"))
@@ -54,3 +65,27 @@ Roster::Region.find_by_slug('southern_minnesota').update_attribute(:vc_hierarchy
 Roster::Region.find_by_slug('nebraska').update_attribute(:vc_hierarchy_name, 'Nebraska and Iowa Region')
 Roster::Region.find_by_slug('newjersey').update_attribute(:vc_hierarchy_name, 'New Jersey Region')
 Roster::Region.find_by_slug('gsr').update_attribute(:vc_hierarchy_name, 'Northern California Coastal Region')
+
+# The non region we assign old incidents to
+deployment_region = Roster::Region.find(0)
+
+total_count = Incidents::Incident.all.count
+n = 0;
+print "Realigning #{total_count.to_s} incidents"
+Incidents::Incident.all.each do |i|
+  if n % 1000 == 0
+    print "."
+    $stdout.flush
+  end
+  Incidents::ResponseTerritoryMatcher.new(i, Incidents::ResponseTerritory.all).perform
+  if i.response_territory.nil?
+    i.incident_number = get_unique_incident_number(i, deployment_region)
+    i.region = deployment_region
+  elsif i.region != i.response_territory.region
+    i.incident_number = get_unique_incident_number(i, i.response_territory.region)
+    i.region = i.response_territory.region
+  end
+  i.save
+  n += 1
+end
+puts "Done"
