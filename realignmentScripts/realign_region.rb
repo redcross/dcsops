@@ -72,19 +72,26 @@ shift_territory_data.each do |s_t|
 end
 
 shift_time_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Shift Times.csv"), headers: true)
-shift_time_data.each do |s_ts|
-  if s_ts["Shift Times"].nil?
+shift_time_data.each do |s_t|
+  if s_t["Name"].nil?
     next
   end
-  s_ts["Shift Times"].split("\n").each{ |s_t|
-    s = Scheduler::ShiftTime.create(
-      region: r,
-      name: s_t,
-      start_offset: 0,
-      end_offset: 1234,
-      period: :daily
-    )
-  }
+  s = Scheduler::ShiftTime.create(
+    region: r,
+    name: s_t["Name"],
+    start_offset: s_t["Start offset"].to_i,
+    end_offset: s_t["End offset"].to_i,
+    period: "daily" == s_t["Period"] ? :daily : :weekly,
+    active_monday: s_t["Active Monday"] == "Yes",
+    active_tuesday: s_t["Active Tuesday"] == "Yes",
+    active_wednesday: s_t["Active Wednesday"] == "Yes",
+    active_thursday: s_t["Active Thursday"] == "Yes",
+    active_friday: s_t["Active Friday"] == "Yes",
+    active_saturday: s_t["Active Saturday"] == "Yes",
+    active_sunday: s_t["Active Sunday"] == "Yes",
+  )
+
+  s.save
 end
 
 shift_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Shifts.csv"), headers: true)
