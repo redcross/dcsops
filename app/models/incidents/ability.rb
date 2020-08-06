@@ -8,6 +8,7 @@ class Incidents::Ability
     @person = person
     @region_scope = [@person.region_id] + Roster::Region.with_incidents_delegate_region_value(@person.region_id).ids
     is_admin = person.has_capability 'incidents_admin'
+    region_admin = person.has_capability 'region_admin'
 
     scopes
     personal
@@ -20,7 +21,7 @@ class Incidents::Ability
     cas_details             if is_admin or person.has_capability 'cas_details'
     see_responses           if is_admin or person.has_capability 'see_responses'
     approve_iir             if is_admin or person.has_capability 'approve_iir'
-    incidents_admin         if is_admin
+    incidents_admin(region_admin) if is_admin
 
     read_only if ENV['READ_ONLY']
     
@@ -77,9 +78,12 @@ class Incidents::Ability
     can [:create, :read, :update], Incidents::InitialIncidentReport
   end
 
-  def incidents_admin
+  def incidents_admin(region_admin)
     can :manage, Incidents::DatIncident, incident: {region_id: @region_scope}
     can :manage, Incidents::Incident, region_id: @region_scope
+    if not region_admin
+      cannot :close_without_completing, Incidents::Incident, region_id: @region_scope
+    end
     can :manage, Incidents::InitialIncidentReport, incident: {region_id: @region_scope}
   end
 
