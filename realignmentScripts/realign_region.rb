@@ -31,11 +31,12 @@ position_data.each do |p_d|
   if not p_d["Capabilities (Roles)"].nil?
     capability_names = p_d["Capabilities (Roles)"].split("\n")
     capability_names.each do |n|
-      c = Roster::Capability.where(name: n)
+      c = Roster::Capability.where(name: n.strip).first
       if c.nil?
         puts "ERROR: Oh no, #{n} doesn't seem to be in the database!"
+        exit 1
       else
-        Roster::CapabilityMembership.create(position: p, capability: c[0])
+        Roster::CapabilityMembership.create(position: p, capability: c)
       end
     end
   end
@@ -102,20 +103,20 @@ shift_data.each do |s|
   shift_territory = Roster::ShiftTerritory.where(region: r, name: s["Shift Territory"]).first
   if shift_territory.nil?
     puts "ERROR: Can't find shift territory #{s['Shift Territory']}"
-    exit
+    exit 1
   end
 
   position = Roster::Position.where(region: r, name: s["DCSOps Position"]).first
   if position.nil?
     puts "ERROR: Can't find position #{s['DCSOps Position']}"
-    exit
+    exit 1
   end
 
   shift_times = s["Shift Times"].split("\n").map{ |shift_time_name|
-    shift_time = Scheduler::ShiftTime.where(region: r, name: shift_time_name).first
+    shift_time = Scheduler::ShiftTime.where(region: r, name: shift_time_name.strip).first
     if shift_time.nil?
-      puts "ERROR: Can't find shift time #{shift_time_name}"
-      exit
+      puts "ERROR: Can't find shift time #{shift_time_name.strip}"
+      exit 1
     end
     shift_time
   }
@@ -123,7 +124,7 @@ shift_data.each do |s|
   shift_category = Scheduler::ShiftCategory.where(region: r, name: s["Shift Category"]).first
   if shift_category.nil?
     puts "ERROR: Can't find shift category #{s['Shift Category']}"
-    exit
+    exit 1
   end
 
   s["Volunteer Connection Position(s)"].split("\n").each do |vc_pos_name|
@@ -134,7 +135,7 @@ shift_data.each do |s|
 
     if vc_position.nil?
       puts "ERROR: Can't find vc position #{vc_pos_name}"
-      exit
+      exit 1
     end
 
     Roster::VcPositionConfiguration.create(
@@ -177,13 +178,13 @@ notification_data.each do |n|
   position = Roster::Position.where(region: r, name: n["Members"]).first
   if position.nil?
     puts "ERROR: Can't find position #{n['Members']}"
-    exit
+    exit 1
   end
 
   vc_position = Roster::VcPosition.where(region: r, name: n["Volunteer Connection Position"]).first
   if vc_position.nil?
     puts "ERROR: Can't find vc position #{n["Volunteer Connection Position"]}"
-    exit
+    exit 1
   end
 
   Roster::VcPositionConfiguration.create(
@@ -201,7 +202,7 @@ dispatch_config_data.each do |s|
     shift = Scheduler::Shift.for_region(r).where(name: shift_name).first
     if shift.nil?
       puts "ERROR: Can't find shift #{shift_name}."
-      exit
+      exit 1
     end
     shift
   end
@@ -223,7 +224,7 @@ dispatch_config_data.each do |s|
   shift_territory = Roster::ShiftTerritory.where(region: r, name: s["Shift Territory"]).first
   if shift_territory.nil?
     puts "ERROR: Can't find shift territory #{s['Shift Territory']}"
-    exit
+    exit 1
   end
   shift_first = find_shift.call(s["Shift first"], shift_territory)
   shift_second = find_shift.call(s["Shift second"], shift_territory)
