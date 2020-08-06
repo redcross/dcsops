@@ -21,8 +21,8 @@ ActiveAdmin.register Roster::VcPosition, as: 'VC Position' do
     f.inputs
     f.inputs do
       f.has_many :vc_position_configurations, allow_destroy: true do |f|
-        f.input :position
-        f.input :shift_territory
+        f.input :position, collection: Roster::Position.where(region: resource.region).sort_by(&:name)
+        f.input :shift_territory, collection: Roster::ShiftTerritory.where(region: resource.region).sort_by(&:name)
       end
     end
     f.actions
