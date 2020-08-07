@@ -65,11 +65,22 @@ shift_territory_data.each do |s_t|
   if s_t["Shift Territory"].nil?
     next
   end
-  Roster::ShiftTerritory.create(
+  shift_territory = Roster::ShiftTerritory.create(
     region: r,
     name: s_t["Shift Territory"],
     abbrev: s_t["Abbreviation"]
   )
+
+  if s_t["Response Territory"].present?
+    r_t = Incidents::ResponseTerritory.where(region: r, name: s_t["Response Territory"]).first
+    if r_t.nil?
+      puts "ERROR: Can't find response territory #{s_t['Response Territory']}"
+      exit 1
+    end
+
+    r_t.shift_territories << shift_territory
+    r_t.save!
+  end
 end
 
 shift_time_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Shift Times.csv"), headers: true)

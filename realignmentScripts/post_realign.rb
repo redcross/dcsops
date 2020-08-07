@@ -69,10 +69,10 @@ Roster::Region.find_by_slug('gsr').update_attribute(:vc_hierarchy_name, 'Norther
 # The non region we assign old incidents to
 deployment_region = Roster::Region.find(0)
 
-total_count = Incidents::Incident.all.count
+incidents = Incidents::Incident.where("date > ?", Date.parse("01-01-2020"))
 n = 0;
-print "Realigning #{total_count.to_s} incidents"
-Incidents::Incident.all.each do |i|
+print "Realigning #{incidents.count} incidents"
+incidents.each do |i|
   if n % 1000 == 0
     print "."
     $stdout.flush
@@ -85,7 +85,8 @@ Incidents::Incident.all.each do |i|
     i.incident_number = get_unique_incident_number(i, i.response_territory.region)
     i.region = i.response_territory.region
   end
-  i.save
+
+  i.save!(:validate => false)
   n += 1
 end
 puts "Done"
