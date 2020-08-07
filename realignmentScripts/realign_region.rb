@@ -46,6 +46,9 @@ response_territory_data = CSV.read("#{csv_dir}/#{csv_basename} - Response Territ
 
 (1..(response_territory_data[0].size)).each do |idx|
   r_t = response_territory_data[0][idx]
+  if r_t.nil? or r_t.empty?
+    next
+  end
   counties = response_territory_data[1][idx].split("\n") unless response_territory_data[1][idx].nil?
   cities = response_territory_data[2][idx].split("\n") unless response_territory_data[2][idx].nil?
   zips = response_territory_data[3][idx].split("\n") unless response_territory_data[3][idx].nil?
@@ -94,13 +97,13 @@ shift_time_data.each do |s_t|
     start_offset: s_t["Start offset"].to_i,
     end_offset: s_t["End offset"].to_i,
     period: "daily" == s_t["Period"] ? :daily : :weekly,
-    active_monday: s_t["Active Monday"] == "Yes",
-    active_tuesday: s_t["Active Tuesday"] == "Yes",
-    active_wednesday: s_t["Active Wednesday"] == "Yes",
-    active_thursday: s_t["Active Thursday"] == "Yes",
-    active_friday: s_t["Active Friday"] == "Yes",
-    active_saturday: s_t["Active Saturday"] == "Yes",
-    active_sunday: s_t["Active Sunday"] == "Yes",
+    active_monday: s_t["Active monday"] == "Yes",
+    active_tuesday: s_t["Active tuesday"] == "Yes",
+    active_wednesday: s_t["Active wednesday"] == "Yes",
+    active_thursday: s_t["Active thursday"] == "Yes",
+    active_friday: s_t["Active friday"] == "Yes",
+    active_saturday: s_t["Active saturday"] == "Yes",
+    active_sunday: s_t["Active sunday"] == "Yes",
   )
 
   s.save
