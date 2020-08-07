@@ -12,7 +12,7 @@ ActiveAdmin.register Roster::VcPosition, as: 'VC Position' do
     panel "Configuration" do
       table_for resource.vc_position_configurations do
         column("Position") { |r| r.position.name }
-        column("Shift Territory") { |r| r.shift_territory.name }
+        column("Shift Territory") { |r| r.shift_territory.name if r.shift_territory.present? }
       end
     end
   end

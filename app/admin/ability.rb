@@ -52,6 +52,7 @@ class AdminAbility
       can :read, [Roster::Person, Roster::ShiftTerritory, Roster::Position], region_id: region
       can :impersonate, Roster::Person, region_id: region
       can :manage, Logistics::Vehicle, region_id: region
+      can :manage, Roster::VcPosition, region_id: region
       can :manage, HomepageLink, region_id: region
       can :new, Incidents::ReportSubscription
       can :manage, Incidents::ReportSubscription, person: {region_id: region}
