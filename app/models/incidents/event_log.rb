@@ -69,6 +69,14 @@ class Incidents::EventLog < Incidents::DataModel
     incident_id || incident
   end
 
+  def humanized_event
+    INCIDENT_EVENT_TYPES[event]
+  end
+
+  def humanized_events
+    INCIDENT_EVENT_TYPES.keys.map{|e| AssignableValues::HumanizedValue.new(e, INCIDENT_EVENT_TYPES[e])}
+  end
+
   def event_time= new_time
     time = case new_time
     when String then Timeliness.parse(new_time)

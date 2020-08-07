@@ -5,7 +5,7 @@
         %a.close(data-dismiss="modal") &times;
         %h4.modal-title Add Event
       .modal-body
-        =f.input :event, as: :assignable_select, required: true
+        =f.input :event, as: :assignable_select, required: true, humanized: :humanized_events
         =f.input :event_time, as: :time_field
         -if f.object.source_required?
           .event-log-source
