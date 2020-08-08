@@ -85,7 +85,11 @@ module Incidents::Notifications
         person = delivery_options[:person]
         template = delivery_options[:template]
 
-        Mailer.notify_event(person, false, event, incident, template, message_options).deliver
+        # Ignoring SMTP to errors for now
+        begin
+          Mailer.notify_event(person, false, event, incident, template, message_options).deliver
+        rescue ArgumentError
+        end
         if delivery_options[:use_sms] and (sms = person.sms_addresses).present?
           Mailer.notify_event(person, true, event, incident, template, message_options).deliver
         end
