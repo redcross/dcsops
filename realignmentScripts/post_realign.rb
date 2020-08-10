@@ -70,6 +70,7 @@ Roster::Region.find_by_slug('gsr').update_attribute(:vc_hierarchy_name, 'Norther
 deployment_region = Roster::Region.find(0)
 
 incidents = Incidents::Incident.where("date > ?", Date.parse("01-01-2020"))
+territories = Incidents::ResponseTerritory.all
 n = 0;
 print "Realigning #{incidents.count} incidents"
 incidents.each do |i|
@@ -77,7 +78,7 @@ incidents.each do |i|
     print "."
     $stdout.flush
   end
-  Incidents::ResponseTerritoryMatcher.new(i, Incidents::ResponseTerritory.all).perform
+  Incidents::ResponseTerritoryMatcher.new(i, territories).perform
   if i.response_territory.nil?
     i.incident_number = get_unique_incident_number(i, deployment_region)
     i.region = deployment_region
