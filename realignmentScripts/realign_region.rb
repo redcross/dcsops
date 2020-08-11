@@ -165,6 +165,7 @@ shift_data.each do |s|
   ordinal = s["Ordinal"].to_i
   exclusive = (s["Exclusive"] == "Yes")
   show_in_dispatch_console = (s["Show in Dispatch Console"] == "Yes")
+  shift_begins = Date.parse(s["Shift begins"]) if (not s["Shift begins"].nil? and not s["Shift begins"].empty?)
 
   s = Scheduler::Shift.create(
     shift_territory: shift_territory,
@@ -177,7 +178,8 @@ shift_data.each do |s|
     max_signups: max_signups,
     ordinal: ordinal,
     exclusive: exclusive,
-    show_in_dispatch_console: show_in_dispatch_console
+    show_in_dispatch_console: show_in_dispatch_console,
+    shift_begins: shift_begins
   )
 
   s.save!
