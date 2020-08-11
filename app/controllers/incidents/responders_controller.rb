@@ -130,7 +130,7 @@ class Incidents::RespondersController < Incidents::BaseController
   helper_method :has_shift_notes
 
   expose(:ignore_shift_territory) { parent.region.incidents_dispatch_console_ignore_shift_territory || (params[:ignore_shift_territory] == '1') }
-  expose(:dispatched) { parent.event_logs.for_type("dispatch_relayed").exists? }
+  expose(:dispatched) { parent.dispatched? }
   expose(:service) { 
     Incidents::RespondersService.new(parent, collection, ignore_shift_territory_scheduled: ignore_shift_territory, ignore_shift_territory_flex: ignore_shift_territory, ignore_dispatch: dispatched )
   }

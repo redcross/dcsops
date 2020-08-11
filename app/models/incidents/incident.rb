@@ -114,6 +114,10 @@ class Incidents::Incident < ActiveRecord::Base
     status == 'open'
   end
 
+  def dispatched?
+    event_logs.for_type("dispatch_relayed").exists?
+  end
+
   def self.main_incident_types
     %w(fire flood police vacate tornado blizzard storm transportation hazmat explosion search_and_rescue earthquake building_collapse exercise hurricane public_health)
   end
