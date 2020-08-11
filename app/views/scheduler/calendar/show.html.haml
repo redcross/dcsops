@@ -18,7 +18,7 @@
         %button.btn.btn-default.col-xs-4#clear-person{data: {clear_typeahead: "select-person"}} Clear
       #choose-shift_territories{style: show_shifts==:shift_territory || 'display: none'}
         =select_tag "shift_territories[]", options_from_collection_for_select(current_region.shift_territories.enabled, :id, :name, show_shift_territories.first), multiple: false, id: 'choose-shift_territory', class: "form-control"
-        - cats = Scheduler::ShiftCategory.for_region(current_region).to_a
+        - cats = Scheduler::ShiftCategory.for_region(current_region).enabled.to_a
         -if cats.count > 1
           %h5 Categories
           - cats.each do |cat|

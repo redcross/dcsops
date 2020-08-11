@@ -6,6 +6,10 @@ class Scheduler::ShiftCategory < ActiveRecord::Base
     where{region_id == region}
   end
 
+  def self.enabled
+    where{enabled == true}
+  end
+
   def display_name
     "#{region_id} - #{name}"
   end

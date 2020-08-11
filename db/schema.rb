@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200809125621) do
+ActiveRecord::Schema.define(version: 20200811161812) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1099,6 +1099,7 @@ ActiveRecord::Schema.define(version: 20200809125621) do
     t.integer  "ordinal"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "enabled",                default: true,  null: false
   end
 
   add_index "scheduler_shift_categories", ["region_id"], name: "index_scheduler_shift_categories_on_region_id", using: :btree
