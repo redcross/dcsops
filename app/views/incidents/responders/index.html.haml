@@ -1,11 +1,6 @@
 .app{"ng-app" => ''}
   .row
     .col-sm-7
-      %h4.pull-right
-        -if has_shift_notes
-          =link_to 'View Shift Notes', '#', data: {edit_panel: incidents_region_incident_shift_notes_panel_index_path}
-        -else
-          No Shift Notes
       %h3
         =link_to parent_path do
           %i.fa.fa-chevron-left
@@ -21,6 +16,11 @@
         .responder-map{style: "height: 300px"}
   .row
     .col-sm-12
+      %h4
+        -if has_shift_notes
+          =link_to 'View Shift Notes', '#', data: {edit_panel: incidents_region_incident_shift_notes_panel_index_path}
+        -else
+          No Shift Notes
       %h4 
         Available Responders
         -if can? :create, collection.build
