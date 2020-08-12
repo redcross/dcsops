@@ -1,7 +1,7 @@
 class Incidents::ResponderAssignment < ActiveRecord::Base
   ROLES_TO_LABELS = {'team_lead' => 'Team Lead', 'trainee_lead' => 'Team Lead Trainee',
                      'responder' => 'Responder', 'public_affairs' => 'Public Affairs', 'health_services' => 'Health Services',
-                     'mental_health' => 'Mental Health', 'dispatch' => 'Dispatch', 'activator' => 'Activator'}
+                     'mental_health' => 'Mental Health', 'dispatch' => 'Dispatcher/Duty Officer', 'activator' => 'Activator'}
   ROLES = ROLES_TO_LABELS.keys
   ON_SCENE_ROLES = %w(responder team_lead trainee_lead public_affairs health_services mental_health)
   RESPONSES = %w(not_available no_answer wrong_number no_longer_active)
@@ -21,7 +21,7 @@ class Incidents::ResponderAssignment < ActiveRecord::Base
   def self.grouped_roles(team_lead=false)
     [
       ["Did Not Respond", Incidents::ResponderAssignment::RESPONSES_TO_LABELS.invert.to_a],
-      ["Responded To Incident", Incidents::ResponderAssignment::ROLES_TO_LABELS.invert.to_a.reject{|a| !team_lead && a.last == 'team_lead'}]
+      ["Responded To Incident", Incidents::ResponderAssignment::ROLES_TO_LABELS.invert.to_a.reject{|a| (!team_lead && a.last == 'team_lead') || a.last == 'trainee_lead'}]
     ]
   end
 
