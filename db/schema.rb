@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200811161812) do
+ActiveRecord::Schema.define(version: 20200812201656) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -549,6 +549,14 @@ ActiveRecord::Schema.define(version: 20200811161812) do
 
   add_index "incidents_notifications_events", ["region_id"], name: "index_incidents_notifications_events_on_region_id", using: :btree
 
+  create_table "incidents_notifications_role_configurations", id: false, force: :cascade do |t|
+    t.integer "role_id",            null: false
+    t.integer "position_id",        null: false
+    t.integer "shift_territory_id"
+  end
+
+  add_index "incidents_notifications_role_configurations", ["role_id", "position_id"], name: "index_incidents_notifications_roles_roster_positions", unique: true, using: :btree
+
   create_table "incidents_notifications_role_scopes", force: :cascade do |t|
     t.integer  "role_id"
     t.string   "level",                 limit: 255
@@ -566,13 +574,6 @@ ActiveRecord::Schema.define(version: 20200811161812) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "incidents_notifications_roles_roster_positions", id: false, force: :cascade do |t|
-    t.integer "role_id",     null: false
-    t.integer "position_id", null: false
-  end
-
-  add_index "incidents_notifications_roles_roster_positions", ["role_id", "position_id"], name: "index_incidents_notifications_roles_roster_positions", unique: true, using: :btree
 
   create_table "incidents_notifications_roles_scheduler_shifts", id: false, force: :cascade do |t|
     t.integer "role_id",  null: false

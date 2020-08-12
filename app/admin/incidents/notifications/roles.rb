@@ -35,8 +35,14 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
         sf.input :response_territory, collection: Incidents::ResponseTerritory.for_region(f.object.region)
       end
     end
-    f.inputs do
-      f.input :positions, as: :check_boxes, collection: (f.object.region.try(:positions) || [])
+    f.inputs "DCSOps Position Configurations" do
+      f.has_many :role_configurations, heading: "DCSOps Position Configurations", allow_destroy: true do |rc|
+        rc.input :position, collection: Roster::Position.where(region: resource.region).sort_by(&:name)
+        rc.input :shift_territory, collection: Roster::ShiftTerritory.where(region: resource.region).sort_by(&:name)
+      end
+    end
+
+    f.inputs "Shifts" do
       f.input :shifts, as: :check_boxes, collection: Scheduler::Shift.for_region(f.object.region)
     end
     f.actions
@@ -51,8 +57,9 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
             column("Scope") { |s| s.humanized_level }
             column :value
           end
-          table_for role.positions do
-            column("Position") { |p| p.name }
+          table_for resource.role_configurations do
+            column("Position") { |r| r.position.name }
+            column("Shift Territory") { |r| r.shift_territory.name if r.shift_territory.present? }
           end
           table_for role.shifts do
             column("Shift") { |s| s.name }
@@ -74,7 +81,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
     columns do
       column do
         panel "Current Position Members" do
-          table_for role.position_members do
+          table_for role.position_territory_members do
             column :full_name
             column :email
             column :sms do |person|
@@ -103,7 +110,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
     end
 
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :region_id, position_ids: [], shift_ids: [], triggers_attributes: [:id, :event_id, :template, :use_sms, :_destroy], role_scopes_attributes: [:id, :_destroy, :level, :value, :response_territory_id])]
+      [params.fetch(resource_request_name, {}).permit(:name, :region_id, position_ids: [], shift_ids: [], triggers_attributes: [:id, :event_id, :template, :use_sms, :_destroy], role_scopes_attributes: [:id, :_destroy, :level, :value, :response_territory_id], role_configurations_attributes: [:id, :_destroy, :position_id, :shift_territory_id])]
     end
 
     after_build :set_region
