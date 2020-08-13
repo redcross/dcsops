@@ -7,6 +7,13 @@ ActiveAdmin.register Scheduler::ShiftTime, as: 'Shift Time' do
   filter :name
   filter :period
 
+  scope :all do |shift_times|
+    shift_times.all
+  end
+  scope :enabled, default: true do |shift_times|
+    shift_times.where{(enabled == true)}
+  end
+
   index do
     id_column
     column :region

@@ -4,7 +4,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   actions :all, except: [:destroy]
 
   filter :shift_time
-  filter :shift_territory
+  filter :shift_territory, collection: Roster::ShiftTerritory.where(enabled: true)
   filter :region
   filter :name
   filter :abbrev
@@ -32,9 +32,28 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   end
 
   form do |f|
-    f.inputs 'Details'
+    f.inputs 'Details' do
+      f.input :shift_territory, collection: Roster::ShiftTerritory.where(enabled: true)
+      f.input :shift_category
+      f.input :name
+      f.input :abbrev
+      f.input :max_signups
+      f.input :ordinal
+      f.input :spreadsheet_ordinal
+      f.input :shift_begins
+      f.input :shift_ends
+      f.input :signups_frozen_before
+      f.input :max_advance_signup
+      f.input :signups_available_before
+      f.input :min_desired_signups
+      f.input :ignore_shift_territory
+      f.input :min_advance_signup
+      f.input :exclusive
+      f.input :vc_hours_type
+      f.input :show_in_dispatch_console
+    end
     f.inputs 'Shift Times' do
-      f.input :shift_times, as: :check_boxes, collection: Scheduler::ShiftTime.for_region(f.object.shift_territory.try(:region))
+      f.input :shift_times, as: :check_boxes, collection: Scheduler::ShiftTime.for_region(f.object.shift_territory.try(:region)).where(enabled: true)
     end
     f.inputs 'Position and Shift Territory' do
       f.input :positions, as: :check_boxes, collection: f.object.shift_territory.try(:region).try(:positions)
