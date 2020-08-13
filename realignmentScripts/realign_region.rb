@@ -33,7 +33,7 @@ position_data.each do |p_d|
     capability_names.each do |n|
       c = Roster::Capability.where(name: n.strip).first
       if c.nil?
-        puts "ERROR: Oh no, #{n} doesn't seem to be in the database!"
+        puts "ERROR: Oh no, #{n.strip} doesn't seem to be in the database!"
         exit 1
       else
         Roster::CapabilityMembership.create(position: p, capability: c)
