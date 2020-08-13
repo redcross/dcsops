@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200812201656) do
+ActiveRecord::Schema.define(version: 20200813132138) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1120,6 +1120,7 @@ ActiveRecord::Schema.define(version: 20200812201656) do
     t.boolean  "active_thursday",              default: true, null: false
     t.boolean  "active_friday",                default: true, null: false
     t.boolean  "active_saturday",              default: true, null: false
+    t.boolean  "enabled",                      default: true, null: false
   end
 
   add_index "scheduler_shift_times", ["region_id"], name: "index_scheduler_shift_times_on_region_id", using: :btree

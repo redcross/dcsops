@@ -14,6 +14,9 @@ ActiveAdmin.register Scheduler::ShiftTime, as: 'Shift Time' do
     column :period
     column :start_offset
     column :end_offset
+    column :enabled do |st|
+      st.enabled ? status_tag("Yes") : status_tag("No")
+    end
     actions
   end
 
@@ -21,6 +24,7 @@ ActiveAdmin.register Scheduler::ShiftTime, as: 'Shift Time' do
     f.inputs do
       f.input :region
       f.input :name
+      f.input :enabled
       f.input :period, as: :assignable_select_admin
       f.input :start_offset, as: :time_offset, week: f.object.period == 'weekly'
       f.input :end_offset, as: :time_offset, week: f.object.period == 'weekly', next_period: true, midnight: true
@@ -40,7 +44,7 @@ ActiveAdmin.register Scheduler::ShiftTime, as: 'Shift Time' do
 
   controller do
     def resource_params
-      [params.fetch(resource_request_name, {}).permit(:name, :start_offset, :end_offset, :region_id, :period, :active_sunday, :active_monday, :active_tuesday, :active_wednesday, :active_thursday, :active_friday, :active_saturday)]
+      [params.fetch(resource_request_name, {}).permit(:name, :start_offset, :end_offset, :region_id, :period, :enabled, :active_sunday, :active_monday, :active_tuesday, :active_wednesday, :active_thursday, :active_friday, :active_saturday)]
     end
   end
 end
