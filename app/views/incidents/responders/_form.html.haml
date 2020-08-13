@@ -28,11 +28,11 @@
         =f.input :on_scene_at, as: :time_field
         =f.input :departed_scene_at, as: :time_field
       .form-group
-        %label.control-label=label_tag :send_assignment_sms
+        =label_tag :send_assignment_sms, nil, class: 'control-label'
         .form-wrapper
           .form-control-static=check_box_tag :send_assignment_sms, '1', params[:send_assignment_sms] == '1'
       .form-group
-        %label.control-label=label_tag :send_assignment_email
+        =label_tag :send_assignment_email, nil, class: 'control-label'
         .form-wrapper
           .form-control-static=check_box_tag :send_assignment_email, '1', params[:send_assignment_email] == '1'
       =f.actions do
