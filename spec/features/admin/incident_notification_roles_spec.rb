@@ -10,7 +10,9 @@ describe "Incident Notification Roles Admin Page", :type => :feature do
 
     click_on "Create one"
     fill_in "Name*", with: "A New Notification Role"
-    check "Some Position"
+    click_on "Add New Role configuration"
+    select @person.positions.first.display_name
+    select @person.shift_territories.first.display_name
     click_on "Create Role"
     page.should have_text("A New Notification Role")
     # The position above, should have the current @person in it

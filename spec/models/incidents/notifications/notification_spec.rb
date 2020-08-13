@@ -101,7 +101,11 @@ describe Incidents::Notifications::Notification, :type => :model do
   describe '#create', type: :mailer do
     it "works completely" do
       person = FactoryGirl.create :person
-      role = FactoryGirl.create :notification_role, positions: [person.positions.first], region: person.region
+      role = FactoryGirl.create :notification_role, region: person.region
+      FactoryGirl.create :notification_role_configuration,
+        position: person.positions.first,
+        shift_territory: person.shift_territories.first,
+        role_id: role.id
       event = FactoryGirl.create :event, region: person.region, event: 'new_incident'
       incident = FactoryGirl.create :incident, region: person.region
       trigger = FactoryGirl.create :trigger, role: role, event: event, template: 'notification'

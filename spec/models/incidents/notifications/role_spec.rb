@@ -13,8 +13,12 @@ describe Incidents::Notifications::Role, :type => :model do
 
   it "retrieves its position members" do
     person = FactoryGirl.create :person
-    role = FactoryGirl.create :notification_role, positions: [person.positions.first], region: person.region
+    role = FactoryGirl.create :notification_role, region: person.region
+    FactoryGirl.create :notification_role_configuration,
+      position: person.positions.first,
+      shift_territory: person.shift_territories.first,
+      role_id: role.id
 
-    expect(role.position_members).to match_array([person])
+    expect(role.position_territory_members).to match_array([person])
   end
 end

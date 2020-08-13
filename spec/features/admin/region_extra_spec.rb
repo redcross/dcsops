@@ -17,14 +17,12 @@ describe "Region Extra Configuration Pages", :type => :feature do
 
     within("#resource-#{shift_territory_id}") do
       fill_in "roster_shift_territory[abbrev]", with: "Shift Territory"
-      fill_in "roster_shift_territory[vc_regex_raw]", with: "count.*"
       click_on "Save"
     end
 
     within("#resource-") do
       fill_in "roster_shift_territory[name]", with: "Test Shift Territory"
       fill_in "roster_shift_territory[abbrev]", with: "TC"
-      fill_in "roster_shift_territory[vc_regex_raw]", with: "test.*"
       click_on "Save"
     end
     page.should have_text "2"
@@ -38,14 +36,12 @@ describe "Region Extra Configuration Pages", :type => :feature do
     position_id = @person.region.positions.first.id
     within("#resource-#{position_id}") do
       fill_in "roster_position[abbrev]", with: "Position"
-      fill_in "roster_position[vc_regex_raw]", with: "count.*"
       click_on "Save"
     end
 
     within("#resource-") do
       fill_in "roster_position[name]", with: "Test Position"
       fill_in "roster_position[abbrev]", with: "TP"
-      fill_in "roster_position[vc_regex_raw]", with: "test.*"
       click_on "Save"
     end
     page.should have_text "3"

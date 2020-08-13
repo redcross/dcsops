@@ -16,7 +16,7 @@ describe "Root Scheduler Page", :type => :feature do
 
     # This isn't a comprehensive check, but should suffice that the
     # page is actually working.
-    page.should have_text "You have completed 0 shifts since the new"
+    page.should have_text "You have completed 0 shifts"
     page.should have_text "You have no upcoming shifts scheduled."
 
     # Flex schedule should be empty by default

@@ -53,7 +53,7 @@ describe "Shift Scheduler Spec", :type => :feature do
     end
 
     page.should have_text("My Positions")
-    page.should have_text("Shift Territory Shifts")
+    page.should have_text("Shifts by Territory")
     page.should have_text("Available Shifts")
     page.should have_text(next_month)
   end
@@ -103,7 +103,7 @@ describe "Shift Scheduler Spec", :type => :feature do
     @person.positions = @positions
     @person.shift_territories = @shift_territories
     visit month_of_interest_link
-    click_on "Shift Territory Shifts"
+    click_on "Shifts by Territory"
 
     # The shift territory with shifts isn't the default, so no shifts should show up here
     page.should have_text("Categories")

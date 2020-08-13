@@ -52,6 +52,7 @@ describe "DAT Incident Report", type: :feature, versions: true do
 
   it "Can be foceably closed" do
     grant_capability! 'incidents_admin'
+    grant_capability! 'region_admin'
 
     @region = @person.region
     FactoryGirl.create :incidents_scope, region: @person.region
@@ -147,7 +148,8 @@ describe "DAT Incident Report", type: :feature, versions: true do
         find('p', text: @responder.full_name).click
 
         expect(find(:xpath, ".//input[@type='checkbox']")).not_to be_checked
-        select 'Team Lead Trainee'
+        save_page
+        select 'Dispatcher/Duty Officer'
       end
     end
   end
