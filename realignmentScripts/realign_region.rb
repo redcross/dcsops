@@ -165,7 +165,11 @@ shift_data.each do |s|
   ordinal = s["Ordinal"].to_i
   exclusive = (s["Exclusive"] == "Yes")
   show_in_dispatch_console = (s["Show in Dispatch Console"] == "Yes")
-  shift_begins = Date.parse(s["Shift begins"]) if (not s["Shift begins"].nil? and not s["Shift begins"].empty?)
+  if not s["Shift begins"].nil? and not s["Shift begins"].empty?
+    shift_begins = Date.parse(s["Shift begins"]) if
+  else
+    shift_begins = DateTime.yesterday
+  end
 
   s = Scheduler::Shift.create(
     shift_territory: shift_territory,
