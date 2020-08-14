@@ -10,14 +10,6 @@ r = Roster::Region.find_by_slug(region_slug)
 people_rs = people_r_slugs.map {|slug| Roster::Region.find_by_slug(slug) }
 shifts = Scheduler::Shift.for_region(r)
 
-vc_position_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Volunteer Connection Positions.csv"), headers: true)
-vc_position_data.each do |p_d|
-  if p_d["Volunteer Connection Position"].nil? || p_d["Volunteer Connection Position"].strip.empty?
-    next
-  end
-  Roster::VcPosition.create(name: p_d["Volunteer Connection Position"].strip, region: r)
-end
-
 position_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - DCSOps Positions.csv"), headers: true)
 position_data.each do |p_d|
   if p_d["Position"].nil?
@@ -83,6 +75,37 @@ shift_territory_data.each do |s_t|
 
     r_t.shift_territories << shift_territory
     r_t.save!
+  end
+end
+
+vc_position_data = CSV.parse(File.read("#{csv_dir}/#{csv_basename} - Volunteer Connection Positions.csv"), headers: true)
+vc_position_data.each do |p_d|
+  if p_d["Volunteer Connection Position"].nil? || p_d["Volunteer Connection Position"].strip.empty?
+    next
+  end
+  vc_position = Roster::VcPosition.create(name: p_d["Volunteer Connection Position"].strip, region: r)
+
+  if not p_d["DCSOps Position"].nil? and not p_d["DCSOps Position"].empty?
+    shift_territory = nil
+    if not p_d["Shift Territory"].nil? and not p_d["Shift Territory"].empty?
+      shift_territory = Roster::ShiftTerritory.where(region: r, name: p_d["Shift Territory"]).first
+      if shift_territory.nil?
+        puts "ERROR: Can't find shift territory #{s['Shift Territory']}"
+        exit 1
+      end
+    end
+
+    position = Roster::Position.where(region: r, name: p_d["DCSOps Position"]).first
+    if position.nil?
+      puts "ERROR: Can't find position #{s['DCSOps Position']}"
+      exit 1
+    end
+
+    Roster::VcPositionConfiguration.create(
+      shift_territory: shift_territory,
+      vc_position: vc_position,
+      position: position
+    )
   end
 end
 
@@ -166,7 +189,7 @@ shift_data.each do |s|
   exclusive = (s["Exclusive"] == "Yes")
   show_in_dispatch_console = (s["Show in Dispatch Console"] == "Yes")
   if not s["Shift begins"].nil? and not s["Shift begins"].empty?
-    shift_begins = Date.parse(s["Shift begins"]) if
+    shift_begins = Date.parse(s["Shift begins"])
   else
     shift_begins = DateTime.yesterday
   end

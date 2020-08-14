@@ -41,6 +41,10 @@ run_for_region() {
   xlsx2csv "$SHEET_DIR/$XLS" -n "DCSOps Positions" > "$BASE_DATA_DIR/$CSV_BASE - DCSOps Positions.csv"
   xlsx2csv "$SHEET_DIR/$XLS" -n "Volunteer Connection Positions" > "$BASE_DATA_DIR/$CSV_BASE - Volunteer Connection Positions.csv"
   xlsx2csv "$SHEET_DIR/$XLS" -n "Notifications" > "$BASE_DATA_DIR/$CSV_BASE - Notifications.csv"
+
+  find $BASE_DATA_DIR -name "$CSV_BASE*" | while read file ; do
+    sed -i -e 's/_x000D_//g' "$file"
+  done
   rails r $BASE_DIR/realign_region.rb "$BASE_DATA_DIR" "$CSV_BASE" $@ || exit
   echo "Done with $XLS."
   echo "---------------------------------"
