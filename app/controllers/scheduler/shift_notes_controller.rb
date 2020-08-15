@@ -5,7 +5,7 @@ class Scheduler::ShiftNotesController < Scheduler::BaseController
   actions :index, :update
   load_and_authorize_resource class: "Scheduler::ShiftAssignment"
 
-  has_scope :date, default: ->controller{Date.current.to_s} do |controller, scope, val|
+  has_scope :date, only: :index, default: ->controller{Date.current.to_s} do |controller, scope, val|
     d = Date.parse val
     scope.where{date == d}
   end
