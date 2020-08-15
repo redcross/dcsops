@@ -19,6 +19,7 @@ class AdminAbility
       can :manage, Roster::CellCarrier
       can :manage, Roster::Person
       can :manage, Roster::Capability
+      can :manage, Roster::VcPosition
 
       can :manage, Scheduler::DispatchConfig
       can :manage, Scheduler::Shift

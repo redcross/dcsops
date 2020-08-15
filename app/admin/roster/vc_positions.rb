@@ -28,4 +28,9 @@ ActiveAdmin.register Roster::VcPosition, as: 'VC Position' do
     f.actions
   end
 
+  controller do
+    def resource_params
+      [params.fetch(resource_request_name, {}).permit(:name, :region_id, vc_position_configurations_attributes: [:id, :_destroy, :position_id, :shift_territory_id])]
+    end
+  end
 end
