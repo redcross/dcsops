@@ -45,9 +45,9 @@ ActiveAdmin.register Incidents::ResponseTerritory, as: 'Response Territory' do
 
     def available_shift_territories
       if resource.region
-        resource.region.shift_territories
+        resource.region.shift_territories.enabled
       else
-        Roster::ShiftTerritory.all
+        Roster::ShiftTerritory.all.enabled
       end
     end
     helper_method :available_shift_territories
