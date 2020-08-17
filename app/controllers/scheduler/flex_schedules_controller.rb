@@ -11,7 +11,19 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
   has_scope :available, type: :array do |controller, scope, val|
     if val
       val.each do |period|
-        scope = scope.where("available_#{period}" => true)
+        # We seem to be running into the issue here:
+        # https://github.com/heartcombo/has_scope/issues/84
+        #
+        # This caused the query to get added twice, but in a weird order that
+        # was affecting how activerecord was querying postgres, putting the arguments
+        # out of order, making it so the person id was being put in a boolean column.
+        #
+        # The issue was closed, most likely due to not being reproducible by the maintainer,
+        # and instead of chasing things down today, we're going # to route around it by
+        # checking if the addition to the scope we were going to do is already there.
+        if not scope.where_values_hash.key?("available_#{period}") then
+          scope = scope.where("available_#{period}" => true)
+        end
       end
     end
     scope
