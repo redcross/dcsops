@@ -1,6 +1,6 @@
 module Incidents::IncidentsListHelper
   def counties_for_menu(collection)
-    collection.select{[county, state]}.where{county != ''}.order(:state, :county).uniq.map{|row| "#{row.county}, #{row.state}" }.to_a.uniq{|s| s.downcase}
+    collection.select{[county, state]}.where{county != nil}.order(:state, :county).uniq.map{|row| "#{row.county}, #{row.state}" }.to_a.uniq{|s| s.downcase}
   end
 
   def neighborhoods_for_menu(collection)
