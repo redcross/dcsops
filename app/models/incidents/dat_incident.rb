@@ -16,8 +16,12 @@ class Incidents::DatIncident < Incidents::DataModel
     %w(single_family_home apartment sro mobile_home commercial none)
   end
 
-  assignable_values_for :vacate_type, allow_blank: true do
-    Lookup.for_region_and_scope(incident.region, "Incidents::Incident#vacate_type").map{|l| {l.name => l.value}}.reduce(&:merge)
+  def humanized_vacate_type
+    Lookup.for_region_and_scope(incident.region, "Incidents::Incident#vacate_type").where(value: vacate_type).first.humanized
+  end
+
+  def humanized_vacate_types
+    Lookup.for_region_and_scope(incident.region, "Incidents::Incident#vacate_type")
   end
 
   delegated_validator Incidents::Validators::CompleteReportValidator, if: :complete_report?
