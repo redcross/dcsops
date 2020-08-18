@@ -17,7 +17,9 @@ class Incidents::DatIncident < Incidents::DataModel
   end
 
   def humanized_vacate_type
-    Lookup.for_region_and_scope(incident.region, "Incidents::Incident#vacate_type").where(value: vacate_type).first.humanized
+    lookup = Lookup.for_region_and_scope(incident.region, "Incidents::Incident#vacate_type").where(value: vacate_type).first
+
+    lookup.present? ? lookup.humanized : vacate_type
   end
 
   def humanized_vacate_types
