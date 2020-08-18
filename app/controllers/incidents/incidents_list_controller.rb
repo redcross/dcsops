@@ -23,8 +23,8 @@ class Incidents::IncidentsListController < Incidents::BaseController
 
   has_scope :in_shift_territory, as: :shift_territory_id_eq
   has_scope :county_state_eq do |controller, scope, val|
-    county, state_name = val.split ", "
-    scope.where{(lower(county) == county.downcase) & (state == state_name)}
+    county_name, state_name = val.split ", "
+    scope.where{(lower(county) == county_name.downcase) & (state == state_name)}
   end
 
   def resource_path(*args)
