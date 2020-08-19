@@ -19,7 +19,7 @@ class window.IncidentLocationController
 
     unless this.maybeInitMap()
       id = $(@dom).closest('.tab-pane').attr('id')
-      sel = "a[data-target=##{id}]"
+      sel = "a[data-target='##{id}']"
       $(document).on 'shown.bs.tab', sel, (evt) =>
         this.maybeInitMap()
 
