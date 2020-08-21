@@ -2,6 +2,8 @@ ActiveAdmin.register Incidents::ReportSubscription, as: 'Report Subscriptions' d
   menu parent: 'Incidents'
 
   filter :report_type
+  filter :person_first_name, as: :string
+  filter :person_last_name, as: :string
 
   controller do
     #include ActionController::Live
