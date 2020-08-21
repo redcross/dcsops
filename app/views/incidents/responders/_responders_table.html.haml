@@ -16,9 +16,8 @@
       %tr
         %th(colspan=8)
           Dispatch
-          -if dispatched
-            %a{data: {toggle: 'collapse', target: 'tbody.dispatch-list'}} show dispatch list
-    %tbody.dispatch-list{class: dispatched && "collapse"}
+          %a{data: {toggle: 'collapse', target: 'tbody.dispatch-list'}} show dispatch list
+    %tbody.dispatch-list{class: "collapse"}
       - service.dispatch_shifts.each do |assignment|
         =render partial: 'person_row', locals: {person: assignment.person, obj: assignment}
       - service.dispatch_backup.each do |person|
