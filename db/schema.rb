@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200813132138) do
+ActiveRecord::Schema.define(version: 20200825171721) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -549,7 +549,7 @@ ActiveRecord::Schema.define(version: 20200813132138) do
 
   add_index "incidents_notifications_events", ["region_id"], name: "index_incidents_notifications_events_on_region_id", using: :btree
 
-  create_table "incidents_notifications_role_configurations", id: false, force: :cascade do |t|
+  create_table "incidents_notifications_role_configurations", force: :cascade do |t|
     t.integer "role_id",            null: false
     t.integer "position_id",        null: false
     t.integer "shift_territory_id"
