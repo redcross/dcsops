@@ -19,10 +19,16 @@ ActiveAdmin.register Roster::VcPosition, as: 'VC Position' do
 
   form do |f|
     f.inputs
-    f.inputs "DCSOps Position Configurations" do
-      f.has_many :vc_position_configurations, heading: "DCSOps Position Configurations", allow_destroy: true do |f|
-        f.input :position, collection: Roster::Position.where(region: resource.region).sort_by(&:name)
-        f.input :shift_territory, collection: Roster::ShiftTerritory.where(region: resource.region).sort_by(&:name)
+    if f.object.new_record?
+      panel "DCSOps Position Configurations" do
+        para "In order to add new Position Configurations, you have to save your new VC Position.  This is so we can populate the dropdowns with Positions and Shift Territories only from the region you're working in.  Please hit 'Edit Vc Position' as soon as you save this new VC Position to configure the DCSOps Positions and Shift Territories."
+      end
+    else
+      f.inputs "DCSOps Position Configurations" do
+        f.has_many :vc_position_configurations, heading: "DCSOps Position Configurations", allow_destroy: true do |f|
+          f.input :position, collection: Roster::Position.where(region: resource.region).sort_by(&:name)
+          f.input :shift_territory, collection: Roster::ShiftTerritory.where(region: resource.region).sort_by(&:name)
+        end
       end
     end
     f.actions
