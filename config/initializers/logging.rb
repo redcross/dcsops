@@ -57,10 +57,6 @@ if Rails.env.production?
 
   module ActionView
     class LogSubscriber
-      def info(msg)
-        debug(msg)
-      end
-
       def render_partial(event)
         # Silencing
       end
