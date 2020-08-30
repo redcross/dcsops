@@ -37,13 +37,13 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
     end
     f.inputs "DCSOps Position Configurations" do
       f.has_many :role_configurations, heading: "DCSOps Position Configurations", allow_destroy: true do |rc|
-        rc.input :position, collection: Roster::Position.where(region: resource.region).sort_by(&:name)
-        rc.input :shift_territory, collection: Roster::ShiftTerritory.where(region: resource.region).sort_by(&:name)
+        rc.input :position, collection: Roster::Position.where(region: resource.region).visible.sort_by(&:name)
+        rc.input :shift_territory, collection: Roster::ShiftTerritory.where(region: resource.region).enabled.sort_by(&:name)
       end
     end
 
     f.inputs "Shifts" do
-      f.input :shifts, as: :check_boxes, collection: Scheduler::Shift.for_region(f.object.region)
+      f.input :shifts, as: :check_boxes, collection: Scheduler::Shift.for_region(f.object.region).active_on_day(Time.now)
     end
     f.actions
   end
