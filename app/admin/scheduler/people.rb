@@ -72,11 +72,11 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
   end
 
   scope :default, default: true do |scope|
-    scope.uniq
+    scope
   end
 
   scope :logins do |scope|
-    scope.uniq.order(last_login: :desc).where.not(last_login: nil)
+    scope.order(last_login: :desc).where.not(last_login: nil)
   end
 
   member_action :impersonate, method: [:post, :delete] do
@@ -91,10 +91,10 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
       redirect_to :back
     end
   end
-  action_item only: :show, if: proc{ authorized? :impersonate, resource} do
+  action_item :possess, only: :show, if: proc{ authorized? :impersonate, resource} do
     link_to "Possess", url_for(action: :impersonate, only_path: true), {method: :post}
   end
-  action_item only: :show do
+  action_item :vc, only: :show do
     link_to "Volunteer Connection", resource.vc_profile_url
   end
 
