@@ -47,8 +47,8 @@ class Roster::Person < ApplicationRecord
   end
 
   scope :has_position, lambda { joins(:positions) }
-  scope :in_shift_territory, lambda {|shift_territory| joins(:shift_territories).where(:shift_territories => {id: shift_territory})}
-  scope :with_position, lambda {|positions| joins(:positions).where(:positions => {id: positions})}
+  scope :in_shift_territory, lambda {|shift_territory| joins(:shift_territories).where(:roster_shift_territories => {id: shift_territory})}
+  scope :with_position, lambda {|positions| joins(:positions).where(:roster_positions => {id: positions})}
   scope :by_name, lambda { order(:last_name, :first_name)}
 
   has_many :shift_assignments, class_name: 'Scheduler::ShiftAssignment'

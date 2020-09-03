@@ -27,20 +27,22 @@ class Scheduler::DispatchConfig < ApplicationRecord
   end
 
   def self.includes_everything
-    shifts = :shift_first, :shift_second, :shift_third, :shift_fourth
-    backups = :backup_first, :backup_second, :backup_third, :backup_fourth
-    includes do
-      backups.map{|b| __send__(b).region }
-    end.includes do
-      shifts.flat_map{|sh| [__send__(sh).shift_territory,__send__(sh).shift_times] }
-    end.includes(:region)
+    includes(backup_first: :region).
+    includes(backup_second: :region).
+    includes(backup_third: :region).
+    includes(backup_fourth: :region).
+    includes(shift_first: [ :shift_territory, :shift_times ]).
+    includes(shift_second: [ :shift_territory, :shift_times ]).
+    includes(shift_third: [ :shift_territory, :shift_times ]).
+    includes(shift_fourth: [ :shift_territory, :shift_times ]).
+    includes(:region)
   end
 
   def self.with_shift shift
-    shifts = :shift_first_id, :shift_second_id, :shift_third_id, :shift_fourth_id
-    where do
-      shifts.map{|sh| __send__(sh) == shift }.reduce(&:|)
-    end
+    where(shift_first: shift).
+      or(Scheduler::DispatchConfig.where(shift_second: shift)).
+      or(Scheduler::DispatchConfig.where(shift_third: shift)).
+      or(Scheduler::DispatchConfig.where(shift_fourth: shift))
   end
 
   def shift_list

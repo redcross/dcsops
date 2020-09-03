@@ -88,6 +88,6 @@
     -if dsn = ENV['SENTRY_DSN_WEB']
       = javascript_include_tag 'https://cdn.ravenjs.com/1.1.7/jquery,native/raven.min.js'
       :javascript
-        Raven.config(#{dsn.to_json}, {
+        Raven.config(#{raw dsn.to_json}, {
             whitelistUrls: ['datresponse.org', 'dcsops.org']
         }).install();

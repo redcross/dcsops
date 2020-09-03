@@ -48,7 +48,7 @@
       window.editPanelController = new IncidentEditPanelController();
       window.respondersController = new IncidentRespondersController();
       respondersController.initMap({}, $('.responder-map')[0]);
-      respondersController.setIncidentLocation(#{parent.lat.to_json}, #{parent.lng.to_json});
+      respondersController.setIncidentLocation(#{raw parent.lat.to_json}, #{raw parent.lng.to_json});
       respondersController.loadTravelTimes();
       respondersController.mapResponders();
       $("[data-toggle='tooltip']").tooltip()

@@ -13,4 +13,4 @@ If you know who may want to take your shift, type their name here.  They will re
 
 - content_for :footer_js do
   :javascript
-    window.swapController = new window.SwapController(#{resource.assignment.shift.shift_territory_id.to_json}, #{resource.assignment.shift.position_ids.to_json})
+    window.swapController = new window.SwapController(#{raw resource.assignment.shift.shift_territory_id.to_json}, #{raw resource.assignment.shift.position_ids.to_json})

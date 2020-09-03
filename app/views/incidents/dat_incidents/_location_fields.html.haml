@@ -27,8 +27,8 @@
           = google_maps_javascript
           :javascript
             $(function() {
-              config = #{map_config(scope).to_json};
-              window.incidentLocationController = window.incidentLocationController || new IncidentLocationController(#{f.object.lat.to_json}, #{f.object.lng.to_json}, config);
+              config = #{raw map_config(scope).to_json};
+              window.incidentLocationController = window.incidentLocationController || new IncidentLocationController(#{raw f.object.lat.to_json}, #{raw f.object.lng.to_json}, config);
             });
     - unless is_panel
       .col-sm-6

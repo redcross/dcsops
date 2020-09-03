@@ -47,8 +47,8 @@
   = google_maps_javascript
   -if resource.person
     :javascript
-      window.assignmentController = new IncidentAssignmentController(#{map_config(scope).to_json}, $('.assignment-map')[0], $('.directions')[0])
-      assignmentController.showAssignment(#{parent.lat.to_f.to_json}, #{parent.lng.to_f.to_json}, #{person.lat.to_f.to_json}, #{person.lng.to_f.to_json})
+      window.assignmentController = new IncidentAssignmentController(#{raw map_config(scope).to_json}, $('.assignment-map')[0], $('.directions')[0])
+      assignmentController.showAssignment(#{raw parent.lat.to_f.to_json}, #{raw parent.lng.to_f.to_json}, #{raw person.lat.to_f.to_json}, #{raw person.lng.to_f.to_json})
 
 -if request.xhr?
   =yield :footer_js

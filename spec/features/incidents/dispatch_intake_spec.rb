@@ -26,7 +26,6 @@ describe "Incident Dispatch Intake Console", :type => :feature do
 
   def visit_intake
     visit "/incidents/"
-    save_page
     click_on "Dispatch New Incident"
   end
 
@@ -93,9 +92,6 @@ describe "Incident Dispatch Intake Console", :type => :feature do
     fill_in "incidents_call_log[address_entry]", with: "1663 Market St San Francisco\n"
     page.should have_text "To confirm, that's located in San Francisco county?"
     click_on "Create Incident"
-
-    page.should have_text "can't be blank"
-    page.should have_text "To confirm, that's located in San Francisco county?"
 
     fill_in "May I have the name of the person you would like to have us call back and confirm an estimated time of arrival?", with: Faker::Name.name
     fill_in "The callback phone number for this person?", with: Faker::PhoneNumber.phone_number

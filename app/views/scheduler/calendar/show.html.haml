@@ -52,7 +52,7 @@
 
 - content_for :footer_js do
   :javascript
-    window.calendarController = new window.CalendarController(#{ajax_params.to_json}, "#{scheduler_calendar_path(params[:year], params[:month], display: 'open_shifts')}", "#{@month.strftime "%Y-%m"}")
+    window.calendarController = new window.CalendarController(#{raw ajax_params.to_json}, "#{scheduler_calendar_path(params[:year], params[:month], display: 'open_shifts')}", "#{@month.strftime "%Y-%m"}")
   - if person and ['Terrell', 'Hancock'].include? person.last_name
     :javascript
       $(document).ready(function() {

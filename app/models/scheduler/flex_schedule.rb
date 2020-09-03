@@ -2,20 +2,33 @@ class Scheduler::FlexSchedule < ApplicationRecord
   belongs_to :person, foreign_key: 'id', class_name: 'Roster::Person'
 
   scope :for_shift_territory, lambda {|shift_territory_ids| 
-    joins(person: :shift_territory_memberships).where(person: { shift_territory_memberships: { county_id: shift_territory_ids } })
+    joins(person: :shift_territory_memberships).where(person: { roster_shift_territory_memberships: { shift_territory_id: shift_territory_ids } })
   }
 
   scope :with_availability, lambda {
-    # NOTE: Squeel migration note:
-    # The original syntax here reduces to calling `where{}` with just a boolean,
-    # which as far as I can tell is not valid Squeel syntax.
-    # I'm leaving the original Squeel syntax in place so that it blows up if
-    # anyone tries to use it, and hopefully they'll be in a better position to
-    # figure out the original intent.
-    raise("Incomplete Squeel migration")
-    where{
-      Scheduler::FlexSchedule.available_columns.map{|c|__send__(c) == true}.reduce(&:|)
-    }
+    # Squeel migration note:
+    #
+    # The original squeel was:
+    #  where{
+    #    Scheduler::FlexSchedule.available_columns.map{|c|__send__(c) == true}.reduce(&:|)
+    #  }
+    #
+    # That's a pretty elegant way to do what is exploded manually below.  There may be a
+    # better way to do it in native active record, but I don't know it.
+    where(available_sunday_day: true).
+      or(Scheduler::FlexSchedule.where(available_sunday_night: true)).
+      or(Scheduler::FlexSchedule.where(available_monday_day: true)).
+      or(Scheduler::FlexSchedule.where(available_monday_night: true)).
+      or(Scheduler::FlexSchedule.where(available_tuesday_day: true)).
+      or(Scheduler::FlexSchedule.where(available_tuesday_night: true)).
+      or(Scheduler::FlexSchedule.where(available_wednesday_day: true)).
+      or(Scheduler::FlexSchedule.where(available_wednesday_night: true)).
+      or(Scheduler::FlexSchedule.where(available_thursday_day: true)).
+      or(Scheduler::FlexSchedule.where(available_thursday_night: true)).
+      or(Scheduler::FlexSchedule.where(available_friday_day: true)).
+      or(Scheduler::FlexSchedule.where(available_friday_night: true)).
+      or(Scheduler::FlexSchedule.where(available_saturday_day: true)).
+      or(Scheduler::FlexSchedule.where(available_saturday_night: true))
   }
 
   scope :available_at, lambda { |day, shift|

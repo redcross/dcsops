@@ -37,9 +37,9 @@ describe Incidents::NotificationsController, :type => :controller do
     it "raises when the user doesn't have permission" do
       @person.position_memberships.delete_all
       @person.reload
-      expect {
-        get :new, params: { incident_id: incident.to_param, region_id: incident.region.to_param }
-      }.to raise_error
+      get :new, params: { incident_id: incident.to_param, region_id: incident.region.to_param }
+      expect(response.code).to eq "302"
+      expect(flash[:error]).to match("You are not authorized to access that page.")
     end
 
     it "redirects if the incident is closed" do
@@ -56,7 +56,7 @@ describe Incidents::NotificationsController, :type => :controller do
       expect {
         post :create, params: { incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_notifications_message => valid_attributes }
       }.to change(Incidents::EventLog, :count).by(1)
-      expect(response).not_to be_error
+      expect(response).not_to be_server_error
       incident.reload
       expect(incident.notification_level_id).to eq(event.id)
       expect(incident.notification_level_message).to eq(message)
@@ -70,7 +70,7 @@ describe Incidents::NotificationsController, :type => :controller do
 
       it "renders new with layout when invalid" do
         post :create, params: { incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_notifications_message => invalid_attributes }
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to render_template('new')
         expect(response).to render_template(layout: 'application')
       end

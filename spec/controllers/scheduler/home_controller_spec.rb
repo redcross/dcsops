@@ -14,6 +14,6 @@ describe Scheduler::HomeController, :type => :controller do
     @person.save
 
     get :root
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 end

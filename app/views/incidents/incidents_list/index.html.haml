@@ -54,5 +54,5 @@
 - content_for :footer_js do
   = google_maps_javascript
   :javascript
-    config = #{map_config(scope).to_json};
-    allIncidentsMapController = new AllIncidentsHeatmapController(#{map_json_for(collection_for_stats).to_json}, 'marker', config);
+    config = #{raw map_config(scope).to_json};
+    allIncidentsMapController = new AllIncidentsHeatmapController(#{raw map_json_for(collection_for_stats).to_json}, 'marker', config);

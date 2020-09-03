@@ -90,11 +90,11 @@
 - content_for :footer_js do
   = google_maps_javascript
   :javascript
-    config = #{map_config(scope).to_json};
-    allIncidentsMapController = new AllIncidentsMapController(#{map_json_for(recent_incidents).to_json}, config);
+    config = #{raw map_config(scope).to_json};
+    allIncidentsMapController = new AllIncidentsMapController(#{raw map_json_for(recent_incidents).to_json}, config);
   - if scope.boundary_kmz_location.present?
     :javascript
-      allIncidentsMapController.configureBoundaryLayer(#{scope.boundary_kmz_location.to_json});
+      allIncidentsMapController.configureBoundaryLayer(#{raw scope.boundary_kmz_location.to_json});
   =region_pubnub_setup(current_region)
 
 

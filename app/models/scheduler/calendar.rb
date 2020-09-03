@@ -71,7 +71,7 @@ class Scheduler::Calendar
   def load_all_shifts
     shifts = all_groups.values.flatten
     @all_assignments = Scheduler::ShiftAssignment.references(:shift)#.includes_person_carriers
-        .includes(:person, :shift_time, shift: [:shift_territories, :positions]) # person.counties,
+        .includes(:person, :shift_time, shift: [:shift_territory, :positions]) # person.counties,
         .for_shifts(shifts).where(date: date_range)
     
     @all_shifts = Core::NestedHash.hash_hash_hash_array
@@ -87,7 +87,7 @@ class Scheduler::Calendar
       pid = person.id
 
       Scheduler::ShiftAssignment.references(:shift).includes(:shift_time, shift: :shift_times)
-          .where(shift_time_id: time_ids, person_id: pid, date: date_range)
+          .where(shift_time_id: group_ids, person_id: pid, date: date_range)
           .each do |assignment|
         @my_shifts[assignment.shift_time_id][assignment.date] << assignment
       end

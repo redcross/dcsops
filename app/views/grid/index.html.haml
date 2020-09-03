@@ -15,4 +15,4 @@
 %button.add-row.btn Add Row
 - content_for :footer_js do
   :javascript
-    window.gridController = new GridController(#{collection_path.to_json}, #{render('row', resource: resource_class.new).to_json});
+    window.gridController = new GridController(#{raw collection_path.to_json}, #{raw render('row', resource: resource_class.new).to_json});

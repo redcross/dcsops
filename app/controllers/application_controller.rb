@@ -74,18 +74,21 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from CanCan::AccessDenied do |exception|
-    raise exception and return if Rails.env.test?
     flash[:error] = "You are not authorized to access that page."
     respond_with_redirect_or_status :back, :forbidden
   end
 
   def respond_with_redirect_or_status redirect, status, fallback=nil
     respond_to do |fmt|
-      fmt.any(:html, :pdf) { redirect_to redirect }
+      fmt.any(:html, :pdf) {
+        if redirect == :back
+          redirect_back fallback_location: root_path
+        else
+          redirect_to redirect
+        end
+      }
       fmt.all { head status }
     end
-  rescue ActionController::RedirectBackError
-    redirect_to fallback||root_path
   end
 
   def set_frame_options

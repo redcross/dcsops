@@ -31,13 +31,19 @@ describe "Region Extra Configuration Pages", :type => :feature do
   it "Update the region positions" do
     visit "/admin/regions/#{@person.region.url_slug}/positions"
 
+    save_page
+
     click_on "Add Row"
+
+    save_page
 
     position_id = @person.region.positions.first.id
     within("#resource-#{position_id}") do
       fill_in "roster_position[abbrev]", with: "Position"
       click_on "Save"
     end
+
+    save_page
 
     within("#resource-") do
       fill_in "roster_position[name]", with: "Test Position"

@@ -55,11 +55,11 @@
         });
       }
 
-      config = #{map_config(scope).to_json};
-      window.incidentLocationController = new IncidentLocationController(#{resource.lat.to_json}, #{resource.lng.to_json}, config);
+      config = #{raw map_config(scope).to_json};
+      window.incidentLocationController = new IncidentLocationController(#{raw resource.lat.to_json}, #{raw resource.lng.to_json}, config);
       window.editPanelController = new IncidentEditPanelController();
-      if (#{can?(:create, resource.attachments.build).to_json}) {
-        window.attachmentController = new AttachmentsDragAndDropController(#{resource_attachments_path(format: :js).to_json});
+      if (#{raw can?(:create, resource.attachments.build).to_json}) {
+        window.attachmentController = new AttachmentsDragAndDropController(#{raw resource_attachments_path(format: :js).to_json});
       }
       
     });

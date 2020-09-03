@@ -63,7 +63,7 @@ describe Incidents::CasesController, :type => :controller do
       expect {
         post :create, params: { incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_case => valid_attributes }
       }.to change(Incidents::Case, :count).by(1)
-      expect(response).not_to be_error
+      expect(response).not_to be_server_error
     end  
 
     context "when HTML" do
@@ -74,7 +74,7 @@ describe Incidents::CasesController, :type => :controller do
 
       it "renders new with layout when invalid" do
         post :create, params: { incident_id: incident.to_param, region_id: incident.region.to_param, :incidents_case => invalid_attributes }
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to render_template('new')
         expect(response).to render_template(layout: 'application')
       end

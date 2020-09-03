@@ -11,7 +11,7 @@ module SerializedAccessorStubs
       # request is not accessible to us in the spec.
 
       # global_log_spec.rb
-      allow_any_instance_of(Roster::Chapter).to receive(:incidents_use_global_log).and_return(true)
+      allow_any_instance_of(Roster::Region).to receive(:incidents_use_global_log).and_return(true)
 
       allow_any_instance_of(Incidents::Scope).to receive(:report_frequencies).and_return('weekly,weekdays,daily')
     end

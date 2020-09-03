@@ -11,14 +11,14 @@ describe Incidents::ReportSubscriptionsController, :type => :controller do
   describe '#new' do
     it 'renders' do
       get :new, params: { scope_id: scope.to_param, report_type: report_type }
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response.body).to include('Subscribe')
     end
   end
 
   describe '#create' do
     it 'creates and redirects to the subscription' do
-      post :create, params: { scope_id: scope.to_param, report_type: report_type }
+      post :create, params: { scope_id: scope.to_param, report_type: report_type, incidents_report_subscription: {frequency: 'daily'} }
       expect(response).to be_redirect
       expect(get_sub).to_not be_nil
     end
@@ -30,14 +30,14 @@ describe Incidents::ReportSubscriptionsController, :type => :controller do
     describe '#show' do
       it 'renders' do
         get :show, params: { scope_id: scope.to_param, report_type: report_type, id: sub.id }
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response.body).to include('Unsubscribe')
       end
     end
 
     describe '#update' do
       it 'changes the frequency' do
-        patch :update, params: { scope_id: scope.to_param, report_type: report_type, id: sub.id, incidents_report_subscription: {frequency: 'daily'} }
+        put :update, params: { scope_id: scope.to_param, report_type: report_type, id: sub.id, incidents_report_subscription: {frequency: 'daily'} }
         expect(response).to be_redirect
         expect(get_sub.frequency).to eq('daily')
       end

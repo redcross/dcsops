@@ -15,7 +15,7 @@ describe "Incident Attachments", :type => :feature do
 
     page.should have_text "Attachment type"
 
-    attach_file("incidents_attachment[file]", "spec/files/attachments/test.txt")
+    attach_file("incidents_attachment[file]", File.expand_path("spec/files/attachments/test.txt"))
     select "File", from: "Attachment type"
     fill_in "Name*", with: "Test Attachment"
     click_on "Create Attachment"

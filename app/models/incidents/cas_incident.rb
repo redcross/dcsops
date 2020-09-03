@@ -13,7 +13,7 @@ class Incidents::CasIncident < ApplicationRecord
   def self.to_link_for_region region
     for_region(region)
       .left_outer_joins(:incident)
-      .where(ignore_incident: false, incident: { id: nil })
+      .where(ignore_incident: false, incidents_incidents: { id: nil })
       .order(incident_date: :desc)
   end
 

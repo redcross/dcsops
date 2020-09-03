@@ -6,7 +6,7 @@ class Incidents::ResponseTerritory < ActiveRecord::Base
   validates :region, presence: true
 
   def self.for_region region
-    where{region_id == region}
+    where(region: region)
   end
 
   def self.default_for_region region

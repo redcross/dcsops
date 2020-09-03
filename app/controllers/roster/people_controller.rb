@@ -41,7 +41,7 @@ class Roster::PeopleController < Roster::BaseController
     end
 
     def collection
-      @collection ||= apply_scopes(super).uniq.preload(:positions)
+      @collection ||= apply_scopes(super).preload(:positions).uniq
     end
 
     expose(:identify_people) { false }

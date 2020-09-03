@@ -19,7 +19,7 @@ ActiveAdmin.register Incidents::ResponseTerritory, as: 'Response Territory' do
 
   form do |f|
     f.inputs do
-      configs = f.object.region ? Scheduler::DispatchConfig.for_region(f.object.region).order{name} : Scheduler::DispatchConfig.order{[region_id, name]}
+      configs = f.object.region ? Scheduler::DispatchConfig.for_region(f.object.region).order(:name) : Scheduler::DispatchConfig.order(:region_id, :name)
       f.input :region
       f.input :dispatch_config, collection: configs
       f.input :is_default
@@ -40,7 +40,7 @@ ActiveAdmin.register Incidents::ResponseTerritory, as: 'Response Territory' do
 
   controller do
     def collection
-      @coll ||= super.includes{region}
+      @coll ||= super.includes(:region)
     end
 
     def available_shift_territories

@@ -6,8 +6,8 @@ module Searchable
   end
 
   def search_params
-    args = params[:q] || {}
-    default_search_params.merge(args)
+    args = params[:q] || ActionController::Parameters.new
+    default_search_params.merge(args.permit.to_unsafe_h)
   end
 
   def search

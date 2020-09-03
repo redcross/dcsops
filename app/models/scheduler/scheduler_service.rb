@@ -10,13 +10,13 @@ class Scheduler::SchedulerService
     assignments = Scheduler::ShiftAssignment.joins(:shift).preload(:shift, :person).for_active_groups(groups)
                   .where.not(person_id: exclude).limit(limit)
     if shift_territories.present?
-      assignments = assignments.where(shift: { shift_territory_id: shift_territories })
+      assignments = assignments.where(scheduler_shifts: { shift_territory_id: shift_territories })
     end
     if shifts
       assignments = assignments.where(shift_id: shifts)
     end
     if dispatch_console
-      assignments = assignments.where(shift: { show_in_dispatch_console: true })
+      assignments = assignments.where(scheduler_shifts: { show_in_dispatch_console: true })
     end
 
     assignments
@@ -27,7 +27,7 @@ class Scheduler::SchedulerService
     offset = time.seconds_since_midnight
     period = (offset >= region.scheduler_flex_day_start && offset < region.scheduler_flex_night_start) ? 'day' : 'night'
 
-    schedules = Scheduler::FlexSchedule.available_at(dow, period).joins(:person).where(person: { region_id: region }).preload(:person)
+    schedules = Scheduler::FlexSchedule.available_at(dow, period).joins(:person).eager_load(:person).where(roster_people: { region_id: region })
     if shift_territories.present?
       schedules = schedules.for_shift_territory(shift_territories)
     end

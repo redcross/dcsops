@@ -10,9 +10,9 @@ describe Incidents::IncidentsController, :type => :controller do
       inc2 = FactoryGirl.create :dat_incident
       expect(Incidents::Incident.count).to eq(2)
 
-      get :needs_report, region_id: inc.region.to_param
+      get :needs_report, params: { region_id: inc.region.to_param }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(controller.send(:needs_report_collection)).to match_array([inc])
     end
   end
@@ -23,13 +23,13 @@ describe Incidents::IncidentsController, :type => :controller do
     it "should succeed with no cas or dat" do
       inc = FactoryGirl.create :incident, region: @person.region
       get :show, params: { id: inc.to_param, region_id: inc.region.to_param }
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it "should succeed in editable mode" do
       @person.region.update_attributes incidents_report_editable: true
       get :show, params: { id: inc.to_param, region_id: inc.region.to_param }
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it "should succeed with cas" do
@@ -37,13 +37,13 @@ describe Incidents::IncidentsController, :type => :controller do
       inc.link_to_cas_incident cas
 
       get :show, params: { id: inc.to_param, region_id: inc.region.to_param }
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it "should succeed with dat" do
       dat = FactoryGirl.create :dat_incident, incident: inc
       get :show, params: { id: inc.to_param, region_id: inc.region.to_param }
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it "should succeed rendering a partial" do
@@ -58,12 +58,12 @@ describe Incidents::IncidentsController, :type => :controller do
     before(:each) { allow(Incidents::Notifications::Notification).to receive :create_for_event }
 
     it "should succeed as get" do
-      get :mark_invalid, id: inc.to_param, region_id: inc.region.to_param
-      expect(response).to be_success
+      get :mark_invalid, params: { id: inc.to_param, region_id: inc.region.to_param }
+      expect(response).to be_successful
     end
 
     it "should succeed as post with valid params" do
-      post :mark_invalid, id: inc.to_param, region_id: inc.region.to_param, incidents_incident: {reason_marked_invalid: 'invalid', narrative: 'Test'}
+      post :mark_invalid, params: { id: inc.to_param, region_id: inc.region.to_param, incidents_incident: {reason_marked_invalid: 'invalid', narrative: 'Test'} }
       expect(response).to redirect_to("/incidents/#{inc.region.to_param}/incidents/needs_report")
       inc.reload
       expect(inc.status).to eq('invalid')
@@ -72,15 +72,15 @@ describe Incidents::IncidentsController, :type => :controller do
 
     it "should not succeed as post without valid params" do
       expect {
-        post :mark_invalid, id: inc.to_param, region_id: inc.region.to_param, incidents_incident: {incident_type: 'duplicate'}
-        expect(response).to be_success
+        post :mark_invalid, params: { id: inc.to_param, region_id: inc.region.to_param, incidents_incident: {incident_type: 'duplicate'} }
+        expect(response).to be_successful
       }.to_not change{inc.reload.status}
     end
 
     it "should not succeed when the incident is closed" do
       inc.update_attribute :status, 'closed'
       expect {
-        post :mark_invalid, id: inc.to_param, region_id: inc.region.to_param, incidents_incident: {incident_type: 'duplicate', narrative: 'Test'}
+        post :mark_invalid, params: { id: inc.to_param, region_id: inc.region.to_param, incidents_incident: {incident_type: 'duplicate', narrative: 'Test'} }
         expect(response).to redirect_to("/incidents/#{inc.region.to_param}/incidents/needs_report")
         expect(flash[:error]).not_to be_empty
       }.to_not change{inc.reload.status}
@@ -88,7 +88,7 @@ describe Incidents::IncidentsController, :type => :controller do
 
     it "should trigger the invalid notification" do
       expect(Incidents::Notifications::Notification).to receive(:create_for_event).with(anything, 'incident_invalid')
-      post :mark_invalid, id: inc.to_param, region_id: inc.region.to_param, incidents_incident: {reason_marked_invalid: 'invalid', narrative: 'Test'}
+      post :mark_invalid, params: { id: inc.to_param, region_id: inc.region.to_param, incidents_incident: {reason_marked_invalid: 'invalid', narrative: 'Test'} }
     end
   end
 
@@ -179,7 +179,7 @@ describe Incidents::IncidentsController, :type => :controller do
         expect {
           expect {
             post :create, params: { incidents_incident: params, region_id: @person.region.to_param }
-            expect(response).to be_success # Re-renders the create page rather than redirecting to the incident
+            expect(response).to be_successful # Re-renders the create page rather than redirecting to the incident
           }.to_not(change(Incidents::Incident, :count))
         }.to_not(change{sequence.current_number})
       end
@@ -189,18 +189,18 @@ describe Incidents::IncidentsController, :type => :controller do
   end
 
   describe '#activity' do
-    before(:each) { grant_capability! 'cas_details'; PaperTrail.whodunnit = @person.id }
+    before(:each) { grant_capability! 'cas_details'; PaperTrail::Request.whodunnit = @person.id }
 
     it "should succeed" do
       get :activity, params: { region_id: @person.region.to_param }
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
   end
 
   describe '#resource_changes', versioning: true do
-    before(:each) { PaperTrail.whodunnit = @person.id }
-    before(:each) { grant_capability! 'cas_details'; PaperTrail.whodunnit = @person.id }
+    before(:each) { PaperTrail::Request.whodunnit = @person.id }
+    before(:each) { grant_capability! 'cas_details' }
 
     it "should provide list of changes to incidents" do
       i = FactoryGirl.create :incident, region: @person.region

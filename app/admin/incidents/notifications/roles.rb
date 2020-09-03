@@ -70,7 +70,7 @@ ActiveAdmin.register Incidents::Notifications::Role, as: 'Notification Role' do
       end
       column do
         panel "Triggers" do
-          table_for role.triggers.joins(:event).order('event.ordinal') do
+          table_for role.triggers.joins(:event).order('incidents_notifications_events.ordinal') do
             column :event
             column(:template) { |t| t.humanized_template }
             column :use_sms

@@ -148,7 +148,6 @@ describe "DAT Incident Report", type: :feature, versions: true do
         find('p', text: @responder.full_name).click
 
         expect(find(:xpath, ".//input[@type='checkbox']")).not_to be_checked
-        save_page
         select 'Dispatcher/Duty Officer'
       end
     end

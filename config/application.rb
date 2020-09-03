@@ -59,6 +59,8 @@ module Scheduler
     config.assets.precompile += %w( es5-shim.js )
 
     config.middleware.use PDFKit::Middleware, :print_media_type => true
+
+    #config.active_support.escape_html_entities_in_json = false
   end
   def self.table_name_prefix
     'scheduler_'

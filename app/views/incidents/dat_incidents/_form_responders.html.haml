@@ -6,7 +6,7 @@
         - template = nil
         - f.semantic_fields_for :responder_assignments, Incidents::ResponderAssignment.new(incident: f.object), child_index: 'new_responder_assignment' do |r|
           - template = render('responder_assignment_fields', f: r)
-        %table.table.form-table#responder-table{data: {template: template}}
+        %table.table.form-table#responder-table{data: {template: "#{template}"}}
           %thead
             %tr
               %th Name

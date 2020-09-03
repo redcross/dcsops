@@ -19,6 +19,6 @@ describe "Incident Response Territories Admin Page", :type => :feature do
     click_on "Create Response territory"
 
     # This is testing StringArrayInput
-    page.should have_text("\"County A\", \"County B\"")
+    page.should have_text("County A, County B")
   end
 end

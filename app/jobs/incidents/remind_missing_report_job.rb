@@ -10,9 +10,9 @@ class Incidents::RemindMissingReportJob
     Incidents::Incident.valid
       .left_outer_joins(:dat_incident)
       .joins(:dispatch_log)
-      .where(dat_incident: { id: nil })
-      .where('created_at < ?', threshold)
-      .where(where(last_no_incident_warning: nil).or(where('last_no_incident_warning < ?', threshold)))
+      .where(incidents_dat_incidents: { id: nil })
+      .where('incidents_incidents.created_at < ?', threshold)
+      .merge(Incidents::Incident.where(last_no_incident_warning: nil).or(Incidents::Incident.where('last_no_incident_warning < ?', threshold)))
       .readonly(false)
       .each do |inc|
       inc.update_attribute :last_no_incident_warning, now

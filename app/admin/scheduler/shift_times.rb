@@ -11,7 +11,7 @@ ActiveAdmin.register Scheduler::ShiftTime, as: 'Shift Time' do
     shift_times.all
   end
   scope :enabled, default: true do |shift_times|
-    shift_times.where{(enabled == true)}
+    shift_times.where(enabled: true)
   end
 
   index do

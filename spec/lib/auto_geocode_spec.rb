@@ -31,7 +31,7 @@ describe AutoGeocode do
     t.city = Faker::Address.city
     t.state = Faker::Address.state
     t.zip = Faker::Address.zip
-    t.clear_changes
+    t.clear_changes_information
     t
   }
 

@@ -45,7 +45,7 @@
         =render partial: 'week', locals: {date: wdate, editable: editable}
 -if request.xhr?
   :javascript
-    $('#calendar-title').html(#{render('title', month: month).to_json})
-    $('#view-as-links').html(#{view_as_links.to_json})
+    $('#calendar-title').html(#{raw render('title', month: month).to_json})
+    $('#view-as-links').html(#{raw view_as_links.to_json})
 :javascript
   $("[data-toggle='tooltip']").tooltip()

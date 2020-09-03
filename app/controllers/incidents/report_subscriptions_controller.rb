@@ -34,7 +34,7 @@ class Incidents::ReportSubscriptionsController < Incidents::BaseController
   end
 
   def resource_params
-    request.get? ? [] : [params.require(:incidents_report_subscription).permit(:frequency)]
+    request.put? ? [params.require(:incidents_report_subscription).permit(:frequency)] : []
   end
 
   expose(:show_select_frequency) {

@@ -65,9 +65,9 @@ class Scheduler::ShiftAssignmentsController < Scheduler::BaseController
 
   def collection
     @shift_assignments ||= apply_scopes(super).order(:date).left_outer_joins(:person)
-                  .where(person: { region_id: current_region})
+                  .where(roster_people: { region_id: current_region})
                   .where('date <= ?', current_region.time_zone.today + 30)
-                  .includes(:person, shift_group: :region, shift: :shift_territory, person: [:shift_territories, :region]).uniq
+                  .includes(:person, shift_time: :region, shift: :shift_territory, person: [:shift_territories, :region]).uniq
   end
 
   helper_method :grouped_collection

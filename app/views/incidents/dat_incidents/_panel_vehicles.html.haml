@@ -8,4 +8,4 @@
     .form-wrapper
       =select_tag 'incidents_dat_incident[vehicle_ids][]', grouped_options_for_select(Logistics::Vehicle.for_region(f.object.incident.region || current_region).order(:category, :name).map{|veh| [veh.name, veh.humanized_category, veh.id]}.group_by{|arr| arr[1]}, f.object.vehicles.last.try(:id)), prompt: 'Choose a Vehicle…', id: 'vehicles', class: "form-control"
       %br
-      %button.btn.btn-primary.btn-mini.add-vehicle{data: {template: render( 'vehicle_fields', veh: nil, f: f)}} Add Another Vehicle
+      %button.btn.btn-primary.btn-mini.add-vehicle{data: {template: "#{render( 'vehicle_fields', veh: nil, f: f)}"}} Add Another Vehicle

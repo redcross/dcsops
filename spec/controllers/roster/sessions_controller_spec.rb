@@ -10,7 +10,7 @@ describe Roster::SessionsController, :type => :controller do
 
     it "should render" do
       get :new, params: { legacy: true }
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     context "when logged in" do

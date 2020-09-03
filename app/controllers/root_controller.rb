@@ -12,14 +12,14 @@ class RootController < ApplicationController
   def health
     conns = ActiveRecord::Base.connection.select_value "SELECT count(*) FROM pg_stat_activity WHERE usename=user"
 
-    render text: "200 Ok - #{conns} connections"
+    render plain: "200 Ok - #{conns} connections"
 
   rescue Exception => e
     str = <<-DESC
     #{e.to_s}
     #{e.backtrace.join "\n"}
     DESC
-    render status: 500, text: str
+    render status: 500, plain: str, :layout => false
     Raven.capture e
   end
 

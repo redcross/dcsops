@@ -4,7 +4,7 @@ class Incidents::Deployment < ApplicationRecord
 
   validates_presence_of :person, :disaster
 
-  scope :for_region, ->(regions) { joins(:person).where(person: { region_id: regions })}
+  scope :for_region, ->(regions) { joins(:person).where(roster_people: { region_id: regions })}
   scope :seen_since, ->(date) { where(date_last_seen: date..DateTime::Infinity.new) }
 
   def self.for_person person

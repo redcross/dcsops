@@ -263,7 +263,7 @@ describe Incidents::DispatchImporter do
     let!(:shift_territory) {FactoryGirl.create :shift_territory, region: region, name: 'San Francisco'}
     let(:incident_details) {
       {incident_number: '15-047',
-            incident_type: '',
+            incident_type: "",
             address: ', SPRINGFIELD',
             delivered_at: region.time_zone.parse( "2014-07-18 12:44:00")}
     }
@@ -275,7 +275,7 @@ describe Incidents::DispatchImporter do
       expect(inc.incident).not_to be_nil
 
       incident_details.each do |attr, val|
-        expect(inc.send(attr)).to eq(val.presence)
+        expect(inc.send(attr)).to eq(val)
       end
 
     end

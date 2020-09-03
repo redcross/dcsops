@@ -46,4 +46,4 @@
 - content_for :footer_js do
   = google_maps_javascript('visualization')
   :javascript
-    allIncidentsMapController = new AllIncidentsHeatmapController(#{map_json_for(collection).to_json}, #{(params[:map_marker_type] || 'heatmap').to_json}, #{map_config(scope).to_json}, {draggable: true})
+    allIncidentsMapController = new AllIncidentsHeatmapController(#{raw map_json_for(collection).to_json}, #{raw (params[:map_marker_type] || 'heatmap').to_json}, #{raw map_config(scope).to_json}, {draggable: true})

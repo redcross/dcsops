@@ -14,7 +14,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
     shifts.includes([:shift_times, {:shift_territory => :region}, :positions]).order(:shift_territory_id, :ordinal)
   end
   scope :active, default: true do |shifts|
-    shifts.where(shift_ends: nil).or(where(shift_ends: Date.current..DateTime::Infinity.new)).includes([:shift_times, {:shift_territory => :region}, :positions]).order(:shift_territory_id, :ordinal)
+    shifts.where(shift_ends: nil).or(shifts.where(shift_ends: Date.current..DateTime::Infinity.new)).includes([:shift_times, {:shift_territory => :region}, :positions]).order(:shift_territory_id, :ordinal)
   end
 
   index do
@@ -68,7 +68,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
 
     unless region_ids.uniq.size == 1
       flash[:error] = "Shifts to reschedule must all be from one region."
-      redirect_to :back and next
+      redirect_back fallback_location: root_path and next
     end
 
     region_id = region_ids.first

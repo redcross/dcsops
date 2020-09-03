@@ -88,7 +88,7 @@ ActiveAdmin.register Roster::Person, as: 'Person' do
       redirect_to '/'
     else
       session[:impersonating_user_id] = nil
-      redirect_to :back
+      redirect_back fallback_location: root_path
     end
   end
   action_item :possess, only: :show, if: proc{ authorized? :impersonate, resource} do

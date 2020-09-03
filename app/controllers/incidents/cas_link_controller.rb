@@ -63,7 +63,7 @@ class Incidents::CasLinkController < Incidents::BaseController
                                .with_date_in(link_date_window(cas.incident_date))
                                .valid.order(date: :desc)
     if cas.county
-      scope = scope.with_county(cas.county
+      scope = scope.with_county(cas.county)
     end
     scope.to_a
   end

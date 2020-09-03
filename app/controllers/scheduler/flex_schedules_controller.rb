@@ -43,6 +43,6 @@ class Scheduler::FlexSchedulesController < Scheduler::BaseController
     end
 
     def collection
-      @collection ||= apply_scopes(super).uniq.preload(person: [:positions, :shift_territories, :home_phone_carrier, :work_phone_carrier, :alternate_phone_carrier, :cell_phone_carrier, :sms_phone_carrier])
+      @collection ||= apply_scopes(super).preload(person: [:positions, :shift_territories, :home_phone_carrier, :work_phone_carrier, :alternate_phone_carrier, :cell_phone_carrier, :sms_phone_carrier]).uniq
     end
 end

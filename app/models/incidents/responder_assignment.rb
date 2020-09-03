@@ -36,8 +36,8 @@ class Incidents::ResponderAssignment < ApplicationRecord
 
   scope :on_scene, -> { where(role: ON_SCENE_ROLES) }
   scope :was_available, -> { where(role: ROLES)}
-  scope :with_person_in_shift_territories, ->(shift_territories){ joins(person: :shift_territory_memberships).where(person: { shift_territory_memberships: { shift_territory_id: Array(shift_territories) } }) }
-  scope :for_region, -> region { joins(:incident).where(incident: { region_id: region }) }
+  scope :with_person_in_shift_territories, ->(shift_territories){ joins(person: :shift_territory_memberships).where(person: { roster_shift_territory_memberships: { shift_territory_id: Array(shift_territories) } }) }
+  scope :for_region, -> region { joins(:incident).where(incidents_incidents: { region_id: region }) }
   def self.open
     was_available
   end

@@ -52,9 +52,9 @@ describe Scheduler::ShiftAssignmentsController, :type => :controller do
     context "?show_shifts=all" do
       it "should access denied if a regular user" do
         3.times { FactoryGirl.create :shift_assignment }
-        expect {
-          get :index, format: :ics, params: { api_token: @settings.calendar_api_token, show_shifts: 'all' }
-        }.to raise_error(CanCan::AccessDenied)
+        get :index, format: :ics, params: { api_token: @settings.calendar_api_token, show_shifts: 'all' }
+        expect(response.code).to eq "403"
+        expect(flash[:error]).to match("You are not authorized to access that page.")
       end
 
       it 'should show all shifts I am a shift territory admin for' do

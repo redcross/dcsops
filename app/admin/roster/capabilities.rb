@@ -7,7 +7,7 @@ ActiveAdmin.register Roster::Capability, as: 'Capability' do
     end
 
     def collection
-      @coll ||= apply_scopes(super).preload{[capability_memberships.position, capability_memberships.capability_scopes]}
+      @coll ||= apply_scopes(super).preload(capability_memberships: [:position, :capability_scopes])
     end
   end
 

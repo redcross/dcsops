@@ -6,12 +6,12 @@ describe ApplicationController, :type => :controller do
   describe "Checks Active User" do
 
     controller do
-      def index; render text: 'success'; end
+      def index; render plain: 'success'; end
     end
 
     it 'Does not redirect if active' do
       get :index
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it "Redirects if not active" do
@@ -26,7 +26,7 @@ describe ApplicationController, :type => :controller do
       grant_capability! 'always_active'
 
       get :index
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
   end

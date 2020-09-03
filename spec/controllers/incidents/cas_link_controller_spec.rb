@@ -15,7 +15,7 @@ describe Incidents::CasLinkController, :type => :controller do
 
     get :index, params: { region_id: inc.region.to_param }
 
-    expect(response).to be_success
+    expect(response).to be_successful
     expect(controller.send(:collection)).to match_array([cas])
   end
 

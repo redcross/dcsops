@@ -8,7 +8,7 @@ class Incidents::CasIncidentsController < Incidents::BaseController
   protected
 
   def end_of_association_chain
-    super.where(chapter_id: current_chapter)
+    super.where(region_id: current_region)
   end
 
   def collection

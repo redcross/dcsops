@@ -6,10 +6,10 @@ class Scheduler::ShiftAssignment < ApplicationRecord
         allowed_positions = record.person.positions & record.shift.positions
 
         if allowed_positions.blank?
-          record.errors[:shift] = "You are not allowed to take this shift. (Position)"
+          record.errors.add(:shift, "You are not allowed to take this shift. (Position)")
         end
       else
-        record.errors[:shift] = "You are not allowed to take this shift. (Shift Territory)"
+        record.errors.add(:shift, "You are not allowed to take this shift. (Shift Territory)")
       end
     end
   end
@@ -24,13 +24,13 @@ class Scheduler::ShiftAssignment < ApplicationRecord
       if record.swapping_from_id
         assignments = assignments.where("scheduler_shift_assignments.id <> ?", record.swapping_from_id)
       elsif record.shift.signups_frozen_before and record.date < record.shift.signups_frozen_before
-        record.errors[:shift] = "Signups are frozen for this day"
+        record.errors.add(:shift, "Signups are frozen for this day")
       end
       unless record.shift.max_signups == 0 || assignments.count < record.shift.max_signups
-        record.errors[:shift] = "This shift is not available"
+        record.errors.add(:shift, "This shift is not available")
       end
       unless record.shift.active_on_day? record.date, record.shift_time
-        record.errors[:shift] = "This shift does not happen on this day."
+        record.errors.add(:shift, "This shift does not happen on this day.")
       end
     end
   end
@@ -44,7 +44,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
         assignments = assignments.where("scheduler_shift_assignments.id <> ?", record.id)
       end
       if assignments.exists?
-        record.errors[:shift] = "You are already signed up for a shift in this group on this day."
+        record.errors.add(:shift, "You are already signed up for a shift in this group on this day.")
       end
     end
   end
@@ -60,7 +60,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
       else true
       end
       if !valid 
-        record.errors[:date] = "That is not a valid date for a #{record.shift.period} shift"
+        record.errors.add(:date, "That is not a valid date for a #{record.shift.period} shift")
       end
     end
   end
@@ -71,7 +71,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
 
       valid = record.shift.shift_time_ids.include? record.shift_time_id
       if !valid 
-        record.errors[:shift_time] = "That is not a valid group for this shift"
+        record.errors.add(:shift_time, "That is not a valid group for this shift")
       end
     end
   end
@@ -96,19 +96,25 @@ class Scheduler::ShiftAssignment < ApplicationRecord
   }
 
   def self.for_active_groups_raw tuples
-    # NOTE: Squeel migration note:
-    # I'm not sure who provides the `row` method; it doesn't seem to exist in Squeel.
-    # I'm going to raise an exception here any future callers will know they
-    # need to deal with it, and hopefully they'll be in a better position to
-    # figure out the original intent.
-    raise("Incomplete Squeel migration")
-    where{
-      row(date, shift_time_id).in(tuples.map{|hash| row(hash[:start_date], hash[:id]) })
-    }
+    # Squeel migration note:
+    # The original code doesn't have a true mapping to active record, as doing
+    # IN with tuples isn't really supported (as far as I could tell).  This line
+    # is a directly transformation of the old squeel code that looked like:
+    #
+    # where{ row(date, shift_time_id).in(tuples.map{|hash| row(hash[:start_date], hash[:id]) }) }
+    #
+    # if this code needs changed, it may be worth it to figure out how to migrate
+    # the following construction sql statement to one that's more active record-y
+    if tuples.size > 0
+      tuples = tuples.map{|hash| [hash[:start_date], hash[:id]] }
+      where("row(\"scheduler_shift_assignments\".\"date\", \"scheduler_shift_assignments\".\"shift_time_id\") IN (#{(['row(?)']*tuples.size).join(', ')})", *tuples)
+    else
+      where("1 = 0")
+    end
   end
 
   scope :for_region, -> (region) {
-    joins(:person).where(person: { region_id: region})
+    joins(:person).where(roster_people: { region_id: region})
   }
 
   scope :for_shifts, -> (shifts) {
@@ -116,14 +122,15 @@ class Scheduler::ShiftAssignment < ApplicationRecord
   }
 
   scope :for_shift_territories, -> (shift_territories) {
-    joins(:shift).where{shift.shift_territory_id.in(shift_territories)}
+    joins(:shift).where(scheduler_shifts: { shift_territory_id: shift_territories })
   }
 
   scope :for_groups, -> (groups) {
     where(shift_time_id: groups)
+  }
 
   scope :with_active_person, -> {
-    joins(:person).where(person: { vc_is_active: true })
+    joins(:person).where(roster_people: { vc_is_active: true })
   }
   
   def self.needs_email_invite region
@@ -136,7 +143,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
   def self.needs_reminder region, type
     where(:"#{type}_reminder_sent" => false)
     .joins(:notification_setting)
-    .where.not(notification_setting.__send__("#{type}_advance_hours") => nil)
+    .where.not(:scheduler_notification_settings => { "#{type}_advance_hours" => nil} )
     .with_active_person.for_region(region).readonly(false).preload(:notification_setting, shift_time: :region)
     .select{|ass|
       now = region.time_zone.now
@@ -178,16 +185,16 @@ class Scheduler::ShiftAssignment < ApplicationRecord
   end
 
   def self.ordered_shifts region
-    joins(:person).where(person: {region_id: region)).readonly(false).joins(:shift, :shift_time).order('shift.ordinal', 'shift_time.start_offset', 'person_id').preload(:person, :shift, :shift_time, shift: :shift_territory)
+    joins(:person).where(roster_people: {region_id: region}).readonly(false).joins(:shift, :shift_time).order('scheduler_shifts.ordinal', 'scheduler_shift_times.start_offset', 'person_id').preload(:person, :shift, :shift_time, shift: :shift_territory)
   end
 
   def self.todays_shifts_with_notes region
-    ordered_shifts(region).where{(note != nil) & (date == Date.current)}
+    ordered_shifts(region).where.not(note: nil).where(date: Date.current)
   end
 
   scope :starts_after, ->(time){
     start_date = time.to_date
-    joins(:shift_time).where('date > ?', start_date).or(where(date: start_date).where('shift_time.end_offset > ?', time.in_time_zone.seconds_since_midnight))
+    joins(:shift_time).where('date > ? or (date = ? and scheduler_shift_times.end_offset > ?)', start_date, start_date, time.in_time_zone.seconds_since_midnight)
   }
 
   scope :available_for_swap, -> (region) {
@@ -212,7 +219,7 @@ class Scheduler::ShiftAssignment < ApplicationRecord
 
   def check_frozen_shift
     if !is_swapping_to and shift.signups_frozen_before and shift.signups_frozen_before > date
-      errors[:shift] = "Signups are frozen and cannot be edited"
+      errors.add(:shift, "Signups are frozen and cannot be edited")
       throw(:abort)
     end
   end

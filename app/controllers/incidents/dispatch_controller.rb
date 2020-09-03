@@ -37,7 +37,7 @@ class Incidents::DispatchController < Incidents::BaseController
   def ensure_has_dispatch_contact
     unless person
       params[:error] = "That incident is not currently open for dispatch."
-      redirect_to :back
+      redirect_back fallback_location: root_path
     end
   end
 
@@ -55,7 +55,7 @@ class Incidents::DispatchController < Incidents::BaseController
     # of open and valid incidents will be small at any given time, so we don't need to build
     # it into the query.
     @coll ||= super.
-      where.not(:current_dispatch_contact_id: nil).where.not(status: ['closed', 'invalid']).
+      where.not(current_dispatch_contact_id: nil).where.not(status: ['closed', 'invalid']).
       order(created_at: :desc).
       reject {|i| i.dispatched? }
   end

@@ -12,18 +12,18 @@ class Scheduler::NotificationSetting < ApplicationRecord
     midnight = now.at_beginning_of_day
     offset = now.seconds_since_midnight
     for_region(region).with_active_person
-      .where("#{__send__(:"#{method}_all_shifts_at")} IS NOT NULL")
-      .where("#{__send__(:"#{method}_all_shifts_at")} <= ?", offset)
-      .where("#{__send__(:"last_all_shifts_#{method}")} IS NULL OR #{__send__(:"last_all_shifts_#{method}")} < ?", midnight)
+      .where("#{method}_all_shifts_at IS NOT NULL")
+      .where("#{method}_all_shifts_at <= ?", offset)
+      .where("last_all_shifts_#{method} IS NULL OR last_all_shifts_#{method} < ?", midnight)
       .readonly(false)
   end
 
   def self.with_active_person
-    joins(:person).where(person: { vc_is_active: true })
+    joins(:person).where(roster_people: { vc_is_active: true })
   end
 
   def self.for_region region
-    joins(:person).where(person: { region_id: region.id })
+    joins(:person).where(roster_people: { region_id: region.id })
   end
 
   before_create :set_calendar_api_token
@@ -32,12 +32,12 @@ class Scheduler::NotificationSetting < ApplicationRecord
   end
 
   def self.people_to_notify_swap(shift_assignment)
-    Roster::Person.joins(:notification_setting).where(notification_setting: {email_swap_requested: true}).in_shift_territory(shift_assignment.shift.shift_territory).with_position(shift_assignment.shift.positions.to_a).to_a
+    Roster::Person.joins(:notification_setting).where(scheduler_notification_settings: {email_swap_requested: true}).in_shift_territory(shift_assignment.shift.shift_territory).with_position(shift_assignment.shift.positions.to_a).to_a
   end
 
   def self.admins_to_notify_swap(shift_assignment, ignore=[])
     Roster::Person.joins(:notification_setting).in_shift_territory(shift_assignment.shift.shift_territory)
-      .where(notification_setting: { email_all_swaps: true })
+      .where(scheduler_notification_settings: { email_all_swaps: true })
       .where.not(id: ignore).to_a
   end
 

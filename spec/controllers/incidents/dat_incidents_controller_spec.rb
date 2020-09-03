@@ -34,7 +34,7 @@ describe Incidents::DatIncidentsController, :type => :controller do
     it "should render under an incident" do
       incident = FactoryGirl.create :incident, region: @person.region
       get :new, params: { incident_id: incident.to_param, region_id: incident.region.to_param }
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
   end

@@ -79,4 +79,6 @@ Rails.application.configure do
   config.session_store :cache_store
 
   config.middleware.use MyApp::DiagnosticMiddleware
+   
+  config.assets.digest = false
 end

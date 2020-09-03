@@ -9,7 +9,7 @@ class Scheduler::ShiftsController < Scheduler::BaseController
     params[:shifts].each do |shift_id, data|
       s = Scheduler::Shift.find shift_id
       authorize! :update, s
-      s.update_attributes shift_params(ActionController::Parameters.new(data))
+      s.update_attributes shift_params(ActionController::Parameters.new(data.to_unsafe_h))
     end
 
     #params[:shift_territory_shifts].each do |shift_territory_id, data|

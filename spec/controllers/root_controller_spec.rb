@@ -6,14 +6,14 @@ describe RootController, :type => :controller do
   describe "GET 'index'" do
     it "returns http success" do
       get 'index'
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
   describe "GET 'health'" do
     it "returns http success" do
       get 'health'
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it "returns 500 when there's an error" do

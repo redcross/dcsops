@@ -226,13 +226,6 @@ describe "Basic Admin Pages", :type => :feature do
     expect(page).to have_current_path("/scheduler_admin/homepage_links")
   end
 
-  it "Visits the Job Logs page" do
-    visit "/scheduler_admin/people"
-    find("#system").hover
-    click_on "Job Logs"
-    expect(page).to have_current_path("/scheduler_admin/job_logs")
-  end
-
   it "Visits the Jobs page" do
     visit "/scheduler_admin/people"
     find("#system").hover

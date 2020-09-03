@@ -6,7 +6,7 @@ describe "Responder History", :type => :feature do
 
     visit "/incidents/#{@person.region.url_slug}/responses"
 
-    page.should have_text ("You are not authorized to access this page.")
+    page.should have_text ("You are not authorized to access that page.")
 
     visit "/"
   end

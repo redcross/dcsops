@@ -137,7 +137,7 @@ Rails.application.routes.draw do
       end
 
       scope "responses", controller: :responses do
-        root to: :responders, as: 'responders', controller: :responders, action: :index
+        root to: :responders, as: 'responders', controller: :responses, action: :responders
       end
 
     end

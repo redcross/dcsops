@@ -100,12 +100,12 @@
   - call_opts = [{value: 0, text: "Call this number for disasters"},{value: 1, text: "Don't call this number for disasters"}]
   :javascript
     $(".carrier-editable").editable({
-      source: #{carriers.to_json},
+      source: #{raw carriers.to_json},
       url: "#{resource_path}",
       resource: "#{resource.class.model_name.param_key}",
     });
     $(".call-editable").editable({
-      source: #{call_opts.to_json},
+      source: #{raw call_opts.to_json},
       url: "#{resource_path}",
       resource: "#{resource.class.model_name.param_key}",
       params:  function(params) {

@@ -18,6 +18,6 @@
 - content_for :footer_js do
   :javascript
     $(function() {
-      window.responseTerritoryController = new IncidentResponseTerritoryController(#{new_resource_path(partial: 'response_territory').to_json});
+      window.responseTerritoryController = new IncidentResponseTerritoryController(#{raw new_resource_path(partial: 'response_territory').to_json});
       window.incidentLocationController.locationCallback = function() { responseTerritoryController.updateResponseTerritory(false); }
     });

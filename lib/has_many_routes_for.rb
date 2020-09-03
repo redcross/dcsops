@@ -6,17 +6,13 @@ module HasManyRoutesFor
       names = names.flatten
       names.each do |name|
         name = name.to_s
-        generate_url_and_path_helpers(nil, :"resource_#{name}", [:incidents, :region, :incident, name], ['@region', '@incident'])
+        generate_url_and_path_helpers(nil, :"resource_#{name}", [:incidents, :region, :incident, name], [:@region, :@incident])
         helper_method :"resource_#{name}_path"
 
         name = name.singularize
         actions = [nil, :edit, :new]
         actions.each do |action|
-          if action == :new
-            ivars = ['@region', '(given_args.first || @incident)']
-          else
-            ivars = ['@region', '@incident', 'nil']
-          end
+          ivars = [:@region, :@incident, nil]
 
           generate_url_and_path_helpers(action, :"resource_#{name}", [:incidents, :region, :incident, name], ivars)
           helper_method :"#{action ? "#{action}_" : ''}resource_#{name}_path"

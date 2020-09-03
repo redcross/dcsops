@@ -69,7 +69,7 @@ private
     Incidents::Deployment.for_region(regions).seen_since(@date_range.first)
                           .preload(:disaster, person: :shift_territories)
                           .joins(:disaster)
-                          .where.not(disaster: { dr_number: ignore })
+                          .where.not(incidents_disasters: { dr_number: ignore })
                           .order(date_first_seen: :desc)
                           .to_a
                           .uniq{|a| [a.person_id, a.disaster_id] }

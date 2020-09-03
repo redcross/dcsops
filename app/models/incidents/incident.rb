@@ -46,7 +46,7 @@ class Incidents::Incident < ApplicationRecord
     with_status 'open'
   }
   scope :without_cas, -> {
-    left_outer_joins(:cas_incident).where(cas_incident: { id: nil })
+    left_outer_joins(:cas_incident).where(incidents_cas_incidents: { id: nil })
   }
   scope :with_date_in, -> date_range {
     where(date: date_range)
@@ -78,8 +78,9 @@ class Incidents::Incident < ApplicationRecord
     resources.each do |resource|
       resource_counts[resource] = begin
         query_result = joins(:dat_incident)
+          .select("SUM(COALESCE(CAST(incidents_dat_incidents.resources ->> '#{resource}' AS integer), 0)) AS resource")
           .unscope(:order)
-          .select('SUM(COALESCE(CAST(dat_incident.resources -> ? AS integer), 0)) AS resource', resource)
+          .all[0]
         query_result && query_result.attributes['resource']
       end
     end
