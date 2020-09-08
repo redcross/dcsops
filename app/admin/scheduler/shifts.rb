@@ -4,7 +4,7 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   actions :all, except: [:destroy]
 
   filter :shift_time
-  filter :shift_territory, collection: Roster::ShiftTerritory.where(enabled: true)
+  filter :shift_territory, collection: proc { Roster::ShiftTerritory.where(enabled: true) }
   filter :region
   filter :name
   filter :abbrev
