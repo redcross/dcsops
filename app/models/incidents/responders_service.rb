@@ -52,7 +52,7 @@ class Incidents::RespondersService
 
   def set_defaults
     self.ignore_shift_territory_flex = incident.region.incidents_dispatch_console_ignore_shift_territory
-    self.limit_flex = 15
+    self.limit_flex = 100
   end
 
   def collection_people
