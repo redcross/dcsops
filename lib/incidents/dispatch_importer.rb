@@ -145,6 +145,12 @@ class Incidents::DispatchImporter
   end
 
   def parse_body body
+    begin
+      Rails.logger.error "----MESSAGE RECEIVED----"
+      Rails.logger.error body
+    rescue => e
+    end
+
     details, log = clean_body(body).split("============ Message Dispatch History ===================")
 
     data = run_matchers self.data_matchers, body
