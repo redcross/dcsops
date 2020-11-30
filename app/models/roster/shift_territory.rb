@@ -8,6 +8,8 @@ class Roster::ShiftTerritory < ActiveRecord::Base
 
   validates_presence_of :region
 
+  default_scope {order(:name)}
+
   def self.enabled
     where(enabled: true)
   end
