@@ -1,0 +1,83 @@
+%html
+  %head
+    %meta(charset="utf-8")
+    %meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
+    %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    %title= content_for?(:title) ? yield(:title) : "DCSOps"
+    = csrf_meta_tags
+    -#/ Le HTML5 shim, for IE6-8 support of HTML elements
+    -#/[if lt IE 9]
+    -#  = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
+    = stylesheet_link_tag "application", :media => "all"
+    -#/%link(href="images/apple-touch-icon-144x144.png" rel="apple-touch-icon-precomposed" sizes="144x144")
+    -#/%link(href="images/apple-touch-icon-114x114.png" rel="apple-touch-icon-precomposed" sizes="114x114")
+    -#/%link(href="images/apple-touch-icon-72x72.png" rel="apple-touch-icon-precomposed" sizes="72x72")
+    -#/%link(href="images/apple-touch-icon.png" rel="apple-touch-icon-precomposed")
+    -#/%link(href="favicon.ico" rel="shortcut icon")
+    -if pdf_header?
+      =yield(:header)
+    :scss
+      div.mn-oncall {
+        width:800px;
+        margin:auto;
+
+        h1 {
+          font-size:18px;
+          text-align:center;
+        }
+
+        table {
+          width: 800px;
+          margin:auto;
+        }
+        th {
+          text-align:center;
+        }
+
+        td.shift-territory {
+          font-weight: bold;
+        }
+
+        td {
+          padding: 2px;
+          border: 1px solid black;
+        }
+      }
+
+  %body
+    = javascript_include_tag "application"
+    /[if lt IE 10]
+      = javascript_include_tag "es5-shim"
+
+    %nav.navbar.navbar-default(role="navigation")
+      .container
+        .navbar-header
+          %button.navbar-toggle(data-target="#main-navbar-collapse" data-toggle="collapse")
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.navbar-brand(href="/")
+            DCS
+            %b> Ops
+        .collapse.navbar-collapse#main-navbar-collapse
+          %ul.nav.navbar-nav.navbar-right
+            -if current_user_session
+              - person = current_user_session.person
+              %li= link_to "Logout", roster_session_path, method: :delete
+
+    %div.mn-oncall
+      %h1 Minnesota / Dakotas On Call Scheduler for #{current_time}
+      %table
+        %tr
+          %th
+          %th Call First
+          %th Call Second
+        - collection.each do |s_t, s_as|
+          %tr
+            %td.shift-territory=s_t
+            %td
+              - s_as.first.each do |s_a|
+                #{s_a.person.full_name} (#{s_a.person.cell_phone})
+            %td
+              - s_as.second.each do |s_a|
+                #{s_a.person.full_name} (#{s_a.person.cell_phone})
