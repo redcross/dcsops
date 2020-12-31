@@ -33,7 +33,7 @@ class Scheduler::MinnesotaController < Scheduler::BaseController
       s_t = Roster::ShiftTerritory.where(name: shift_territory_name, region: mn).first
       shift_assignments = shift_names.map {|shift_name|
         s = Scheduler::Shift.where(name: shift_name, shift_territory: s_t).first
-        Scheduler::ShiftAssignment.where(shift_time: shift_times, shift: s).for_day(Date.today).to_a
+        Scheduler::ShiftAssignment.where(shift_time: shift_times, shift: s).for_day(mn.time_zone.today).to_a
       }
 
       [shift_territory_name, shift_assignments]
