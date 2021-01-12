@@ -48,6 +48,7 @@ gem 'bootstrap-kaminari-views'
 gem 'paperclip'
 gem 'threach'
 gem 'dotiw', '~> 2.0'
+gem 'restforce', '4.2.2'
 
 gem 'geokit'#, github: 'mikefarmer/geokit' # Found a branch that removes some weird build stuff
 

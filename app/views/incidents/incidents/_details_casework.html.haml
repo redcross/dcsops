@@ -8,9 +8,10 @@
     -else
       =resource.cas_event_number
   -if resource.cas_incident.blank? and can?(:link_cas, resource)
-    %button.btn.btn-primary.btn-mini{data: {edit_panel: edit_resource_dat_path(panel_name: 'cas')}} Link to CAS Event
--#-if resource.cas_event_number.present? and resource.cas_incident.blank?
--#  A CAS Event has been provided but no data for the incident was found.  If this is a new incident, it may take 12-24 hours for incident data to become available.
+    %button.btn.btn-primary.btn-mini{data: {edit_panel: edit_resource_dat_path(panel_name: 'cas')}} Link to RC Care Event
+  -if resource.rccare_event_id
+    %a{:href => "https://rccare.lightning.force.com/lightning/r/ARC_Event__c/#{resource.rccare_event_id}/view"}
+      View cases in RC Care
 -if resource.cas_event_id
   =cas_event_button(resource)
 -elsif resource.cas_incident

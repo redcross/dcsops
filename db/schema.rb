@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200825171721) do
+ActiveRecord::Schema.define(version: 20210112121832) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -507,6 +507,7 @@ ActiveRecord::Schema.define(version: 20200825171721) do
     t.integer  "current_dispatch_contact_id"
     t.datetime "dispatch_contact_due_at"
     t.string   "reason_marked_invalid"
+    t.string   "rccare_event_id"
   end
 
   add_index "incidents_incidents", ["cas_event_number"], name: "index_incidents_incidents_on_cas_event_number", using: :btree

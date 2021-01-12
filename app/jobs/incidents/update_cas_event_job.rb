@@ -18,7 +18,7 @@ class Incidents::UpdateCasEventJob
   end
 
   def client
-    @client ||= Cas::Client.new(region.cas_host, region.cas_username, region.cas_password)
+    @client ||= Rccare::Client.new()
   end
 
   def cas_configured?
@@ -26,15 +26,13 @@ class Incidents::UpdateCasEventJob
   end
 
   def perform
-    return unless cas_configured?
-
     event_number = incident.cas_event_number
-    cas_event = event_number.present? && client.events.find_by_event_number(event_number)
-    if cas_event
-      incident.cas_event_id = cas_event['id']
-      incident.cas_event_number = cas_event['local_event_number']
+    events = event_number.present? && client.events(event_number)
+    if events.size > 0
+      incident.rccare_event_id = events.first.Id
+      incident.cas_event_number = events.first.Name
     else
-      incident.cas_event_id = nil
+      incident.rccare_event_id = nil
     end
     incident.save!
     publish_update
