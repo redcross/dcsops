@@ -32,7 +32,7 @@
       %td
         =resource.cas_event_number
         -if resource.rccare_event_id
-          (#{link_to "View cases in RC Care", "https://rccare.lightning.force.com/lightning/r/ARC_Event__c/#{resource.rccare_event_id}/view"})
+          (#{link_to "View cases in RC Care", "https://rccare.lightning.force.com/lightning/r/ARC_Event__c/#{resource.rccare_event_id}/view", target: :_blank})
         =cas_event_button(resource)
   -if resource.region.incidents_use_escalation_levels
     %tr
