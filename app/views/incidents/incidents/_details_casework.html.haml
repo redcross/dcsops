@@ -8,7 +8,7 @@
     -else
       =resource.cas_event_number
   -if resource.cas_incident.blank? and can?(:link_cas, resource)
-    %button.btn.btn-primary.btn-mini{data: {edit_panel: edit_resource_dat_path(panel_name: 'cas')}} Link to RC Care Event
+    %button.btn.btn-primary.btn-mini{data: {edit_panel: edit_resource_dat_path(panel_name: 'rc_care_link')}} Link to RC Care Event
   -if resource.rccare_event_id
     %a{:href => "https://rccare.lightning.force.com/lightning/r/ARC_Event__c/#{resource.rccare_event_id}/view", :target => :_blank}
       View cases in RC Care
