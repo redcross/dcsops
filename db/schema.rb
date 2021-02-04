@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210112121832) do
+ActiveRecord::Schema.define(version: 20210203193926) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -972,6 +972,7 @@ ActiveRecord::Schema.define(version: 20210112121832) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "enabled",                 default: true
+    t.integer  "ordinal"
   end
 
   create_table "roster_shift_territory_memberships", force: :cascade do |t|
