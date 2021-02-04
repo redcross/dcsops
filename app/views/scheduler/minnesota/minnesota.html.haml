@@ -38,6 +38,10 @@
           font-weight: bold;
         }
 
+        span.call-order {
+          font-weight: bold;
+        }
+
         td {
           padding: 2px;
           border: 1px solid black;
@@ -72,7 +76,7 @@
           %th
           %th Call First
           %th Call Second
-        - collection.each do |s_t, s_as|
+        - collection[0,4].each do |s_t, s_as|
           %tr
             %td.shift-territory=s_t
             %td
@@ -81,3 +85,9 @@
             %td
               - s_as.second.each do |s_a|
                 #{s_a.person.full_name} (#{s_a.person.cell_phone})
+      %br
+      - collection[4][1].zip(["Call Third", "Call Fourth", "Call Fifth", "Call Sixth", "Call Last"]).each do |s_as, call_order|
+        %span.call-order #{call_order}:
+        - if s_as.first
+          #{s_as.first.person.full_name} (#{s_as.first.person.cell_phone})
+        %br

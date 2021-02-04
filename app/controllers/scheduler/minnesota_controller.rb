@@ -20,11 +20,18 @@ class Scheduler::MinnesotaController < Scheduler::BaseController
 
   def todays_assignments
     shift_names = [
-      ['Twin Cities Area', ['Duty Officer - Twin Cities Area', 'Duty Officer - Back-up - Twin Cities Area']],
       ['Central North Minnesota', ['Duty Officer - Central North Minnesota', 'Duty Officer - Back-up - Central North Minnesota']],
-      ['South Minnesota', ['Duty Officer - South Minnesota', 'Duty Officer - Back-up - South Minnesota']],
       ['Dakotas', ['Duty Officer - Dakotas', 'Duty Officer - Back-up - Dakotas']],
-      ['Region', ['Regional Leadership On Call', 'Regional Disaster Officer']],
+      ['South Minnesota', ['Duty Officer - South Minnesota', 'Duty Officer - Back-up - South Minnesota']],
+      ['Twin Cities Area', ['Duty Officer - Twin Cities Area', 'Duty Officer - Back-up - Twin Cities Area']],
+      ['Region',
+       [
+         'Regional Leadership On Call',
+         'Regional Leadership On Call Back-up',
+         'Operational Team',
+         'Senior DPM',
+         'Regional Disaster Officer'
+      ]],
     ]
 
     shift_times = Scheduler::ShiftTime.current_groups_for_region(mn)
