@@ -1,7 +1,8 @@
 class Incidents::ResponderAssignment < ActiveRecord::Base
   ROLES_TO_LABELS = {'team_lead' => 'Team Lead', 'trainee_lead' => 'Team Lead Trainee',
                      'responder' => 'Responder', 'public_affairs' => 'Public Affairs', 'health_services' => 'Health Services',
-                     'mental_health' => 'Mental Health', 'dispatch' => 'Dispatcher/Duty Officer', 'activator' => 'Activator'}
+                     'mental_health' => 'Mental Health', 'spiritual_care' => "Spiritual Care",
+                     'dispatch' => 'Dispatcher/Duty Officer', 'activator' => 'Activator'}
   ROLES = ROLES_TO_LABELS.keys
   ON_SCENE_ROLES = %w(responder team_lead trainee_lead public_affairs health_services mental_health)
   RESPONSES = %w(not_available no_answer wrong_number no_longer_active)
