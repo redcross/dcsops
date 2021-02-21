@@ -8,7 +8,7 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install g++ qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
 before_script:
-  - psql -c 'create database "arcdata-test";' -U postgres
+  - psql -c 'create database "dcsops-test";' -U postgres
   - bundle exec rake bootstrap:db_config db:test:prepare
 script: xvfb-run bundle exec rspec spec
 env:

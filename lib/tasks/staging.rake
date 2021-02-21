@@ -1,12 +1,12 @@
 namespace :staging do
   TEMP_DB_NAME = "temp_staging_db"
-  STAGING_APP = "arcdata-staging"
+  STAGING_APP = "dcsops-staging"
 
   task :copy_prod_db => :environment do
     puts "Downloading prod database backup"
     `dropdb --if-exists #{TEMP_DB_NAME}`
     `createdb -O #{ActiveRecord::Base.connection_config[:username]} #{TEMP_DB_NAME}`
-    `heroku pg:backups:download -a arcdata`
+    `heroku pg:backups:download -a dcsops`
     puts "Loading prod database backup into local temp database"
     `pg_restore -U #{ActiveRecord::Base.connection_config[:username]} -O -d #{TEMP_DB_NAME} latest.dump`
     `rm latest.dump`

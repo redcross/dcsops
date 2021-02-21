@@ -1,8 +1,8 @@
 # DCSOps ("Disaster Cycle Services Operations")
 
-Current build status: [![Build Status](https://travis-ci.org/redcross/arcdata.svg?branch=main)](https://travis-ci.org/redcross/arcdata) [![Coverage Status](https://coveralls.io/repos/github/redcross/arcdata/badge.svg?branch=main)](https://coveralls.io/github/redcross/arcdata?branch=main)
+Current build status: [![Build Status](https://travis-ci.org/redcross/dcsops.svg?branch=main)](https://travis-ci.org/redcross/dcsops) [![Coverage Status](https://coveralls.io/repos/github/redcross/dcsops/badge.svg?branch=main)](https://coveralls.io/github/redcross/dcsops?branch=main)
 
-DCSOps (a.k.a. ARCData) is an open source application for managing some Red Cross Disaster Services processes, such as Disaster Action Team (DAT) shifts.  The production instance is at [DCSOps.org](https://dcsops.org/).
+DCSOps is an open source application for managing some Red Cross Disaster Services processes, such as Disaster Action Team (DAT) shifts.  The production instance is at [DCSOps.org](https://dcsops.org/).
 
 ## Installation
 
@@ -14,7 +14,7 @@ You can communicate with the other developers by posting to the
 [DCSOps discussion
 forum](https://groups.google.com/forum/#!forum/dcsops-dev) (which is a
 Google Group), or by filing / commenting in the [issue
-tracker](https://github.com/redcross/arcdata/issues).  Both of these
+tracker](https://github.com/redcross/dcsops/issues).  Both of these
 forums are browseable without logging in, but you'll need to have,
 respectively, a Google or GitHub account to post.  Creating an account
 is free of charge.

@@ -106,7 +106,7 @@ $ rake
 
 ## Deployment
 
-There are two branches for deployment 'production' and 'candidate-production'.  The former is for the arcdata app on heroku, and the latter is for the arcdata-staging app.  Generally, 'production' and 'main' are in step, but there's times when main is more in step with 'candidate-production.'
+There are two branches for deployment 'production' and 'candidate-production'.  The former is for the dcsops app on heroku, and the latter is for the dcsops-staging app.  Generally, 'production' and 'main' are in step, but there's times when main is more in step with 'candidate-production.'
 
 DCSOps is deployed on Heroku, so you'll need a Heroku account and collaborator access granted to do anything with the production instance.
 
@@ -119,7 +119,7 @@ $ brew install heroku/brew/heroku
 To interact with the app from the command line, set up git remote to it:
 
 ```bash
-$ heroku git:remote --app arcdata # or arcdata-staging for staging
+$ heroku git:remote --app dcsops # or dcsops-staging for staging
 ```
 
 At this point, you will want to rename the heroku remote to something more descriptive, so that you can have a staging and production remote in your local git instance.
@@ -133,7 +133,7 @@ Then you can push to it. Database migrations are not run automatically, so don't
 ```bash
 $ git push heroku-production production:main
 $ # Or git push heroku-staging candidate-production:main
-$ heroku run rake db:migrate --app arcadata # Or --app arcdata-staging
+$ heroku run rake db:migrate --app arcadata # Or --app dcsops-staging
 ```
 
 **IMPORTANT:** Once you have finished a new deployment, please log it in `site-updates.txt`.
@@ -200,7 +200,7 @@ Direct Line is a call center service used by some of the regions in DCSOps. It s
 
 ## Staging Site Setup
 
-We have a staging instance setup at `arcdata-staging` for testing out updates before they're pushed into production. It uses a different database (pulled from production backups), doesn't send emails or text messages, and doesn't contact any external services where changes are made including SQS for the Volunteer Connection import or S3. Delayed job tasks are run every hour until they are completed with `rake jobs:workoff` on a Heroku Scheduler dyno.
+We have a staging instance setup at `dcsops-staging` for testing out updates before they're pushed into production. It uses a different database (pulled from production backups), doesn't send emails or text messages, and doesn't contact any external services where changes are made including SQS for the Volunteer Connection import or S3. Delayed job tasks are run every hour until they are completed with `rake jobs:workoff` on a Heroku Scheduler dyno.
 
 In order to update the staging database with a more recent copy of the production database, we have a rake task that downloads a production backup, loads it into a local temporary database, removes unneeded records (to reduce the size of the staging DB), and replaces the Heroku staging database with the modified local data. It can be run with:
 
@@ -208,7 +208,7 @@ In order to update the staging database with a more recent copy of the productio
 $ rake staging:update_staging_db
 ```
 
-**Note**: Downloading the production backup and pushing the local data to staging can take some time, but user input is required to confirm the overwriting of the `arcdata-staging` database. This is left in as an extra precaution against accidentally deleting production data.
+**Note**: Downloading the production backup and pushing the local data to staging can take some time, but user input is required to confirm the overwriting of the `dcsops-staging` database. This is left in as an extra precaution against accidentally deleting production data.
 
 ## Database Management
 
@@ -217,19 +217,19 @@ Heroku Postgres is being used for the PostgreSQL database, so backups and creden
 We run daily automated backups on Heroku. To schedule automated backups and verify that they are running, you can run the following commands, specifying a 24-hour time and time zone for backups to take be created (with more detail in the [documentation](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)):
 
 ```bash
-$ heroku pg:backups:schedule DATABASE_URL --at '02:00 America/Chicago' --app arcdata
-$ heroku pg:backups --app arcdata
+$ heroku pg:backups:schedule DATABASE_URL --at '02:00 America/Chicago' --app dcsops
+$ heroku pg:backups --app dcsops
 ```
 
 To create and then download a backup manually, you'll need to run:
 
 ```bash
-$ heroku pg:backups:capture --app arcdata
-$ heroku pg:backups:download --app arcdata
+$ heroku pg:backups:capture --app dcsops
+$ heroku pg:backups:download --app dcsops
 ```
 
 Credentials are also managed through the CLI rather than directly through Postgres itself. You can specify usernames for new database credentials, but passwords are always automatically created by Heroku. Databases running earlier versions of Postgres (~9.3) don't support the [full set of commands and functionality](https://devcenter.heroku.com/articles/heroku-postgresql-credentials), but you can reset the database credentials with:
 
 ```bash
-$ heroku pg:credentials <DATABASE_NAME> --reset --app arcdata
+$ heroku pg:credentials <DATABASE_NAME> --reset --app dcsops
 ```

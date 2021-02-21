@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 ruby "2.6.6"
-#ruby-gemset=arcdata
+#ruby-gemset=dcsops
 
 # The following are from the default generated Gemfile for a new Rails 5.2 app:
 

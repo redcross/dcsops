@@ -10,7 +10,7 @@ Please note that we expect all participants to abide by the project
 ## Submitting and Reviewing Code
 
 The DCSOps home repository is
-[GitHub](https://github.com/redcross/arcdata).  Please submit [pull
+[GitHub](https://github.com/redcross/dcsops).  Please submit [pull
 requests](https://help.github.com/articles/about-pull-requests/) (PRs)
 there.
 
@@ -149,7 +149,7 @@ In order to make sure the two are in line, you can add the heroku branch to your
 git checkout (after running `heroku login`)
 
 ```
-$ git remote add heroku-production https://git.heroku.com/arcdata.git
+$ git remote add heroku-production https://git.heroku.com/dcsops.git
 $ git fetch heroku-production
 ```
 
@@ -162,7 +162,7 @@ This branch is synced up with the current deployed staging heroku branch.
 As above, to make sure the two are aligned, you can do:
 
 ```
-$ git remote add heroku-staging https://git.heroku.com/arcdata-staging.git
+$ git remote add heroku-staging https://git.heroku.com/dcsops-staging.git
 $ git fetch heroku-staging
 ```
 
@@ -275,7 +275,7 @@ without raising it for discussion.
 ## For more project management information, see the wiki.
 
 See the [DCSOps Development
-Wiki](https://github.com/redcross/arcdata/wiki) for more information
+Wiki](https://github.com/redcross/dcsops/wiki) for more information
 about how we run the project, records of meetings and decisions, etc.
 
 ## Thank you!
