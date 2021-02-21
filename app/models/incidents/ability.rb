@@ -13,7 +13,7 @@ class Incidents::Ability
     scopes
     personal
     
-    dispatch_console        if is_admin or person.has_capability 'dispatch_console'
+    dispatch_console(region_admin) if is_admin or person.has_capability 'dispatch_console'
     create_incident         if             person.has_capability 'create_incident'
     submit_incident_report  if is_admin or person.has_capability 'submit_incident_report'
     cas_admin               if is_admin or person.has_capability 'cas_admin'
@@ -95,9 +95,13 @@ class Incidents::Ability
     can :show, :responders
   end
 
-  def dispatch_console
+  def dispatch_console(is_admin)
     scopes = person.scope_for_capability('dispatch_console').map(&:to_i)
-    can :dispatch_console, Incidents::Scope, {id: scopes}
+    if(is_admin)
+      can :dispatch_console, Incidents::Scope
+    else
+      can :dispatch_console, Incidents::Scope, {id: scopes}
+    end
 
 
     dispatch_regions = Incidents::Scope.where(id: scopes).includes(:regions).flat_map{|s| s.all_regions}.map(&:id)
