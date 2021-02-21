@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: git://github.com/redcross/openid-connect-engine.git
-  revision: 0691a3f98e15c83c6d27ab0eda41e3e8fd96a8e6
+  revision: 0247bae4dc4a0797559544a3b7ce08859f4fbdb5
   branch: rails-6-upgrade
   specs:
     connect (0.0.1)
@@ -81,7 +81,7 @@ GEM
       activemodel (= 5.2.4.5)
       activesupport (= 5.2.4.5)
       arel (>= 9.0)
-    activerecord-import (1.0.7)
+    activerecord-import (1.0.8)
       activerecord (>= 3.2)
     activerecord-postgresql-adapter (0.0.1)
       pg
