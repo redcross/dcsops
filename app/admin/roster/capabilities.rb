@@ -15,7 +15,7 @@ ActiveAdmin.register Roster::Capability, as: 'Capability' do
     column :name
     column :grant_name
     column :positions do |capability|
-      safe_join(capability.capability_memberships.map{|pm| "#{pm.position.name if pm.position} (#{pm.capability_scopes.map(&:scope).join ','})"}, tag(:br))
+      safe_join(capability.capability_memberships.map{|pm| "#{pm.position.display_name if pm.position} (#{pm.capability_scopes.map(&:scope).join ','})"}, tag(:br))
     end
     actions
   end
