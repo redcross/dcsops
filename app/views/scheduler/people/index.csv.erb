@@ -1,0 +1,32 @@
+<%- headers = ['Name', 'Positions', 'Num Shifts', 'Prev Shift', 'Next Shift', 'Last Login', 'Flex Schedule'] -%>
+<%= CSV.generate_line headers -%>
+<%- collection.each do |person|
+  d = prev_shift(person)
+  if d
+    prev_shift = "#{d.to_s :dow_short} (#{(Date.current-d).to_i} days ago)"
+  else
+    prev_shift = ""
+  end
+  d = next_shift(person)
+  if d
+    next_shift = d.to_s :dow_short
+  else
+    next_shift = ""
+  end
+  d = person.last_login
+  if d
+    last_login = d.to_s :dow_short
+  else
+    last_login = ""
+  end
+  positions = person.positions.select{|p|!p.hidden}.map(&:name).join ", "
+-%>
+<%= CSV.generate_line([person.full_name,
+    positions,
+    pluralize(num_shifts(person), 'shift'),
+    prev_shift,
+    next_shift,
+    last_login,
+    flex_schedule_for(person.id).try(:num_shifts)
+   ]).html_safe -%>
+<%- end -%>

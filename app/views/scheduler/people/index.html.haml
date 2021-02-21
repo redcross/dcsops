@@ -1,6 +1,8 @@
 - model_class = Roster::Person
 .page-header
-  %h1=t '.title', :default => model_class.model_name.human.pluralize
+  %h1
+    =t '.title', :default => model_class.model_name.human.pluralize
+    %span(style="font-size:60%") (#{link_to 'Download as CSV', scheduler_people_path(format: :csv, params: request.query_parameters.merge(page: 'all'))})
 =form_tag scheduler_people_path, method: :get, remote: true do
   =hidden_field_tag 'page', ''
   %table.table.table-condensed.noprint

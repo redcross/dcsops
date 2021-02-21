@@ -1,7 +1,7 @@
 class Scheduler::PeopleController < Scheduler::BaseController
   inherit_resources
   include Paginatable
-  respond_to :html
+  respond_to :html, :csv
   respond_to :js, only: :index
 
   defaults resource_class: Roster::Person
