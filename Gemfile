@@ -74,7 +74,7 @@ gem 'newrelic_rpm', '< 4'
 gem 'httparty'
 gem 'couchrest'
 gem 'bitly'
-gem 'aws-sdk', '< 3.0'
+gem 'aws-sdk'
 gem "memcachier"
 gem "dalli"
 gem "twilio-ruby"
