@@ -1,6 +1,6 @@
 class Incidents::IncidentsListController < Incidents::BaseController
   inherit_resources
-  respond_to :html, :js
+  respond_to :html, :js, :csv
   defaults finder: :find_by_incident_number!, resource_class: Incidents::Incident, collection_name: :incidents
   load_and_authorize_resource :scope
   belongs_to :scope, parent_class: Incidents::Scope, finder: :find_by_url_slug!, param: :region_id

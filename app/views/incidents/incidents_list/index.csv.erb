@@ -1,0 +1,5 @@
+<%- headers = ['Incident Number', 'Date', 'Address', 'City', 'County', 'Type'] -%>
+<%= CSV.generate_line headers -%>
+<%- collection.each do |resource| -%>
+<%= CSV.generate_line([resource.incident_number, resource.date, resource.address, resource.city, resource.county, resource.humanized_incident_type]) -%>
+<%- end -%>
