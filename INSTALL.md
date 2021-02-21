@@ -106,7 +106,7 @@ $ rake
 
 ## Deployment
 
-We always deploy a commit on the `main` branch, typically the latest commit (the HEAD) as of the time of deployment.  The only exception to this would be when an emergency rollback is necessary because a problem has been discovered in an already-deployed commit on `main` and no new, fixed commit is available yet; in that case, rolling back to a known-good previous commit on `main` is the temporary remedy.
+There are two branches for deployment 'production' and 'candidate-production'.  The former is for the arcdata app on heroku, and the latter is for the arcdata-staging app.  Generally, 'production' and 'main' are in step, but there's times when main is more in step with 'candidate-production.'
 
 DCSOps is deployed on Heroku, so you'll need a Heroku account and collaborator access granted to do anything with the production instance.
 
@@ -119,14 +119,21 @@ $ brew install heroku/brew/heroku
 To interact with the app from the command line, set up git remote to it:
 
 ```bash
-$ heroku git:remote --app arcdata
+$ heroku git:remote --app arcdata # or arcdata-staging for staging
+```
+
+At this point, you will want to rename the heroku remote to something more descriptive, so that you can have a staging and production remote in your local git instance.
+
+```bash
+$ git remote rename heroku heroku-production
 ```
 
 Then you can push to it. Database migrations are not run automatically, so don't forget to run those after deploy if you need to:
 
 ```bash
-$ git push heroku master
-$ heroku run rake db:migrate
+$ git push heroku-production production:main
+$ # Or git push heroku-staging candidate-production:main
+$ heroku run rake db:migrate --app arcadata # Or --app arcdata-staging
 ```
 
 **IMPORTANT:** Once you have finished a new deployment, please log it in `site-updates.txt`.
