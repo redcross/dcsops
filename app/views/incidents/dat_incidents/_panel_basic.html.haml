@@ -1,5 +1,5 @@
 =f.inputs "Basic" do
-  - readonly = resource.incident && !resource.incident.new_record?
+  - readonly = (!can? :update_incident_date, Incidents::Incident || (resource.incident && !resource.incident.new_record?))
   =f.semantic_fields_for :incident do |f|
     =f.semantic_errors
     =f.input :cas_event_number, as: :string
