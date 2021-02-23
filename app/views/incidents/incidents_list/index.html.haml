@@ -1,6 +1,4 @@
-%h1
-  Listing #{pluralize collection.total_count, 'Incident'}
-  %span(style="font-size:60%") (#{link_to 'Download as CSV', incidents_region_incidents_path(format: :csv, params: request.query_parameters.merge(page: 'all'))})
+%h1 Listing #{pluralize collection.total_count, 'Incident'}
 
 .well#filter-form
   =search_form_for search, url: url_for(), class: "form", style: "margin-bottom: 0" do |f|
