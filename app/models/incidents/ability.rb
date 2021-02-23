@@ -103,8 +103,11 @@ class Incidents::Ability
       can :dispatch_console, Incidents::Scope, {id: scopes}
     end
 
-
-    dispatch_regions = Incidents::Scope.where(id: scopes).includes(:regions).flat_map{|s| s.all_regions}.map(&:id)
+    if(is_admin)
+      dispatch_regions = Incidents::Scope.all.includes(:regions).flat_map{|s| s.all_regions}.map(&:id)
+    else
+      dispatch_regions = Incidents::Scope.where(id: scopes).includes(:regions).flat_map{|s| s.all_regions}.map(&:id)
+    end
     can [:create, :show], Incidents::CallLog, {region_id: dispatch_regions + [nil]}
     can [:create, :index, :show, :complete, :next_contact], Incidents::Incident, {region_id: dispatch_regions}
   end
