@@ -13,19 +13,19 @@ module Incidents::IncidentsListHelper
 
   def assistance_totals(collection)
     collection.joins(:cases)
-    .select('COUNT(cases.id) AS num_cases, SUM(cases.total_amount) AS total_assistance')
-    .group("incidents_cases.total_amount = 0.0").to_a
+      .select('COUNT(incidents_cases.id) AS num_cases, SUM(incidents_cases.total_amount) AS total_assistance')
+      .group("incidents_cases.total_amount = 0.0").to_a
   end
 
   def total_miles_driven(collection)
-    Incidents::ResponderAssignment.where(incident_id: collection.pluck(:id)).was_available.driving_distance
+    Incidents::ResponderAssignment.where(role: ['team_lead', 'responder']).where(incident_id: collection.pluck(:id)).was_available.driving_distance
   end
 
   def average_response_time(collection)
     logs_start = Incidents::EventLog.where(event: ['dispatch_received', 'dispatch_note', 'dat_received', 'dispatch_relayed', 'responders_identified'])
-      .where(incident_id: incidents_incidents.id).order(:event_time).select(:event_time).limit(1).to_sql
+      .where(incident_id: "incidents_incidents.id").order(:event_time).select(:event_time).limit(1).to_sql
     logs_end = Incidents::EventLog.where(event: ['dat_on_scene'])
-      .where(incident_id: incidents_incidents.id).order(:event_time).select(:event_time).limit(1).to_sql
+      .where(incident_id: "incidents_incidents.id").order(:event_time).select(:event_time).limit(1).to_sql
     durations = collection.select(
       "extract(epoch from (#{logs_end}) - (#{logs_start})) AS duration"
     ).to_a.map(&:duration).select{|dur| dur && dur > 10.minutes && dur < 8.hours}
