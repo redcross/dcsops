@@ -1,0 +1,27 @@
+.text-center= paginate collection, :theme => 'twitter-bootstrap-3', remote: true
+%h1(style="font-size:150%;text-align:center;margin-top:0px")
+  = link_to 'Download as CSV', scheduler_shift_report_index_path(format: :csv, params: request.query_parameters.merge(page: 'all')), download: "shifts.csv"
+
+%table.table.table-striped.table-condensed
+  %thead
+    %tr
+      %th Name
+      %th Shift Start Date
+      %th Shift Time
+      %th Position Title
+      %th Shift Hours
+  %tbody
+    - collection.each do |sa|
+      %tr
+        %td{style: "max-width: 20em"}
+          = link_to sa.person.full_name, roster_person_path(sa.person)
+        %td
+          = sa.date
+        %td
+          = sa.shift_time.name
+        %td
+          = sa.shift.name
+        %td
+          = (sa.shift_time.end_offset - sa.shift_time.start_offset) / 3600
+
+.text-center= paginate collection, :theme => 'twitter-bootstrap-3', remote: true

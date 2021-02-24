@@ -1,0 +1,40 @@
+- model_class = Roster::Person
+.page-header
+  %h1
+    =t '.title', :default => model_class.model_name.human.pluralize
+
+=form_tag scheduler_shift_report_index_path, method: :get, remote: true do
+  =hidden_field_tag 'page', ''
+  %table.table.table-condensed.noprint
+    %tr
+      %th Shifts After
+      %td=date_field_tag "date_after", (current_scopes[:date_after] or Date.today.to_s), class: 'form-control', placeholder: 'After YYYY-MM-DD'
+    %tr
+      %th Shifts Before
+      %td=date_field_tag "date_before", (current_scopes[:date_before] or Date.today.to_s), class: 'form-control', placeholder: 'Before YYYY-MM-DD'
+    %tr
+      %th Shift
+      %td
+        %table(style="width: 100%")
+          - available_shifts.each_slice(2) do |first, second|
+            %tr
+              %td
+                %label
+                  - checked = current_scopes[:with_shift] && current_scopes[:with_shift].include?(first.id.to_s)
+                  =check_box_tag "with_shift[]", first.id, checked
+                  = first.name
+              %td
+                - if second
+                  %label
+                    - checked = current_scopes[:with_shift] && current_scopes[:with_shift].include?(second.id.to_s)
+                    =check_box_tag "with_shift[]", second.id, checked
+                    = second.name
+    %tr
+      %th Name
+      %td=text_field_tag :name_contains, current_scopes[:name_contains], placeholder: "Search Name", class: "form-control"
+    %tr
+      %th
+      %td=submit_tag 'Show', class: 'btn btn-primary'
+
+.shift-table
+  =render 'index_table'

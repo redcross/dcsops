@@ -1,0 +1,11 @@
+<%- headers = ['Name' 'Shift Start Date' 'Shift Time' 'Position Title' 'Shift Hours'] -%>
+<%= CSV.generate_line headers -%>
+<%- collection.each do |sa| -%>
+<%= CSV.generate_line([
+  sa.person.full_name,
+  sa.date,
+  sa.shift_time.name,
+  sa.shift.name,
+  (sa.shift_time.end_offset - sa.shift_time.start_offset) / 3600
+ ]).html_safe -%>
+<%- end -%>

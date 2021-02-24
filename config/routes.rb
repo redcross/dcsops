@@ -38,6 +38,7 @@ Rails.application.routes.draw do
       get :me, on: :collection
     end
     resources :flex_schedules, only: [:index, :show, :update]
+    resources :shift_report, only: [:index]
     resources :people, only: [:index] do
       resources :shift_assignments
     end
