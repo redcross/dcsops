@@ -1,49 +1,49 @@
-%h1 Listing #{pluralize collection.total_count, 'Incident'}
+%h1 Listing #{pluralize collection.count, 'Incident'}
 
 .well#filter-form
-  =search_form_for search, url: url_for(), class: "form", style: "margin-bottom: 0" do |f|
+  =form_tag incidents_region_incidents_path, method: :get, class: "form", style: "margin-bottom: 0" do
     - proto = Incidents::Incident.new region: current_region
     /%table
     /  %tr
     .row.collapase
-      .col-sm-2=f.label :address_cont, 'Address'
-      .col-sm-2=f.label :city_cont, 'City'
+      .col-sm-2=label_tag :address_cont, 'Address'
+      .col-sm-2=label_tag :city_cont, 'City'
       .col-sm-2=label_tag :county_state_eq, 'County'
-      .col-sm-3=f.label :date_gteq, 'After'
-      .col-sm-3=f.label :date_lteq, 'Before'
+      .col-sm-3=label_tag :date_gteq, 'After'
+      .col-sm-3=label_tag :date_lteq, 'Before'
     /%tr
     .row
       %div
         .form-group
           .col-sm-2
-            =f.text_field :address_cont, class: 'form-control', placeholder: 'Address'
+            =text_field_tag :address_cont, current_scopes[:address_cont], class: 'form-control', placeholder: 'Address'
         .form-group
           .col-sm-2
-            =f.text_field :city_cont,    class: 'form-control', placeholder: 'City'
+            =text_field_tag :city_cont, current_scopes[:city_cont], class: 'form-control', placeholder: 'City'
         .form-group
           .col-sm-2
             =select_tag :county_state_eq, options_for_select(counties_for_menu(collection_for_stats), current_scopes[:county_state_eq]), prompt: 'County', class: 'form-control'
         .form-group
           .col-sm-3
-            =f.date_field :date_gteq,    class: 'form-control', placeholder: 'After YYYY-MM-DD'
+            =date_field_tag :date_gteq, (current_scopes[:date_gteq] or FiscalYear.current.start_date.to_s), class: 'form-control', placeholder: 'After YYYY-MM-DD'
         .form-group
           .col-sm-3
-            =f.date_field :date_lteq,    class: 'form-control', placeholder: 'Before YYYY-MM-DD'
+            =date_field_tag :date_lteq, current_scopes[:date_lteq], class: 'form-control', placeholder: 'Before YYYY-MM-DD'
     .row(style="margin-top: 15px")
       .col-sm-5
-        =f.label :incident_type_in
-        =f.select :incident_type_in, options_from_collection_for_select(proto.humanized_incident_types, :value, :humanized, search.incident_type_in), {include_blank: true}, class: 'form-control'
+        =label_tag :incident_type_in
+        =select_tag :incident_type_in, options_from_collection_for_select(proto.humanized_incident_types, :value, :humanized, current_scopes[:incident_type_in]), include_blank: true, class: 'form-control'
       .col-sm-4
         =label_tag :show_statistics
         =check_box_tag :show_statistics, '1', params[:show_statistics]
         %br
-        =f.label :status_in
+        =label_tag :status_in
         - proto.humanized_statuses.each do |status|
-          - id="q_status_in_#{status.value}"
-          =check_box_tag 'q[status_in][]', status.value, search.status_in.try(:include?, status.value), {id: id}
-          =label_tag id, status.humanized
+          - checked = current_scopes[:status_in] && current_scopes[:status_in].include?(status.value)
+          =check_box_tag 'status_in[]', status.value, checked
+          =label_tag status.humanized
       .col-sm-2
-        =f.submit class: 'btn btn-primary'
+        =submit_tag 'Search', class: 'btn btn-primary'
 
 -if params[:show_statistics]
   =render 'statistics'

@@ -5,7 +5,7 @@ class Incidents::IncidentsListController < Incidents::BaseController
   load_and_authorize_resource :scope
   belongs_to :scope, parent_class: Incidents::Scope, finder: :find_by_url_slug!, param: :region_id
   helper Incidents::MapHelper
-  include Searchable, Paginatable
+  include Paginatable
 
   actions :index
 
@@ -27,6 +27,22 @@ class Incidents::IncidentsListController < Incidents::BaseController
     scope.where('LOWER(county) = ?', county_name.downcase).where(state: state_name)
   end
 
+  has_scope :address_cont do |controller, scope, val|
+    scope.where('LOWER(address) like ?', "%#{val.downcase}%")
+  end
+
+  has_scope :city_cont do |controller, scope, val|
+    scope.where('LOWER(city) like ?', "%#{val.downcase}%")
+  end
+
+  has_scope :status_in, type: :array, default: ["open", "closed"] do |controller, scope, val|
+    scope.with_status(val)
+  end
+
+  has_scope :incident_type_in do |controller, scope, val|
+    scope.where(incident_type: val)
+  end
+
   def resource_path(*args)
     opts = args.extract_options!
     obj = args.first || resource
@@ -37,7 +53,6 @@ class Incidents::IncidentsListController < Incidents::BaseController
   def collection
     @_incidents ||= begin
       scope = apply_scopes(super).order(date: :desc, incident_number: :desc)#.preload(:shift_territory, :dat_incident, team_lead: :person)
-      scope
     end
   end
 
@@ -46,7 +61,7 @@ class Incidents::IncidentsListController < Incidents::BaseController
   end
   helper_method :collection_for_stats
 
-  def default_search_params
+  def default_ransack_params
     {status_in: ['open', 'closed'], date_gteq: FiscalYear.current.start_date}
   end
 
