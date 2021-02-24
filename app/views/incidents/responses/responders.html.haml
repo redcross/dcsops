@@ -1,8 +1,13 @@
 =form_tag '', method: :get, class: 'form-inline' do
   Show Shift Territory:
   =select_tag :shift_territory_id, options_from_collection_for_select(current_region.shift_territories.enabled, :id, :name, current_scopes[:shift_territory_id]), class: "form-control"
+  Responses Between:
+  =date_field_tag "date_after", (current_scopes[:date_after] or FiscalYear.current.start_date.to_s), class: 'form-control', placeholder: 'After YYYY-MM-DD'
+  and:
+  =date_field_tag "date_before", current_scopes[:date_before], class: 'form-control', placeholder: 'Before YYYY-MM-DD'
   =submit_tag 'Show', class: 'btn btn-primary'
 
+= link_to 'Download as CSV', incidents_region_responders_path(format: :csv, params: request.query_parameters.merge(page: 'all')), download: "people.csv"
 .legend
   %span.text-success
     %i.fa.fa-check-square
@@ -18,10 +23,10 @@
     %tr
       %th Name
       %th Last Contacted
-      %th Available
+      %th Responses
       %th Not Available
       %th(colspan=max_responses) 
-        Responses
+        Last 10 Responses (within Date Range)
 
   %tbody
     - responders.each do |responder, assignments|
