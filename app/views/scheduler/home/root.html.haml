@@ -121,18 +121,23 @@
           Manage Calendars
     %div
       %a{href: scheduler_shift_notes_path}
-        %i.fa.fa-sticky-note
+        %i.fa.fa-clipboard
         Shift Notes
     -if can? :read, Scheduler::FlexSchedule
       %div
         %a{href: scheduler_flex_schedules_path}
-          %i.fa.fa-time
+          %i.fa.fa-clock-o
           Show Flex Schedule Calendar
     -if can? :read, Roster::Person
       %div
         %a{href: scheduler_people_path}
           %i.fa.fa-user
           Show Roster
+    -if can? :read, Roster::Person
+      %div
+        %a{href: scheduler_shift_report_index_path}
+          %i.fa.fa-history
+          Show Shifts
   .col-sm-4
     -if can? :read, :on_call
       %h5 
