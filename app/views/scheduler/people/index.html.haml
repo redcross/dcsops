@@ -10,6 +10,12 @@
       %th Shift Territory
       %td=select_tag "shift_territory", options_from_collection_for_select(current_region.shift_territories.enabled, :id, :name, current_scopes[:shift_territory]), multiple: false, id: 'choose-shift_territory', prompt: "All", class: "form-control"
     %tr
+      %th Shifts After
+      %td=date_field_tag "date_after", (current_scopes[:date_after] or FiscalYear.current.start_date.to_s), class: 'form-control', placeholder: 'After YYYY-MM-DD'
+    %tr
+      %th Shifts Before
+      %td=date_field_tag "date_before", current_scopes[:date_before], class: 'form-control', placeholder: 'Before YYYY-MM-DD'
+    %tr
       %th Position
       %td
         %table(style="width: 100%")
@@ -26,9 +32,6 @@
                     - checked = current_scopes[:with_position] && current_scopes[:with_position].include?(second.id.to_s)
                     =check_box_tag "with_position[]", second.id, checked
                     = second.name
-    %tr
-      %th Last Shift Taken
-      %td=select_tag "last_shift", options_for_select(date_ranges, current_scopes[:last_shift].try(:to_i)), prompt: "Any Time", class: "form-control"
     %tr
       %th Name
       %td=text_field_tag :name_contains, current_scopes[:name_contains], placeholder: "Search Name", class: "form-control"
