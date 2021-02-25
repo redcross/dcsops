@@ -82,7 +82,7 @@ gem 'pubnub'
 
 gem 'pdfkit'
 gem 'wkhtmltopdf-heroku', :group => [:staging, :production]
-gem 'wkhtmltopdf-binary', github: 'dwa012/wkhtmltopdf-binary', group: :development
+gem 'wkhtmltopdf-binary', group: :development
 
 
 group :test do

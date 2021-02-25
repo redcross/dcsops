@@ -30,7 +30,7 @@ class Incidents::PrepareIirJob
 
   def render_pdf
     html = view_html
-    margin = '.25in'
+    margin = '.5in'
     kit = PDFKit.new(html, :page_size => 'Letter', margin_bottom: margin, margin_top: margin, margin_left: margin, margin_right: margin)
     kit.to_pdf
   end
@@ -82,7 +82,7 @@ class Incidents::PrepareIirJob
 
   def filename
     date_str = iir.incident.date.strftime "%Y%m%d"
-    "#{date_str}_#{iir.incident.region.name}_#{iir.incident.humanized_incident_type}_IIR.pdf"
+    "#{date_str}_#{iir.incident.region.name}_#{iir.disaster_type.upcase}_IIR.pdf"
   end
 
 end

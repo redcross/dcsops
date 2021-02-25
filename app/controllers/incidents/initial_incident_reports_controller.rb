@@ -52,7 +52,7 @@ class Incidents::InitialIncidentReportsController < Incidents::EditPanelControll
   end
 
   def resource_params
-    [params.fetch(:incidents_initial_incident_report, {}).permit(:budget_exceeded, :trend, :estimated_units, :estimated_individuals, :significant_media, :safety_concerns, :weather_concerns, triggers: [], expected_services: []).merge(completed_by_id: current_user.id)]
+    [params.fetch(:incidents_initial_incident_report, {}).permit(:budget_exceeded, :disaster_type, :caller_name, :caller_agency, :chapter, :trend, :additional_comments, :potential_impacts, :estimated_units, :estimated_individuals, :significant_media, :safety_concerns, :weather_concerns, triggers: [], expected_services: []).merge(completed_by_id: current_user.id)]
   end
 
   def paginate?

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_27_135557) do
+ActiveRecord::Schema.define(version: 2021_02_27_190916) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -509,11 +509,17 @@ ActiveRecord::Schema.define(version: 2021_02_27_135557) do
     t.integer "estimated_units"
     t.integer "estimated_individuals"
     t.string "expected_services", limit: 255, array: true
-    t.boolean "significant_media"
-    t.boolean "safety_concerns"
-    t.boolean "weather_concerns"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "disaster_type"
+    t.string "chapter"
+    t.string "caller_name"
+    t.string "caller_agency"
+    t.text "potential_impacts"
+    t.text "additional_comments"
+    t.string "significant_media"
+    t.string "safety_concerns"
+    t.string "weather_concerns"
     t.index ["approved_by_id"], name: "index_incidents_initial_incident_reports_on_approved_by_id"
     t.index ["completed_by_id"], name: "index_incidents_initial_incident_reports_on_completed_by_id"
     t.index ["incident_id"], name: "index_incidents_initial_incident_reports_on_incident_id"

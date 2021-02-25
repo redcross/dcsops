@@ -5,7 +5,11 @@
         %a.close(data-dismiss="modal") &times;
         %h4.modal-title Edit Initial Incident Report
       .modal-body
-        =f.input :budget_exceeded
+        =f.input :budget_exceeded, as: :radio
+        =f.input :disaster_type, as: :assignable_select, include_blank: false
+        =f.input :chapter
+        =f.input :caller_name
+        =f.input :caller_agency
         =f.input :trend, as: :assignable_select
         .form-group
           %label.control-label IIR Triggers
@@ -20,6 +24,7 @@
                   =label
         =f.input :estimated_units
         =f.input :estimated_individuals
+        =f.input :potential_impacts, as: :text, input_html: {rows: 6, style: "width: 100%"}, label: "Explain any potential impacts to service delivery"
         .form-group
           %label.control-label Anticipated Services
           .form-wrapper
@@ -31,8 +36,9 @@
                 %label
                   =check_box_tag "incidents_initial_incident_report[expected_services][]", val, services.include?( val)#, class: 'cb-service'
                   =label
-        =f.input :significant_media
-        =f.input :safety_concerns
-        =f.input :weather_concerns
+        =f.input :significant_media, as: :assignable_select, include_blank: false
+        =f.input :safety_concerns, as: :assignable_select, include_blank: false
+        =f.input :weather_concerns, as: :assignable_select, include_blank: false
+        =f.input :additional_comments, as: :text, input_html: {rows: 6, style: "width: 100%"}, label: "Comments or Additional Information"
       .modal-footer
         =f.action :submit, button_html: {class: "btn btn-primary", data: {disable_with: "Creating…"}}

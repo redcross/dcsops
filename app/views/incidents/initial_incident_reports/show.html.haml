@@ -2,77 +2,124 @@
 .iir-print
   
   .header.pull-right
-    %h1 Initial Incident Report
-    %h2 
-      #{resource.incident.city}, #{resource.incident.state}
-      %br
-      .red
-        Incident Type:
-        =resource.incident.humanized_incident_type
-  .logo=image_tag 'ARC Horizontal Stacked.png'
+    %h1{:style => "width: 5in"} Initial Incident Report
+  .logo=image_tag image_url "ARC Horizontal Stacked.png"
   .clearfix
+  %br
+  %br
   %br
   .maps.pull-right
     - inc = resource.incident
     - size = "200x200"
-    .lowmap=image_tag "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=#{size}&markers=#{URI::encode "|#{inc.lat},#{inc.lng}"}&zoom=10&scale=2&key=#{maps_api_key}"
     .highmap=image_tag "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=#{size}&markers=#{URI::encode "|#{inc.lat},#{inc.lng}"}&zoom=6&scale=2&key=#{maps_api_key}"
-  %h3 Basic Information
-  Incident Number: #{resource.incident.incident_number}
-  =link_to 'View in DCSOps', incidents_region_incident_url(resource.incident.region, resource.incident)
-  %br
-  IIR Completed By: #{resource.completed_by.try :full_name}
-  %br
-  IIR Approved By: #{resource.approved_by.try :full_name}
+    .lowmap=image_tag "http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&sensor=false&size=#{size}&markers=#{URI::encode "|#{inc.lat},#{inc.lng}"}&zoom=10&scale=2&key=#{maps_api_key}"
+  %h2
+    %span.thin Disaster Type:
+    %span.bold=resource.humanized_disaster_type
+  %h3.thin Common Name of Incident/Disaster:
+  %h2
+    %span.bold #{resource.incident.incident_number}  #{resource.incident.city}, #{resource.incident.state}
+    = resource.incident.address
 
-  %h3 Timeline
-  Incident Occurred: #{timeline_time 'incident_occurred'}
-  %br
-  ARC Notified Time: #{timeline_time('dat_received') || timeline_time('dispatch_received')}
-  %br
-  ARC on Scene: #{timeline_time('dat_on_scene') || 'Not On Scene'}
-  %br
-  Do you expect the budget to go over $10,000?: #{yes_no_exact resource.budget_exceeded}
-  %br
-  Trend of Event: #{resource.humanized_trend}
-  %br
-  IIR Triggers:
-  = humanized_triggers
-
-  %h3 Location
-  = resource.incident.address
-  %br
-  #{resource.incident.city}, #{resource.incident.state} #{resource.incident.zip}
-  %br
-  County: #{resource.incident.county}
-  -if resource.incident.neighborhood.present?
-    Neighborhood: #{resource.incident.neighborhood}
+  %div.section
+    %h1 1. Incident Location
+    %span.thin Region:
+    =resource.incident.region.name
     %br
-  %br
-  Response Territory: #{resource.incident.response_territory.try(:name)}
-  %br
-  Region: #{resource.incident.region.name}
-  %br
-  Division: #{resource.incident.region.division_name}
-
-  %h3 Demographics
-  Estimated # homes affected: #{resource.estimated_units}
-  %br
-  Estimated # individuals affected: #{resource.estimated_individuals}
-
-  %h3 Incident Summary and Actions Taken
-  =simple_format resource.incident.narrative
-
-  %h3 Do you expect to provide...
-  - services = resource.expected_services || []
-  - resource.assignable_services.each do |service|
-    - next if service == 'none'
-    #{t(".services.#{service}")}: #{services.include?(service) ? 'Yes' : 'No'}
+    %span.thin Division:
+    =resource.incident.region.division_name
     %br
+    %span.thin Chapter:
+    =resource.chapter
+    %br
+    %span.thin County:
+    = resource.incident.county
+    %br
+    %span.thin Incident Location:
+    #{resource.incident.address}, #{resource.incident.city}, #{resource.incident.state} #{resource.incident.zip}
+    %br
+    -if resource.incident.neighborhood.present?
+      %span.thin Neighborhood:
+      =resource.incident.neighborhood
+      %br
 
-  %h3 Additional Details
-  Does the event have significant media coverage?: #{yes_no_exact resource.significant_media}
+  %div.section
+    %h1 2. Notification Information
+    %span.thin Caller Name:
+    =resource.caller_name
+    %br
+    %span.thin Caller Agency:
+    =resource.caller_agency
+    %br
+    %span.thin IIR Completed by:
+    =resource.completed_by.try :full_name
+    %br
+    %span.thin Time Zone:
+    =resource.incident.region.time_zone.name
+    %br
+    %span.thin Incident Occurred:
+    =timeline_time 'incident_occurred'
+    %br
+    %span.thin ARC Notified:
+    =timeline_time('incident_notified')
+    %br
+    %span.thin ARC on Scene:
+    =(timeline_time('dat_on_scene') || 'Not On Scene')
+
+  %div.section
+    %h1 3. Incident Summary
+    %span.thin Summarize the incident and actions taken here:
+    =simple_format resource.incident.narrative
+
+  %div{:style => "page-break-before: always"}
+  .header.pull-right
+    %h1{:style => "width: 5in"} Initial Incident Report
+  .logo=image_tag image_url "ARC Horizontal Stacked.png"
+  .clearfix
   %br
-  Safety Concerns: #{yes_no_exact resource.safety_concerns}
   %br
-  Weather Concerns: #{yes_no_exact resource.weather_concerns}
+  %br
+  %div.section
+    %h1 4. Planning Considerations
+    %span.thin Budget likely to exceed $10,000:
+    =yes_no_exact resource.budget_exceeded
+    %br
+    %span.thin Truend of event:
+    =resource.humanized_trend
+    %br
+    %span.thin IIR Triggers:
+    = humanized_triggers
+    %br
+    %span.thin Estimated number of residences affected:
+    =resource.estimated_units
+    %br
+    %span.thin Estimated number of individuals affected:
+    =resource.estimated_individuals
+    %br
+    %span.thin Explain any potential impacts to service delivery:
+    %br
+    =resource.potential_impacts
+
+  %div.section
+    %h1 5. Anticipated Service Delivery
+    - services = resource.expected_services || []
+    - resource.assignable_services.each do |service|
+      - next if service == 'none'
+      %span.thin #{t("services.#{service}")}:
+      =(services.include?(service) ? 'Yes' : 'No')
+      %br
+
+  %div.section
+    %h1 6. Other Factors
+    %span.thin Significant Media Coverage:
+    =resource.humanized_significant_medium
+    %br
+    %span.thin Safety Concerns:
+    =resource.humanized_safety_concern
+    %br
+    %span.thin Weather Concerns:
+    =resource.humanized_weather_concern
+    %br
+    %span.thin Comments or Additional Information:
+    %br
+    =resource.additional_comments

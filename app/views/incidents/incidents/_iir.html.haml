@@ -30,6 +30,12 @@
           %th=passthrough_edit_link 'basic', 'Incident Type:'
           %td=resource.humanized_incident_type
         %tr
+          %th=iir_edit_link 'Chapter:'
+          %td= iir.chapter
+        %tr
+          %th=iir_edit_link 'Disaster Type:'
+          %td= iir.humanized_disaster_type
+        %tr
           %th=iir_edit_link 'Estimated # homes affected:'
           %td= iir.estimated_units
         %tr
@@ -85,10 +91,10 @@
       %table.table.table-bordered.table-condensed
         %tr
           %th=iir_edit_link 'Does the event have significant media coverage?'
-          %td= yes_no_exact iir.significant_media
+          %td= iir.humanized_significant_medium
         %tr
           %th=iir_edit_link 'Safety concerns?'
-          %td= yes_no_exact iir.safety_concerns
+          %td= iir.humanized_safety_concern
         %tr
           %th=iir_edit_link 'Weather concerns?'
-          %td= yes_no_exact iir.weather_concerns
+          %td= iir.humanized_weather_concern

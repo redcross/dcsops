@@ -1,4 +1,9 @@
 en:
+  services:
+    food: "Feeding"
+    mental_health_services: "Mental Health"
+    bulk_distribution: "Distribution of Emergency Supplies"
+
   incidents:
     incidents:
       show:
@@ -24,14 +29,20 @@ en:
     initial_incident_reports:
       form:
         triggers:
-          casualties: "A death or multiple significant injuries have occurred"
-          staff_casualty: "A Red Cross paid or volunteer staff member is injured"
-          facility_damage: "A Red Cross facility is damaged"
-          evacuation: "Any form of evacuation larger than a Single Family Fire"
-          shelter: "A shelter is, or will be, opened or put on standby"
-          media: "The incident has substantial media coverage"
-          budget: "The estimated cost is expected to go over $10,000"
-          mutual_aid: "Mutual-aid (Red Cross human/material resources are requested from outside of the affected region) is expected to occur or is occurring"
+          casualties: "Disaster-related death has occurred"
+          staff_casualty: "Red Cross member killed, injured or unaccounted for during a Red Cross event or activity"
+          significant_injuries: "Multiple, significant injuries as a result of the disaster"
+          facility_damage: "ARC facility damaged as the result of a disaster"
+          evacuation: "Significant evacuation has occurred in a community"
+          shelter: "Shelter has, or will be, opened or put on standby"
+          media: "Disaster-related incident has significant media coverage"
+          budget: "Estimated cost of a disaster-related incident expected to exceed $10,000"
+          mutual_aid: "Inter-regional ARC mutual aid requested or expected to occur"
+          eoc_activated: "State, local, tribal or federal EOC activated and ARC is providing coverage"
+        services:
+          food: "Feeding"
+          mental_health_services: "Mental Health"
+          bulk_distribution: "Distribution of Emergency Supplies"
 
   formtastic:
     actions:
@@ -49,11 +60,47 @@ en:
 
   assignable_values:
     incidents/initial_incident_report:
+      significant_media:
+        national: Yes, National Media
+        local: Yes, Local Media
+      weather_concerns:
+        yes: Yes (Explain)
+      safety_concerns:
+        yes: Yes (Explain)
       trend:
         escalating: Growing
         stable: Holding Steady
         deescalating: Shrinking
         ended: Ended
+      disaster_type:
+        bdc: "BDC - Building Collapse"
+        bli: "BLI - Blizzard: Snow, Hail, Ice Storm"
+        cdb: "CDB - Civil Disturbance"
+        drt: "DRT - Drought"
+        epd: "EPD - Epidemic"
+        eqk: "EQK - Earthquake"
+        exe: "EXE - Exercise"
+        exp: "EXP - Explosion"
+        fld: "FLD - Flood: Flash, Dam Break, Land/Mudslide"
+        flt: "FLT - Flood and Tornado"
+        for: "FOR - Forest Fire: Wild/Range/Grass"
+        haz: "HAZ - Hazardous Material/Chemical Spill"
+        hfl: "HFL - Hurricane Flood"
+        hmf: "HMF - Hotel or Motel Fire"
+        hur: "HUR - Hurricane, Tropical storm, Typhoon"
+        icf: "ICF - Industrial or Commercial Fire"
+        mff: "MFF - Multi-Family Fire"
+        nui: "NUI - Nuclear Incident"
+        ost: "OST - Other Storm: Wind, Dust, Electrical, Rain"
+        oth: "OTH - Other"
+        ref: "REF - Refugee Operation"
+        sff: "SFF - Single Family Fire"
+        srs: "SRS - Search and Rescue"
+        tor: "TOR - Tornado/Cyclone"
+        tra: "TRA - Transportation Incident"
+        tsu: "TSU - Tsunami/Wave"
+        ukn: "UKN - Unknown"
+        vol: "VOL - Volcano"
     incidents/attachment:
       attachment_type:
         pa_release: Public Affairs Release
