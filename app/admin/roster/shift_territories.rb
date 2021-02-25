@@ -22,6 +22,11 @@ ActiveAdmin.register Roster::ShiftTerritory, as: 'Shift Territory' do
   end
 
   controller do
+    after_build :set_region
+    def set_region resource
+      resource.region ||= current_region
+    end
+
     def resource_params
       [params.fetch(resource_request_name, {}).permit(:name, :abbrev, :enabled, :shift_territory_code, :fips_code, :gis_name, :region_id, :ordinal)]
     end

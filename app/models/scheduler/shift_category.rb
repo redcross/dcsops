@@ -11,8 +11,8 @@ class Scheduler::ShiftCategory < ApplicationRecord
   end
 
   def display_name
-    "#{region_id} - #{name}"
+    "#{region.name} - #{name}"
   end
 
-  default_scope { order(:ordinal) }
+  default_scope { order(:region_id).order(:ordinal) }
 end

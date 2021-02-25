@@ -11,7 +11,7 @@ class Scheduler::ShiftTime < ApplicationRecord
   attr_accessor :start_date
 
   def display_name
-    "#{region_id} - #{name}"
+    "#{region.name} - #{name}"
   end
 
   def next_period_date

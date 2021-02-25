@@ -11,7 +11,7 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
 
   index do
     id_column
-    column :region_id
+    column :region
     column :name
     column :hidden
     column :capabilities do |pos|
@@ -36,6 +36,11 @@ ActiveAdmin.register Roster::Position, as: 'Position' do
   controller do
     def update
       update! { url_for(action: :index)}
+    end
+
+    after_build :set_region
+    def set_region resource
+      resource.region ||= current_region
     end
 
     def resource_params

@@ -50,26 +50,19 @@ class AdminAbility
     is_admin = person.has_capability 'region_admin'
     if is_admin
       region = person.region_id
-      can :read, [Roster::Person, Roster::ShiftTerritory, Roster::Position], region_id: region
+      can :manage, [Roster::Person, Roster::ShiftTerritory, Roster::Position, Scheduler::ShiftCategory, Scheduler::ShiftTime], region_id: region
       can :impersonate, Roster::Person, region_id: region
+      can :manage, Partners::Partner, region_id: region
       can :manage, Logistics::Vehicle, region_id: region
       can :manage, Roster::VcPosition, region_id: region
       can :manage, HomepageLink, region_id: region
-      can :new, Incidents::ReportSubscription
-      can :manage, Incidents::ReportSubscription, person: {region_id: region}
-      can [:test_report, :send_report, :new], Incidents::ReportSubscription
+      can :manage, MOTD, region_id: region
 
-      can :manage, Incidents::Notifications::Event, region_id: region
+      can :read, Incidents::Notifications::Event, region_id: region
       can :manage, Incidents::Notifications::Role, region_id: region
 
       can [:read, :update], Scheduler::DispatchConfig, region_id: region
-      can :read, Incidents::DispatchLog, region_id: region
-
-      can :manage, Incidents::ResponseTerritory, region_id: region
-
-      can :manage, RegionAdminProxy do |region|
-        region.region_id.nil? || region.region_id == region
-      end
+      can :manage, Scheduler::Shift, shift_territory: Roster::ShiftTerritory.where(region_id: region).all + [nil]
     end
   end
 

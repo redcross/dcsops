@@ -32,9 +32,25 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
   end
 
   form do |f|
+    available_sts = Roster::ShiftTerritory.where(enabled: true)
+    available_scs = Scheduler::ShiftCategory.all
+    available_stimes = Scheduler::ShiftTime.where(enabled: true)
+    available_ps = Roster::Position.all
+    if f.object.shift_territory.try(:region)
+      region = f.object.shift_territory.region
+      available_sts = available_sts.where(region: region)
+      available_scs = available_scs.where(region: region)
+      available_stimes = available_stimes.for_region(region)
+      available_ps = available_ps.where(region: region)
+    else
+      available_sts = available_sts.all.filter{|st| AdminAbility.new(current_user).can?(:read, st)}
+      available_scs = available_scs.all.filter{|sc| AdminAbility.new(current_user).can?(:read, sc)}
+      available_stimes = available_stimes.all.filter{|stime| AdminAbility.new(current_user).can?(:read, stime)}
+      available_ps = available_ps.all.filter{|p| AdminAbility.new(current_user).can?(:read, p)}
+    end
     f.inputs 'Details' do
-      f.input :shift_territory, collection: Roster::ShiftTerritory.where(enabled: true)
-      f.input :shift_category
+      f.input :shift_territory, collection: available_sts
+      f.input :shift_category, collection: available_scs
       f.input :name
       f.input :abbrev
       f.input :max_signups
@@ -52,11 +68,12 @@ ActiveAdmin.register Scheduler::Shift, as: 'Shift' do
       f.input :vc_hours_type
       f.input :show_in_dispatch_console
     end
+
     f.inputs 'Shift Times' do
-      f.input :shift_times, as: :check_boxes, collection: Scheduler::ShiftTime.for_region(f.object.shift_territory.try(:region)).where(enabled: true)
+      f.input :shift_times, as: :check_boxes, collection: available_stimes
     end
     f.inputs 'Position and Shift Territory' do
-      f.input :positions, as: :check_boxes, collection: f.object.shift_territory.try(:region).try(:positions)
+      f.input :positions, as: :check_boxes, collection: available_ps
       f.actions
     end
   end
