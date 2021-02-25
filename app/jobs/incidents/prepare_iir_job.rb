@@ -15,7 +15,7 @@ class Incidents::PrepareIirJob
   def perform
     pdf_data = render_pdf
     make_attachment pdf_data
-    distribute_notification pdf_data
+    #distribute_notification pdf_data
   end
 
   def distribute_notification pdf_data
@@ -66,6 +66,7 @@ class Incidents::PrepareIirJob
     io.content_type = 'application/pdf'
     io.original_filename = filename
 
+    puts "\n\n\n#{iir.incident.id}\n\n\n"
     attachment = iir.incident.attachments.build do |att|
       att.attachment_type = 'iir'
       att.file = io
@@ -73,7 +74,7 @@ class Incidents::PrepareIirJob
     end
     attachment.save!
 
-    publish_attachment
+    #publish_attachment
   end
 
   def publish_attachment

@@ -32,6 +32,8 @@ en:
           media: "The incident has substantial media coverage"
           budget: "The estimated cost is expected to go over $10,000"
           mutual_aid: "Mutual-aid (Red Cross human/material resources are requested from outside of the affected region) is expected to occur or is occurring"
+        services:
+          food: "Feeding"
 
   formtastic:
     actions:

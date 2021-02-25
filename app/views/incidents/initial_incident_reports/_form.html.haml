@@ -5,7 +5,7 @@
         %a.close(data-dismiss="modal") &times;
         %h4.modal-title Edit Initial Incident Report
       .modal-body
-        =f.input :budget_exceeded
+        =f.input :budget_exceeded, as: :radio
         =f.input :trend, as: :assignable_select
         .form-group
           %label.control-label IIR Triggers
@@ -31,8 +31,8 @@
                 %label
                   =check_box_tag "incidents_initial_incident_report[expected_services][]", val, services.include?( val)#, class: 'cb-service'
                   =label
-        =f.input :significant_media
-        =f.input :safety_concerns
-        =f.input :weather_concerns
+        =f.input :significant_media, as: :radio
+        =f.input :safety_concerns, as: :radio
+        =f.input :weather_concerns, as: :radio
       .modal-footer
         =f.action :submit, button_html: {class: "btn btn-primary", data: {disable_with: "Creating…"}}

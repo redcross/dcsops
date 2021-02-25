@@ -1,10 +1,4 @@
 GIT
-  remote: git://github.com/dwa012/wkhtmltopdf-binary.git
-  revision: 377c1a311e2ebbbc368f4067ddd8a2835ed08fcb
-  specs:
-    wkhtmltopdf-binary (0.9.9)
-
-GIT
   remote: git://github.com/redcross/arcdata_core.git
   revision: 19cb17838b651a3f624bcb204989056b9507b422
   branch: upgrade/rails-6
@@ -1644,6 +1638,7 @@ GEM
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    wkhtmltopdf-binary (0.12.6.5)
     wkhtmltopdf-heroku (2.12.6.0)
     xpath (3.2.0)
       nokogiri (~> 1.8)
@@ -1740,7 +1735,7 @@ DEPENDENCIES
   vcr
   web-console (>= 3.3.0)
   webmock
-  wkhtmltopdf-binary!
+  wkhtmltopdf-binary
   wkhtmltopdf-heroku
   zonebie
 
