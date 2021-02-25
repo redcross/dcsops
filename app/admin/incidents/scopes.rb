@@ -24,8 +24,10 @@ ActiveAdmin.register Incidents::Scope, as: 'Scope' do
     end
     f.inputs do
       # For some reason AA cares about the return value of this block, reduce is a shortcut for that
-      f.object.class.serialized_columns.keys.map(&:to_sym).reduce(nil) do |_, c|
-        f.input c
+      f.object.class.serialized_columns.each do |c, v|
+        opts = {}
+        opts[:as] = :boolean if v[1] == :boolean
+        f.input c, opts
       end
     end
     f.inputs "Map" do

@@ -15,6 +15,7 @@ ActiveAdmin.register Roster::Region, as: 'Region' do
     def resource_params
       keys = [:name, :short_name, :code, :url_slug, :time_zone_raw, :vc_username, :vc_password, :vc_hierarchy_name, :vc_position_filter, :vc_unit, :incident_number_sequence_id]
       keys = keys + resource_class.serialized_columns.keys
+      puts keys
       [params.fetch(resource_request_name, {}).permit(*keys)]
     end
   end
@@ -34,8 +35,9 @@ ActiveAdmin.register Roster::Region, as: 'Region' do
       f.input :incident_number_sequence
 
       # For some reason AA cares about the return value of this block, reduce is a shortcut for that
-      f.object.class.serialized_columns.keys.each do |c|
+      f.object.class.serialized_columns.each do |c, v|
         opts = {}
+        opts[:as] = :boolean if v[1] == :boolean
         opts[:as] = :string if c.to_s.include? "password"
         opts[:as] = :time_offset if c.to_s.include? "scheduler_flex"
         opts[:midnight] = true if c.to_s.include? "scheduler_flex_night_start"
