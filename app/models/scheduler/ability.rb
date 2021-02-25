@@ -24,6 +24,8 @@ class Scheduler::Ability
     dat_admin_shift_territories = person.scope_for_capability('shift_territory_dat_admin')
     shift_territory_dat_admin dat_admin_shift_territories if dat_admin_shift_territories.present? # is dat shift_territory admin
 
+    download if person.has_capability 'region_admin' or person.has_capability 'download'
+
     read_only if ENV['READ_ONLY']
   end
 
@@ -70,5 +72,10 @@ class Scheduler::Ability
 
   def read_only
     cannot [:update, :create, :destroy], :all
+  end
+
+  def download
+    can :download, Scheduler::Shift
+    can :download, Roster::Person
   end
 end

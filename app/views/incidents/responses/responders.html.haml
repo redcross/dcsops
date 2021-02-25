@@ -7,7 +7,8 @@
   =date_field_tag "date_before", current_scopes[:date_before], class: 'form-control', placeholder: 'Before YYYY-MM-DD'
   =submit_tag 'Show', class: 'btn btn-primary'
 
-= link_to 'Download as CSV', incidents_region_responders_path(format: :csv, params: request.query_parameters.merge(page: 'all')), download: "people.csv"
+- if can? :download, Incidents::Incident
+  = link_to 'Download as CSV', incidents_region_responders_path(format: :csv, params: request.query_parameters.merge(page: 'all')), download: "people.csv"
 .legend
   %span.text-success
     %i.fa.fa-check-square

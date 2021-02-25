@@ -15,6 +15,7 @@ class Incidents::Ability
     
     dispatch_console(region_admin) if is_admin or person.has_capability 'dispatch_console'
     create_incident         if             person.has_capability 'create_incident'
+    download                if             person.has_capability 'download'
     submit_incident_report  if is_admin or person.has_capability 'submit_incident_report'
     cas_admin               if is_admin or person.has_capability 'cas_admin'
     incident_details        if is_admin or person.has_capability 'incident_details'
@@ -85,6 +86,10 @@ class Incidents::Ability
       cannot :close_without_completing, Incidents::Incident, region_id: @region_scope
     end
     can :manage, Incidents::InitialIncidentReport, incident: {region_id: @region_scope}
+  end
+
+  def download
+    can :download, Incidents::Incident, region_id: @region_scope
   end
 
   def incident_details

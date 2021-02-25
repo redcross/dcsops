@@ -1,6 +1,7 @@
 .text-center= paginate collection, :theme => 'twitter-bootstrap-3', remote: true
-%h1(style="font-size:150%;text-align:center;margin-top:0px")
-  = link_to 'Download as CSV', scheduler_people_path(format: :csv, params: request.query_parameters.merge(page: 'all')), download: "people.csv"
+- if can? :download, Roster::Person
+  %h1(style="font-size:150%;text-align:center;margin-top:0px")
+    = link_to 'Download as CSV', scheduler_people_path(format: :csv, params: request.query_parameters.merge(page: 'all')), download: "people.csv"
 
 %table.table.table-striped.table-condensed
   %thead
