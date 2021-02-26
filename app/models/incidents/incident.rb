@@ -188,6 +188,14 @@ class Incidents::Incident < ApplicationRecord
     timeline.attributes = attrs
   end
 
+  def response_time
+    time_off_scene = event_logs.event("dat_departed_scene").first.try(:event_time)
+    time_dispatched = event_logs.event("dispatch_relayed").first.try(:event_time)
+    if time_off_scene and time_dispatched and time_dispatched < time_off_scene
+      time_off_scene - time_dispatched
+    end
+  end
+
   def set_incident_number
     if region && (seq = region.incident_number_sequence)
       self.incident_number = seq.next_sequence!

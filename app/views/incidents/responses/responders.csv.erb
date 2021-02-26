@@ -1,12 +1,14 @@
-<%- headers = ['Name', 'Last Contacted', 'Responses', 'Not Available'] -%>
+<%- headers = ['Name', 'Last Contacted', 'Responses', 'Not Available', 'Total Time Responding'] -%>
 <%= CSV.generate_line headers -%>
 <%- responders.each do |responder, assignments|
   recent = assignments.first
+  total_time = assignments.select(&:was_available).map{|r| r.incident.response_time}.compact.reduce(0, :+)
 -%>
 <%= CSV.generate_line([
     responder.full_name,
     recent && recent.incident.date.to_s(:mdy),
     assignments.select(&:was_available).count,
-    assignments.reject{|r| r.was_available || r.was_flex }.count
+    assignments.reject{|r| r.was_available || r.was_flex }.count,
+    (total_time > 0 ? time_ago_in_words((Time.now-total_time), include_seconds: false) : '')
 ]).html_safe -%>
 <%- end -%>

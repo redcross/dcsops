@@ -26,17 +26,23 @@
       %th Last Contacted
       %th Responses
       %th Not Available
+      %th Total Time Responding
       %th(colspan=max_responses) 
         Last 10 Responses (within Date Range)
 
   %tbody
     - responders.each do |responder, assignments|
+      - total_time = assignments.select(&:was_available).map{|r| r.incident.response_time}.compact.reduce(0, :+)
       - recent = assignments.first
       %tr
         %th=link_to responder.full_name, responder
         %td=recent && recent.incident.date.to_s(:mdy)
         %td=assignments.select(&:was_available).count
         %td=assignments.reject{|r| r.was_available || r.was_flex }.count
+        %td
+          - if total_time > 0
+            =time_ago_in_words (Time.now-total_time), include_seconds: false
+
         - assignments.first(max_responses).each do |ass|
           %td
             %a{href: incidents_region_incident_path(ass.incident.region, ass.incident), title: tooltip_for(ass)}(data-toggle="tooltip")

@@ -15,6 +15,11 @@
       -if resource.time_to_on_scene
         =time_ago_in_words (Time.now-resource.time_to_on_scene), include_seconds: false
   %tr
+    %th Total Responder Time
+    %td
+      -if resource.response_time
+        =time_ago_in_words (Time.now-(resource.response_time * resource.all_responder_assignments.was_available.count)), include_seconds: false
+  %tr
     %th=passthrough_edit_link 'basic', 'Type of Incident'
     %td=resource.humanized_incident_type
   %tr
