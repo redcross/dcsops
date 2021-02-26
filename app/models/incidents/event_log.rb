@@ -7,6 +7,9 @@ class Incidents::EventLog < Incidents::DataModel
   validates :message, presence: {if: :body_required?, allow_blank: false}
   validates :event, uniqueness: {scope: :incident_id, if: ->(log){log.incident_id && !%w(note dispatch_note).include?(log.event)}}
 
+  scope :event, -> (event) { where(event: event) }
+  scope :message_contains, -> (query) { where("LOWER(message) LIKE ?", "%#{query.downcase}%") }
+
   def self.note
     where(event: 'note')
   end

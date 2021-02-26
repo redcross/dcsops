@@ -5,12 +5,12 @@
     %button.btn.btn-primary{data: {edit_panel: new_resource_path}} Add Log
 
 .well
-  =search_form_for search, class: "form-inline", url: collection_path, method: :get do |f|
+  =form_tag incidents_region_event_logs_path, class: "form-inline", method: :get do
     .row
       .form-group.col-sm-3
         %label
           Event Type:
-        =f.select :event_eq, options_for_select(resource.humanized_events.map{|x| [x.humanized, x.value]}), {prompt: "All"}, class: "form-control"
+        =select_tag :event, options_for_select(resource.humanized_events.map{|x| [x.humanized, x.value]}, current_scopes[:event]), prompt: "All", class: "form-control"
       .form-group.col-sm-3
         %label
           Show Events From:
@@ -18,14 +18,14 @@
       .form-group.col-sm-3
         %label
           Events Before:
-        =f.text_field :event_time_lteq, value: f.object.event_time_lteq.try(:to_date), class: "form-control"
+        =date_field_tag :event_time_lteq, current_scopes[:event_time_lteq], class: "form-control"
       .form-group.col-sm-3
         %label.control-label
           Message Contains:
-        =f.text_field :message_cont, class: "form-control"
+        =text_field_tag :message_contains, current_scopes[:message_contains], class: "form-control"
     .row
       .col-sm-12
-        =f.submit 'Search', class: "btn btn-default"
+        =submit_tag 'Search', class: "btn btn-default"
 
 .event-logs-table{data: {refresh_name: "timeline", refresh: collection_path(partial: 'table', q: params[:q])}}
   =render 'table'

@@ -8,13 +8,18 @@ class Incidents::EventLogsController < Incidents::EditPanelController
   responders :partial
   respond_to :html, :js
 
-
   has_scope :event_scope do |controller, scope, val|
     case val
     when 'global' then scope.where(incident_id: nil)
     when 'incident' then scope.where.not(incident_id: nil)
     else scope
     end
+  end
+
+  has_scope :event
+  has_scope :message_contains
+  has_scope :event_time_lteq do |controller, scope, val|
+    scope.where("event_time < ?", val)
   end
 
   def index
