@@ -10,10 +10,10 @@
       %th Shift Territory
       %td=select_tag "shift_territory", options_from_collection_for_select(current_region.shift_territories.enabled, :id, :name, current_scopes[:shift_territory]), multiple: false, id: 'choose-shift_territory', prompt: "All", class: "form-control"
     %tr
-      %th Shifts After
+      %th Shifts On or After
       %td=date_field_tag "date_after", (current_scopes[:date_after] or FiscalYear.current.start_date.to_s), class: 'form-control', placeholder: 'After YYYY-MM-DD'
     %tr
-      %th Shifts Before
+      %th Shifts On or Before
       %td=date_field_tag "date_before", current_scopes[:date_before], class: 'form-control', placeholder: 'Before YYYY-MM-DD'
     %tr
       %th Position
