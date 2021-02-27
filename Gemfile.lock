@@ -378,7 +378,7 @@ GEM
     aws-sdk-efs (1.37.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-eks (1.48.0)
+    aws-sdk-eks (1.49.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-elasticache (1.53.0)
@@ -402,7 +402,7 @@ GEM
     aws-sdk-elastictranscoder (1.28.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-emr (1.41.0)
+    aws-sdk-emr (1.42.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-emrcontainers (1.2.0)
@@ -1009,7 +1009,7 @@ GEM
     aws-sdk-route53resolver (1.23.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.88.2)
+    aws-sdk-s3 (1.89.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.1)
@@ -1085,7 +1085,7 @@ GEM
     aws-sdk-ssm (1.104.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-ssoadmin (1.5.0)
+    aws-sdk-ssoadmin (1.6.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-ssooidc (1.9.0)
@@ -1168,8 +1168,6 @@ GEM
     bindex (0.8.1)
     binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
-    bitly (2.0.1)
-      oauth2 (>= 0.5.0, < 2.0)
     bootsnap (1.7.2)
       msgpack (~> 1.0)
     bootstrap-kaminari-views (0.0.5)
@@ -1234,6 +1232,8 @@ GEM
       chronic
     diff-lcs (1.4.4)
     docile (1.3.5)
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
     dotiw (5.2.0)
       activesupport
       i18n
@@ -1321,6 +1321,9 @@ GEM
       ruby_parser (~> 3.5)
     html5_validators (1.9.0)
       activemodel
+    http-accept (1.7.0)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
     http_logger (0.6.0)
     httparty (0.18.1)
       mime-types (~> 3.0)
@@ -1384,7 +1387,7 @@ GEM
     method_source (1.0.0)
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2021.0212)
+    mime-types-data (3.2021.0225)
     mimemagic (0.3.5)
     mini_mime (1.0.2)
     mini_portile2 (2.5.0)
@@ -1398,17 +1401,12 @@ GEM
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
+    netrc (0.11.0)
     newrelic_rpm (3.18.1.330)
     nio4r (2.5.5)
     nokogiri (1.11.1)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
-    oauth2 (1.4.4)
-      faraday (>= 0.8, < 2.0)
-      jwt (>= 1.0, < 3.0)
-      multi_json (~> 1.3)
-      multi_xml (~> 0.5)
-      rack (>= 1.2, < 3)
     omniauth (1.4.3)
       hashie (>= 1.2, < 4)
       rack (>= 1.6.2, < 3)
@@ -1505,6 +1503,11 @@ GEM
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     restforce (5.0.5)
       faraday (>= 0.9.0, <= 2.0)
       faraday_middleware (>= 0.8.8, <= 2.0)
@@ -1539,6 +1542,8 @@ GEM
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
     rspec-support (3.10.2)
+    ruby-bitly (0.2.1)
+      rest-client (~> 2.0)
     ruby-ole (1.2.12.2)
     ruby-openid (2.9.2)
     ruby-prof (1.4.3)
@@ -1622,6 +1627,9 @@ GEM
       thread_safe (~> 0.1)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.7)
     validate_email (0.1.6)
       activemodel (>= 3.0)
       mail (>= 2.2.5)
@@ -1637,7 +1645,7 @@ GEM
     webfinger (1.1.0)
       activesupport
       httpclient (>= 2.4)
-    webmock (3.11.3)
+    webmock (3.12.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -1664,7 +1672,6 @@ DEPENDENCIES
   aws-sdk
   better_errors
   binding_of_caller
-  bitly
   bootsnap (>= 1.1.0)
   bootstrap-kaminari-views
   bootstrap-x-editable-rails
@@ -1720,6 +1727,7 @@ DEPENDENCIES
   roadie-rails
   rspec-activemodel-mocks
   rspec-rails
+  ruby-bitly
   ruby-openid
   ruby-prof
   sass-rails (~> 5.0)

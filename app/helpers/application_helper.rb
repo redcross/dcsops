@@ -22,7 +22,7 @@ module ApplicationHelper
 
   def short_url(url)
     return url if Rails.env.development? # Bitly won't shorten localhost
-    Rails.cache.fetch([:shorten, url]) { Bitly.client.shorten(url).short_url }
+    Rails.cache.fetch([:shorten, url]) { Bitly.shorten(url).url }
   end
 
   def asset_url(*args)

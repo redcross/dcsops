@@ -22,7 +22,7 @@ class Incidents::RespondersMailer < ActionMailer::Base
 
     def short_maps_url(inc)
       url = "https://maps.google.com/maps?q=#{inc.lat}+#{inc.lng}+"
-      Bitly.client.shorten(url).short_url
+      Bitly.shorten(url).url
     end
   end
 
