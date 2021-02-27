@@ -26,7 +26,7 @@ class Incidents::NewDispatchService
     end
     call_log.update incident_id: incident.id
 
-    @incident.event_logs.create! event: 'dispatch_received', message: summary_message, event_time: incident.region.time_zone.now
+    @incident.event_logs.create! event: 'incident_notified', message: summary_message, event_time: incident.region.time_zone.now, source: call_log.source
   end
 
   def send_notifications

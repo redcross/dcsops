@@ -31,6 +31,7 @@
           .inside-response-territory.collapse
             =f.input :contact_name, label: "May I have your name and where you're calling from?"
             =f.input :contact_number, label: "May I have the best callback number?"
+            =f.input :source, as: :select, collection: Lookup.for_region_and_scope(@region, 'Incidents::EventLog#source'), label: "Select the Notification Source:", include_blank: false, required: true
             =f.input :incident_type, as: :assignable_select, include_blank: false, required: true, humanized: :humanized_valid_incident_types, label: "What type of incident is this?"
             =f.input :num_displaced, label: "Approximately how many people are displaced?"
             =f.input :services_requested, as: :text, input_html: {rows: 3}, label: "Are there any special instructions or specific services you are requesting?"

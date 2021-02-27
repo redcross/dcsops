@@ -4,6 +4,7 @@ class Incidents::CallLog < ApplicationRecord
 
   belongs_to :incident, class_name: "Incidents::Incident"
   belongs_to :creator, class_name: "Roster::Person"
+  belongs_to :source, class_name: 'Lookup'
 
   validates :address_entry, :contact_name, :contact_number, :incident_type, presence: {if: :incident?}
 

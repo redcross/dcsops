@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_03_193926) do
+ActiveRecord::Schema.define(version: 2021_02_27_135557) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -240,6 +240,7 @@ ActiveRecord::Schema.define(version: 2021_02_03_193926) do
     t.integer "creator_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "source_id"
     t.index ["dispatching_region_id"], name: "index_incidents_call_logs_on_dispatching_region_id"
     t.index ["region_id"], name: "index_incidents_call_logs_on_region_id"
   end
