@@ -9,8 +9,8 @@
       .col-sm-2=label_tag :address_cont, 'Address'
       .col-sm-2=label_tag :city_cont, 'City'
       .col-sm-2=label_tag :county_state_eq, 'County'
-      .col-sm-3=label_tag :date_gteq, 'After'
-      .col-sm-3=label_tag :date_lteq, 'Before'
+      .col-sm-3=label_tag :date_gteq, 'On or After'
+      .col-sm-3=label_tag :date_lteq, 'On or Before'
     /%tr
     .row
       %div
@@ -25,10 +25,10 @@
             =select_tag :county_state_eq, options_for_select(counties_for_menu(collection_for_stats), current_scopes[:county_state_eq]), prompt: 'County', class: 'form-control'
         .form-group
           .col-sm-3
-            =date_field_tag :date_gteq, (current_scopes[:date_gteq] or FiscalYear.current.start_date.to_s), class: 'form-control', placeholder: 'On or After YYYY-MM-DD', 
+            =date_field_tag :date_gteq, (current_scopes[:date_gteq] or FiscalYear.current.start_date.to_s), class: 'form-control', placeholder: 'After YYYY-MM-DD'
         .form-group
           .col-sm-3
-            =date_field_tag :date_lteq, current_scopes[:date_lteq], class: 'form-control', placeholder: 'On or Before YYYY-MM-DD'
+            =date_field_tag :date_lteq, current_scopes[:date_lteq], class: 'form-control', placeholder: 'Before YYYY-MM-DD'
     .row(style="margin-top: 15px")
       .col-sm-5
         =label_tag :incident_type_in
