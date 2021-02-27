@@ -133,7 +133,7 @@ Then you can push to it. Database migrations are not run automatically, so don't
 ```bash
 $ git push heroku-production production:main
 $ # Or git push heroku-staging candidate-production:main
-$ heroku run rake db:migrate --app arcadata # Or --app dcsops-staging
+$ heroku run rake db:migrate --app dcsops # Or --app dcsops-staging
 ```
 
 **IMPORTANT:** Once you have finished a new deployment, please log it in `site-updates.txt`.
