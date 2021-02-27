@@ -13,7 +13,9 @@ class Scheduler::PeopleController < Scheduler::BaseController
   has_scope :in_shift_territory, as: :shift_territory, default: Proc.new {|controller| controller.current_user.primary_shift_territory_id}
 
   # , default: Proc.new {|controller| controller.current_region.positions.where(name: ['DAT Team Lead', 'DAT Technician', 'DAT Trainee', 'DAT Dispatcher']).map(&:id)}
-  has_scope :with_position, type: :array, default: []
+  has_scope :with_shift, type: :array, default: [] do |controller, scope, val|
+    scope.where(Scheduler::ShiftAssignment.joins(:shift).where("person_id = roster_people.id").where(scheduler_shifts: {id: val}).exists)
+  end
   has_scope :date_after, :allow_blank => true, :default => FiscalYear.current.start_date.to_s do |controller, scope, val|
     if not controller.params[:date_before].blank?
       scope.where(Scheduler::ShiftAssignment.where("person_id = roster_people.id").where('date > ?', val).where('date < ?', controller.params[:date_before]).exists)
@@ -47,6 +49,9 @@ class Scheduler::PeopleController < Scheduler::BaseController
   helper_method :num_shifts
   def num_shifts person
     assignments = person.shift_assignments
+    if params[:with_shift]
+      assignments = assignments.joins(:shift).where(scheduler_shifts: {id: params[:with_shift]})
+    end
     if params[:date_after].nil?
       assignments = assignments.where("date > ?", FiscalYear.current.start_date.to_s)
     elsif not params[:date_after].blank?
@@ -56,6 +61,15 @@ class Scheduler::PeopleController < Scheduler::BaseController
       assignments = assignments.where("date < ?", params[:date_before])
     end
     assignments.count
+  end
+
+  helper_method :shifts_assigned
+  def shifts_assigned person
+    assignments = person.shift_assignments
+    if params[:with_shift]
+      assignments = assignments.joins(:shift).where(scheduler_shifts: {id: params[:with_shift]})
+    end
+    assignments.map{|a| a.shift}.uniq
   end
 
   helper_method :next_shift
@@ -84,5 +98,10 @@ class Scheduler::PeopleController < Scheduler::BaseController
     request.original_url
   end
   helper_method :original_url
+
+  helper_method :available_shifts
+  def available_shifts
+    Scheduler::Shift.for_region(current_region).active_on_day(Date.today).order(:name)
+  end
 
 end

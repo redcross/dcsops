@@ -13,10 +13,9 @@
   else
     next_shift = ""
   end
-  positions = person.positions.select{|p|!p.hidden}.map(&:name).join ", "
 -%>
 <%= CSV.generate_line([person.full_name,
-    positions,
+    (shifts_assigned(person).map(&:name).uniq.join ", "),
     pluralize(num_shifts(person), 'shift'),
     prev_shift,
     next_shift

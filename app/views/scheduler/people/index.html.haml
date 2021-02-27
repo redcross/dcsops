@@ -19,18 +19,18 @@
       %th Position
       %td
         %table(style="width: 100%")
-          - current_region.positions.visible.each_slice(2) do |first, second|
+          - available_shifts.each_slice(2) do |first, second|
             %tr
               %td
                 %label
-                  - checked = current_scopes[:with_position] && current_scopes[:with_position].include?(first.id.to_s)
-                  =check_box_tag "with_position[]", first.id, checked
+                  - checked = current_scopes[:with_shift] && current_scopes[:with_shift].include?(first.id.to_s)
+                  =check_box_tag "with_shift[]", first.id, checked
                   = first.name
               %td
                 - if second
                   %label
-                    - checked = current_scopes[:with_position] && current_scopes[:with_position].include?(second.id.to_s)
-                    =check_box_tag "with_position[]", second.id, checked
+                    - checked = current_scopes[:with_shift] && current_scopes[:with_shift].include?(second.id.to_s)
+                    =check_box_tag "with_shift[]", second.id, checked
                     = second.name
     %tr
       %th Name

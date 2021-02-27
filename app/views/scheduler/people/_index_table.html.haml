@@ -18,7 +18,7 @@
           = link_to person.full_name, roster_person_path(person)
           %br
           %small
-            = person.positions.select{|p|!p.hidden}.map(&:name).join ", "
+            = shifts_assigned(person).map(&:name).uniq.join ", "
         %td
           = pluralize num_shifts(person), 'shift'
         %td
