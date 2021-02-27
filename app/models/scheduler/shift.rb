@@ -76,7 +76,7 @@ class Scheduler::Shift < ApplicationRecord
   }
   scope :active_on_day, -> date {
     #Todo: check day of week here
-    where('shift_begins IS NULL OR shift_begins <= ? AND (shift_ends IS NULL OR shift_ends > ?)', date, date)
+    where('(shift_begins IS NULL OR shift_begins <= ?) AND (shift_ends IS NULL OR shift_ends > ?)', date, date)
   }
   scope :for_shift_territories, -> shift_territories {
     where(shift_territory_id: shift_territories)
