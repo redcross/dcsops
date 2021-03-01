@@ -43,6 +43,14 @@ class Incidents::IncidentsListController < Incidents::BaseController
     scope.where(incident_type: val)
   end
 
+  has_scope :date_lteq do |controller, scope, val|
+    scope.where("date <= ?", val)
+  end
+
+  has_scope :date_gteq do |controller, scope, val|
+    scope.where("date >= ?", val)
+  end
+
   def resource_path(*args)
     opts = args.extract_options!
     obj = args.first || resource
