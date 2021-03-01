@@ -28,7 +28,7 @@ class Incidents::UpdateCasEventJob
   def perform
     event_number = incident.cas_event_number
     events = event_number.present? && client.events(event_number)
-    if events.size > 0
+    if events && events.size > 0
       incident.rccare_event_id = events.first.Id
       incident.cas_event_number = events.first.Name
     else
