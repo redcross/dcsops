@@ -13,6 +13,8 @@ class ApplicationController < ActionController::Base
 
   before_action :set_frame_options
 
+  before_action :set_paper_trail_whodunnit
+
   def user_time_zone(&block)
     tz = current_user.try(:region).try(:time_zone) || Time.zone 
     Time.use_zone(tz, &block)
