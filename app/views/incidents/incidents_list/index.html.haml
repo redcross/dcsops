@@ -1,4 +1,4 @@
-%h1 Listing #{pluralize collection.count, 'Incident'}
+%h1 Listing #{pluralize collection.except(:limit, :offset, :order).count, 'Incident'}
 
 .well#filter-form
   =form_tag incidents_region_incidents_path, method: :get, class: "form", style: "margin-bottom: 0" do
