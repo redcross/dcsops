@@ -36,9 +36,9 @@
                 %label
                   =check_box_tag "incidents_initial_incident_report[expected_services][]", val, services.include?( val)#, class: 'cb-service'
                   =label
-        =f.input :significant_media, as: :assignable_select, include_blank: false
-        =f.input :safety_concerns, as: :assignable_select, include_blank: false
-        =f.input :weather_concerns, as: :assignable_select, include_blank: false
+        =f.input :significant_media, as: :assignable_select, include_blank: true
+        =f.input :safety_concerns, as: :assignable_select, include_blank: true
+        =f.input :weather_concerns, as: :assignable_select, include_blank: true
         =f.input :additional_comments, as: :text, input_html: {rows: 6, style: "width: 100%"}, label: "Comments or Additional Information"
       .modal-footer
         =f.action :submit, button_html: {class: "btn btn-primary", data: {disable_with: "Creating…"}}

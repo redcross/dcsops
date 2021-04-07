@@ -4,7 +4,8 @@ class Incidents::InitialIncidentReport < Incidents::DataModel
 
   with_options if: :approved_by do |approved|
     approved.validates :triggers, :expected_services, :trend, :estimated_units, :estimated_individuals, presence: true
-    approved.validate :narrative_present, :timeline_entries_present
+    approved.validate :narrative_present, :timeline_entries_present,
+      :safety_concerns_present, :significant_media_present, :weather_concerns_present
   end
 
   assignable_values_for :trend, allow_blank: true do
@@ -78,6 +79,18 @@ class Incidents::InitialIncidentReport < Incidents::DataModel
     unless incident.narrative.present?
       errors.add(:base, "Incident narrative time can't be blank")
     end
+  end
+
+  def significant_media_present
+    errors.add(:base, "Significant media can't be blank") unless significant_media.present?
+  end
+
+  def safety_concerns_present
+    errors.add(:base, "Safety concerns can't be blank") unless safety_concerns.present?
+  end
+
+  def weather_concerns_present
+    errors.add(:base, "Weather concerns can't be blank") unless weather_concerns.present?
   end
 
   def timeline_entries_present
