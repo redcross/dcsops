@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   namespace :scheduler do
     root to: "home#root"
     get :minnesota, controller: 'minnesota'
+    get :idaho, controller: 'idaho'
     get :on_call, controller: 'home'
     resources :shifts, only: [:index] do
       match '', via: [:put], action: :update_shifts, on: :collection
