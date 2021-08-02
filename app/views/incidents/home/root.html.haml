@@ -4,16 +4,16 @@
   %div(class=menu_col)
     -if editable?
       %ul.nav.nav-tabs.nav-stacked.nav-tabs-small
-        -if scope.enable_dispatch_console && can?(:dispatch_console, scope)
-          %li
-            %a{href: new_incidents_region_dispatch_intake_path(scope)}
-              Dispatch New Incident
-              %i.fa.fa-chevron-right
-        -if can? :create, Incidents::Incident
-          %li
-            %a{href: new_incidents_region_incident_path(scope)}
-              Create Incident Report
-              %i.fa.fa-chevron-right
+        -#-if scope.enable_dispatch_console && can?(:dispatch_console, scope)
+        -#  %li
+        -#    %a{href: new_incidents_region_dispatch_intake_path(scope)}
+        -#      Dispatch New Incident
+        -#      %i.fa.fa-chevron-right
+        -#-if can? :create, Incidents::Incident
+        -#  %li
+        -#    %a{href: new_incidents_region_incident_path(scope)}
+        -#      Create Incident Report
+        -#      %i.fa.fa-chevron-right
         -if scope.enable_dispatch_console && can?(:dispatch_console, scope)
           %li
             %a{href: incidents_region_dispatch_index_path(scope)}

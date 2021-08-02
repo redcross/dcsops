@@ -55,6 +55,12 @@ class Incidents::Incident < ApplicationRecord
     where(county: county_in)
   }
 
+  before_create :error_out
+
+  def error_out
+    raise "Can no longer create incidents"
+  end
+
   def self.with_location
     where.not(lat: nil, lng: nil).where.not(lat: 0, lng: 0)
   end
