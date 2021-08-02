@@ -60,9 +60,19 @@ class Incidents::IncidentsListController < Incidents::BaseController
 
   def collection
     @_incidents ||= begin
-      scope = apply_scopes(super).order(date: :desc, incident_number: :desc)#.preload(:shift_territory, :dat_incident, team_lead: :person)
+      scope = apply_scopes(super).order(date: :desc, incident_number: :desc)
+      #.eager_load(all_responder_assignments: :person).eager_load(:dat_incident).eager_load(:cases).eager_load(:event_logs)
+      #.preload(:shift_territory, :dat_incident, team_lead: :person)
     end
   end
+
+  def built_out_collection
+    @_built_out_incidents ||= begin
+      scope = apply_scopes(collection).eager_load(all_responder_assignments: :person).eager_load(:dat_incident).eager_load(:cases).eager_load(:event_logs)
+      #.preload(:shift_territory, :dat_incident, team_lead: :person)
+    end
+  end
+  helper_method :built_out_collection
 
   def collection_for_stats
     @stats_collection ||= collection.unscope(:limit, :offset, :order, :includes, :joins).with_location

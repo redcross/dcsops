@@ -61,7 +61,7 @@
     'responder_flex_10'
 ] -%>
 <%= CSV.generate_line csv_headers -%>
-<%- collection.each do |resource| -%>
+<%- built_out_collection.each do |resource| -%>
 <%= CSV.generate_line([
   resource.date,
   resource.incident_number,
@@ -88,11 +88,11 @@
   resource.num_children,
   resource.num_families,
   resource.cases.map(&:total_amount).compact.sum,
-  resource.event_logs.event("incident_verified").first.try(:event_time),
-  resource.event_logs.event("dispatch_relayed").first.try(:event_time),
-  resource.event_logs.event("responders_identified").first.try(:event_time),
-  resource.event_logs.event("dat_on_scene").first.try(:event_time),
-  resource.event_logs.event("dat_departed_scene").first.try(:event_time),
+  resource.event_logs.select{|el| el.event == "incident_verified"}.first.try(:event_time),
+  resource.event_logs.select{|el| el.event == "dispatch_relayed"}.first.try(:event_time),
+  resource.event_logs.select{|el| el.event == "responders_identified"}.first.try(:event_time),
+  resource.event_logs.select{|el| el.event == "dat_on_scene"}.first.try(:event_time),
+  resource.event_logs.select{|el| el.event == "dat_departed_scene"}.first.try(:event_time),
   resource.all_responder_assignments[0].try(:person).try(:full_name),
   resource.all_responder_assignments[0].try(:role),
   resource.all_responder_assignments[0].try(:was_flex),
