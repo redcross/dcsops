@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/redcross/arcdata_core.git
+  remote: https://github.com/redcross/arcdata_core.git
   revision: 3869f8a91a0c17a8eed25400cd61b6b8d44674a9
   branch: upgrade/rails-6
   specs:
@@ -8,7 +8,7 @@ GIT
       rails (>= 5.0, < 7.x)
 
 GIT
-  remote: git://github.com/redcross/openid-connect-engine.git
+  remote: https://github.com/redcross/openid-connect-engine.git
   revision: 0247bae4dc4a0797559544a3b7ce08859f4fbdb5
   branch: rails-6-upgrade
   specs:
@@ -19,7 +19,7 @@ GIT
       rails (>= 5.0, < 7.x)
 
 GIT
-  remote: git://github.com/seyhunak/twitter-bootstrap-rails.git
+  remote: https://github.com/seyhunak/twitter-bootstrap-rails.git
   revision: 1d93c5a77049b3d21d17c847ad0531d7714fa229
   branch: bootstrap3
   specs:
@@ -1382,7 +1382,9 @@ GEM
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.0225)
-    mimemagic (0.3.5)
+    mimemagic (0.3.10)
+      nokogiri (~> 1)
+      rake
     mini_mime (1.0.2)
     mini_portile2 (2.5.0)
     minitest (5.14.4)
@@ -1617,7 +1619,7 @@ GEM
       faraday (>= 0.9, < 2.0)
       jwt (>= 1.5, <= 2.5)
       nokogiri (>= 1.6, < 2.0)
-    tzinfo (1.2.9)
+    tzinfo (1.2.10)
       thread_safe (~> 0.1)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
