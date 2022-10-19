@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/redcross/arcdata_core.git
+  remote: https://github.com/redcross/arcdata_core.git
   revision: 3869f8a91a0c17a8eed25400cd61b6b8d44674a9
   branch: upgrade/rails-6
   specs:
@@ -8,7 +8,7 @@ GIT
       rails (>= 5.0, < 7.x)
 
 GIT
-  remote: git://github.com/redcross/openid-connect-engine.git
+  remote: https://github.com/redcross/openid-connect-engine.git
   revision: 0247bae4dc4a0797559544a3b7ce08859f4fbdb5
   branch: rails-6-upgrade
   specs:
@@ -19,7 +19,7 @@ GIT
       rails (>= 5.0, < 7.x)
 
 GIT
-  remote: git://github.com/seyhunak/twitter-bootstrap-rails.git
+  remote: https://github.com/seyhunak/twitter-bootstrap-rails.git
   revision: 1d93c5a77049b3d21d17c847ad0531d7714fa229
   branch: bootstrap3
   specs:
@@ -1382,9 +1382,11 @@ GEM
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.0225)
-    mimemagic (0.3.5)
+    mimemagic (0.3.10)
+      nokogiri (~> 1)
+      rake
     mini_mime (1.0.2)
-    mini_portile2 (2.5.0)
+    mini_portile2 (2.8.0)
     minitest (5.14.4)
     minitest-autotest (1.1.1)
       minitest-server (~> 1.0)
@@ -1398,8 +1400,8 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (3.18.1.330)
     nio4r (2.5.5)
-    nokogiri (1.11.1)
-      mini_portile2 (~> 2.5.0)
+    nokogiri (1.13.9)
+      mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     omniauth (1.4.3)
       hashie (>= 1.2, < 4)
@@ -1443,7 +1445,7 @@ GEM
       json (>= 2.2.0, < 3)
       timers (>= 4.3.0)
     puma (3.12.6)
-    racc (1.5.2)
+    racc (1.6.0)
     rack (2.2.3)
     rack-oauth2 (1.16.0)
       activesupport
